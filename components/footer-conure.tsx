@@ -148,6 +148,31 @@ const poses: Record<string, string[]> = {
     '....OO..................',
     '....O...................',
   ],
+  // Hung head-down from where it stands, feet still gripping, to look at whoever is
+  // watching the wrong way up: the orange patch under the beak, the tail up behind. From
+  // a photograph of it peering down off a curtain rail.
+  hanging: [
+    '........................',
+    '........................',
+    '........................',
+    '....O...................',
+    '....OO..................',
+    '.....OO.................',
+    '.....OO.................',
+    '......OOD...............',
+    '......ODDD..............',
+    '.......BDDD.............',
+    '........DDDG............',
+    '........DDGF.F..........',
+    '.........GGF.F..........',
+    '.........GGLL...........',
+    '.........GLLLL..........',
+    '.........GLLLL..........',
+    '.........TLLLT..........',
+    '.........HTWTH..........',
+    '.........EKWKE..........',
+    '.........HPPPH..........',
+  ],
   // Bent forward, beak down at what it is standing on, tail tipped up behind.
   pecking: [
     '........................',
@@ -322,7 +347,7 @@ const beak = { column: 18.5, row: 13.5 };
 // narrower than the bird, and pecking there would be pecking at air.
 const routines: Record<Stop, [pose: string, seconds: number, along?: number][]> = {
   // On the h it sidles along the top a step at a time, the way they walk a perch, and
-  // back again.
+  // back again, then hangs off it head-down for a moment.
   thaw: [
     ['perched', 0.6],
     ['looking', 0.7],
@@ -331,6 +356,9 @@ const routines: Record<Stop, [pose: string, seconds: number, along?: number][]> 
     ['perched', 0.45, 2],
     ['looking', 0.5, 2],
     ['perched', 0.3, 1],
+    ['perched', 0.5],
+    // Then over the edge to look at you upside down, and back up.
+    ['hanging', 1.3],
     ['perched', 0.5],
   ],
   // The ampersand gets eaten. It hops back so its beak is over the top of the bowl,
