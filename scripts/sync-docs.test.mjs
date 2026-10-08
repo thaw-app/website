@@ -140,3 +140,23 @@ test('a number never read has no value and no day', () => {
   expect(values.scorecard).toBeUndefined();
   expect(days.scorecard).toBeUndefined();
 });
+
+const { curlQuotes } = await import('./sync-docs.mjs');
+
+test('quotes in synced prose are curled, and code and addresses are left alone', () => {
+  expect(curlQuotes("Thaw's own icon is missing")).toBe('Thaw’s own icon is missing');
+  expect(curlQuotes('the "dancing" icons won\'t stop')).toBe('the “dancing” icons won’t stop');
+  expect(curlQuotes('**"Reset"** and (\'Layout\')')).toBe('**“Reset”** and (‘Layout’)');
+  // Code in a line and in a block, a tag's attributes and a link's address keep theirs.
+  expect(curlQuotes('run `open "thaw://x"` and it\'s done')).toBe(
+    'run `open "thaw://x"` and it’s done',
+  );
+  expect(curlQuotes('```sh\necho "it\'s"\n```\nit\'s')).toBe('```sh\necho "it\'s"\n```\nit’s');
+  expect(curlQuotes('<a href="x">it\'s</a>')).toBe('<a href="x">it’s</a>');
+  expect(curlQuotes('[it\'s here](/a "title") and `x`\'s')).toBe(
+    '[it’s here](/a "title") and `x`’s',
+  );
+  expect(curlQuotes('[ref]: https://example.com "Title"')).toBe(
+    '[ref]: https://example.com "Title"',
+  );
+});

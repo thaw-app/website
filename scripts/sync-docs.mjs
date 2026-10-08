@@ -299,6 +299,43 @@ function describe(body) {
   return text.length > 200 ? `${text.slice(0, 197).trimEnd()}...` : text;
 }
 
+/**
+ * Straight quotes and apostrophes in a page's prose, curled, as the pages written on this
+ * site have them: the app repos type them straight. Code, addresses, tags and what sits
+ * inside a link's brackets-and-parentheses are left as typed, since there a quote is
+ * syntax and not punctuation.
+ */
+function curlQuotes(markdown) {
+  let fenced = false;
+  return markdown
+    .split('\n')
+    .map((line) => {
+      if (/^\s*(```|~~~)/.test(line)) {
+        fenced = !fenced;
+        return line;
+      }
+      // A link defined on a line of its own keeps its title's quotes: they are how it is told.
+      if (fenced || /^\s*\[[^\]]+\]:/.test(line)) return line;
+      // What must not change is set aside and put back after, each as one mark that is
+      // neither a space nor a letter, so a quote beside it is still read the right way.
+      const kept = [];
+      const held = line.replace(
+        /`[^`]*`|\]\([^)]*\)|\]\[[^\]]*\]|<[^>]+>|https?:\/\/\S+/g,
+        (part) => {
+          kept.push(part);
+          return String.fromCharCode(0xe000 + kept.length - 1);
+        },
+      );
+      return held
+        .replace(/(^|[\s([{*_—–-])"/g, '$1“')
+        .replace(/"/g, '”')
+        .replace(/(^|[\s([{*_—–-])'/g, '$1‘')
+        .replace(/'/g, '’')
+        .replace(/[-]/g, (mark) => kept[mark.charCodeAt(0) - 0xe000] ?? mark);
+    })
+    .join('\n');
+}
+
 /** Repoints relative links: to this site for a synced page, to GitHub otherwise. */
 function rewriteLinks(body, repoPath, slugs, { product, repo, ref }) {
   const dir = posix.dirname(repoPath);
@@ -1214,7 +1251,9 @@ async function syncProduct(product, other, contentOnly) {
         );
         continue;
       }
-      const { title, body } = splitTitle(markdown, slug);
+      const split = splitTitle(markdown, slug);
+      const title = curlQuotes(split.title);
+      const body = curlQuotes(split.body);
       const description = describe(body);
       const frontmatter = [
         '---',
@@ -1257,6 +1296,7 @@ if (import.meta.main) await main();
 export {
   appDownloads,
   channelOf,
+  curlQuotes,
   linkMentions,
   longDate,
   parseTag,
