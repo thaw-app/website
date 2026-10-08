@@ -27,7 +27,26 @@ export function FeatureList() {
         Your macOS decides which Thaw you get. Features marked <Beta /> are in Thaw 3 and not yet in
         Thaw 2, the stable release.
       </p>
-      <div className="mb-6 overflow-x-auto border">
+      {/* Four columns do not fit a phone, and the last one is the one to act on: there
+          each version is a short block with its command under it. */}
+      <ul className="mb-6 divide-y border text-sm sm:hidden">
+        {thawVersions.map((version) => (
+          <li key={version.thaw} className="flex flex-col gap-1 px-4 py-3">
+            <span>
+              <span className="font-medium">{version.macos}</span>{' '}
+              <span className="text-fd-muted-foreground">
+                gets {version.thaw}. {version.channel}.
+              </span>
+            </span>
+            {version.install.startsWith('brew ') ? (
+              <code className="font-mono">{version.install}</code>
+            ) : (
+              <span className="text-fd-muted-foreground">{version.install}</span>
+            )}
+          </li>
+        ))}
+      </ul>
+      <div className="mb-6 overflow-x-auto border max-sm:hidden">
         <table className="w-full text-left text-sm">
           <caption className="sr-only">Which version of Thaw runs on which macOS</caption>
           <thead className="text-fd-muted-foreground">

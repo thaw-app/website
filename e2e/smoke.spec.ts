@@ -25,11 +25,21 @@ test('the install tabs work from the keyboard and give the right command', async
   await expect(stable).toBeFocused();
 });
 
-test('the home page says which Thaw a Mac gets and what is only in the beta', async ({ page }) => {
+test('the home page says which Thaw a Mac gets and what is only in the beta', async ({
+  page,
+  isMobile,
+}) => {
   await page.goto('/');
-  const versions = page.getByRole('table', { name: 'Which version of Thaw runs on which macOS' });
-  await expect(versions.getByRole('row', { name: /macOS 26/ })).toContainText('Thaw 2');
-  await expect(versions.getByRole('row', { name: /macOS 27/ })).toContainText('Thaw 3');
+  if (isMobile) {
+    // A phone gets the same facts as short blocks, with nothing pushed off the side.
+    const versions = page.getByRole('listitem').filter({ hasText: /^macOS 2[67]/ });
+    await expect(versions.filter({ hasText: 'macOS 26' })).toContainText('brew install thaw');
+    await expect(versions.filter({ hasText: 'macOS 27' })).toContainText('brew install thaw@beta');
+  } else {
+    const versions = page.getByRole('table', { name: 'Which version of Thaw runs on which macOS' });
+    await expect(versions.getByRole('row', { name: /macOS 26/ })).toContainText('Thaw 2');
+    await expect(versions.getByRole('row', { name: /macOS 27/ })).toContainText('Thaw 3');
+  }
   await expect(page.getByText('Thaw 3 beta').first()).toBeVisible();
 });
 
