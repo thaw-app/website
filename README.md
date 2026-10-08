@@ -135,13 +135,9 @@ all of it, with a production build, on every push.
 
 ## Fonts
 
-Text is set in Innovator Grotesk and code in Geist Mono.
-
-Innovator Grotesk is a paid font from Yep! Type Foundry, and its licence
-forbids uploading the file anywhere the public can download it as a font,
-which includes a public git repo. So `public/fonts/` is ignored by git. Put
-`InnovatorGrotesk-VF.woff2` there yourself; without it the site still builds
-and falls back to the system font.
+Text is set in Schibsted Grotesk and code in Fragment Mono. Both are under the SIL Open
+Font License. `next/font` fetches them when the site is built and serves them
+from the site itself, so no visitor's browser calls Google.
 
 ## Adding a page
 

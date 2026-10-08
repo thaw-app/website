@@ -21,7 +21,7 @@ launcher, as a second product. One domain: a home page, and docs for both.
   badges they stand for.
 - **Dark mode is true black**, with barely visible rules. Light mode is the
   alternative, and both must work.
-- **Type.** Innovator Grotesk for text and headings. Geist Mono for commands
+- **Type.** Schibsted Grotesk for text and headings. Fragment Mono for commands
   and code only. No uppercase monospace labels.
 - **Corners.** Square on the site's own pages.
 
@@ -39,7 +39,7 @@ Two things carry the identity, and the rest stays quiet around them.
   GitHub) sit before Thaw's dot, and clicking the dot hides them and brings
   them back, the way the app does on a Mac.
 
-Display type is Innovator Grotesk pulled tight (the larger, the tighter).
+Display type is Schibsted Grotesk pulled tight (the larger, the tighter).
 A section is named by a small quiet label with its rule running on from it to
 the edge, the same on every page. Ruled grids carry a small plus where their
 lines cross.

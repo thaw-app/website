@@ -3,22 +3,20 @@
 @import "fumadocs-ui/css/preset.css";
 
 @theme {
-  --font-sans: "Innovator Grotesk", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Innovator Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-text), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-text), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-code), ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 /*
- * Innovator Grotesk is a paid font and its licence forbids publishing the
- * file, so public/fonts is not in git: see the README. Without the file the
- * text falls back to the system font.
+ * Fragment Mono joins some pairs into one sign (=> into an arrow, != into a struck
+ * equals). Code on this site is there to be read and copied as typed, so that is off.
  */
-@font-face {
-  font-family: "Innovator Grotesk";
-  src: url("/fonts/InnovatorGrotesk-VF.woff2") format("woff2");
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
+code,
+pre,
+kbd,
+.font-mono {
+  font-variant-ligatures: none;
 }
 
 /*
@@ -624,15 +622,15 @@ html > body[data-scroll-locked] {
 }
 
 /*
- * Display type. Innovator Grotesk is wide and open at text sizes; set large it
- * wants pulling together, more so the larger it gets.
+ * Display type. Schibsted Grotesk is open at text sizes; set large it wants
+ * pulling together, more so the larger it gets.
  */
 .font-display {
   letter-spacing: -0.02em;
 }
 
 h1.font-display {
-  letter-spacing: -0.035em;
+  letter-spacing: -0.03em;
 }
 
 /* A ruled grid with a small plus where its lines cross, as on a drawing: it says the grid

@@ -1,11 +1,13 @@
 import './global.css';
 import type { Metadata } from 'next';
-import { Geist_Mono } from 'next/font/google';
+import { Fragment_Mono, Schibsted_Grotesk } from 'next/font/google';
 import { Providers } from '@/components/providers';
 import { siteDescription, siteName, siteUrl } from '@/lib/shared';
 
-// The text font, Innovator Grotesk, is declared in global.css.
-const code = Geist_Mono({ subsets: ['latin'], variable: '--font-code' });
+// Both are open fonts, fetched at build time and served from the site itself.
+const text = Schibsted_Grotesk({ subsets: ['latin'], variable: '--font-text' });
+// Fragment Mono is drawn in one weight only.
+const code = Fragment_Mono({ subsets: ['latin'], weight: '400', variable: '--font-code' });
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -17,7 +19,7 @@ export const metadata: Metadata = {
 
 export default function Layout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang="en" className={code.variable} suppressHydrationWarning>
+    <html lang="en" className={`${text.variable} ${code.variable}`} suppressHydrationWarning>
       <body className="flex flex-col min-h-screen">
         <Providers>{children}</Providers>
       </body>

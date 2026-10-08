@@ -27,7 +27,7 @@ yarn-error.log*
 .vercel
 next-env.d.ts
 
-# Innovator Grotesk: licensed, not to be published (see README)
+# a licensed font kept locally from before the site moved to open ones; never publish it
 /public/fonts/
 
 # copied from the app repos by scripts/sync-docs.mjs
