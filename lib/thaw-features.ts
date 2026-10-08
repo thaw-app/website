@@ -96,21 +96,6 @@ export const betaOnly = new Set([
 ]);
 
 /**
- * Which Thaw a Mac runs, newest first. A major version is built for one macOS, so the
- * macOS decides the version, and the version decides which of the features above it has.
- */
-export const thawVersions = [
-  { thaw: 'Thaw 3', macos: 'macOS 27', channel: 'Beta', install: 'brew install thaw@beta' },
-  { thaw: 'Thaw 2', macos: 'macOS 26', channel: 'Stable', install: 'brew install thaw' },
-  {
-    thaw: 'Thaw 1',
-    macos: 'macOS 14 and 15',
-    channel: 'Earlier releases',
-    install: 'From the releases on GitHub',
-  },
-];
-
-/**
  * Everything else Thaw 3 does, by name, filed under what it is for so a name
  * can be looked up, and with what it works alongside.
  */

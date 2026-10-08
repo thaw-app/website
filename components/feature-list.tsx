@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { SectionLabel } from '@/components/section-label';
 import { docsRoute } from '@/lib/shared';
-import { betaOnly, thawAlso, thawFeatures, thawVersions } from '@/lib/thaw-features';
+import { betaOnly, thawAlso, thawFeatures } from '@/lib/thaw-features';
 
 /**
  * What Thaw does, as a sheet to read down and not a wall to take in: the ten
@@ -21,73 +21,6 @@ function Beta() {
 export function FeatureList() {
   return (
     <div className="not-prose my-6">
-      {/* The list is Thaw 3's, and Install gives most Macs Thaw 2: which one a Mac gets,
-          said before the features, so nobody installs for a feature they will not have. */}
-      <p className="mb-3 text-fd-muted-foreground text-pretty">
-        Your macOS decides which Thaw you get. Features marked <Beta /> are in Thaw 3 and not yet in
-        Thaw 2, the stable release.
-      </p>
-      {/* Four columns do not fit a phone, and the last one is the one to act on: there
-          each version is a short block with its command under it. */}
-      <ul className="mb-6 divide-y border text-sm sm:hidden">
-        {thawVersions.map((version) => (
-          <li key={version.thaw} className="flex flex-col gap-1 px-4 py-3">
-            <span>
-              <span className="font-medium">{version.macos}</span>{' '}
-              <span className="text-fd-muted-foreground">
-                gets {version.thaw}. {version.channel}.
-              </span>
-            </span>
-            {version.install.startsWith('brew ') ? (
-              <code className="font-mono">{version.install}</code>
-            ) : (
-              <span className="text-fd-muted-foreground">{version.install}</span>
-            )}
-          </li>
-        ))}
-      </ul>
-      <div className="mb-6 overflow-x-auto border max-sm:hidden">
-        <table className="w-full text-left text-sm">
-          <caption className="sr-only">Which version of Thaw runs on which macOS</caption>
-          <thead className="text-fd-muted-foreground">
-            <tr className="border-b">
-              <th scope="col" className="px-4 py-2.5 font-normal">
-                Your Mac runs
-              </th>
-              <th scope="col" className="px-4 py-2.5 font-normal">
-                You get
-              </th>
-              <th scope="col" className="px-4 py-2.5 font-normal">
-                Channel
-              </th>
-              <th scope="col" className="px-4 py-2.5 font-normal">
-                Install
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {thawVersions.map((version) => (
-              <tr key={version.thaw} className="border-b last:border-b-0">
-                <th scope="row" className="px-4 py-2.5 font-medium whitespace-nowrap">
-                  {version.macos}
-                </th>
-                <td className="px-4 py-2.5 whitespace-nowrap">{version.thaw}</td>
-                <td className="px-4 py-2.5 whitespace-nowrap text-fd-muted-foreground">
-                  {version.channel}
-                </td>
-                <td className="px-4 py-2.5 whitespace-nowrap text-fd-muted-foreground">
-                  {version.install.startsWith('brew ') ? (
-                    <code className="font-mono text-fd-foreground">{version.install}</code>
-                  ) : (
-                    version.install
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
       <ol className="crossed grid border-t border-l sm:grid-cols-2">
         {thawFeatures.map((feature, index) => (
           <li key={feature.title} className="flex flex-col gap-2 border-r border-b p-6">
@@ -135,13 +68,14 @@ export function FeatureList() {
           </section>
         ))}
       </div>
-      <p className="mt-4 text-sm text-fd-muted-foreground">
-        The{' '}
-        <Link href={`${docsRoute}/thaw`} className="tap text-fd-foreground link">
-          Thaw documentation
+      {/* The list is Thaw 3's, and Install gives a Mac on macOS 26 Thaw 2: said once, quietly,
+          with where to find which version a Mac gets. */}
+      <p className="mt-4 text-sm text-fd-muted-foreground text-pretty">
+        Features marked <Beta /> are not in Thaw 2 yet.{' '}
+        <Link href={`${docsRoute}/thaw/versions`} className="tap text-fd-foreground link">
+          Which Thaw your Mac gets
         </Link>{' '}
-        covers installing it, its permissions, fixes for common problems and scripting it with
-        thaw:// links.
+        is in the documentation.
       </p>
     </div>
   );
