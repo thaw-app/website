@@ -2,7 +2,8 @@
 
 Transcribed from the project owner's instructions while the site was built
 (October 2026). The owner is the author; edit this file to change the
-direction. `anti-slop/` holds the audits made against it.
+direction. The audits made against it are kept locally in `anti-slop/`, which
+is not committed.
 
 ## What the site is
 
@@ -55,7 +56,9 @@ Every page but the home page and the docs shares one frame and one width.
   rebuilt in the browser so people can use it before downloading.
 - The changelog is a timeline after Cossistant's: number and date on the left,
   notes on the right, under a calendar of releases. The roadmap is a board
-  after ArkEnv's: up next by area, shipped by release, each with a count.
+  after ArkEnv's: up next by area, shipped by release, each with a count. It is a
+  page of its own at /roadmap, beside Community and Built with, not a docs page:
+  it is about the project, and it is written here.
 - The docs have a user side and a developers side, the latter modelled on
   Zen Browser's.
 

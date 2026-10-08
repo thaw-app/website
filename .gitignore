@@ -6,6 +6,8 @@
 
 # test & build
 /coverage
+/test-results/
+/playwright-report/
 /.next/
 /out/
 /build
@@ -41,3 +43,7 @@ next-env.d.ts
 /.cache/
 # lib/*.json is NOT ignored: a build that cannot reach a source falls back to the copy
 # committed there (see the README on what is read at build time).
+
+# working notes kept on a maintainer's machine: audits, plans. Not part of the site.
+/anti-slop/
+/plans/
