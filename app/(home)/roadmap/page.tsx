@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import type { ComponentProps } from 'react';
 import { getMDXComponents } from '@/components/mdx';
-import { Lead, PageHeader } from '@/components/page-header';
+import { PageHeader } from '@/components/page-header';
 import { PageShell } from '@/components/page-shell';
 import Lists from '@/content/site/roadmap.mdx';
 

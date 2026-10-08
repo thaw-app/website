@@ -120,8 +120,13 @@ html {
   scrollbar-gutter: stable;
 }
 
+/* A dialog's scroll lock writes its own margin onto the body, inline and marked important,
+   to stand in for the scrollbar. The gutter above already holds that place, so the two
+   are cancelled here, which only another important can do. */
 html > body[data-scroll-locked] {
+  /* biome-ignore lint/complexity/noImportantStyles: the rule it overrides is important */
   margin-right: 0px !important;
+  /* biome-ignore lint/complexity/noImportantStyles: the rule it overrides is important */
   --removed-body-scroll-bar-size: 0px !important;
 }
 

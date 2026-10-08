@@ -518,6 +518,7 @@
 }
 
 /* The four menu bar shapes on the Appearance pane. */
+/* biome-ignore lint/style/noDescendingSpecificity: the slider's spans above are other elements */
 .thaw-shape > span {
   position: absolute;
   inset: auto 0 0;
@@ -640,6 +641,7 @@
   color: var(--text);
 }
 
+/* biome-ignore lint/style/noDescendingSpecificity: the shape buttons' spans above are other elements */
 .thaw-display span {
   padding: 0 6px;
   text-align: center;
@@ -690,6 +692,7 @@ button.thaw-glass:active {
   background: none;
 }
 
+/* biome-ignore lint/style/noDescendingSpecificity: the layout items' images above are other elements */
 .thaw-history img {
   opacity: 0.9;
 }
