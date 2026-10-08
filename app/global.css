@@ -562,6 +562,27 @@ html > body[data-scroll-locked] {
   }
 }
 
+/* The same for the controls Fumadocs draws and this site cannot mark: the header's logo,
+   search and menu buttons on every page, and the buttons at the head of a docs page. */
+@media (pointer: coarse) {
+  #nd-nav a,
+  #nd-nav button,
+  #nd-subnav a,
+  #nd-subnav button,
+  #nd-docs-layout [data-toc-popover-trigger],
+  #nd-page > div:first-of-type button {
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #nd-nav a,
+  #nd-subnav a {
+    display: inline-flex;
+  }
+}
+
 /*
  * Display type. Innovator Grotesk is wide and open at text sizes; set large it
  * wants pulling together, more so the larger it gets.

@@ -108,7 +108,7 @@ export default function CommunityPage() {
           <a href="https://trendshift.io/repositories/21173" className="tap link">
             Trendshift
           </a>{' '}
-          has had Thaw as GitHub’s #1 trending repository of the day.
+          has had Thaw as GitHub’s #1 trending repository of the day, according to its badge.
         </p>
       </section>
 
@@ -195,7 +195,7 @@ export default function CommunityPage() {
           </dl>
           <p className="text-sm text-fd-muted-foreground">
             {translatorCount} people across {community.translators.length} languages, from Thaw’s{' '}
-            <a href={`${repo}/blob/development/CREDITS.md`} className="link">
+            <a href={`${repo}/blob/development/CREDITS.md`} className="tap link">
               credits
             </a>
             . Listed alphabetically within each language. Each name opens its Crowdin profile.

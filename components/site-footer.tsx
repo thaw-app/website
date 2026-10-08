@@ -106,7 +106,7 @@ export function SiteFooter() {
             © {new Date().getFullYear()} Thaw. Open source under the{' '}
             <a
               href={`${repo}/blob/${products.thaw.branch}/LICENSE`}
-              className="text-fd-foreground link"
+              className="tap text-fd-foreground link"
             >
               GPL-3.0 license
             </a>

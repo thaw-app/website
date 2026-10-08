@@ -30,7 +30,10 @@ Two things carry the identity, and the rest stays quiet around them.
 
 - **Type as picture.** The cube drawn in characters on the home page, and at
   the foot of every page "thaw & floe" drawn the same way, each name in its
-  product's colour, where a conure comes by to sit on the ampersand.
+  product's colour, where a conure comes by. It is the owner's own bird, drawn from photographs,
+  and it has things to do: it sidles along a letter, eats pieces out of the
+  ampersand, climbs down it, looks at a pointer that comes near, and bobs its
+  head at whoever is watching before it goes.
 - **The header is a menu bar that Thaw manages.** Its icons (Raycast, Droppy,
   GitHub) sit before Thaw's dot, and clicking the dot hides them and brings
   them back, the way the app does on a Mac.
@@ -71,6 +74,12 @@ Every page but the home page and the docs shares one frame and one width.
 - The community page shows where the project's stars, issues and pull requests
   come from on a dotted map of the world, as shares and not counts. People are
   listed without numbers beside them: one commit can be a whole feature.
+
+- "Built with" is a page of its own: the languages, frameworks and runtimes each once
+  with who uses them, the services the project runs on, the licences, the thanks, and
+  every package. Tools that only check the code stay in the package lists.
+- The footer is a map of the site in three columns, after Vercel's, at the owner's
+  request. Every link in it is real.
 
 ## The mock desktop
 
