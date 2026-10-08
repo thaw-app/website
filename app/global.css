@@ -1,0 +1,699 @@
+@import "tailwindcss";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
+
+@theme {
+  --font-sans: "Innovator Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Innovator Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-code), ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/*
+ * Innovator Grotesk is a paid font and its licence forbids publishing the
+ * file, so public/fonts is not in git: see the README. Without the file the
+ * text falls back to the system font.
+ */
+@font-face {
+  font-family: "Innovator Grotesk";
+  src: url("/fonts/InnovatorGrotesk-VF.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/*
+ * One corner language for the site's own chrome: square, as the home page is
+ * drawn. Fumadocs rounds its controls, so its radius steps are flattened
+ * here. The mock desktop is a picture of macOS and keeps macOS's corners.
+ */
+:root {
+  --radius-xs: 0;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-2xl: 0;
+  --radius-3xl: 0;
+  --radius-4xl: 0;
+  /* Fumadocs' light grey text is 4.4:1 on its light page; this is 5.0:1. */
+  --color-fd-muted-foreground: #6a6a6a;
+}
+
+.desktop-wallpaper {
+  --radius-xs: 0.125rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+  --radius-4xl: 2rem;
+}
+
+/*
+ * Dark mode is true black with barely-there rules, in place of Fumadocs'
+ * dark grey: the home page is built on hairlines, and they only read as
+ * structure when the ground behind them is flat black.
+ */
+.dark {
+  --color-fd-background: #000000;
+  --color-fd-foreground: #ededed;
+  --color-fd-card: #050505;
+  --color-fd-card-foreground: #ededed;
+  --color-fd-popover: #0a0a0a;
+  --color-fd-popover-foreground: #ededed;
+  --color-fd-muted: #0d0d0d;
+  --color-fd-muted-foreground: #a1a1a1;
+  --color-fd-secondary: #0d0d0d;
+  --color-fd-secondary-foreground: #ededed;
+  --color-fd-accent: rgb(255 255 255 / 0.07);
+  --color-fd-accent-foreground: #ededed;
+  --color-fd-border: rgb(255 255 255 / 0.09);
+}
+
+.dark #nd-sidebar {
+  --color-fd-muted: #111111;
+  --color-fd-secondary: #141414;
+  --color-fd-muted-foreground: #a1a1a1;
+}
+
+/*
+ * The ASCII cube's four tones, faintest to boldest, all taken from the logo:
+ * its deep, mid and light orange and the cream of the cube's edges. On a
+ * light page the order runs the other way so the bold characters stay bold.
+ */
+:root {
+  /* A country with people in it, on the community page's map: Thaw's orange. */
+  --world-lit: #c96817;
+  --verified-gold: #a87400;
+  --verified-green: #1a7f37;
+}
+
+.dark {
+  --world-lit: #fa9a2a;
+  --verified-gold: #f0b429;
+  --verified-green: #3fb950;
+}
+
+.ascii-cube {
+  --cube-1: #f08a1c;
+  --cube-2: #d96c0c;
+  --cube-3: #a84407;
+  --cube-4: #6f2a04;
+  /* On a light page a faint character reads as white, so none is drawn fainter than this. */
+  --cube-floor: 0.9;
+  /* The fill of Thaw 3's light app icon (AppIcon.icon: 1 .76 .2 to .82 .42 .025), two
+     steps deeper: thin characters read lighter than a solid fill of the same colour. */
+  --cube-fill-top: #ee9a12;
+  --cube-fill-bottom: #a94a05;
+}
+
+.dark .ascii-cube {
+  --cube-floor: 0.4;
+  --cube-fill-top: initial;
+  --cube-fill-bottom: initial;
+  --cube-1: #993a06;
+  --cube-2: #c96817;
+  --cube-3: #fa9a2a;
+  --cube-4: #ffde81;
+}
+
+html {
+  scrollbar-gutter: stable;
+}
+
+html > body[data-scroll-locked] {
+  margin-right: 0px !important;
+  --removed-body-scroll-bar-size: 0px !important;
+}
+
+/* The mock desktop's wallpaper: a plain dark one, a shade off the page's black so the
+   screen reads as a screen, with a little light at the top where the menu bar sits. */
+.desktop-wallpaper {
+  background: radial-gradient(120% 70% at 50% 0%, #26262a 0%, transparent 70%), #121214;
+}
+
+/* A Dock icon. --mag is set by the Dock as the pointer moves along it. */
+.dock-tile {
+  width: calc(2.75rem * var(--mag, 1));
+  height: calc(2.75rem * var(--mag, 1));
+  flex: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dock-tile {
+    transition:
+      width 0.12s ease-out,
+      height 0.12s ease-out;
+  }
+
+  /* Windows and panels grow into place, and shrink away when closed. */
+  .desktop-pop {
+    animation: desktop-pop-in 0.26s cubic-bezier(0.2, 0.9, 0.25, 1.08) both;
+  }
+
+  /* A minimized window shrinks into its Dock icon, and grows back out of it. */
+  .desktop-pop[data-minimized="true"] {
+    animation: desktop-minimize 0.3s cubic-bezier(0.5, 0, 0.9, 0.6) both;
+  }
+
+  .desktop-pop[data-minimized="false"] {
+    animation: desktop-restore 0.3s cubic-bezier(0.1, 0.4, 0.5, 1) both;
+  }
+
+  .desktop-pop[data-closing="true"] {
+    animation: desktop-pop-out 0.16s ease-in both;
+  }
+
+  .desktop-menu {
+    animation: desktop-menu-in 0.12s ease-out both;
+    transform-origin: top left;
+  }
+
+  /* The hop a Dock icon gives when its app is opened. */
+  .dock-bounce {
+    animation: dock-bounce 0.75s cubic-bezier(0.3, 0, 0.4, 1);
+  }
+
+  @keyframes desktop-pop-in {
+    from {
+      opacity: 0;
+      transform: scale(0.94);
+    }
+  }
+
+  @keyframes desktop-menu-in {
+    from {
+      opacity: 0;
+      transform: scale(0.97);
+    }
+  }
+
+  @keyframes desktop-minimize {
+    to {
+      opacity: 0;
+      transform: translate(var(--dock-x), var(--dock-y)) scale(0.06);
+    }
+  }
+
+  @keyframes desktop-restore {
+    from {
+      opacity: 0;
+      transform: translate(var(--dock-x), var(--dock-y)) scale(0.06);
+    }
+  }
+
+  @keyframes desktop-pop-out {
+    to {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+  }
+
+  @keyframes dock-bounce {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    22% {
+      transform: translateY(-20px);
+    }
+    48% {
+      transform: translateY(0);
+    }
+    68% {
+      transform: translateY(-9px);
+    }
+  }
+}
+
+/* An item in the mock menu bar: it lights up under the pointer. */
+.bar-item {
+  display: grid;
+  flex: none;
+  place-items: center;
+  height: 1.5rem;
+  /* The same room either side of every item, whatever its width. */
+  padding: 0 0.5625rem;
+  border-radius: 0.375rem;
+}
+
+.bar-item:hover {
+  background: rgb(255 255 255 / 0.18);
+}
+
+.bar-item-dragging {
+  background: rgb(255 255 255 / 0.28);
+  cursor: grabbing;
+  opacity: 0.7;
+}
+
+/*
+ * The mock display's notch. Pointing at it lets it open the way Droppy's
+ * does on a notched MacBook, as a nod to our partner: the panel drops out of
+ * the notch with the screen's edge flaring into it, black where it meets the
+ * notch and melting into glass at the bottom.
+ */
+.droppy-notch {
+  width: 12rem;
+  height: 30px;
+}
+
+.droppy-notch-body {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 0 0 1rem 1rem;
+  background: #000;
+}
+
+/* The two flares where the open panel meets the top of the screen. */
+.droppy-notch::before,
+.droppy-notch::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 14px;
+  height: 14px;
+  opacity: 0;
+}
+
+.droppy-notch::before {
+  right: 100%;
+  background: radial-gradient(circle at 0 100%, transparent 13.5px, #000 14px);
+}
+
+.droppy-notch::after {
+  left: 100%;
+  background: radial-gradient(circle at 100% 100%, transparent 13.5px, #000 14px);
+}
+
+.droppy-notch:hover,
+.droppy-notch:focus-visible {
+  width: 21rem;
+  height: 5.5rem;
+}
+
+.droppy-notch:hover .droppy-notch-body,
+.droppy-notch:focus-visible .droppy-notch-body {
+  border-radius: 0 0 1.75rem 1.75rem;
+  background: linear-gradient(#000 45%, rgb(0 0 0 / 0.45));
+  box-shadow: 0 18px 40px rgb(0 0 0 / 0.35);
+  backdrop-filter: blur(22px) saturate(1.5);
+}
+
+.droppy-notch:hover::before,
+.droppy-notch:hover::after,
+.droppy-notch:focus-visible::before,
+.droppy-notch:focus-visible::after {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .droppy-notch {
+    transition:
+      width 0.4s cubic-bezier(0.3, 1.25, 0.4, 1),
+      height 0.4s cubic-bezier(0.3, 1.25, 0.4, 1);
+  }
+
+  .droppy-notch-body {
+    transition:
+      border-radius 0.35s ease,
+      background 0.35s ease;
+  }
+
+  .droppy-notch::before,
+  .droppy-notch::after {
+    transition: opacity 0.2s ease 0.1s;
+  }
+}
+
+/* The README on the home page: its folded feature list and its table of languages. */
+.readme details {
+  margin-block: 1.25rem;
+  border-block: 1px solid var(--color-fd-border);
+}
+
+.readme summary {
+  cursor: pointer;
+  padding-block: 0.75rem;
+  color: var(--color-fd-muted-foreground);
+}
+
+.readme summary:hover {
+  color: var(--color-fd-foreground);
+}
+
+.readme table {
+  width: 100%;
+  margin-block: 1.25rem;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+
+.readme td {
+  padding: 0.5rem 0.75rem 0.5rem 0;
+  border-bottom: 1px solid var(--color-fd-border);
+}
+
+/* The roadmap's lists: a hollow mark for what is planned, a tick for what shipped. */
+.roadmap ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.roadmap li {
+  position: relative;
+  padding-left: 1.75rem;
+  text-wrap: pretty;
+}
+
+.roadmap li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.3em;
+  width: 0.875rem;
+  height: 0.875rem;
+  border: 1.5px solid var(--color-fd-muted-foreground);
+  border-radius: 50%;
+}
+
+/* A planned item is its name on a line of its own, then what it means: the names can be
+   read down the page without reading the sentences. */
+.roadmap li > strong:first-child {
+  display: block;
+  margin-bottom: 0.125rem;
+}
+
+/* A shipped release's items are short names: two to a row where there is room. */
+@media (min-width: 48rem) {
+  .roadmap-folded ul {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 2.5rem;
+  }
+}
+
+/* In progress: a filled mark. Blocked: a broken one. Later: a faint one. */
+.roadmap-now li::before {
+  border-color: var(--color-fd-primary);
+  background: var(--color-fd-primary);
+}
+
+.roadmap-blocked li::before {
+  border-style: dashed;
+}
+
+.roadmap-later li::before {
+  opacity: 0.55;
+}
+
+.roadmap li strong {
+  font-weight: 600;
+  color: var(--color-fd-foreground);
+}
+
+.roadmap li {
+  color: var(--color-fd-muted-foreground);
+}
+
+.roadmap-done li {
+  color: var(--color-fd-muted-foreground);
+}
+
+.roadmap-done li::before {
+  border-color: var(--color-fd-primary);
+  background: var(--color-fd-primary);
+}
+
+.roadmap-done li::after {
+  content: "";
+  position: absolute;
+  left: 0.3rem;
+  top: calc(0.3em + 0.16rem);
+  width: 0.28rem;
+  height: 0.5rem;
+  border: solid var(--color-fd-primary-foreground);
+  border-width: 0 1.5px 1.5px 0;
+  rotate: 45deg;
+}
+
+.roadmap a {
+  color: var(--color-fd-foreground);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.roadmap code {
+  font-family: var(--font-code), monospace;
+  font-size: 0.875em;
+}
+
+/* Notes written out on the changelog: their sections sit under the release, not beside it. */
+.release-notes > h2 {
+  margin-top: 2rem;
+  font-size: 1.125rem;
+}
+
+.release-notes > h3 {
+  font-size: 1rem;
+}
+
+.release-notes > :first-child {
+  margin-top: 0;
+}
+
+@keyframes language-drift {
+  to {
+    translate: -100% 0;
+  }
+}
+
+/* The band the wordmark sits in: as tall as the words need, which follows the window. */
+.footer-art {
+  height: calc(24vw + 5rem);
+  max-height: 30rem;
+}
+
+/* "thaw & floe" in moving type at the foot of the page, in the four tones of the logo:
+   the same ones the cube on the home page is drawn in. */
+.footer-wordmark {
+  --cube-1: #e2a468;
+  --cube-2: #c96817;
+  --cube-3: #993a06;
+  --cube-4: #6f2a04;
+  /* And the four of Floe's icon, in the same order. */
+  --floe-1: #9cc2ff;
+  --floe-2: #3d7df0;
+  --floe-3: #0b4fd8;
+  --floe-4: #072f86;
+}
+
+.dark .footer-wordmark {
+  --cube-1: #993a06;
+  --cube-2: #c96817;
+  --cube-3: #fa9a2a;
+  --cube-4: #ffde81;
+  --floe-1: #0a3a9c;
+  --floe-2: #1560e8;
+  --floe-3: #4f93ff;
+  --floe-4: #c4e0ff;
+}
+
+/* The conure on the footer's wordmark: 24 pixels by 20, drawn large with hard edges.
+   The wordmark says where the letters' tops are and how big one of its pixels should be. */
+.footer-conure {
+  width: calc(24 * var(--pixel, 4px));
+  height: calc(20 * var(--pixel, 4px));
+  image-rendering: pixelated;
+  /* Down to the tops of the letters, less the bird's own height to its feet, 13 pixels down. */
+  margin-top: calc(var(--perch-y, 6rem) - 13 * var(--pixel, 4px));
+  /* Where it sits when nothing moves: in the middle, on the ampersand. */
+  translate: calc(var(--perch-x, 50vw) - 12 * var(--pixel, 4px)) 0;
+  will-change: translate;
+  /* Over the words, not behind them. */
+  z-index: 1;
+}
+
+/*
+ * Keyboard focus, the same everywhere: a ring in the text colour, clear of the
+ * control it surrounds. Browsers draw their own by default, in colours that do
+ * not always show on a black page.
+ */
+:where(a, button, summary, [role="tab"], [tabindex]):focus-visible {
+  outline: 2px solid var(--color-fd-foreground);
+  outline-offset: 2px;
+}
+
+/* A link in running text, the same everywhere: underlined, the line a little fainter than
+   the words until it is pointed at. .link-quiet is the same in the secondary colour. */
+.link {
+  text-decoration-line: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: color-mix(in oklab, currentColor 45%, transparent);
+  transition:
+    color 0.15s,
+    text-decoration-color 0.15s;
+}
+
+.link:hover {
+  text-decoration-color: currentColor;
+}
+
+.link-quiet {
+  color: var(--color-fd-muted-foreground);
+}
+
+.link-quiet:hover {
+  color: var(--color-fd-foreground);
+}
+
+/* A finger needs more room than a cursor: on a touch screen, small links and
+   buttons marked .tap grow to the 44px a thumb can hit. */
+@media (pointer: coarse) {
+  .tap {
+    display: inline-flex;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+  }
+}
+
+/*
+ * Display type. Innovator Grotesk is wide and open at text sizes; set large it
+ * wants pulling together, more so the larger it gets.
+ */
+.font-display {
+  letter-spacing: -0.02em;
+}
+
+h1.font-display {
+  letter-spacing: -0.035em;
+}
+
+/* A ruled grid with a small plus where its lines cross, as on a drawing: it says the grid
+   was set out and not left to fall. Each cell draws the four at its own corners, so a
+   neighbour's land on the same spots and the edges get theirs too. */
+.crossed > * {
+  position: relative;
+}
+
+.crossed > *::after {
+  --mark: color-mix(in oklab, var(--color-fd-foreground) 42%, transparent);
+  content: "";
+  position: absolute;
+  inset: -5px;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--mark), var(--mark)) 0 4px / 9px 1px no-repeat,
+    linear-gradient(var(--mark), var(--mark)) 4px 0 / 1px 9px no-repeat,
+    linear-gradient(var(--mark), var(--mark)) calc(100% - 1px) 4px / 9px 1px no-repeat,
+    linear-gradient(var(--mark), var(--mark)) calc(100% - 5px) 0 / 1px 9px no-repeat,
+    linear-gradient(var(--mark), var(--mark)) 0 calc(100% - 5px) / 9px 1px no-repeat,
+    linear-gradient(var(--mark), var(--mark)) 4px 100% / 1px 9px no-repeat,
+    linear-gradient(var(--mark), var(--mark)) calc(100% - 1px) calc(100% - 5px) / 9px 1px no-repeat,
+    linear-gradient(var(--mark), var(--mark)) calc(100% - 5px) 100% / 1px 9px no-repeat;
+}
+
+/* The name over a section, the same on every page (components/section-label.tsx): a small
+   quiet label with its rule running on from it to the edge. The home page's sections are
+   headings in the synced README, so they take the same look from here. */
+.section-label,
+.readme > h2 {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--color-fd-muted-foreground);
+}
+
+.section-label::after,
+.readme > h2::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--color-fd-border);
+}
+
+/* On the home page the sections follow one another in running text, so they bring their
+   own room; elsewhere the page's own gaps do it. */
+.readme > h2 {
+  margin-top: 4rem;
+  margin-bottom: 1.25rem;
+}
+
+.readme .section-label {
+  margin-top: 2.5rem;
+  margin-bottom: 1.25rem;
+}
+
+/* The first section is how to get Thaw, which needs no name over it. */
+.readme > h2:first-child {
+  display: none;
+}
+
+.readme > h2:first-child + * {
+  margin-top: 0;
+}
+
+/* The header's logo starts where the page's text starts, and its last icon ends where
+   the page's content ends: the same side padding as the columns under it. */
+#nd-nav > nav > div {
+  padding-inline: 1.5rem;
+}
+
+@media (min-width: 64rem) {
+  #nd-nav > nav > div {
+    padding-inline: 2.5rem 2rem;
+  }
+}
+
+/* The roadmap's marks again, small, in the row that sums it up. */
+.roadmap-mark {
+  width: 0.625rem;
+  height: 0.625rem;
+  flex: none;
+  border: 1.5px solid var(--color-fd-muted-foreground);
+  border-radius: 50%;
+}
+
+.roadmap-mark-now,
+.roadmap-mark-done {
+  border-color: var(--color-fd-primary);
+  background: var(--color-fd-primary);
+}
+
+.roadmap-mark-blocked {
+  border-style: dashed;
+}
+
+.roadmap-mark-later {
+  opacity: 0.55;
+}
+
+/* An issue link in the roadmap, with the issue's state beside its number. */
+.roadmap a.roadmap-issue {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.375rem;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.roadmap-issue-status {
+  border: 1px solid var(--color-fd-border);
+  padding: 0 0.375rem;
+  font-size: 0.75rem;
+  color: var(--color-fd-muted-foreground);
+}
+
+.roadmap a.roadmap-issue:hover .roadmap-issue-status {
+  color: var(--color-fd-foreground);
+}
