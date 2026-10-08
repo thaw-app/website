@@ -83,7 +83,7 @@ export function WorldMap() {
 
         <div className="flex flex-col gap-3">
           <p className="text-fd-muted-foreground">
-            <span className="font-display text-4xl font-semibold tracking-tight text-fd-foreground tabular-nums">
+            <span className="font-display text-4xl font-semibold tracking-tight text-fd-foreground">
               {countries.length}
             </span>{' '}
             countries

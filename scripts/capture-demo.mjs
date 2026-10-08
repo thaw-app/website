@@ -21,12 +21,12 @@ try {
   page.setDefaultTimeout(30_000);
   // The link straight to the demo loads it without scrolling.
   await page.goto(`${site}/#try`);
-  const demo = page.locator('#try .desktop-wallpaper');
+  const demo = page.locator('.desktop-wallpaper');
   // The frame is there from the start; the menu bar is there once the demo has loaded.
   await demo.locator('button').first().waitFor();
   // Its own pictures only: one further down the page is not loaded until it is scrolled to.
   await page.waitForFunction(() =>
-    [...document.querySelectorAll('#try .desktop-wallpaper img')].every((image) => image.complete),
+    [...document.querySelectorAll('.desktop-wallpaper img')].every((image) => image.complete),
   );
   await demo.screenshot({ path: file, animations: 'disabled' });
   console.log(`Wrote ${file}`);

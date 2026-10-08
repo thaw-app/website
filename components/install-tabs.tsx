@@ -102,7 +102,12 @@ export function InstallTabs() {
   return (
     <div className="not-prose my-6">
       <div className="border">
-        <div role="tablist" aria-label="Ways to install Thaw" className="flex gap-5 border-b px-4">
+        <div
+          role="tablist"
+          aria-label="Ways to install Thaw"
+          // On a phone the three names are a few pixels wider than the box, so the gap closes up.
+          className="flex gap-3.5 border-b px-4 sm:gap-5"
+        >
           {ways.map(({ id, label }, index) => (
             <button
               key={id}
@@ -157,18 +162,21 @@ export function InstallTabs() {
                   type="button"
                   onClick={() => copy(way.command)}
                   aria-live="polite"
-                  className="tap flex min-w-24 items-center justify-center gap-2 border-l px-4 text-sm font-medium hover:bg-fd-foreground/[0.06]"
+                  // On a phone the icon alone, so the command beside it is not cut short to make room.
+                  className="tap flex items-center justify-center gap-2 border-l px-4 text-sm font-medium hover:bg-fd-foreground/[0.06] sm:min-w-24"
                 >
                   {copyState === 'copied' ? (
                     <Check aria-hidden className="size-4" />
                   ) : (
                     <Copy aria-hidden className="size-4" />
                   )}
-                  {copyState === 'copied'
-                    ? 'Copied'
-                    : copyState === 'failed'
-                      ? 'Couldn’t copy'
-                      : 'Copy'}
+                  <span className="max-sm:sr-only">
+                    {copyState === 'copied'
+                      ? 'Copied'
+                      : copyState === 'failed'
+                        ? 'Couldn’t copy'
+                        : 'Copy'}
+                  </span>
                 </button>
               </div>
             </>

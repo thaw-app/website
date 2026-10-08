@@ -40,7 +40,7 @@ const counted = readDays(community.readOn, {
 
 // Every number is fetched when the site is built; one that could not be is left out.
 const numbers = [
-  { label: 'GitHub stars', value: community.stars, unit: 'on thaw-app/Thaw' },
+  { label: 'GitHub stars', value: community.stars, unit: 'on thaw\u2011app/Thaw' },
   // Every fetch of the app or of an update to it: one person on ten releases is ten.
   { label: 'Downloads', value: community.downloads, unit: 'of the app and its updates' },
   { label: 'Homebrew installs', value: community.homebrewYear, unit: 'in the last year' },
@@ -106,7 +106,7 @@ export default function CommunityPage() {
           {numbers.map((number) => (
             <div key={number.label} className="flex flex-col gap-1 border-r border-b p-4 sm:p-6">
               <dt className="text-sm text-fd-muted-foreground">{number.label}</dt>
-              <dd className="font-display text-4xl font-semibold tracking-tight tabular-nums xl:text-5xl">
+              <dd className="font-display text-4xl font-semibold tracking-tight xl:text-5xl">
                 {compact.format(number.value)}
               </dd>
               <dd className="text-sm text-fd-muted-foreground">{number.unit}</dd>
@@ -164,7 +164,7 @@ export default function CommunityPage() {
       )}
 
       {community.people.length > 0 && (
-        <section className="flex flex-col gap-2">
+        <section className="flex flex-col gap-6">
           <SectionLabel>Contributors</SectionLabel>
           <Contributors people={contributors} />
           <p className="text-sm text-fd-muted-foreground">

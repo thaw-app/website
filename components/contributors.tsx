@@ -10,7 +10,7 @@ interface Person {
  */
 export function Contributors({ people }: { people: Person[] }) {
   return (
-    <ul className="not-prose my-6 flex flex-wrap gap-2">
+    <ul className="not-prose flex flex-wrap gap-2">
       {people.map((person) => (
         <li key={person.login}>
           <a

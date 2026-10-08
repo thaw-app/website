@@ -25,12 +25,10 @@ test('the install tabs work from the keyboard and give the right command', async
   await expect(stable).toBeFocused();
 });
 
-test('the home page marks what is only in the beta and says where versions are', async ({
-  page,
-}) => {
+test('the home page says some features need Thaw 3 and where versions are', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByText('Thaw 3 beta').first()).toBeVisible();
-  await page.getByRole('link', { name: 'Which Thaw your Mac gets' }).click();
+  await expect(page.getByText('Some of these features are only in Thaw 3.')).toBeVisible();
+  await page.getByRole('link', { name: 'See which Thaw your Mac gets' }).click();
   await expect(page).toHaveURL(/\/docs\/thaw\/versions$/);
   await expect(page.getByRole('row', { name: /macOS 26/ })).toContainText('Thaw 2');
 });
@@ -85,7 +83,7 @@ test('the demo loads on a screen that can use it, and a phone gets a picture', a
   isMobile,
 }) => {
   await page.goto('/');
-  const frame = page.locator('#try .desktop-wallpaper');
+  const frame = page.locator('.desktop-wallpaper');
   // The scripts fetched from here on, once the page's own have loaded. A line only the
   // demo says tells its code from a link's prefetched page.
   const fetched: string[] = [];

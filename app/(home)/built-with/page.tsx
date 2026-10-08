@@ -233,11 +233,11 @@ function Tools({ tools }: { tools: Tool[] }) {
           <a href={tool.href} className="flex h-full flex-col gap-3 p-5 hover:bg-fd-accent">
             <span className="flex items-start justify-between gap-3">
               {tool.mark ? (
-                <svg viewBox="0 0 24 24" aria-hidden className="size-7 fill-current">
+                <svg viewBox="0 0 24 24" aria-hidden className="size-7 shrink-0 fill-current">
                   <path d={stackMarks[tool.mark]} />
                 </svg>
               ) : tool.image ? (
-                <Image src={tool.image} alt="" width={28} className="size-7" />
+                <Image src={tool.image} alt="" width={28} className="size-7 shrink-0" />
               ) : (
                 // No mark to hand: its initial, in the same square.
                 <span
@@ -335,10 +335,10 @@ export default function BuiltWithPage() {
                   className="flex items-baseline justify-between gap-4 border-b py-2.5"
                 >
                   <span className="flex min-w-0 flex-wrap items-baseline gap-x-2.5 gap-y-1">
-                    <a href={item.url} className="tap truncate font-medium link">
+                    <a href={item.url} className="tap truncate font-medium link max-sm:basis-full">
                       {item.name}
                     </a>
-                    <span className="text-sm text-fd-muted-foreground tabular-nums">
+                    <span className="text-sm text-fd-muted-foreground">
                       {versions.length === 1
                         ? versions[0]
                         : users.map((user) => `${user} ${item.users[user]}`).join(', ')}

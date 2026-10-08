@@ -1,3 +1,4 @@
+import { Heading } from 'fumadocs-ui/components/heading';
 import Link from 'next/link';
 import community from '@/lib/community.json';
 import { compact, longDate } from '@/lib/shared';
@@ -35,7 +36,9 @@ const numbers = [
 export function Assurance() {
   return (
     <>
-      <h2 id="verified">Verified</h2>
+      <Heading as="h2" id="verified">
+        Verified
+      </Heading>
       <div className="not-prose my-6">
         {/* Why any of this is on the page, in the words the maintainer gave when asked what
             Thaw's permissions are for (issue 687). */}
@@ -108,7 +111,7 @@ export function Assurance() {
         </p>
         <Link
           href="/verified"
-          className="tap mt-3 flex items-center justify-between border px-5 py-3 font-medium transition-colors hover:bg-fd-accent"
+          className="tap mt-3 flex items-center justify-between gap-x-6 gap-y-1 border px-5 py-3 font-medium transition-colors hover:bg-fd-accent max-sm:flex-col max-sm:items-start"
         >
           What does this mean?
           <span aria-hidden className="text-fd-muted-foreground">
@@ -118,9 +121,7 @@ export function Assurance() {
         <p className="mt-5 flex flex-wrap gap-x-8 gap-y-2 text-fd-muted-foreground">
           {numbers.map((entry) => (
             <span key={entry.label}>
-              <span className="font-medium text-fd-foreground tabular-nums">
-                {compact.format(entry.value)}
-              </span>{' '}
+              <span className="font-medium text-fd-foreground">{compact.format(entry.value)}</span>{' '}
               {entry.label}
             </span>
           ))}

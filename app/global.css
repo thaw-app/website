@@ -445,10 +445,17 @@ html > body[data-scroll-locked] {
   rotate: 45deg;
 }
 
-.roadmap a {
+/* Not a section's own name, which is a link to itself and is not to look like one. */
+.roadmap a:not([data-card]) {
   color: var(--color-fd-foreground);
   text-decoration: underline;
   text-underline-offset: 4px;
+  text-decoration-color: color-mix(in oklab, currentColor 45%, transparent);
+  transition: text-decoration-color 0.15s;
+}
+
+.roadmap a:not([data-card]):hover {
+  text-decoration-color: currentColor;
 }
 
 .roadmap code {
@@ -646,21 +653,28 @@ h1.font-display {
 }
 
 .crossed > *::after {
-  --mark: color-mix(in oklab, var(--color-fd-foreground) 42%, transparent);
+  /* Mixed with the page and not with nothing: four cells meet at a crossing and each
+     draws it, and a see-through mark would come out four times as strong there as at
+     an edge. */
+  --mark: color-mix(in oklab, var(--color-fd-foreground) 42%, var(--color-fd-background));
   content: "";
   position: absolute;
   inset: -5px;
   z-index: 1;
   pointer-events: none;
+  /* Each arm is centred on the rule it crosses. A cell's own rules are its right and
+     bottom borders, which lie inside it, and the rules to its left and above belong to
+     its neighbours, so the far arms sit one pixel further in than the near ones. Set
+     any other way, two cells draw the same crossing a pixel apart. */
   background:
     linear-gradient(var(--mark), var(--mark)) 0 4px / 9px 1px no-repeat,
     linear-gradient(var(--mark), var(--mark)) 4px 0 / 1px 9px no-repeat,
-    linear-gradient(var(--mark), var(--mark)) calc(100% - 1px) 4px / 9px 1px no-repeat,
-    linear-gradient(var(--mark), var(--mark)) calc(100% - 5px) 0 / 1px 9px no-repeat,
-    linear-gradient(var(--mark), var(--mark)) 0 calc(100% - 5px) / 9px 1px no-repeat,
+    linear-gradient(var(--mark), var(--mark)) 100% 4px / 9px 1px no-repeat,
+    linear-gradient(var(--mark), var(--mark)) calc(100% - 4px) 0 / 1px 9px no-repeat,
+    linear-gradient(var(--mark), var(--mark)) 0 calc(100% - 4px) / 9px 1px no-repeat,
     linear-gradient(var(--mark), var(--mark)) 4px 100% / 1px 9px no-repeat,
-    linear-gradient(var(--mark), var(--mark)) calc(100% - 1px) calc(100% - 5px) / 9px 1px no-repeat,
-    linear-gradient(var(--mark), var(--mark)) calc(100% - 5px) 100% / 1px 9px no-repeat;
+    linear-gradient(var(--mark), var(--mark)) 100% calc(100% - 4px) / 9px 1px no-repeat,
+    linear-gradient(var(--mark), var(--mark)) calc(100% - 4px) 100% / 1px 9px no-repeat;
 }
 
 /* The name over a section, the same on every page (components/section-label.tsx): a small
@@ -760,4 +774,9 @@ h1.font-display {
 
 .roadmap a.roadmap-issue:hover .roadmap-issue-status {
   color: var(--color-fd-foreground);
+}
+
+/* Code named in running text sits in a square box, as every other box on the site is. */
+.prose :not(pre) > code {
+  border-radius: 0;
 }

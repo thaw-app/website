@@ -1,3 +1,4 @@
+import { Heading } from 'fumadocs-ui/components/heading';
 import {
   Children,
   type CSSProperties,
@@ -37,7 +38,8 @@ export function Roadmap({ children }: { children: ReactNode }) {
       <nav aria-label="Parts of the roadmap" className="not-prose my-8">
         <ul className="grid grid-cols-2 border-t border-l sm:grid-cols-3 lg:grid-cols-5">
           {parts.map((part) => (
-            <li key={part.title} className="border-r border-b">
+            // Five in two columns leave the last alone on its row, so on a phone it takes the row.
+            <li key={part.title} className="border-r border-b max-sm:last:odd:col-span-2">
               <a
                 href={`#${slug(part.title)}`}
                 className="flex h-full flex-col gap-1 p-4 transition-colors hover:bg-fd-accent"
@@ -103,19 +105,13 @@ export function RoadmapList({
   children: ReactNode;
 }) {
   return (
-    <section className={`roadmap roadmap-${state} not-prose my-12`}>
-      <h2
-        id={slug(title)}
-        className="flex scroll-mt-24 items-baseline gap-3 font-display text-2xl font-semibold tracking-tight"
-      >
-        {title}
-        <span className="font-sans text-sm font-normal tracking-normal text-fd-muted-foreground tabular-nums">
-          {count}
-        </span>
-      </h2>
-      {note && <p className="mt-1.5 max-w-2xl text-fd-muted-foreground text-pretty">{note}</p>}
+    <section className={`roadmap roadmap-${state} not-prose my-14`}>
+      <Heading as="h2" id={slug(title)} className="section-label scroll-mt-24">
+        {title} <span className="font-normal tabular-nums">{count}</span>
+      </Heading>
+      {note && <p className="mt-6 max-w-2xl text-fd-muted-foreground text-pretty">{note}</p>}
       {state === 'done' ? (
-        <div className="mt-4 border-t">
+        <div className={`border-t ${note ? 'mt-4' : 'mt-6'}`}>
           {
             // Each release folds; the newest starts open.
             Children.toArray(children)
@@ -131,7 +127,9 @@ export function RoadmapList({
       ) : (
         // What is planned is a sheet of cards, one to an item, after Obsidian's roadmap and
         // Zed's: its name, a sentence, and the area it belongs to.
-        <div className="roadmap-cards mt-5 grid border-t border-l sm:grid-cols-2 lg:grid-cols-3">
+        <div
+          className={`roadmap-cards grid border-t border-l sm:grid-cols-2 lg:grid-cols-3 ${note ? 'mt-5' : 'mt-6'}`}
+        >
           {children}
         </div>
       )}
@@ -204,19 +202,12 @@ export function RoadmapRequests() {
   const list = requests as Request[];
   const repo = repoUrl('thaw');
   return (
-    <section className="roadmap not-prose my-12">
-      <h2
-        id="asked-for"
-        className="flex scroll-mt-24 items-baseline gap-3 font-display text-2xl font-semibold tracking-tight"
-      >
-        Asked for
-        {list.length > 0 && (
-          <span className="font-sans text-sm font-normal tracking-normal text-fd-muted-foreground tabular-nums">
-            {list.length}
-          </span>
-        )}
-      </h2>
-      <p className="mt-1.5 max-w-2xl text-fd-muted-foreground text-pretty">
+    <section className="roadmap not-prose my-14">
+      <Heading as="h2" id="asked-for" className="section-label scroll-mt-24">
+        Asked for{' '}
+        {list.length > 0 && <span className="font-normal tabular-nums">{list.length}</span>}
+      </Heading>
+      <p className="mt-6 max-w-2xl text-fd-muted-foreground text-pretty">
         The feature requests open on GitHub. A thumbs-up on one tells the team it matters to you,
         and the ones with the most are looked at first.{' '}
         <a href={`${repo}/issues/new/choose`}>Ask for something that is missing</a>.

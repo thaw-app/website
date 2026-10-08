@@ -69,9 +69,7 @@ export function SiteFooter() {
           >
             Star Thaw on GitHub
             {typeof community.stars === 'number' && (
-              <span className="text-fd-muted-foreground tabular-nums">
-                {compact.format(community.stars)}
-              </span>
+              <span className="text-fd-muted-foreground">{compact.format(community.stars)}</span>
             )}
           </a>
         </div>
@@ -108,7 +106,7 @@ export function SiteFooter() {
               href={`${repo}/blob/${products.thaw.branch}/LICENSE`}
               className="tap text-fd-foreground link"
             >
-              GPL-3.0 license
+              GPL-3.0 licence
             </a>
             .
           </p>

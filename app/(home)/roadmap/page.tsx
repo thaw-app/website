@@ -1,3 +1,4 @@
+import { Heading } from 'fumadocs-ui/components/heading';
 import type { Metadata } from 'next';
 import type { ComponentProps } from 'react';
 import { getMDXComponents } from '@/components/mdx';
@@ -17,17 +18,24 @@ function Opening(props: ComponentProps<'p'>) {
   return (
     <p
       {...props}
-      className="max-w-2xl text-lg text-fd-muted-foreground text-pretty [&_a]:text-fd-foreground [&_a]:underline [&_a]:underline-offset-4"
+      className="max-w-2xl text-lg text-fd-muted-foreground text-pretty [&_a]:text-fd-foreground [&_a]:underline [&_a]:decoration-fd-foreground/45 [&_a]:underline-offset-4 [&_a]:transition-colors [&_a:hover]:decoration-fd-foreground"
     />
   );
+}
+
+/**
+ * A heading written in the roadmap's own text, set as the name over any section is.
+ */
+function Section(props: ComponentProps<'h2'>) {
+  return <Heading as="h2" {...props} className="section-label mt-14 mb-6 scroll-mt-24" />;
 }
 
 export default function RoadmapPage() {
   return (
     <PageShell>
       <div>
-        <PageHeader label="Roadmap" title="What we’re building" className="mb-4" />
-        <Lists components={getMDXComponents({ p: Opening })} />
+        <PageHeader label="Roadmap" title="What we’re building." className="mb-4" />
+        <Lists components={getMDXComponents({ p: Opening, h2: Section })} />
       </div>
     </PageShell>
   );

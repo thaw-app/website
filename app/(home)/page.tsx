@@ -1,3 +1,4 @@
+import { Heading } from 'fumadocs-ui/components/heading';
 import { Newsreader } from 'next/font/google';
 import Image from 'next/image';
 import vercelOssDark from '@/assets/vercel-oss-dark.png';
@@ -49,7 +50,7 @@ export default function HomePage() {
             <a
               href="https://vercel.com/open-source-program"
               aria-label="Vercel OSS Program"
-              className="tap"
+              className="tap transition-opacity hover:opacity-70"
             >
               <Image src={vercelOssLight} alt="" width={240} className="h-6 w-auto dark:hidden" />
               <Image
@@ -64,7 +65,7 @@ export default function HomePage() {
             <a
               href="https://claude.com/contact-sales/claude-for-oss"
               aria-label="Claude Open Source Program"
-              className="tap flex items-center gap-3 text-fd-foreground"
+              className="tap flex items-center gap-3 text-fd-foreground transition-opacity hover:opacity-70"
             >
               <ClaudeMark className="size-6" />
               <span className={`${badgeFont.className} text-[18px] leading-none font-medium`}>
@@ -74,7 +75,7 @@ export default function HomePage() {
             <a
               href="https://www.producthunt.com/products/thaw-2"
               aria-label="Featured on Product Hunt"
-              className="tap flex items-center gap-3 text-fd-foreground"
+              className="tap flex items-center gap-3 text-fd-foreground transition-opacity hover:opacity-70"
             >
               <ProductHuntMark className="size-6" />
               <span className="text-[18px] leading-none font-medium">Featured on Product Hunt</span>
@@ -96,12 +97,17 @@ export default function HomePage() {
 
       {/* Under the page itself: Thaw, rebuilt in the browser, to use before installing.
           It needs the full width, so it is not in the columns above. */}
-      <section id="try" className="scroll-mt-20 border-t px-6 py-14 lg:px-10">
+      <section className="border-t px-6 py-14 lg:px-10">
         {/* As wide as the window allows, up to the real width of that screen. */}
         <div className="mx-auto flex w-full max-w-[1512px] flex-col gap-6">
-          <h2 className="font-display text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
+          {/* The section answers to #try by its heading, which can be linked to like any other. */}
+          <Heading
+            as="h2"
+            id="try"
+            className="scroll-mt-20 font-display text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
+          >
             Try it before you install it.
-          </h2>
+          </Heading>
           {/* Three things to do in it, said as shortly as they can be. */}
           <div className="flex flex-wrap items-baseline gap-x-8 gap-y-2 max-sm:hidden">
             <p className="text-sm text-fd-muted-foreground">Things to try</p>
