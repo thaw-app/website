@@ -1,0 +1,88 @@
+{
+  "items": {
+    "floe": {
+      "name": "Floe",
+      "w": 12,
+      "h": 12
+    },
+    "droppy": {
+      "name": "Droppy",
+      "w": 15,
+      "h": 18
+    },
+    "wifi": {
+      "name": "WiFi",
+      "w": 19,
+      "h": 27,
+      "kind": "system"
+    },
+    "thaw": {
+      "name": "Thaw",
+      "w": 8,
+      "h": 8,
+      "kind": "thaw"
+    },
+    "control-center": {
+      "name": "Control Center",
+      "w": 23,
+      "h": 27,
+      "kind": "system"
+    },
+    "clock": {
+      "name": "Clock",
+      "w": 29,
+      "h": 27,
+      "kind": "clock"
+    },
+    "flux": {
+      "name": "Flux",
+      "w": 15,
+      "h": 15
+    },
+    "thaw-time-machine": {
+      "name": "Thaw Time Machine",
+      "w": 14.5,
+      "h": 13
+    },
+    "dockdoor": {
+      "name": "DockDoor",
+      "w": 20,
+      "h": 16
+    },
+    "thaw-text-input": {
+      "name": "Thaw Text Input",
+      "w": 16.5,
+      "h": 10.5
+    },
+    "new-items": {
+      "name": "New Items",
+      "w": 78,
+      "h": 24,
+      "kind": "marker"
+    },
+    "shottr": {
+      "name": "Shottr",
+      "w": 16,
+      "h": 16
+    }
+  },
+  "sections": {
+    "visible": [
+      "floe",
+      "droppy",
+      "wifi",
+      "thaw",
+      "control-center",
+      "clock"
+    ],
+    "hidden": [
+      "flux",
+      "thaw-time-machine",
+      "dockdoor",
+      "thaw-text-input",
+      "new-items",
+      "shottr"
+    ],
+    "alwaysHidden": []
+  }
+}

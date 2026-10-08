@@ -1,0 +1,885 @@
+/*
+ * Thaw's settings window, copied from a capture of the real one. Every size
+ * here is in points as measured from that capture, so the window is laid out
+ * at its true 918 by 652 and scaled as a whole to fit the desktop.
+ */
+.thaw-window {
+  /* Light Mode, as sampled from the capture. */
+  --sidebar: #ededed;
+  --content: #ffffff;
+  --accent: #ffbf00;
+  --group: #f7f7f7;
+  --separator: #ebebeb;
+  --capsule: #f9f9f9;
+  --circle: #f0f0f0;
+  --switch-off: #dddddd;
+  --popup: #e3e3e3;
+  --text: rgb(0 0 0 / 0.85);
+  /* The app's own faint text is 3.95:1 on white; this is the nearest tone that clears 4.5:1. */
+  --dim: rgb(0 0 0 / 0.58);
+  --rim: rgb(0 0 0 / 0.1);
+  --beta-border: #b9dfc0;
+  --beta-fill: #e4f4e7;
+  --beta-text: #212522;
+  /* The icons are white cut-outs; Light Mode shows them dark. */
+  --glyph-filter: invert(1);
+  --button: #ffffff;
+  --button-rim: rgb(0 0 0 / 0.14);
+  --bar: #3a3f52;
+
+  /*
+   * What ThawUI's controls (thaw-ui.tsx) read here that the capture gave no name of its
+   * own above. Floe's window gives the same names its values in floe-window.css.
+   */
+  /* The capture shows white on the accent, which is 1.65:1 on this yellow. Dark text is 12:1. */
+  --on-accent: rgb(0 0 0 / 0.88);
+  /* ThawUI's own ring is not drawn here: this window outlines what has the keyboard, below. */
+  --focus: transparent;
+  --focus-under: transparent;
+  --knob-shadow: 0 0.5px 1.5px rgb(0 0 0 / 0.2);
+  --group-radius: 12px;
+  --push: var(--button);
+  --push-hover: var(--button);
+  --push-shadow: 0 0 0 0.5px var(--button-rim), 0 0.5px 1px rgb(0 0 0 / 0.12);
+  --dimmed: 0.45;
+  --menu-fill: color-mix(in oklab, var(--group) 82%, transparent);
+  --menu-shadow: 0 0 0 0.5px var(--rim), 0 10px 30px rgb(0 0 0 / 0.35);
+  --menu-backdrop: blur(30px) saturate(1.6);
+  --menu-gap: 2px;
+  --menu-line: var(--separator);
+
+  position: relative;
+  width: 918px;
+  height: 652px;
+  overflow: hidden;
+  border-radius: 17px;
+  background: var(--content);
+  box-shadow:
+    0 0 0 0.5px var(--rim) inset,
+    0 24px 60px rgb(0 0 0 / 0.45);
+  color: var(--text);
+  font:
+    13px / 1 -apple-system,
+    BlinkMacSystemFont,
+    system-ui,
+    sans-serif;
+  -webkit-font-smoothing: auto;
+  user-select: none;
+}
+
+/* Dark Mode follows the site's own theme switch. */
+.dark .thaw-window {
+  --sidebar: #272728;
+  --content: #212122;
+  --group: #282829;
+  --separator: #323233;
+  --capsule: #3e3e3f;
+  --circle: #444445;
+  --switch-off: #3c3c3d;
+  --popup: #383839;
+  --text: rgb(255 255 255 / 0.87);
+  --dim: rgb(255 255 255 / 0.5);
+  --rim: rgb(255 255 255 / 0.16);
+  --beta-border: #4f8a59;
+  --beta-fill: #2f4a35;
+  --beta-text: #e6ece8;
+  --glyph-filter: none;
+  --button: #5b5b5d;
+  --button-rim: rgb(255 255 255 / 0.1);
+  --bar: #2a2a2c;
+}
+
+.thaw-window * {
+  box-sizing: border-box;
+}
+
+.thaw-window img {
+  position: absolute;
+  max-width: none;
+  pointer-events: none;
+  filter: var(--glyph-filter);
+}
+
+/* A pane shown as a capture of the real one, one image per appearance. */
+.thaw-window img.thaw-pane {
+  left: 210px;
+  top: 52px;
+  width: 708px;
+  height: 600px;
+  filter: none;
+}
+
+.thaw-pane-dark,
+.dark .thaw-pane-light {
+  display: none;
+}
+
+.dark .thaw-pane-dark {
+  display: block;
+}
+
+.thaw-sidebar {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 210px;
+  background: var(--sidebar);
+}
+
+.thaw-drag {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 52px;
+  touch-action: none;
+}
+
+.thaw-glass {
+  position: absolute;
+  top: 8px;
+  height: 36px;
+  border-radius: 18px;
+  background: var(--capsule);
+  box-shadow: 0 0 0 0.5px var(--rim) inset;
+}
+
+.thaw-glass span {
+  position: absolute;
+  top: 11px;
+}
+
+.thaw-heading {
+  position: absolute;
+  left: 240px;
+  font-size: 13px;
+  font-weight: 600;
+  transform: translateY(-50%);
+}
+
+.thaw-group {
+  position: absolute;
+  left: 230px;
+  width: 668px;
+}
+
+.thaw-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+}
+
+.thaw-row + .thaw-row::before {
+  content: "";
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: 0;
+  height: 0.5px;
+  background: var(--separator);
+}
+
+.thaw-row > span:first-child {
+  flex: 1;
+}
+
+/* A ThawUI control with the keyboard: outlined a point clear, in the accent unless told otherwise. */
+.thaw-window .thaw-ui-ring:focus-visible {
+  outline: 2px solid var(--outline, var(--accent));
+  outline-offset: 1px;
+}
+
+/* On the sidebar's grey the outline is white. */
+.thaw-sidebar,
+.thaw-lights {
+  --outline: #fff;
+}
+
+.thaw-popup {
+  position: relative;
+  margin-right: 4px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--popup);
+}
+
+.thaw-beta {
+  margin-left: 7px;
+  margin-right: auto;
+  padding: 3px 4.5px;
+  border: 1px solid var(--beta-border);
+  border-radius: 9px;
+  background: var(--beta-fill);
+  color: var(--beta-text);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* The rebuilt pane's wrapper: it covers the window but lets clicks through. */
+.thaw-live,
+.thaw-fade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.thaw-live > * > * {
+  pointer-events: auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Switching appearance eases the surfaces over; the captured panes swap. */
+  .thaw-window,
+  .thaw-sidebar,
+  .thaw-group,
+  .thaw-glass,
+  .thaw-popup {
+    transition:
+      background-color 0.3s,
+      color 0.3s,
+      box-shadow 0.3s;
+  }
+
+  .thaw-pane-in {
+    animation: thaw-pane-in 0.24s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  .thaw-fade {
+    animation: thaw-fade-in 0.2s ease-out both;
+  }
+
+  @keyframes thaw-pane-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+
+  @keyframes thaw-fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+}
+
+/* ---- Panes drawn from their definitions (thaw-pane.tsx) ---- */
+
+.thaw-scroll {
+  position: absolute;
+  left: 210px;
+  top: 52px;
+  width: 708px;
+  height: 600px;
+  overflow: hidden auto;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--text) 35%, transparent) transparent;
+}
+
+/* :where keeps these resets from outweighing each control's own rules. */
+:where(.thaw-el) {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.thaw-el {
+  position: absolute;
+}
+
+.thaw-plain {
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.thaw-plain:hover {
+  text-decoration: underline;
+}
+
+.thaw-h {
+  white-space: nowrap;
+}
+
+.thaw-tone-1 {
+  color: var(--text);
+}
+
+.thaw-tone-2 {
+  color: var(--dim);
+}
+
+.thaw-tone-3 {
+  color: color-mix(in oklab, var(--text) 38%, transparent);
+}
+
+/* An element with a colour of its own takes the one for the current appearance. */
+.thaw-own-ink {
+  color: var(--own-light);
+}
+
+.dark .thaw-own-ink {
+  color: var(--own-dark);
+}
+
+.thaw-bar {
+  position: absolute;
+  border-radius: 12px;
+  background: var(--group);
+}
+
+.thaw-own-fill {
+  background: var(--own-light);
+}
+
+.dark .thaw-own-fill {
+  background: var(--own-dark);
+}
+
+.thaw-sep {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  height: 0.5px;
+  background: var(--separator);
+}
+
+.thaw-window img.thaw-shot {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  filter: none;
+}
+
+.thaw-item {
+  border-radius: 6px;
+  cursor: grab;
+}
+
+.thaw-item:hover {
+  background: rgb(255 255 255 / 0.14);
+}
+
+.thaw-iconbutton {
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.thaw-iconbutton:active {
+  filter: brightness(0.88);
+}
+
+.thaw-segments {
+  border-radius: 6px;
+  background: var(--popup);
+}
+
+.thaw-segment {
+  border-radius: 5px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.thaw-segment[aria-pressed="true"] {
+  background: var(--accent);
+  color: #000;
+  box-shadow: 0 0.5px 1.5px rgb(0 0 0 / 0.25);
+}
+
+.thaw-step::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: -2px;
+  width: 7px;
+  height: 7px;
+  border: solid var(--text);
+  border-width: 0 1.5px 1.5px 0;
+  transform: rotate(45deg);
+}
+
+.thaw-step-up::before {
+  top: 2px;
+  transform: rotate(-135deg);
+}
+
+.thaw-check {
+  appearance: none;
+  border-radius: 4px;
+  background: var(--popup);
+  box-shadow: 0 0 0 0.5px var(--button-rim) inset;
+}
+
+.thaw-check:checked {
+  background: var(--accent);
+}
+
+.thaw-check:checked::after {
+  content: "";
+  position: absolute;
+  left: 5.5px;
+  top: 2.5px;
+  width: 4px;
+  height: 8px;
+  border: solid #000;
+  border-width: 0 1.5px 1.5px 0;
+  transform: rotate(45deg);
+}
+
+.thaw-slider {
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--popup);
+  cursor: ew-resize;
+  touch-action: none;
+}
+
+.thaw-slider i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--accent);
+}
+
+.thaw-slider span {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--dim);
+  font-size: 13px;
+  pointer-events: none;
+}
+
+/* Left 9 pt: the name at one end, the points at the other. */
+.thaw-slider-named span {
+  padding: 0 8px;
+  place-items: center start;
+}
+
+.thaw-slider-named span + span,
+.thaw-slider-reversed span:first-of-type {
+  place-items: center end;
+}
+
+.thaw-slider-reversed span + span {
+  place-items: center start;
+}
+
+.thaw-field {
+  padding: 0 6px;
+  border-radius: 5px;
+  background: color-mix(in oklab, var(--text) 8%, transparent);
+  box-shadow: 0 0 0 0.5px var(--button-rim) inset;
+  color: var(--text);
+  font: inherit;
+  outline: none;
+  user-select: text;
+}
+
+.thaw-field:focus {
+  box-shadow: 0 0 0 2.5px color-mix(in oklab, var(--accent) 60%, transparent);
+}
+
+.thaw-link {
+  color: var(--dim);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* A row of the box it sits in: the triangle starts where the other rows' labels do, and
+   the name follows it. */
+.thaw-disclosure {
+  padding-left: 16px;
+  font-size: 13px;
+  text-align: left;
+}
+
+.thaw-disclosure::before {
+  content: "";
+  position: absolute;
+  left: 1px;
+  top: 5px;
+  width: 5px;
+  height: 5px;
+  border: solid var(--dim);
+  border-width: 1.5px 1.5px 0 0;
+  transform: rotate(45deg);
+}
+
+.thaw-disclosure[aria-expanded="true"]::before {
+  top: 3.5px;
+  transform: rotate(135deg);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .thaw-disclosure::before {
+    transition:
+      transform 0.15s ease-out,
+      top 0.15s ease-out;
+  }
+}
+
+/* The four menu bar shapes on the Appearance pane. */
+.thaw-shape > span {
+  position: absolute;
+  inset: auto 0 0;
+  color: var(--dim);
+  font-size: 10px;
+  text-align: center;
+}
+
+.thaw-shape[aria-pressed="true"] span {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.thaw-shape-drawing {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  top: 5px;
+  height: 14px;
+  display: flex;
+  gap: 4px;
+  border-radius: 4px;
+}
+
+.thaw-shape-drawing b {
+  flex: 1;
+  border-radius: 7px;
+  background: color-mix(in oklab, var(--text) 55%, transparent);
+}
+
+.thaw-shape-none b {
+  border-radius: 2px;
+}
+
+.thaw-shape-full,
+.thaw-shape-split,
+.thaw-shape-notch {
+  padding: 2px;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--text) 45%, transparent);
+}
+
+.thaw-shape-drawing u {
+  position: absolute;
+  left: calc(50% - 5px);
+  top: 0;
+  width: 10px;
+  height: 9px;
+  border-radius: 0 0 2px 2px;
+  background: color-mix(in oklab, var(--text) 55%, transparent);
+}
+
+.thaw-shape[aria-pressed="true"] .thaw-shape-drawing b,
+.thaw-shape[aria-pressed="true"] .thaw-shape-drawing u {
+  background: var(--accent);
+}
+
+.thaw-shape[aria-pressed="true"] .thaw-shape-drawing {
+  box-shadow: 0 0 0 1.5px var(--accent);
+}
+
+.thaw-el:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* ---- The Layout pane's live section bars (layout-bars.tsx) ---- */
+
+.thaw-layout-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 7.5px;
+  border-radius: 12px;
+  /* The bars take the wallpaper's tone in both appearances. */
+  background: #444b5a;
+  color: #fff;
+}
+
+.thaw-layout-item {
+  display: grid;
+  flex: none;
+  place-items: center;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  cursor: grab;
+  touch-action: none;
+}
+
+/* Every item is light on the bar's dark tone in both appearances, as in the menu bar. */
+.thaw-window .thaw-layout-item img {
+  filter: none;
+}
+
+.thaw-layout-item:hover {
+  background: rgb(255 255 255 / 0.14);
+}
+
+.thaw-layout-item-dragging {
+  background: rgb(255 255 255 / 0.22);
+  cursor: grabbing;
+  opacity: 0.6;
+}
+
+/* A menu's row under the keyboard is filled, not outlined as the site outlines a button. */
+.thaw-window [role="menu"] button {
+  outline: none;
+}
+
+/* ---- A screen in the Displays pane's arrangement ---- */
+
+.thaw-display {
+  display: grid;
+  place-items: center;
+  border-radius: 7px;
+  background: color-mix(in oklab, var(--text) 12%, var(--group));
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--text) 30%, transparent) inset;
+  color: var(--text);
+}
+
+.thaw-display span {
+  padding: 0 6px;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* The camera housing at the top of a MacBook's own screen. */
+.thaw-display i {
+  position: absolute;
+  left: calc(50% - 13px);
+  top: 0;
+  width: 26px;
+  height: 7px;
+  border-radius: 0 0 4px 4px;
+  background: #000;
+}
+
+.thaw-display[aria-pressed="true"] {
+  background: color-mix(in oklab, var(--accent) 28%, var(--group));
+  box-shadow: 0 0 0 1.5px var(--accent) inset;
+}
+
+.thaw-symbol {
+  display: grid;
+  place-items: center;
+}
+
+/* The toolbar's capsules that open a menu are real buttons. */
+button.thaw-glass {
+  padding: 0;
+  border: 0;
+  text-align: left;
+}
+
+button.thaw-glass:active {
+  filter: brightness(0.9);
+}
+
+/* Back and Forward, the two halves of one capsule. */
+.thaw-history {
+  position: absolute;
+  top: 0;
+  width: 37px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 18px;
+  background: none;
+}
+
+.thaw-history img {
+  opacity: 0.9;
+}
+
+.thaw-history:disabled img {
+  opacity: 0.3;
+}
+
+.thaw-history:focus-visible,
+button.thaw-glass:focus-visible,
+button.thaw-popup:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+button.thaw-popup {
+  padding: 0;
+  border: 0;
+}
+
+button.thaw-link {
+  color: var(--text);
+  text-align: left;
+}
+
+/* ---- The sidebar, hidden and shown from the toolbar ---- */
+
+/* A pane keeps the width it was captured at, wherever its scroll area ends. */
+.thaw-scroll-body {
+  position: relative;
+  width: 708px;
+  margin: 0 auto;
+}
+
+/* What leads the toolbar: the sidebar button, Back and Forward, and the title. */
+.thaw-lead {
+  translate: var(--lead, 0);
+}
+
+/*
+ * Hidden, the sidebar slides out under the window's left edge. The toolbar's
+ * leading items move up beside the lights, while the profile, More and Search
+ * stay at the right. The pane cannot reflow, so it takes the middle of the
+ * wider room: half the sidebar's 210 points to the left of where it was.
+ */
+.thaw-window[data-sidebar="hidden"] {
+  --lead: -76px;
+}
+
+.thaw-window[data-sidebar="hidden"] .thaw-sidebar {
+  translate: -210px;
+}
+
+.thaw-window[data-sidebar="hidden"] .thaw-scroll {
+  left: 0;
+  width: 918px;
+}
+
+.thaw-window[data-sidebar="hidden"] .thaw-live {
+  translate: -105px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* These also name the appearance change above, which they would otherwise replace. */
+  .thaw-sidebar,
+  .thaw-lead {
+    transition:
+      translate 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+      background-color 0.3s,
+      color 0.3s,
+      box-shadow 0.3s;
+  }
+
+  .thaw-live {
+    transition: translate 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .thaw-scroll {
+    transition:
+      left 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+      width 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+}
+
+/* ---- The About pane's links, copy button and "more" menu ---- */
+
+/* A button that leads somewhere is a link, and sets its name in the middle as a button does. */
+a.thaw-iconbutton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+}
+
+/* Copied: the captured glyph gives way to a tick for a moment, on the button's own face. */
+.thaw-copied {
+  background: var(--button);
+  box-shadow:
+    0 0 0 0.5px var(--button-rim),
+    0 0.5px 1px rgb(0 0 0 / 0.12);
+}
+
+.thaw-window .thaw-copied img {
+  visibility: hidden;
+}
+
+.thaw-copied::after {
+  content: "";
+  position: absolute;
+  left: 14.5px;
+  top: 5px;
+  width: 4.5px;
+  height: 9px;
+  border: solid var(--text);
+  border-width: 0 1.5px 1.5px 0;
+  transform: rotate(45deg);
+}
+
+/* ---- Simple Mode: the window as one page, with no sidebar (thaw-simple.tsx) ---- */
+
+/* The app's own size for it: the 748 point reading column and a 28 point gutter each side. */
+.thaw-window[data-mode="simple"] {
+  width: 804px;
+  height: 640px;
+}
+
+/* The title bar names the app and the mode, where a window's title goes. */
+.thaw-simple-title {
+  position: absolute;
+  left: 96px;
+  top: 19.5px;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.thaw-simple {
+  position: absolute;
+  inset: 52px 0 0;
+  overflow: hidden auto;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--text) 35%, transparent) transparent;
+}
+
+/* The section bars folded onto one surface, in the tone the Layout pane's bars have. */
+.thaw-folded {
+  border-radius: 12px;
+  background: #444b5a;
+  box-shadow:
+    0 0 0 0.5px var(--rim),
+    0 2px 8px rgb(0 0 0 / 0.16);
+  color: #fff;
+}
+
+.thaw-fold-row {
+  display: flex;
+  align-items: center;
+  height: 40px;
+}
+
+.thaw-fold-row + .thaw-fold-row {
+  box-shadow: 0 -0.5px 0 rgb(255 255 255 / 0.2);
+}
+
+/* Wide enough for "Always Hidden", so the three bars start in line. */
+.thaw-fold-row h3 {
+  flex: none;
+  min-width: 92px;
+  margin-left: 12px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.thaw-fold-row .thaw-layout-bar {
+  flex: 1;
+  min-width: 0;
+  height: 40px;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+}
+
+.thaw-fold-sort {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  margin: 0 8px;
+  border-radius: 6px;
+}
+
+.thaw-fold-sort:hover {
+  background: rgb(255 255 255 / 0.14);
+}

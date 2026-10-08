@@ -1,0 +1,53 @@
+/*
+ * What ThawUI's controls (thaw-ui.tsx) read in Floe's settings window: Floe's blue, and
+ * the fills its forms are drawn with. Thaw's window gives the same names its own values
+ * in thaw-window.css.
+ */
+.floe-window {
+  --accent: #1560e8;
+  --on-accent: #fff;
+  --focus: #1560e8;
+  /* What shows between a control and a ring held off it: the window's own fill. */
+  --focus-under: #fff;
+  --text: rgb(0 0 0 / 0.85);
+  --dim: rgb(0 0 0 / 0.55);
+  /* What a pop-up has chosen is written in the fainter tone here. */
+  --value: var(--dim);
+  --group: rgb(0 0 0 / 0.035);
+  --group-radius: 10px;
+  --separator: rgb(0 0 0 / 0.06);
+  --switch-off: rgb(0 0 0 / 0.14);
+  --knob-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --popup: rgb(0 0 0 / 0.08);
+  --push: rgb(0 0 0 / 0.07);
+  --push-hover: rgb(0 0 0 / 0.1);
+  --push-shadow: 0 0 #0000;
+  --dimmed: 0.4;
+  --capsule: rgb(0 0 0 / 0.04);
+  --rim: rgb(0 0 0 / 0.1);
+  --menu-fill: rgb(247 247 247 / 0.85);
+  --menu-shadow: 0 0 0 0.5px var(--rim), 0 10px 30px rgb(0 0 0 / 0.3);
+  --menu-backdrop: blur(30px) saturate(1.5);
+  --menu-gap: 4px;
+  --menu-line: var(--rim);
+}
+
+/*
+ * The whites are mixed from Tailwind's own white, at run time, as its utilities mix theirs.
+ * Written as rgb() they come out one level off on some pixels.
+ */
+.dark .floe-window {
+  --focus: #6aa5ff;
+  --focus-under: #212122;
+  --text: color-mix(in oklab, var(--color-white) 87%, transparent);
+  --dim: color-mix(in oklab, var(--color-white) 50%, transparent);
+  --group: color-mix(in oklab, var(--color-white) 4.5%, transparent);
+  --separator: color-mix(in oklab, var(--color-white) 7%, transparent);
+  --switch-off: color-mix(in oklab, var(--color-white) 16%, transparent);
+  --popup: color-mix(in oklab, var(--color-white) 12%, transparent);
+  --push: color-mix(in oklab, var(--color-white) 12%, transparent);
+  --push-hover: color-mix(in oklab, var(--color-white) 16%, transparent);
+  --capsule: color-mix(in oklab, var(--color-white) 10%, transparent);
+  --rim: color-mix(in oklab, var(--color-white) 15%, transparent);
+  --menu-fill: rgb(40 40 41 / 0.85);
+}
