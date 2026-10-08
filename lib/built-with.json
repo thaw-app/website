@@ -1,0 +1,305 @@
+{
+  "swift": [
+    {
+      "name": "AXSwift6",
+      "url": "https://github.com/thaw-app/AXSwift6",
+      "license": "MIT",
+      "users": {
+        "Thaw": "0.5.2"
+      }
+    },
+    {
+      "name": "CompactSlider",
+      "url": "https://github.com/buh/CompactSlider",
+      "license": "MIT",
+      "users": {
+        "Thaw": "2.1.0",
+        "Floe": "2.1.0"
+      }
+    },
+    {
+      "name": "Ifrit",
+      "url": "https://github.com/ukushu/Ifrit",
+      "license": "MIT",
+      "users": {
+        "Thaw": "4.0.0"
+      }
+    },
+    {
+      "name": "LaunchAtLogin-Modern",
+      "url": "https://github.com/sindresorhus/LaunchAtLogin-Modern",
+      "license": "MIT",
+      "users": {
+        "Thaw": "1.1.0"
+      }
+    },
+    {
+      "name": "Sparkle",
+      "url": "https://github.com/sparkle-project/Sparkle",
+      "license": "MIT, with others for bundled code",
+      "users": {
+        "Thaw": "2.10.0",
+        "Floe": "2.10.0"
+      }
+    },
+    {
+      "name": "swift-algorithms",
+      "url": "https://github.com/apple/swift-algorithms",
+      "license": "Apache-2.0",
+      "users": {
+        "Thaw": "1.2.1",
+        "Floe": "1.2.1"
+      }
+    },
+    {
+      "name": "swift-argument-parser",
+      "url": "https://github.com/apple/swift-argument-parser",
+      "license": "Apache-2.0",
+      "users": {
+        "Floe": "1.8.2"
+      }
+    },
+    {
+      "name": "swift-async-algorithms",
+      "url": "https://github.com/apple/swift-async-algorithms",
+      "license": "Apache-2.0",
+      "users": {
+        "Thaw": "1.1.5",
+        "Floe": "1.1.3"
+      }
+    },
+    {
+      "name": "swift-cmark",
+      "url": "https://github.com/swiftlang/swift-cmark",
+      "license": "BSD-2-Clause",
+      "users": {
+        "Floe": "0.9.0"
+      }
+    },
+    {
+      "name": "swift-collections",
+      "url": "https://github.com/apple/swift-collections",
+      "license": "Apache-2.0",
+      "users": {
+        "Thaw": "1.6.0",
+        "Floe": "1.6.0"
+      }
+    },
+    {
+      "name": "swift-markdown",
+      "url": "https://github.com/swiftlang/swift-markdown",
+      "license": "Apache-2.0",
+      "users": {
+        "Floe": "0.9.0"
+      }
+    },
+    {
+      "name": "swift-numerics",
+      "url": "https://github.com/apple/swift-numerics",
+      "license": "Apache-2.0",
+      "users": {
+        "Thaw": "1.1.1",
+        "Floe": "1.1.1"
+      }
+    },
+    {
+      "name": "swift-subprocess",
+      "url": "https://github.com/swiftlang/swift-subprocess",
+      "license": "Apache-2.0",
+      "users": {
+        "Thaw": "1.0.0",
+        "Floe": "1.0.0"
+      }
+    },
+    {
+      "name": "swift-system",
+      "url": "https://github.com/apple/swift-system",
+      "license": "Apache-2.0",
+      "users": {
+        "Thaw": "1.8.1",
+        "Floe": "1.8.1"
+      }
+    }
+  ],
+  "javascript": [
+    {
+      "name": "@biomejs/biome",
+      "url": "https://www.npmjs.com/package/@biomejs/biome",
+      "license": "MIT OR Apache-2.0",
+      "users": {
+        "Site": "2.5.15"
+      }
+    },
+    {
+      "name": "@fumadocs/base-ui",
+      "url": "https://www.npmjs.com/package/@fumadocs/base-ui",
+      "license": "MIT",
+      "users": {
+        "Site": "16.16.2"
+      }
+    },
+    {
+      "name": "@paper-design/shaders-react",
+      "url": "https://www.npmjs.com/package/@paper-design/shaders-react",
+      "license": "Apache-2.0",
+      "users": {
+        "Site": "0.0.81"
+      }
+    },
+    {
+      "name": "@tailwindcss/postcss",
+      "url": "https://www.npmjs.com/package/@tailwindcss/postcss",
+      "license": "MIT",
+      "users": {
+        "Site": "4.3.3"
+      }
+    },
+    {
+      "name": "@types/mdx",
+      "url": "https://www.npmjs.com/package/@types/mdx",
+      "license": "MIT",
+      "users": {
+        "Site": "2.0.14"
+      }
+    },
+    {
+      "name": "@types/node",
+      "url": "https://www.npmjs.com/package/@types/node",
+      "license": "MIT",
+      "users": {
+        "Site": "26.6.4"
+      }
+    },
+    {
+      "name": "@types/react",
+      "url": "https://www.npmjs.com/package/@types/react",
+      "license": "MIT",
+      "users": {
+        "Site": "19.3.0"
+      }
+    },
+    {
+      "name": "@types/react-dom",
+      "url": "https://www.npmjs.com/package/@types/react-dom",
+      "license": "MIT",
+      "users": {
+        "Site": "19.3.0"
+      }
+    },
+    {
+      "name": "fumadocs-core",
+      "url": "https://www.npmjs.com/package/fumadocs-core",
+      "license": "MIT",
+      "users": {
+        "Site": "16.16.2"
+      }
+    },
+    {
+      "name": "fumadocs-mdx",
+      "url": "https://www.npmjs.com/package/fumadocs-mdx",
+      "license": "MIT",
+      "users": {
+        "Site": "15.4.6"
+      }
+    },
+    {
+      "name": "lucide-react",
+      "url": "https://www.npmjs.com/package/lucide-react",
+      "license": "ISC",
+      "users": {
+        "Site": "1.52.0"
+      }
+    },
+    {
+      "name": "mermaid",
+      "url": "https://www.npmjs.com/package/mermaid",
+      "license": "MIT",
+      "users": {
+        "Site": "12.1.0"
+      }
+    },
+    {
+      "name": "next",
+      "url": "https://www.npmjs.com/package/next",
+      "license": "MIT",
+      "users": {
+        "Site": "16.3.8"
+      }
+    },
+    {
+      "name": "next-themes",
+      "url": "https://www.npmjs.com/package/next-themes",
+      "license": "MIT",
+      "users": {
+        "Site": "0.4.6"
+      }
+    },
+    {
+      "name": "postcss",
+      "url": "https://www.npmjs.com/package/postcss",
+      "license": "MIT",
+      "users": {
+        "Site": "8.5.29"
+      }
+    },
+    {
+      "name": "react",
+      "url": "https://www.npmjs.com/package/react",
+      "license": "MIT",
+      "users": {
+        "Site": "19.3.0",
+        "Floe": "19.3.0"
+      }
+    },
+    {
+      "name": "react-dom",
+      "url": "https://www.npmjs.com/package/react-dom",
+      "license": "MIT",
+      "users": {
+        "Site": "19.3.0"
+      }
+    },
+    {
+      "name": "react-reconciler",
+      "url": "https://www.npmjs.com/package/react-reconciler",
+      "license": "MIT",
+      "users": {
+        "Floe": "0.34.0"
+      }
+    },
+    {
+      "name": "tailwindcss",
+      "url": "https://www.npmjs.com/package/tailwindcss",
+      "license": "MIT",
+      "users": {
+        "Site": "4.3.3"
+      }
+    },
+    {
+      "name": "typescript",
+      "url": "https://www.npmjs.com/package/typescript",
+      "license": "Apache-2.0",
+      "users": {
+        "Site": "7.0.2"
+      }
+    },
+    {
+      "name": "zod",
+      "url": "https://www.npmjs.com/package/zod",
+      "license": "MIT",
+      "users": {
+        "Site": "4.6.5"
+      }
+    }
+  ],
+  "rust": [
+    {
+      "name": "fend-core",
+      "url": "https://crates.io/crates/fend-core",
+      "license": "MIT",
+      "users": {
+        "Floe": "1.5.8"
+      }
+    }
+  ]
+}

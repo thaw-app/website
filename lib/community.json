@@ -1,0 +1,1498 @@
+{
+  "stars": 11847,
+  "downloads": 366024,
+  "homebrewYear": 27845,
+  "discord": 343,
+  "contributors": 58,
+  "releases": 75,
+  "checked": "2026-10-08",
+  "people": [
+    {
+      "login": "stonerl",
+      "avatar": "https://avatars.githubusercontent.com/u/2091312?v=4",
+      "commits": 731
+    },
+    {
+      "login": "diazdesandi",
+      "avatar": "https://avatars.githubusercontent.com/u/17421494?v=4",
+      "commits": 380
+    },
+    {
+      "login": "7a6163",
+      "avatar": "https://avatars.githubusercontent.com/u/579103?v=4",
+      "commits": 78
+    },
+    {
+      "login": "nightah",
+      "avatar": "https://avatars.githubusercontent.com/u/3339418?v=4",
+      "commits": 67
+    },
+    {
+      "login": "alvst",
+      "avatar": "https://avatars.githubusercontent.com/u/8346763?v=4",
+      "commits": 16
+    },
+    {
+      "login": "looseboy",
+      "avatar": "https://avatars.githubusercontent.com/u/1300794?v=4",
+      "commits": 13
+    },
+    {
+      "login": "Skyearn",
+      "avatar": "https://avatars.githubusercontent.com/u/29571915?v=4",
+      "commits": 13
+    },
+    {
+      "login": "wizaard88",
+      "avatar": "https://avatars.githubusercontent.com/u/267136424?v=4",
+      "commits": 12
+    },
+    {
+      "login": "UYTR5",
+      "avatar": "https://avatars.githubusercontent.com/u/107218024?v=4",
+      "commits": 10
+    },
+    {
+      "login": "camguillory",
+      "avatar": "https://avatars.githubusercontent.com/u/45099363?v=4",
+      "commits": 9
+    },
+    {
+      "login": "Mutzki13",
+      "avatar": "https://avatars.githubusercontent.com/u/116946734?v=4",
+      "commits": 8
+    },
+    {
+      "login": "volcbs",
+      "avatar": "https://avatars.githubusercontent.com/u/12575216?v=4",
+      "commits": 7
+    },
+    {
+      "login": "YuriNachos",
+      "avatar": "https://avatars.githubusercontent.com/u/19365375?v=4",
+      "commits": 7
+    },
+    {
+      "login": "IraXu",
+      "avatar": "https://avatars.githubusercontent.com/u/33870650?v=4",
+      "commits": 5
+    },
+    {
+      "login": "priesdelly",
+      "avatar": "https://avatars.githubusercontent.com/u/304075?v=4",
+      "commits": 5
+    },
+    {
+      "login": "VailElla",
+      "avatar": "https://avatars.githubusercontent.com/u/63608800?v=4",
+      "commits": 5
+    },
+    {
+      "login": "yurihan",
+      "avatar": "https://avatars.githubusercontent.com/u/4598443?v=4",
+      "commits": 5
+    },
+    {
+      "login": "bytepl",
+      "avatar": "https://avatars.githubusercontent.com/u/4518860?v=4",
+      "commits": 4
+    },
+    {
+      "login": "gitmichaelqiu",
+      "avatar": "https://avatars.githubusercontent.com/u/129928144?v=4",
+      "commits": 4
+    },
+    {
+      "login": "josericardo-fo",
+      "avatar": "https://avatars.githubusercontent.com/u/79599290?v=4",
+      "commits": 4
+    },
+    {
+      "login": "t4sh",
+      "avatar": "https://avatars.githubusercontent.com/u/1670383?v=4",
+      "commits": 3
+    },
+    {
+      "login": "zichichi",
+      "avatar": "https://avatars.githubusercontent.com/u/1170727?v=4",
+      "commits": 3
+    },
+    {
+      "login": "afuno",
+      "avatar": "https://avatars.githubusercontent.com/u/2853419?v=4",
+      "commits": 2
+    },
+    {
+      "login": "alinco8",
+      "avatar": "https://avatars.githubusercontent.com/u/87509441?v=4",
+      "commits": 2
+    },
+    {
+      "login": "exsesx",
+      "avatar": "https://avatars.githubusercontent.com/u/20399517?v=4",
+      "commits": 2
+    },
+    {
+      "login": "jiayuqi7813",
+      "avatar": "https://avatars.githubusercontent.com/u/63686458?v=4",
+      "commits": 2
+    },
+    {
+      "login": "musanmaz",
+      "avatar": "https://avatars.githubusercontent.com/u/3421237?v=4",
+      "commits": 2
+    },
+    {
+      "login": "picpo",
+      "avatar": "https://avatars.githubusercontent.com/u/33993624?v=4",
+      "commits": 2
+    },
+    {
+      "login": "a35hie",
+      "avatar": "https://avatars.githubusercontent.com/u/144263603?v=4",
+      "commits": 1
+    },
+    {
+      "login": "andredlng",
+      "avatar": "https://avatars.githubusercontent.com/u/5942386?v=4",
+      "commits": 1
+    },
+    {
+      "login": "auspic7",
+      "avatar": "https://avatars.githubusercontent.com/u/36367286?v=4",
+      "commits": 1
+    },
+    {
+      "login": "BillChirico",
+      "avatar": "https://avatars.githubusercontent.com/u/13951316?v=4",
+      "commits": 1
+    },
+    {
+      "login": "cbguder",
+      "avatar": "https://avatars.githubusercontent.com/u/13085?v=4",
+      "commits": 1
+    },
+    {
+      "login": "commanderk33n",
+      "avatar": "https://avatars.githubusercontent.com/u/6609667?v=4",
+      "commits": 1
+    },
+    {
+      "login": "coygeek",
+      "avatar": "https://avatars.githubusercontent.com/u/65363919?v=4",
+      "commits": 1
+    },
+    {
+      "login": "davidnichols-ops",
+      "avatar": "https://avatars.githubusercontent.com/u/290871893?v=4",
+      "commits": 1
+    },
+    {
+      "login": "dyxushuai",
+      "avatar": "https://avatars.githubusercontent.com/u/5157648?v=4",
+      "commits": 1
+    },
+    {
+      "login": "eli-yip",
+      "avatar": "https://avatars.githubusercontent.com/u/40079533?v=4",
+      "commits": 1
+    },
+    {
+      "login": "ElonJask",
+      "avatar": "https://avatars.githubusercontent.com/u/202078005?v=4",
+      "commits": 1
+    },
+    {
+      "login": "fatmmouse",
+      "avatar": "https://avatars.githubusercontent.com/u/152198402?v=4",
+      "commits": 1
+    },
+    {
+      "login": "FormalSnake",
+      "avatar": "https://avatars.githubusercontent.com/u/90651091?v=4",
+      "commits": 1
+    },
+    {
+      "login": "hxu",
+      "avatar": "https://avatars.githubusercontent.com/u/38583?v=4",
+      "commits": 1
+    },
+    {
+      "login": "johnnybakucz",
+      "avatar": "https://avatars.githubusercontent.com/u/79059076?v=4",
+      "commits": 1
+    },
+    {
+      "login": "kylewhirl",
+      "avatar": "https://avatars.githubusercontent.com/u/65330257?v=4",
+      "commits": 1
+    },
+    {
+      "login": "MarcoTerzulli",
+      "avatar": "https://avatars.githubusercontent.com/u/48279455?v=4",
+      "commits": 1
+    },
+    {
+      "login": "mittal-gunjit",
+      "avatar": "https://avatars.githubusercontent.com/u/115082306?v=4",
+      "commits": 1
+    },
+    {
+      "login": "mrclrchtr",
+      "avatar": "https://avatars.githubusercontent.com/u/16151098?v=4",
+      "commits": 1
+    },
+    {
+      "login": "nk-tedo-001",
+      "avatar": "https://avatars.githubusercontent.com/u/144455088?v=4",
+      "commits": 1
+    },
+    {
+      "login": "p-linnane",
+      "avatar": "https://avatars.githubusercontent.com/u/105994585?v=4",
+      "commits": 1
+    },
+    {
+      "login": "SAY-5",
+      "avatar": "https://avatars.githubusercontent.com/u/240962040?v=4",
+      "commits": 1
+    },
+    {
+      "login": "ShiroKSH",
+      "avatar": "https://avatars.githubusercontent.com/u/218489957?v=4",
+      "commits": 1
+    },
+    {
+      "login": "subway-jack",
+      "avatar": "https://avatars.githubusercontent.com/u/82573713?v=4",
+      "commits": 1
+    },
+    {
+      "login": "TheBenMeadows",
+      "avatar": "https://avatars.githubusercontent.com/u/17035300?v=4",
+      "commits": 1
+    },
+    {
+      "login": "Tsingv",
+      "avatar": "https://avatars.githubusercontent.com/u/34980893?v=4",
+      "commits": 1
+    },
+    {
+      "login": "weihaog1",
+      "avatar": "https://avatars.githubusercontent.com/u/183901302?v=4",
+      "commits": 1
+    },
+    {
+      "login": "william-laverty",
+      "avatar": "https://avatars.githubusercontent.com/u/67033980?v=4",
+      "commits": 1
+    },
+    {
+      "login": "youradoptyd",
+      "avatar": "https://avatars.githubusercontent.com/u/328591558?v=4",
+      "commits": 1
+    },
+    {
+      "login": "ZeterMordio",
+      "avatar": "https://avatars.githubusercontent.com/u/90481663?v=4",
+      "commits": 1
+    }
+  ],
+  "team": [
+    {
+      "login": "stonerl",
+      "name": "Toni Förster",
+      "avatar": "https://avatars.githubusercontent.com/u/2091312?v=4"
+    },
+    {
+      "login": "diazdesandi",
+      "name": "René",
+      "avatar": "https://avatars.githubusercontent.com/u/17421494?v=4"
+    },
+    {
+      "login": "nightah",
+      "name": "Amir Zarrinkafsh",
+      "avatar": "https://avatars.githubusercontent.com/u/3339418?v=4"
+    },
+    {
+      "login": "alvst",
+      "name": "Alvie Stoddard",
+      "avatar": "https://avatars.githubusercontent.com/u/8346763?v=4"
+    },
+    {
+      "login": "camguillory",
+      "name": "Camille Guillory",
+      "avatar": "https://avatars.githubusercontent.com/u/45099363?v=4"
+    }
+  ],
+  "assurance": {
+    "bestPractices": "gold",
+    "baseline": 3,
+    "scorecard": 9.1,
+    "coverage": 92.3,
+    "field": {
+      "projects": 12714,
+      "gold": 106,
+      "baseline3": 77
+    }
+  },
+  "translators": [
+    {
+      "language": "Bahasa Indonesia",
+      "flags": "🇮🇩",
+      "people": [
+        {
+          "name": "Fauzan Alfi",
+          "username": "fauzanalfi"
+        },
+        {
+          "name": "volcbs",
+          "username": "volcbs"
+        }
+      ]
+    },
+    {
+      "language": "Čeština",
+      "flags": "🇨🇿",
+      "people": [
+        {
+          "name": "Matej Gottwald",
+          "username": "wizaard88"
+        }
+      ]
+    },
+    {
+      "language": "Deutsch",
+      "flags": "🇩🇪 🇦🇹",
+      "people": [
+        {
+          "name": "Frerich Kleyboldt",
+          "username": "tantefred"
+        },
+        {
+          "name": "Michael Kalmutzki",
+          "username": "Mutzki13"
+        },
+        {
+          "name": "ni-kan",
+          "username": "ni-kan"
+        },
+        {
+          "name": "steppeBow",
+          "username": "steppeBow"
+        },
+        {
+          "name": "Toni Forster",
+          "username": "stonerl"
+        },
+        {
+          "name": "Uwe Peuker",
+          "username": "upeuker"
+        },
+        {
+          "name": "Waynexxxx",
+          "username": "wayne0926"
+        }
+      ]
+    },
+    {
+      "language": "Español",
+      "flags": "🇪🇸 🇲🇽",
+      "people": [
+        {
+          "name": "OvercaffeinatedDev",
+          "username": "OvercaffeinatedDev"
+        },
+        {
+          "name": "rcambrj",
+          "username": "rcambrj"
+        },
+        {
+          "name": "René",
+          "username": "diazdesandi"
+        }
+      ]
+    },
+    {
+      "language": "Français",
+      "flags": "🇫🇷",
+      "people": [
+        {
+          "name": "Cor",
+          "username": "corwrt"
+        },
+        {
+          "name": "Jeyh",
+          "username": "Jeyh"
+        },
+        {
+          "name": "Reinhard Köppl",
+          "username": "reinhardkoeppl"
+        },
+        {
+          "name": "rouxken",
+          "username": "rouxken"
+        },
+        {
+          "name": "Théo Noël",
+          "username": "MrFlappy0"
+        }
+      ]
+    },
+    {
+      "language": "Italiano",
+      "flags": "🇮🇹",
+      "people": [
+        {
+          "name": "Alessandro Jin",
+          "username": "Aixel402"
+        },
+        {
+          "name": "Anonymous (account deleted)"
+        },
+        {
+          "name": "christophe.sollami",
+          "username": "sollami"
+        },
+        {
+          "name": "Gabrysse",
+          "username": "Gabrysse"
+        },
+        {
+          "name": "Gianfranco Schianchi",
+          "username": "jeffry"
+        },
+        {
+          "name": "nisby",
+          "username": "nisby"
+        }
+      ]
+    },
+    {
+      "language": "Magyar",
+      "flags": "🇭🇺",
+      "people": [
+        {
+          "name": "Reinhard Köppl",
+          "username": "reinhardkoeppl"
+        }
+      ]
+    },
+    {
+      "language": "Nederlands",
+      "flags": "🇳🇱 🇧🇪",
+      "people": [
+        {
+          "name": "joostiphone",
+          "username": "joostiphone"
+        },
+        {
+          "name": "Reinhard Köppl",
+          "username": "reinhardkoeppl"
+        },
+        {
+          "name": "Ron van de Crommert",
+          "username": "ronvdc"
+        },
+        {
+          "name": "SeBr28",
+          "username": "SeBr28"
+        }
+      ]
+    },
+    {
+      "language": "Polski",
+      "flags": "🇵🇱",
+      "people": [
+        {
+          "name": "Maciej Chojnacki",
+          "username": "bytepl"
+        },
+        {
+          "name": "Michał Lamorski",
+          "username": "mlamorski"
+        }
+      ]
+    },
+    {
+      "language": "Português (Brasil)",
+      "flags": "🇧🇷",
+      "people": [
+        {
+          "name": "Elton Volponi",
+          "username": "EV5150"
+        },
+        {
+          "name": "José Ricardo Fleury Oliveira",
+          "username": "josericardo2"
+        },
+        {
+          "name": "Victor Souza",
+          "username": "vhbsouza"
+        }
+      ]
+    },
+    {
+      "language": "Türkçe",
+      "flags": "🇹🇷",
+      "people": [
+        {
+          "name": "Ata",
+          "username": "atates"
+        },
+        {
+          "name": "Cem Çetin",
+          "username": "cemcetin"
+        },
+        {
+          "name": "efehalilbeyoglu",
+          "username": "efehalilbeyoglu"
+        }
+      ]
+    },
+    {
+      "language": "Русский",
+      "flags": "🇷🇺",
+      "people": [
+        {
+          "name": "airart",
+          "username": "airart"
+        },
+        {
+          "name": "Evgeny Frolov",
+          "username": "efrolovdev"
+        },
+        {
+          "name": "jentor",
+          "username": "jentor"
+        },
+        {
+          "name": "Mikhail",
+          "username": "0x3654"
+        },
+        {
+          "name": "Sergey Petrushin",
+          "username": "str1k3r"
+        },
+        {
+          "name": "wlo2",
+          "username": "wlo2"
+        },
+        {
+          "name": "Эажа Влоаоа",
+          "username": "eazavloaoa"
+        }
+      ]
+    },
+    {
+      "language": "Українська",
+      "flags": "🇺🇦",
+      "people": [
+        {
+          "name": "Camille-Maxime Thea (MaxRev)",
+          "username": "MaxRev-Dev"
+        },
+        {
+          "name": "Sergey Bobrov",
+          "username": "sergey.bobrov83"
+        },
+        {
+          "name": "Євген",
+          "username": "clackd1amond"
+        }
+      ]
+    },
+    {
+      "language": "ภาษาไทย",
+      "flags": "🇹🇭",
+      "people": [
+        {
+          "name": "Ch Suparerk",
+          "username": "suparerk"
+        },
+        {
+          "name": "Priesdelly Divinity",
+          "username": "priesdelly"
+        }
+      ]
+    },
+    {
+      "language": "Tiếng Việt",
+      "flags": "🇻🇳",
+      "people": [
+        {
+          "name": "Nguyên Trọng Trần",
+          "username": "nguyentrongdp192"
+        },
+        {
+          "name": "Tuan Nguyen",
+          "username": "tna"
+        }
+      ]
+    },
+    {
+      "language": "日本語",
+      "flags": "🇯🇵",
+      "people": [
+        {
+          "name": "alinco8",
+          "username": "alinco8"
+        },
+        {
+          "name": "Noella",
+          "username": "nonocut"
+        }
+      ]
+    },
+    {
+      "language": "한국어",
+      "flags": "🇰🇷",
+      "people": [
+        {
+          "name": "Applekr",
+          "username": "Applekr"
+        },
+        {
+          "name": "pybsh",
+          "username": "pybsh"
+        }
+      ]
+    },
+    {
+      "language": "简体中文",
+      "flags": "🇨🇳",
+      "people": [
+        {
+          "name": "Asher",
+          "username": "looseboy"
+        },
+        {
+          "name": "Calvin Walker",
+          "username": "aslindon"
+        },
+        {
+          "name": "Howard",
+          "username": "howardhey"
+        },
+        {
+          "name": "jerrys",
+          "username": "jerrys1599"
+        },
+        {
+          "name": "Liu Weifeng",
+          "username": "liuweifeng"
+        },
+        {
+          "name": "Noella",
+          "username": "nonocut"
+        },
+        {
+          "name": "omegax86",
+          "username": "omegax86"
+        },
+        {
+          "name": "pengcai",
+          "username": "pengcai6"
+        },
+        {
+          "name": "Stan Lee",
+          "username": "stannotstanley"
+        },
+        {
+          "name": "Vail",
+          "username": "VailElla"
+        },
+        {
+          "name": "Waynexxxx",
+          "username": "wayne0926"
+        },
+        {
+          "name": "ybw0014",
+          "username": "ybw0014"
+        }
+      ]
+    },
+    {
+      "language": "正體中文",
+      "flags": "🇹🇼",
+      "people": [
+        {
+          "name": "7a6163",
+          "username": "7a6163"
+        },
+        {
+          "name": "Kay Xue學昀楷",
+          "username": "s0990"
+        },
+        {
+          "name": "Noella",
+          "username": "nonocut"
+        },
+        {
+          "name": "Vail",
+          "username": "VailElla"
+        },
+        {
+          "name": "Waynexxxx",
+          "username": "wayne0926"
+        }
+      ]
+    }
+  ],
+  "world": {
+    "checked": "2026-10-08",
+    "stargazers": {
+      "people": 11837,
+      "placed": 4984,
+      "list": [
+        {
+          "code": "CN",
+          "name": "China",
+          "people": 1040
+        },
+        {
+          "code": "US",
+          "name": "United States",
+          "people": 907
+        },
+        {
+          "code": "DE",
+          "name": "Germany",
+          "people": 422
+        },
+        {
+          "code": "FR",
+          "name": "France",
+          "people": 210
+        },
+        {
+          "code": "TW",
+          "name": "Taiwan",
+          "people": 201
+        },
+        {
+          "code": "GB",
+          "name": "United Kingdom",
+          "people": 186
+        },
+        {
+          "code": "JP",
+          "name": "Japan",
+          "people": 181
+        },
+        {
+          "code": "CA",
+          "name": "Canada",
+          "people": 137
+        },
+        {
+          "code": "AU",
+          "name": "Australia",
+          "people": 127
+        },
+        {
+          "code": "KR",
+          "name": "South Korea",
+          "people": 122
+        },
+        {
+          "code": "CH",
+          "name": "Switzerland",
+          "people": 89
+        },
+        {
+          "code": "IN",
+          "name": "India",
+          "people": 84
+        },
+        {
+          "code": "NL",
+          "name": "Netherlands",
+          "people": 81
+        },
+        {
+          "code": "PL",
+          "name": "Poland",
+          "people": 78
+        },
+        {
+          "code": "ES",
+          "name": "Spain",
+          "people": 78
+        },
+        {
+          "code": "BR",
+          "name": "Brazil",
+          "people": 77
+        },
+        {
+          "code": "SG",
+          "name": "Singapore",
+          "people": 61
+        },
+        {
+          "code": "RU",
+          "name": "Russia",
+          "people": 56
+        },
+        {
+          "code": "IT",
+          "name": "Italy",
+          "people": 55
+        },
+        {
+          "code": "HK",
+          "name": "Hong Kong SAR China",
+          "people": 47
+        },
+        {
+          "code": "UA",
+          "name": "Ukraine",
+          "people": 45
+        },
+        {
+          "code": "VN",
+          "name": "Vietnam",
+          "people": 41
+        },
+        {
+          "code": "AT",
+          "name": "Austria",
+          "people": 36
+        },
+        {
+          "code": "TH",
+          "name": "Thailand",
+          "people": 36
+        },
+        {
+          "code": "SE",
+          "name": "Sweden",
+          "people": 35
+        },
+        {
+          "code": "TR",
+          "name": "Türkiye",
+          "people": 35
+        },
+        {
+          "code": "BE",
+          "name": "Belgium",
+          "people": 31
+        },
+        {
+          "code": "CZ",
+          "name": "Czechia",
+          "people": 29
+        },
+        {
+          "code": "DK",
+          "name": "Denmark",
+          "people": 28
+        },
+        {
+          "code": "ID",
+          "name": "Indonesia",
+          "people": 27
+        },
+        {
+          "code": "NO",
+          "name": "Norway",
+          "people": 25
+        },
+        {
+          "code": "MX",
+          "name": "Mexico",
+          "people": 22
+        },
+        {
+          "code": "MY",
+          "name": "Malaysia",
+          "people": 20
+        },
+        {
+          "code": "NZ",
+          "name": "New Zealand",
+          "people": 20
+        },
+        {
+          "code": "AE",
+          "name": "United Arab Emirates",
+          "people": 19
+        },
+        {
+          "code": "PT",
+          "name": "Portugal",
+          "people": 17
+        },
+        {
+          "code": "RO",
+          "name": "Romania",
+          "people": 15
+        },
+        {
+          "code": "FI",
+          "name": "Finland",
+          "people": 14
+        },
+        {
+          "code": "IE",
+          "name": "Ireland",
+          "people": 14
+        },
+        {
+          "code": "ZA",
+          "name": "South Africa",
+          "people": 14
+        },
+        {
+          "code": "RS",
+          "name": "Serbia",
+          "people": 13
+        },
+        {
+          "code": "CO",
+          "name": "Colombia",
+          "people": 12
+        },
+        {
+          "code": "HU",
+          "name": "Hungary",
+          "people": 12
+        },
+        {
+          "code": "BG",
+          "name": "Bulgaria",
+          "people": 11
+        },
+        {
+          "code": "AR",
+          "name": "Argentina",
+          "people": 10
+        },
+        {
+          "code": "BD",
+          "name": "Bangladesh",
+          "people": 10
+        },
+        {
+          "code": "GR",
+          "name": "Greece",
+          "people": 10
+        },
+        {
+          "code": "CL",
+          "name": "Chile",
+          "people": 9
+        },
+        {
+          "code": "IL",
+          "name": "Israel",
+          "people": 9
+        },
+        {
+          "code": "EG",
+          "name": "Egypt",
+          "people": 8
+        },
+        {
+          "code": "PH",
+          "name": "Philippines",
+          "people": 8
+        },
+        {
+          "code": "SA",
+          "name": "Saudi Arabia",
+          "people": 7
+        },
+        {
+          "code": "CY",
+          "name": "Cyprus",
+          "people": 6
+        },
+        {
+          "code": "SK",
+          "name": "Slovakia",
+          "people": 6
+        },
+        {
+          "code": "HR",
+          "name": "Croatia",
+          "people": 5
+        },
+        {
+          "code": "EE",
+          "name": "Estonia",
+          "people": 5
+        },
+        {
+          "code": "IR",
+          "name": "Iran",
+          "people": 5
+        },
+        {
+          "code": "MO",
+          "name": "Macao SAR China",
+          "people": 5
+        },
+        {
+          "code": "PK",
+          "name": "Pakistan",
+          "people": 5
+        },
+        {
+          "code": "GT",
+          "name": "Guatemala",
+          "people": 4
+        },
+        {
+          "code": "CR",
+          "name": "Costa Rica",
+          "people": 3
+        },
+        {
+          "code": "KZ",
+          "name": "Kazakhstan",
+          "people": 3
+        },
+        {
+          "code": "KE",
+          "name": "Kenya",
+          "people": 3
+        },
+        {
+          "code": "NG",
+          "name": "Nigeria",
+          "people": 3
+        },
+        {
+          "code": "PE",
+          "name": "Peru",
+          "people": 3
+        },
+        {
+          "code": "SI",
+          "name": "Slovenia",
+          "people": 3
+        },
+        {
+          "code": "DO",
+          "name": "Dominican Republic",
+          "people": 2
+        },
+        {
+          "code": "FJ",
+          "name": "Fiji",
+          "people": 2
+        },
+        {
+          "code": "GE",
+          "name": "Georgia",
+          "people": 2
+        },
+        {
+          "code": "KG",
+          "name": "Kyrgyzstan",
+          "people": 2
+        },
+        {
+          "code": "LT",
+          "name": "Lithuania",
+          "people": 2
+        },
+        {
+          "code": "NP",
+          "name": "Nepal",
+          "people": 2
+        },
+        {
+          "code": "PA",
+          "name": "Panama",
+          "people": 2
+        },
+        {
+          "code": "QA",
+          "name": "Qatar",
+          "people": 2
+        },
+        {
+          "code": "LK",
+          "name": "Sri Lanka",
+          "people": 2
+        },
+        {
+          "code": "UY",
+          "name": "Uruguay",
+          "people": 2
+        },
+        {
+          "code": "AL",
+          "name": "Albania",
+          "people": 1
+        },
+        {
+          "code": "AM",
+          "name": "Armenia",
+          "people": 1
+        },
+        {
+          "code": "BY",
+          "name": "Belarus",
+          "people": 1
+        },
+        {
+          "code": "KH",
+          "name": "Cambodia",
+          "people": 1
+        },
+        {
+          "code": "DM",
+          "name": "Dominica",
+          "people": 1
+        },
+        {
+          "code": "SV",
+          "name": "El Salvador",
+          "people": 1
+        },
+        {
+          "code": "ET",
+          "name": "Ethiopia",
+          "people": 1
+        },
+        {
+          "code": "GD",
+          "name": "Grenada",
+          "people": 1
+        },
+        {
+          "code": "HN",
+          "name": "Honduras",
+          "people": 1
+        },
+        {
+          "code": "IS",
+          "name": "Iceland",
+          "people": 1
+        },
+        {
+          "code": "JO",
+          "name": "Jordan",
+          "people": 1
+        },
+        {
+          "code": "LU",
+          "name": "Luxembourg",
+          "people": 1
+        },
+        {
+          "code": "MG",
+          "name": "Madagascar",
+          "people": 1
+        },
+        {
+          "code": "MW",
+          "name": "Malawi",
+          "people": 1
+        },
+        {
+          "code": "MU",
+          "name": "Mauritius",
+          "people": 1
+        },
+        {
+          "code": "MD",
+          "name": "Moldova",
+          "people": 1
+        },
+        {
+          "code": "MZ",
+          "name": "Mozambique",
+          "people": 1
+        },
+        {
+          "code": "NA",
+          "name": "Namibia",
+          "people": 1
+        },
+        {
+          "code": "NI",
+          "name": "Nicaragua",
+          "people": 1
+        },
+        {
+          "code": "PY",
+          "name": "Paraguay",
+          "people": 1
+        },
+        {
+          "code": "RE",
+          "name": "Réunion",
+          "people": 1
+        },
+        {
+          "code": "RW",
+          "name": "Rwanda",
+          "people": 1
+        },
+        {
+          "code": "UZ",
+          "name": "Uzbekistan",
+          "people": 1
+        },
+        {
+          "code": "VE",
+          "name": "Venezuela",
+          "people": 1
+        }
+      ]
+    },
+    "issues": {
+      "people": 609,
+      "placed": 214,
+      "list": [
+        {
+          "code": "US",
+          "name": "United States",
+          "people": 72
+        },
+        {
+          "code": "CN",
+          "name": "China",
+          "people": 18
+        },
+        {
+          "code": "DE",
+          "name": "Germany",
+          "people": 17
+        },
+        {
+          "code": "GB",
+          "name": "United Kingdom",
+          "people": 15
+        },
+        {
+          "code": "MX",
+          "name": "Mexico",
+          "people": 14
+        },
+        {
+          "code": "CA",
+          "name": "Canada",
+          "people": 11
+        },
+        {
+          "code": "FR",
+          "name": "France",
+          "people": 8
+        },
+        {
+          "code": "IT",
+          "name": "Italy",
+          "people": 7
+        },
+        {
+          "code": "PT",
+          "name": "Portugal",
+          "people": 6
+        },
+        {
+          "code": "CH",
+          "name": "Switzerland",
+          "people": 6
+        },
+        {
+          "code": "AU",
+          "name": "Australia",
+          "people": 5
+        },
+        {
+          "code": "TW",
+          "name": "Taiwan",
+          "people": 5
+        },
+        {
+          "code": "NL",
+          "name": "Netherlands",
+          "people": 4
+        },
+        {
+          "code": "SG",
+          "name": "Singapore",
+          "people": 4
+        },
+        {
+          "code": "AT",
+          "name": "Austria",
+          "people": 2
+        },
+        {
+          "code": "DK",
+          "name": "Denmark",
+          "people": 2
+        },
+        {
+          "code": "IE",
+          "name": "Ireland",
+          "people": 2
+        },
+        {
+          "code": "KZ",
+          "name": "Kazakhstan",
+          "people": 2
+        },
+        {
+          "code": "LV",
+          "name": "Latvia",
+          "people": 2
+        },
+        {
+          "code": "KR",
+          "name": "South Korea",
+          "people": 2
+        },
+        {
+          "code": "ES",
+          "name": "Spain",
+          "people": 2
+        },
+        {
+          "code": "BE",
+          "name": "Belgium",
+          "people": 1
+        },
+        {
+          "code": "BR",
+          "name": "Brazil",
+          "people": 1
+        },
+        {
+          "code": "EG",
+          "name": "Egypt",
+          "people": 1
+        },
+        {
+          "code": "IN",
+          "name": "India",
+          "people": 1
+        },
+        {
+          "code": "JP",
+          "name": "Japan",
+          "people": 1
+        },
+        {
+          "code": "LT",
+          "name": "Lithuania",
+          "people": 1
+        },
+        {
+          "code": "PL",
+          "name": "Poland",
+          "people": 1
+        },
+        {
+          "code": "UA",
+          "name": "Ukraine",
+          "people": 1
+        }
+      ]
+    },
+    "pulls": {
+      "people": 608,
+      "placed": 424,
+      "list": [
+        {
+          "code": "DE",
+          "name": "Germany",
+          "people": 130
+        },
+        {
+          "code": "MX",
+          "name": "Mexico",
+          "people": 94
+        },
+        {
+          "code": "TW",
+          "name": "Taiwan",
+          "people": 54
+        },
+        {
+          "code": "FR",
+          "name": "France",
+          "people": 47
+        },
+        {
+          "code": "AU",
+          "name": "Australia",
+          "people": 45
+        },
+        {
+          "code": "CN",
+          "name": "China",
+          "people": 16
+        },
+        {
+          "code": "PL",
+          "name": "Poland",
+          "people": 10
+        },
+        {
+          "code": "US",
+          "name": "United States",
+          "people": 7
+        },
+        {
+          "code": "BR",
+          "name": "Brazil",
+          "people": 6
+        },
+        {
+          "code": "KR",
+          "name": "South Korea",
+          "people": 5
+        },
+        {
+          "code": "JP",
+          "name": "Japan",
+          "people": 2
+        },
+        {
+          "code": "TR",
+          "name": "Türkiye",
+          "people": 2
+        },
+        {
+          "code": "HU",
+          "name": "Hungary",
+          "people": 1
+        },
+        {
+          "code": "IT",
+          "name": "Italy",
+          "people": 1
+        },
+        {
+          "code": "SG",
+          "name": "Singapore",
+          "people": 1
+        },
+        {
+          "code": "ES",
+          "name": "Spain",
+          "people": 1
+        },
+        {
+          "code": "CH",
+          "name": "Switzerland",
+          "people": 1
+        },
+        {
+          "code": "GB",
+          "name": "United Kingdom",
+          "people": 1
+        }
+      ]
+    }
+  }
+}
