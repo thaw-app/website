@@ -1,10 +1,12 @@
-// Takes the picture of the demo that phones are shown in its place (assets/desktop-still.png).
+// Takes the two pictures of the running site that are kept in the repo: the demo as phones
+// are shown it (assets/desktop-still.png), and the cube for shared links (assets/og/cube.png).
 // Run by hand when the demo changes, against a running site:
 //
 //   bun run dev            # or: bun run start
 //   node scripts/capture-demo.mjs [http://localhost:3000]
 //
 // It needs the browser Playwright drives: `bunx playwright install chromium`.
+import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { chromium } from '@playwright/test';
 
@@ -28,6 +30,26 @@ try {
   );
   await demo.screenshot({ path: file, animations: 'disabled' });
   console.log(`Wrote ${file}`);
+
+  // The cube from the top of the home page, for the picture a shared link shows
+  // (lib/og.tsx). In the dark theme and held still, so it is the same frame every time,
+  // and read off its own canvas so the ground behind it stays clear.
+  const dark = await browser.newPage({
+    viewport: { width: 1440, height: 900 },
+    deviceScaleFactor: 2,
+    colorScheme: 'dark',
+    reducedMotion: 'reduce',
+  });
+  dark.setDefaultTimeout(30_000);
+  await dark.goto(site);
+  await dark.locator('html.dark canvas.ascii-cube').waitFor();
+  await dark.waitForTimeout(500);
+  const cube = await dark.evaluate(() =>
+    document.querySelector('canvas.ascii-cube').toDataURL('image/png'),
+  );
+  const cubeFile = join(import.meta.dirname, '..', 'assets', 'og', 'cube.png');
+  writeFileSync(cubeFile, Buffer.from(cube.split(',')[1], 'base64'));
+  console.log(`Wrote ${cubeFile}`);
 } finally {
   await browser.close();
 }

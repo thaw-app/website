@@ -1,6 +1,5 @@
-import { generateOGImage } from 'fumadocs-ui/og';
 import { notFound } from 'next/navigation';
-import { siteName } from '@/lib/shared';
+import { shareImage } from '@/lib/og';
 
 export const revalidate = false;
 
@@ -28,7 +27,7 @@ const cards: Record<string, { title: string; description: string }> = {
 export async function GET(_req: Request, { params }: RouteContext<'/og/site/[name]/image.png'>) {
   const card = cards[(await params).name];
   if (!card) notFound();
-  return generateOGImage({ ...card, site: siteName });
+  return shareImage({ ...card, withCube: true });
 }
 
 export function generateStaticParams() {

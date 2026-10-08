@@ -139,6 +139,10 @@ Text is set in Schibsted Grotesk and code in Fragment Mono. Both are under the S
 Font License. `next/font` fetches them when the site is built and serves them
 from the site itself, so no visitor's browser calls Google.
 
+The pictures a shared link shows (`lib/og.tsx`) are drawn at build time and
+cannot use those, so two static weights of Schibsted Grotesk are kept in
+`assets/fonts/` with their licence.
+
 ## Adding a page
 
 - **A new doc in an app repo:** add the `.md` file under `docs/` there. It
