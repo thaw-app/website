@@ -1,4 +1,5 @@
 import { Heading } from 'fumadocs-ui/components/heading';
+import type { Metadata } from 'next';
 import { Newsreader } from 'next/font/google';
 import Image from 'next/image';
 import vercelOssDark from '@/assets/vercel-oss-dark.png';
@@ -8,10 +9,43 @@ import { ClaudeMark } from '@/components/claude-mark';
 import { DesktopLazy } from '@/components/desktop-lazy';
 import { getMDXComponents } from '@/components/mdx';
 import { ProductHuntMark } from '@/components/product-hunt-mark';
+import { latestStable, pageAlternates } from '@/lib/releases';
+import { products, repoUrl, siteUrl } from '@/lib/shared';
+import { sitePages } from '@/lib/site-pages';
 import { source } from '@/lib/source';
 
 // A free serif in the manner of the one Claude's own wordmark is set in.
 const badgeFont = Newsreader({ subsets: ['latin'], weight: ['500'] });
+
+export const metadata: Metadata = {
+  // One address for the page, whichever domain it was reached on.
+  alternates: pageAlternates('/'),
+};
+
+/**
+ * What Thaw is, in the form search engines read (schema.org), so a result can show it as
+ * an app: its name, that it is for macOS and free, its licence and where to get it. Only
+ * what is true and on the page: no rating is given, because there is none to give.
+ */
+function structuredData() {
+  const stable = latestStable('thaw');
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: products.thaw.name,
+    description: products.thaw.description,
+    url: siteUrl,
+    applicationCategory: 'UtilitiesApplication',
+    operatingSystem: 'macOS',
+    ...(stable && { softwareVersion: stable.tag, datePublished: stable.date }),
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    license: 'https://www.gnu.org/licenses/gpl-3.0.html',
+    isAccessibleForFree: true,
+    downloadUrl: `${repoUrl('thaw')}/releases`,
+    codeRepository: repoUrl('thaw'),
+    image: `${siteUrl}/icons/thaw-512.png`,
+  };
+}
 
 export default function HomePage() {
   const readme = source.getPage(['thaw', 'readme']);
@@ -20,6 +54,13 @@ export default function HomePage() {
 
   return (
     <main className="flex flex-1 flex-col">
+      <script
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: data for search engines, built here from the site's own values and with "<" escaped, as the Next.js guide has it
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(structuredData()).replace(/</g, '\\u003c'),
+        }}
+      />
       {/* Edge to edge: the left column starts at the window's left side and the README runs to
           its right side, however wide the window is. */}
       <div className="grid w-full lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
@@ -32,7 +73,7 @@ export default function HomePage() {
                 screen with it. */}
             <AsciiCube className="ascii-cube mx-auto w-full max-w-52 sm:max-w-64 lg:max-w-[20rem] xl:max-w-[21.5rem]" />
             <h1 className="font-display text-4xl font-semibold leading-[1.04] tracking-tight text-balance sm:text-5xl">
-              The open source menu bar manager for macOS.
+              {sitePages.home.title}
             </h1>
             <p className="max-w-md text-lg text-fd-muted-foreground text-pretty">
               Take back your menu bar. Hide what you don’t need, and find anything in a keystroke.

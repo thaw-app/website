@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import community from '@/lib/community.json';
+import { feedUrl } from '@/lib/releases';
 import { compact, docsRoute, links, products, repoUrl } from '@/lib/shared';
 import { FooterConure } from './footer-conure';
 import { FooterWordmark } from './footer-wordmark';
@@ -17,6 +18,7 @@ const columns = [
       { text: 'Install', href: '/' },
       { text: 'Try it in your browser', href: '/#try' },
       { text: 'Changelog', href: `${docs}/changelog` },
+      { text: 'Release feed', href: feedUrl('thaw') },
       { text: 'Roadmap', href: '/roadmap' },
       { text: 'What Verified means', href: '/verified' },
       { text: 'Built with', href: '/built-with' },
@@ -47,6 +49,7 @@ const columns = [
 ];
 
 const policies = [
+  { text: 'Privacy', href: '/privacy' },
   { text: 'Security', href: `${docs}/security` },
   { text: 'Code of Conduct', href: `${docs}/contribute/code-of-conduct` },
   { text: 'Governance', href: `${docs}/governance` },

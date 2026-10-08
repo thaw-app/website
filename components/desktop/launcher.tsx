@@ -89,7 +89,7 @@ const commands: Command[] = [
     keywords: 'releases',
     href: `${docsRoute}/floe/changelog`,
   },
-  { title: 'GitHub', owner: 'thaw-app', icon: Code, href: 'https://github.com/thaw-app' },
+  { title: 'GitHub', owner: 'thaw-app', icon: Code, href: links.github },
   {
     title: 'Discord',
     owner: 'Community',

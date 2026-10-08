@@ -5,12 +5,15 @@ import fumadocs from '@/assets/stack/fumadocs.png';
 import shieldcn from '@/assets/stack/shieldcn.png';
 import { Lead, PageHeader } from '@/components/page-header';
 import { PageShell } from '@/components/page-shell';
-import { SectionLabel } from '@/components/section-label';
+import { Section } from '@/components/section-label';
 import built from '@/lib/built-with.json';
+import { pageAlternates } from '@/lib/releases';
 import { links, products, repoUrl } from '@/lib/shared';
 import { stackMarks } from '@/lib/stack-marks';
 
 export const metadata: Metadata = {
+  // One address for the page, whichever domain it was reached on.
+  alternates: pageAlternates('/built-with'),
   openGraph: { images: '/og/site/home/image.png' },
   title: 'Built with',
   description:
@@ -99,13 +102,13 @@ const runsOn: Tool[] = [
   {
     name: 'GitHub',
     use: 'Code, issues, releases and discussions.',
-    href: 'https://github.com/thaw-app',
+    href: links.github,
     mark: 'github',
   },
   {
     name: 'Pulumi',
     use: 'Keeps the GitHub organisation as code: repositories, teams, rules and labels.',
-    href: 'https://github.com/thaw-app/platform',
+    href: `${links.github}/platform`,
     mark: 'pulumi',
   },
   {
@@ -227,9 +230,9 @@ function Users({ users }: { users: User[] }) {
 
 function Tools({ tools }: { tools: Tool[] }) {
   return (
-    <ul className="crossed grid grid-cols-2 border-t border-l sm:grid-cols-3 lg:grid-cols-4">
+    <ul className="crossed grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
       {tools.map((tool) => (
-        <li key={tool.name} className="border-r border-b">
+        <li key={tool.name}>
           <a href={tool.href} className="flex h-full flex-col gap-3 p-5 hover:bg-fd-accent">
             <span className="flex items-start justify-between gap-3">
               {tool.mark ? (
@@ -275,21 +278,18 @@ export default function BuiltWithPage() {
         </Lead>
       </PageHeader>
 
-      <section className="flex flex-col gap-6">
-        <SectionLabel>Made with</SectionLabel>
+      <Section label="Made with">
         <Tools tools={made} />
-      </section>
+      </Section>
 
-      <section className="flex flex-col gap-6">
-        <SectionLabel>Runs on</SectionLabel>
+      <Section label="Runs on">
         <Tools tools={runsOn} />
-      </section>
+      </Section>
 
-      <section className="flex flex-col gap-6">
-        <SectionLabel>Licences</SectionLabel>
-        <ul className="crossed grid border-t border-l sm:grid-cols-2">
+      <Section label="Licences">
+        <ul className="crossed sm:grid-cols-2">
           {ours.map((item) => (
-            <li key={item.name} className="border-r border-b">
+            <li key={item.name}>
               <a href={item.href} className="flex h-full flex-col gap-1 p-6 hover:bg-fd-accent">
                 <span className="text-sm text-fd-muted-foreground">{item.name}</span>
                 <span className="font-display text-3xl font-semibold tracking-tight">
@@ -300,10 +300,9 @@ export default function BuiltWithPage() {
             </li>
           ))}
         </ul>
-      </section>
+      </Section>
 
-      <section className="flex flex-col gap-6">
-        <SectionLabel>Thanks</SectionLabel>
+      <Section label="Thanks">
         <dl className="border-t">
           {thanks.map((item) => (
             <div
@@ -319,11 +318,10 @@ export default function BuiltWithPage() {
             </div>
           ))}
         </dl>
-      </section>
+      </Section>
 
       {packages.map(({ title, list }) => (
-        <section key={title} className="flex flex-col gap-6">
-          <SectionLabel>{title}</SectionLabel>
+        <Section key={title} label={title}>
           <ul className="grid border-t sm:grid-cols-2 sm:gap-x-10">
             {list.map((item) => {
               const users = Object.keys(item.users) as User[];
@@ -352,7 +350,7 @@ export default function BuiltWithPage() {
               );
             })}
           </ul>
-        </section>
+        </Section>
       ))}
       <p className="text-sm text-fd-muted-foreground">
         Each Swift package’s full licence text ships inside the apps, under Acknowledgements.

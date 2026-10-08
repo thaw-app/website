@@ -1,3 +1,5 @@
+import { links } from './shared';
+
 /**
  * What the home page leads with, most important first, numbered in that order.
  * Everything here is something Thaw 3 does, taken from its release notes (3.0.0-alpha.1 through
@@ -115,8 +117,8 @@ export const thawAlso: { group: string; names: (string | { name: string; href: s
     // Named with where to get each, since these live outside Thaw.
     group: 'Works with',
     names: [
-      { name: 'Raycast, by its extension', href: 'https://www.raycast.com/diazdesandi/thaw' },
-      { name: 'Droppy, as a Droplet', href: 'https://getdroppy.app/droplets#thaw' },
+      { name: 'Raycast, by its extension', href: links.raycast },
+      { name: 'Droppy, as a Droplet', href: links.droppy },
       { name: 'Floe, with no setup', href: '/docs/floe' },
       { name: 'thaw:// links from any app', href: '/docs/thaw/uri-schemes' },
       'Shortcuts actions',

@@ -1,13 +1,6 @@
 import { Heading } from 'fumadocs-ui/components/heading';
 import type { ReactNode } from 'react';
-
-/** "In numbers" as "in-numbers": what the section answers to in an address. */
-function slug(text: string) {
-  return text
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
-}
+import { slug } from '@/lib/format.mjs';
 
 /**
  * The name over a section, on every page: a small quiet label with its rule
@@ -35,5 +28,26 @@ export function SectionLabel({
     >
       {children}
     </Heading>
+  );
+}
+
+/**
+ * A section of a page: its name, then what it holds, the same distance under the name
+ * every time. Written out by hand that distance drifted from one section to the next.
+ */
+export function Section({
+  label,
+  id,
+  children,
+}: {
+  label: string;
+  id?: string;
+  children: ReactNode;
+}) {
+  return (
+    <section className="flex flex-col gap-6">
+      <SectionLabel id={id}>{label}</SectionLabel>
+      {children}
+    </section>
   );
 }

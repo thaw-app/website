@@ -1,28 +1,7 @@
 'use client';
 
-import Image from 'next/image';
 import { useState } from 'react';
-import droppyGlyph from '@/assets/droppy-glyph.png';
-import raycastGlyph from '@/assets/raycast-glyph.png';
-import { GitHubMark } from './github-mark';
-
-const items = [
-  {
-    label: 'Thaw extension for Raycast',
-    href: 'https://www.raycast.com/diazdesandi/thaw',
-    icon: <Image src={raycastGlyph} alt="" className="size-[18px] invert dark:invert-0" />,
-  },
-  {
-    label: 'Thaw droplet for Droppy',
-    href: 'https://getdroppy.app/droplets#thaw',
-    icon: <Image src={droppyGlyph} alt="" className="h-[18px] w-auto invert dark:invert-0" />,
-  },
-  {
-    label: 'Thaw on GitHub',
-    href: 'https://github.com/thaw-app',
-    icon: <GitHubMark />,
-  },
-];
+import { headerLinks } from '@/lib/header-links';
 
 /**
  * The header's icons, kept the way Thaw keeps a menu bar: the dot at the end
@@ -41,7 +20,7 @@ export function HeaderItems() {
           hidden ? 'max-w-0 opacity-0' : 'max-w-40 opacity-100'
         }`}
       >
-        {items.map((item) => (
+        {headerLinks.map((item) => (
           <a
             key={item.href}
             href={item.href}

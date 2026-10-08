@@ -3,7 +3,7 @@
 import { Check, Copy } from 'lucide-react';
 import Link from 'next/link';
 import { type KeyboardEvent, useId, useRef, useState } from 'react';
-import { docsRoute } from '@/lib/shared';
+import { docsRoute, repoUrl } from '@/lib/shared';
 
 // Named by the macOS a visitor is on, which they know, not by the version of Thaw, which
 // they would have to work out. A browser does not say which macOS it runs on, so the
@@ -25,7 +25,7 @@ const ways = [
     id: 'download',
     label: 'Without Homebrew',
     note: 'Get the disk image for your macOS from the releases and drag Thaw to Applications.',
-    href: 'https://github.com/thaw-app/Thaw/releases',
+    href: `${repoUrl('thaw')}/releases`,
   },
 ] as const;
 

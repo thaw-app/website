@@ -9,13 +9,11 @@ import {
 } from 'react';
 import issues from '@/lib/roadmap-issues.json';
 import requests from '@/lib/roadmap-requests.json';
-import { longDate, repoUrl } from '@/lib/shared';
+import { longDate, repoUrl, slug } from '@/lib/shared';
 import { source } from '@/lib/source';
 
 /** Where the items of a list stand, which sets the mark drawn beside each. */
 type State = 'now' | 'next' | 'blocked' | 'later' | 'done';
-
-const slug = (title: string) => title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
 interface ListProps {
   title: string;
@@ -80,7 +78,7 @@ export function Issue({ n }: { n: number }) {
         ? 'Closed, not planned'
         : 'Closed';
   return (
-    <a href={`https://github.com/thaw-app/Thaw/issues/${n}`} className="roadmap-issue">
+    <a href={`${repoUrl('thaw')}/issues/${n}`} className="roadmap-issue">
       #{n}
       {status && <span className="roadmap-issue-status">{status}</span>}
     </a>

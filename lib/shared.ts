@@ -1,6 +1,7 @@
 import { createGetUrl } from 'fumadocs-core/source';
 import floeIcon from '@/assets/floe-icon.png';
 import thawIcon from '@/assets/thaw-icon.png';
+import project from './project.json';
 
 // Vercel names the production domain at build time; SITE_URL overrides it.
 export const siteUrl =
@@ -15,23 +16,23 @@ export const docsImageRoute = '/og/docs';
 export const docsContentRoute = '/llms.mdx/docs';
 
 // Each product's app repo, which is also where its docs are written: see
-// scripts/sync-docs.mjs. The key is the product's folder under content/docs.
+// scripts/sync-docs.mjs. The key is the product's folder under content/docs. What a product
+// is called, where it lives and its colour are in lib/project.json, which the scripts read
+// too; what only a page needs is added here.
 export const products = {
   thaw: {
-    name: 'Thaw',
+    ...project.products.thaw,
     icon: thawIcon,
     description: 'The open source menu bar manager for macOS.',
     license: 'GPL-3.0',
-    repo: 'thaw-app/Thaw',
-    branch: process.env.THAW_DOCS_REF || 'development',
+    branch: process.env.THAW_DOCS_REF || project.products.thaw.ref,
   },
   floe: {
-    name: 'Floe',
+    ...project.products.floe,
     icon: floeIcon,
     description: 'The open source launcher for macOS.',
     license: 'AGPL-3.0',
-    repo: 'thaw-app/Floe',
-    branch: process.env.FLOE_DOCS_REF || 'main',
+    branch: process.env.FLOE_DOCS_REF || project.products.floe.ref,
   },
 } as const;
 
@@ -63,11 +64,13 @@ export function repoUrl(product: keyof typeof products) {
   return `https://github.com/${products[product].repo}`;
 }
 
-/** Where the project lives outside this site. Each is written once, here. */
+/** Where the project lives outside this site. Each is written once, here or in project.json. */
 export const links = {
-  discord: 'https://discord.gg/KDfWjWDnR4',
-  crowdin: 'https://crowdin.com/project/thaw',
-  sponsors: 'https://github.com/sponsors/stonerl',
+  ...project.links,
+  github: `https://github.com/${project.org}`,
+  discord: `https://discord.gg/${project.discordInvite}`,
+  /** The project's entry with OpenSSF, which holds its Best Practices badge and Baseline level. */
+  bestPractices: `https://www.bestpractices.dev/projects/${project.bestPractices}`,
 };
 
 /** A count as people say it: 11.8K, 365.4K. */
@@ -76,9 +79,4 @@ export const compact = new Intl.NumberFormat('en', {
   maximumFractionDigits: 1,
 });
 
-/** "2026-10-07" as "7 October 2026", for a date a person reads. */
-export function longDate(day: string) {
-  const date = new Date(`${day}T00:00:00Z`);
-  if (Number.isNaN(date.getTime())) return day;
-  return new Intl.DateTimeFormat('en-GB', { dateStyle: 'long', timeZone: 'UTC' }).format(date);
-}
+export { longDate, slug } from './format.mjs';

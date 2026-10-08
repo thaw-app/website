@@ -1,7 +1,8 @@
 import './global.css';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Fragment_Mono, Schibsted_Grotesk } from 'next/font/google';
 import { Providers } from '@/components/providers';
+import { pageAlternates } from '@/lib/releases';
 import { siteDescription, siteName, siteUrl } from '@/lib/shared';
 
 // Both are open fonts, fetched at build time and served from the site itself.
@@ -15,6 +16,16 @@ export const metadata: Metadata = {
   description: siteDescription,
   // Pages that do not name a picture of their own are shared with the site's.
   openGraph: { images: '/og/site/home/image.png' },
+  // Each product's releases, for a feed reader to find from any page.
+  alternates: { types: pageAlternates('/').types },
+};
+
+// The colour a browser gives its own bars round the page: the page's ground in each theme.
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#f5f5f5' },
+    { media: '(prefers-color-scheme: dark)', color: '#000000' },
+  ],
 };
 
 export default function Layout({ children }: LayoutProps<'/'>) {

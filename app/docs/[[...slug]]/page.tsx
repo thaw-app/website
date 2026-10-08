@@ -11,6 +11,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getMDXComponents } from '@/components/mdx';
 import { ReleaseList, VersionReleases } from '@/components/release-list';
+import { pageAlternates } from '@/lib/releases';
 import { docsRoute, getPageImageUrl, getPageMarkdownUrl, productOf } from '@/lib/shared';
 import { source } from '@/lib/source';
 
@@ -130,10 +131,13 @@ export async function generateMetadata(props: PageProps<'/docs/[[...slug]]'>): P
   return {
     title: pageTitle(page),
     description: page.data.description,
-    // A shared page is the same under every product, so search engines are given one address for it.
-    ...(page.data.shared && {
-      alternates: { canonical: `${docsRoute}/${[sharedHome, ...page.slugs.slice(1)].join('/')}` },
-    }),
+    // One address for the page, whichever domain it was reached on. A shared page is the
+    // same under every product, so search engines are given the one copy's.
+    alternates: pageAlternates(
+      page.data.shared
+        ? `${docsRoute}/${[sharedHome, ...page.slugs.slice(1)].join('/')}`
+        : page.url,
+    ),
     openGraph: {
       images: getPageImageUrl(page).url,
     },

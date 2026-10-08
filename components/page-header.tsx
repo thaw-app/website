@@ -18,6 +18,8 @@ export function PageHeader({
   labelHref?: string;
   title: string;
   className?: string;
+  /** The line on the page's picture for shared links, which the page itself does not show. */
+  shared?: string;
   /** The opening lines, and anything that belongs under them. */
   children?: ReactNode;
 }) {

@@ -3,13 +3,17 @@ import Link from 'next/link';
 import { Contributors } from '@/components/contributors';
 import { Lead, PageHeader } from '@/components/page-header';
 import { PageShell } from '@/components/page-shell';
-import { SectionLabel } from '@/components/section-label';
+import { Section } from '@/components/section-label';
 import { WorldMap } from '@/components/world-map';
 import community from '@/lib/community.json';
+import { pageAlternates } from '@/lib/releases';
 import { compact, docsRoute, links, longDate, repoUrl } from '@/lib/shared';
+import { sitePages } from '@/lib/site-pages';
 import { readDays } from '@/lib/verified';
 
 export const metadata: Metadata = {
+  // One address for the page, whichever domain it was reached on.
+  alternates: pageAlternates('/community'),
   openGraph: { images: '/og/site/community/image.png' },
   title: 'Community',
   description: 'Thaw in numbers, where to find the people behind it, and who has contributed.',
@@ -93,18 +97,17 @@ const ways = [
 export default function CommunityPage() {
   return (
     <PageShell>
-      <PageHeader label="Community" title="Thaw is built by the people who use it.">
+      <PageHeader {...sitePages.community}>
         <Lead>
           Thaw is free and open source. The people who use it report its bugs, write its fixes and
           translate it.
         </Lead>
       </PageHeader>
 
-      <section className="flex flex-col gap-6">
-        <SectionLabel>In numbers</SectionLabel>
-        <dl className="crossed grid grid-cols-2 border-t border-l lg:grid-cols-4">
+      <Section label="In numbers">
+        <dl className="crossed grid-cols-2 lg:grid-cols-4">
           {numbers.map((number) => (
-            <div key={number.label} className="flex flex-col gap-1 border-r border-b p-4 sm:p-6">
+            <div key={number.label} className="flex flex-col gap-1 p-4 sm:p-6">
               <dt className="text-sm text-fd-muted-foreground">{number.label}</dt>
               <dd className="font-display text-4xl font-semibold tracking-tight xl:text-5xl">
                 {compact.format(number.value)}
@@ -122,28 +125,28 @@ export default function CommunityPage() {
           </a>{' '}
           has had Thaw as GitHub’s #1 trending repository of the day, according to its badge.
         </p>
-      </section>
+      </Section>
 
       {community.world && community.world.stargazers.list.length > 0 && (
-        <section className="flex flex-col gap-6">
-          <SectionLabel>Worldwide</SectionLabel>
+        <Section label="Worldwide">
           <WorldMap />
-        </section>
+        </Section>
       )}
 
       {community.team.length > 0 && (
-        <section className="flex flex-col gap-6">
-          <SectionLabel>The team</SectionLabel>
-          <ul className="crossed grid border-t border-l sm:grid-cols-3 lg:grid-cols-5">
+        <Section label="The team">
+          <ul className="crossed sm:grid-cols-3 lg:grid-cols-5">
             {community.team.map((member) => (
-              <li key={member.login} className="border-r border-b">
+              <li key={member.login}>
                 <a
                   href={`https://github.com/${member.login}`}
                   className="flex h-full flex-col gap-4 p-5 transition-colors hover:bg-fd-accent"
                 >
                   {/* biome-ignore lint/performance/noImgElement: a remote avatar, not worth an image pipeline */}
                   <img
-                    src={member.avatar}
+                    // GitHub's own address gives the full picture unless told a size: twice the
+                    // 96px it is drawn at, for sharp screens.
+                    src={`${member.avatar}${member.avatar.includes('?') ? '&' : '?'}s=192`}
                     alt=""
                     width={96}
                     height={96}
@@ -160,23 +163,21 @@ export default function CommunityPage() {
               </li>
             ))}
           </ul>
-        </section>
+        </Section>
       )}
 
       {community.people.length > 0 && (
-        <section className="flex flex-col gap-6">
-          <SectionLabel>Contributors</SectionLabel>
+        <Section label="Contributors">
           <Contributors people={contributors} />
           <p className="text-sm text-fd-muted-foreground">
             Everyone else with a commit since Thaw began in January 2026. Translators are listed
             below.
           </p>
-        </section>
+        </Section>
       )}
 
       {community.translators.length > 0 && (
-        <section className="flex flex-col gap-6">
-          <SectionLabel>Translators</SectionLabel>
+        <Section label="Translators">
           <dl className="border-t">
             {community.translators.map((group) => (
               <div
@@ -212,14 +213,13 @@ export default function CommunityPage() {
             </a>
             . Listed alphabetically within each language. Each name opens its Crowdin profile.
           </p>
-        </section>
+        </Section>
       )}
 
-      <section className="flex flex-col gap-6">
-        <SectionLabel>Take part</SectionLabel>
-        <ul className="crossed grid border-t border-l sm:grid-cols-2 lg:grid-cols-4">
+      <Section label="Take part">
+        <ul className="crossed sm:grid-cols-2 lg:grid-cols-4">
           {ways.map((way) => (
-            <li key={way.title} className="border-r border-b">
+            <li key={way.title}>
               <Link
                 href={way.href}
                 className="flex h-full flex-col gap-1.5 p-6 transition-colors hover:bg-fd-accent"
@@ -246,7 +246,7 @@ export default function CommunityPage() {
           </Link>
           .
         </p>
-      </section>
+      </Section>
     </PageShell>
   );
 }

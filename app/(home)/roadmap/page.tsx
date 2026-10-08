@@ -5,8 +5,12 @@ import { getMDXComponents } from '@/components/mdx';
 import { PageHeader } from '@/components/page-header';
 import { PageShell } from '@/components/page-shell';
 import Lists from '@/content/site/roadmap.mdx';
+import { pageAlternates } from '@/lib/releases';
+import { sitePages } from '@/lib/site-pages';
 
 export const metadata: Metadata = {
+  // One address for the page, whichever domain it was reached on.
+  alternates: pageAlternates('/roadmap'),
   openGraph: { images: '/og/site/roadmap/image.png' },
   title: 'Roadmap',
   description:
@@ -34,7 +38,7 @@ export default function RoadmapPage() {
   return (
     <PageShell>
       <div>
-        <PageHeader label="Roadmap" title="What we’re building." className="mb-4" />
+        <PageHeader {...sitePages.roadmap} className="mb-4" />
         <Lists components={getMDXComponents({ p: Opening, h2: Section })} />
       </div>
     </PageShell>

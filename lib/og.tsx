@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { ImageResponse } from 'next/og';
+import project from './project.json';
 
 // The picture a link to the site is shared with: the page's own words on the site's black,
 // in its type, under the icon of the product the page is about. Drawn when the site is
@@ -12,13 +13,15 @@ const regular = asset('fonts/SchibstedGrotesk-400.ttf');
 const semibold = asset('fonts/SchibstedGrotesk-600.ttf');
 
 const products = {
-  thaw: { name: 'Thaw', icon: asset('og/thaw.png'), tone: '#fa9a2a' },
-  floe: { name: 'Floe', icon: asset('og/floe.png'), tone: '#4f93ff' },
+  thaw: { ...project.products.thaw, icon: asset('og/thaw.png') },
+  floe: { ...project.products.floe, icon: asset('og/floe.png') },
 };
 
 // Thaw's icon in characters, as at the top of the home page: scripts/capture-demo.mjs.
 const cube = asset('og/cube.png');
 
+// The site's dark page, in the picture's own terms: it cannot read the stylesheet.
+const ink = { ground: '#000', text: '#ededed', quiet: '#a1a1a1', mark: '#8a8a8a' };
 const rule = 'rgba(255, 255, 255, 0.14)';
 const frame = 44;
 
@@ -43,7 +46,7 @@ function Cross({ x, y }: { x: 'left' | 'right'; y: 'top' | 'bottom' }) {
           top: 0,
           width: 1,
           height: '100%',
-          background: '#8a8a8a',
+          background: ink.mark,
         }}
       />
       <div
@@ -53,7 +56,7 @@ function Cross({ x, y }: { x: 'left' | 'right'; y: 'top' | 'bottom' }) {
           left: 0,
           height: 1,
           width: '100%',
-          background: '#8a8a8a',
+          background: ink.mark,
         }}
       />
     </div>
@@ -90,8 +93,8 @@ export async function shareImage({
         height: '100%',
         display: 'flex',
         position: 'relative',
-        background: '#000',
-        color: '#ededed',
+        background: ink.ground,
+        color: ink.text,
         fontFamily: 'Schibsted Grotesk',
       }}
     >
@@ -134,7 +137,7 @@ export async function shareImage({
             {name}
           </div>
           {label && (
-            <div style={{ display: 'flex', fontSize: 30, color: '#a1a1a1', marginLeft: 4 }}>
+            <div style={{ display: 'flex', fontSize: 30, color: ink.quiet, marginLeft: 4 }}>
               {label}
             </div>
           )}
@@ -159,7 +162,7 @@ export async function shareImage({
                 display: 'flex',
                 fontSize: 31,
                 lineHeight: 1.35,
-                color: '#a1a1a1',
+                color: ink.quiet,
                 maxWidth: drawing ? 540 : 940,
                 // Two lines at most; a longer one is cut with an ellipsis.
                 lineClamp: 2,

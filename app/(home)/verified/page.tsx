@@ -4,10 +4,14 @@ import { verified } from '@/components/assurance';
 import { Lead, PageHeader } from '@/components/page-header';
 import { PageShell } from '@/components/page-shell';
 import community from '@/lib/community.json';
+import { pageAlternates } from '@/lib/releases';
 import { longDate } from '@/lib/shared';
+import { sitePages } from '@/lib/site-pages';
 import { meanings, readDays } from '@/lib/verified';
 
 export const metadata: Metadata = {
+  // One address for the page, whichever domain it was reached on.
+  alternates: pageAlternates('/verified'),
   openGraph: { images: '/og/site/verified/image.png' },
   title: 'What Verified means',
   description:
@@ -28,11 +32,7 @@ const read = readDays(community.readOn, {
 export default function VerifiedPage() {
   return (
     <PageShell>
-      <PageHeader
-        label="Verified"
-        labelHref="/#verified"
-        title="Privacy only works if the security around it does."
-      >
+      <PageHeader {...sitePages.verified} labelHref="/#verified">
         <Lead>
           Thaw asks for permissions that reach across your Mac. These are the outside checks on how
           it is built and released: what each one is, and who vouches for it. A score a machine

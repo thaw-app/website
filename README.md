@@ -110,6 +110,37 @@ Three files are made by hand-run scripts and committed, not built each time:
   (`reference/` is ignored), so only someone with their own captures can
   regenerate it.
 
+## How it is put together
+
+- `lib/project.json` says what each product is called, where its repo is, and
+  the project's ids with outside services. The site and the sync scripts both
+  read it, so a product or an address is written once.
+- `lib/shared.ts` builds the site's list of products and outside links from
+  it. A link that leaves the site belongs there, not in a component.
+- `lib/site-pages.ts` holds each site page's name and headline, read by the
+  page and by its picture for shared links.
+- `lib/format.mjs` has the two small helpers the pages and the scripts both
+  need: a name as an address, and a date as a person reads it.
+- `scripts/sync-docs.mjs` fetches the repos and writes the pages. Its work is
+  in `scripts/sync/`: `config` (what is read and written), `text` (the
+  parsers, tested in `sync-docs.test.mjs`), `changelog`, `numbers` and
+  `roadmap`.
+- On a page, a section is `<Section label="…">` and a ruled grid is
+  `className="crossed"` plus its columns (`components/section-label.tsx`,
+  `app/global.css`).
+
+## Security headers
+
+`next.config.mjs` sends a content security policy and five other headers with
+every response. The policy lets a page load scripts, styles, fonts and data
+from this site only, and pictures from any https address (the docs embed
+them from GitHub). Scripts and styles written into the page are allowed,
+because the pages are built once and served as files; a stricter policy would
+need every page rendered on each request.
+
+If something new stops loading, the browser's console names the rule that
+refused it. A new outside source goes in that one list, with why.
+
 ## Running it
 
     bun install

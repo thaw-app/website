@@ -110,3 +110,52 @@ test('the demo loads on a screen that can use it, and a phone gets a picture', a
     await expect(frame.getByRole('img', { name: /settings window/ })).toHaveCount(0);
   }
 });
+
+test('every response carries the security headers, and the policy blocks nothing the site needs', async ({
+  page,
+}) => {
+  const blocked: string[] = [];
+  await page.exposeFunction('blockedByPolicy', (what: string) => blocked.push(what));
+  await page.addInitScript(() =>
+    document.addEventListener('securitypolicyviolation', (event) =>
+      // biome-ignore lint/suspicious/noExplicitAny: a function this test put on the page
+      (window as any).blockedByPolicy(`${event.effectiveDirective} ${event.blockedURI}`),
+    ),
+  );
+  for (const path of ['/', '/docs/thaw/getting-started', '/community']) {
+    const response = await page.goto(path);
+    const headers = response?.headers() ?? {};
+    expect(headers['content-security-policy'], path).toContain("default-src 'self'");
+    expect(headers['content-security-policy'], path).toContain("frame-ancestors 'none'");
+    expect(headers['x-content-type-options'], path).toBe('nosniff');
+    expect(headers['x-frame-options'], path).toBe('DENY');
+    expect(headers['referrer-policy'], path).toBe('strict-origin-when-cross-origin');
+    expect(headers['permissions-policy'], path).toContain('camera=()');
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await page.waitForTimeout(500);
+  }
+  expect(blocked).toEqual([]);
+});
+
+test('search engines and feed readers are told what they need', async ({ page, request }) => {
+  await page.goto('/');
+  // One address for the page, the app described, and the release feeds named.
+  await expect(page.locator('link[rel="canonical"]')).toHaveCount(1);
+  const described = JSON.parse(
+    (await page.locator('script[type="application/ld+json"]').textContent()) ?? '{}',
+  );
+  expect(described['@type']).toBe('SoftwareApplication');
+  expect(described.operatingSystem).toBe('macOS');
+  expect(described.offers.price).toBe('0');
+  await expect(page.locator('link[type="application/atom+xml"]')).toHaveCount(2);
+  await page.goto('/community');
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', /\/community$/);
+
+  const feed = await request.get('/feed/thaw.xml');
+  expect(feed.headers()['content-type']).toContain('application/atom+xml');
+  const text = await feed.text();
+  expect(text).toContain('<feed xmlns="http://www.w3.org/2005/Atom">');
+  expect(text.match(/<entry>/g)?.length).toBeGreaterThan(5);
+  expect((await request.get('/manifest.webmanifest')).ok()).toBe(true);
+  expect((await request.get('/privacy')).ok()).toBe(true);
+});

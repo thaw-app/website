@@ -59,13 +59,11 @@ export function Assurance() {
           )}
         </p>
         {/* Five cells sit as two over three; any other count falls back to even columns. */}
-        <ul
-          className={`crossed grid border-t border-l ${stepped ? 'sm:grid-cols-6' : 'sm:grid-cols-2 xl:grid-cols-4'}`}
-        >
+        <ul className={`crossed ${stepped ? 'sm:grid-cols-6' : 'sm:grid-cols-2 xl:grid-cols-4'}`}>
           {verified.map((entry, index) => (
             <li
               key={entry.id}
-              className={`border-r border-b ${stepped ? (index < 2 ? 'sm:col-span-3' : 'sm:col-span-2') : ''}`}
+              className={`${stepped ? (index < 2 ? 'sm:col-span-3' : 'sm:col-span-2') : ''}`}
             >
               <Link
                 href={entry.href}

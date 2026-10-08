@@ -648,8 +648,18 @@ h1.font-display {
 /* A ruled grid with a small plus where its lines cross, as on a drawing: it says the grid
    was set out and not left to fall. Each cell draws the four at its own corners, so a
    neighbour's land on the same spots and the edges get theirs too. */
+/* The grid itself and its rules are the class's too: the outer two on the grid, and each
+   cell's right and bottom, so a grid needs only to say how many columns it has. */
+.crossed {
+  display: grid;
+  border-top: 1px solid var(--color-fd-border);
+  border-left: 1px solid var(--color-fd-border);
+}
+
 .crossed > * {
   position: relative;
+  border-right: 1px solid var(--color-fd-border);
+  border-bottom: 1px solid var(--color-fd-border);
 }
 
 .crossed > *::after {

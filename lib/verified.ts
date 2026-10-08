@@ -1,4 +1,4 @@
-import { docsRoute, products } from '@/lib/shared';
+import { docsRoute, links, products } from '@/lib/shared';
 
 const repo = products.thaw.repo;
 
@@ -27,7 +27,7 @@ export const meanings: {
     meaning:
       'A checklist from the Open Source Security Foundation for how a project is run, such as how changes get reviewed and how security reports are handled. It has three badges, Passing, Silver and Gold.',
     checkedBy: 'The project answers each item and publishes its evidence.',
-    href: 'https://www.bestpractices.dev/projects/13303',
+    href: links.bestPractices,
   },
   {
     id: 'baseline',
@@ -114,7 +114,7 @@ export function verifiedFrom(assurance: Assurance): Verified[] {
         steps: 3,
         reached: badge + 1,
         tone: bestPractices === 'gold' ? gold : green,
-        href: 'https://www.bestpractices.dev/projects/13303',
+        href: links.bestPractices,
       },
     typeof baseline === 'number' &&
       baseline >= 1 && {
@@ -127,7 +127,7 @@ export function verifiedFrom(assurance: Assurance): Verified[] {
         steps: 3,
         reached: baseline,
         tone: green,
-        href: 'https://www.bestpractices.dev/projects/13303',
+        href: links.bestPractices,
       },
     typeof scorecard === 'number' && {
       id: 'scorecard',
