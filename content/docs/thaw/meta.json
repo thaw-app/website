@@ -1,0 +1,25 @@
+{
+  "title": "Thaw",
+  "description": "Menu bar manager",
+  "root": true,
+  "pages": [
+    "index",
+    "---Using Thaw---",
+    "frequent-issues",
+    "uri-schemes",
+    "hidden-flags",
+    "roadmap",
+    "changelog",
+    "---Developers---",
+    "contribute",
+    "development",
+    "architecture",
+    "releases",
+    "verifying-releases",
+    "security",
+    "assurance-case",
+    "governance",
+    "!readme",
+    "..."
+  ]
+}

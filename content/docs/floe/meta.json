@@ -1,0 +1,15 @@
+{
+  "title": "Floe",
+  "description": "Launcher",
+  "root": true,
+  "pages": [
+    "index",
+    "---Using Floe---",
+    "changelog",
+    "---Developers---",
+    "contribute",
+    "development",
+    "security",
+    "..."
+  ]
+}

@@ -1,0 +1,28 @@
+---
+shared: true
+title: Docs
+description: How this site gets its pages, and how to change one.
+icon: BookOpen
+---
+
+Most pages on this site are not written here. They are Markdown files in the app repositories, next to the code they describe, and the site copies them in each time it is built.
+
+## Change an existing page
+
+Every page has an **Open** menu under its title with a link to the file on GitHub. Edit the file there and open a pull request in that repository.
+
+| Pages | Written in |
+|---|---|
+| Thaw guides, changelog and frequent issues | [thaw-app/Thaw](https://github.com/thaw-app/Thaw) |
+| Floe guides and changelog | [thaw-app/Floe](https://github.com/thaw-app/Floe) |
+| Contribution guidelines, Code of Conduct and security policy | [thaw-app/.github](https://github.com/thaw-app/.github) |
+
+The change appears here after the next build of the site.
+
+## Add a page
+
+Add a Markdown file under `docs/` in the app repository. It shows up in the sidebar on the next build.
+
+## Change the site itself
+
+The site's layout, home page and the few pages written here live in the website repository. Its README covers running it locally.
