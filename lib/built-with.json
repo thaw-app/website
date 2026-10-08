@@ -147,6 +147,14 @@
       }
     },
     {
+      "name": "@playwright/test",
+      "url": "https://www.npmjs.com/package/@playwright/test",
+      "license": "Apache-2.0",
+      "users": {
+        "Site": "1.64.0"
+      }
+    },
+    {
       "name": "@tailwindcss/postcss",
       "url": "https://www.npmjs.com/package/@tailwindcss/postcss",
       "license": "MIT",
