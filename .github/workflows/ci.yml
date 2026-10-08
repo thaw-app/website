@@ -18,10 +18,15 @@ jobs:
         with:
           node-version: 24
       - run: bun install --frozen-lockfile
-      # The docs are not in this repo; the type check needs them in place.
-      - run: bun run sync
+      # The docs are not in this repo; the type check needs them in place. The numbers the
+      # pages quote are committed, so a check does not spend requests refreshing them.
+      - run: bun run sync:content
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - run: bun run lint
       - run: bun run types:check
       - run: bun run test
+      # A page can pass all three and still fail to build.
+      - run: bunx next build
+      - run: bunx playwright install --with-deps chromium
+      - run: bun run test:e2e

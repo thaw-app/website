@@ -17,7 +17,7 @@ const columns = [
       { text: 'Install', href: '/' },
       { text: 'Try it in your browser', href: '/#try' },
       { text: 'Changelog', href: `${docs}/changelog` },
-      { text: 'Roadmap', href: `${docs}/roadmap` },
+      { text: 'Roadmap', href: '/roadmap' },
       { text: 'What Verified means', href: '/verified' },
       { text: 'Built with', href: '/built-with' },
       { text: 'Floe, the launcher', href: `${docsRoute}/floe` },
@@ -58,7 +58,7 @@ export function SiteFooter() {
     <footer className="border-t">
       <div className="grid w-full gap-x-16 gap-y-12 px-6 py-14 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:px-10">
         <div className="flex flex-col items-start gap-5">
-          <Image src={products.thaw.icon} alt="" className="size-8" />
+          <Image src={products.thaw.icon} alt="" width={32} className="size-8" />
           <p className="max-w-sm text-fd-muted-foreground text-pretty">
             The open source menu bar manager for macOS. It is free, it doesn’t track you, and you
             don’t need an account.

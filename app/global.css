@@ -345,14 +345,15 @@ html > body[data-scroll-locked] {
   color: var(--color-fd-foreground);
 }
 
-.readme table {
+/* The README's own tables only: one a component draws (inside .not-prose) styles itself. */
+.readme table:not(.not-prose *) {
   width: 100%;
   margin-block: 1.25rem;
   border-collapse: collapse;
   font-size: 0.9375rem;
 }
 
-.readme td {
+.readme td:not(.not-prose *) {
   padding: 0.5rem 0.75rem 0.5rem 0;
   border-bottom: 1px solid var(--color-fd-border);
 }
@@ -450,6 +451,45 @@ html > body[data-scroll-locked] {
 .roadmap code {
   font-family: var(--font-code), monospace;
   font-size: 0.875em;
+}
+
+/* What is planned, as a sheet of cards: every area's items share one grid, and each
+   card says which area it is from. */
+.roadmap-cards ul {
+  display: contents;
+}
+
+.roadmap-cards li {
+  padding: 1.25rem 1.25rem 1.25rem 3rem;
+  border-right: 1px solid var(--color-fd-border);
+  border-bottom: 1px solid var(--color-fd-border);
+}
+
+.roadmap-cards li::before {
+  left: 1.25rem;
+  top: calc(1.25rem + 0.3em);
+}
+
+.roadmap-cards li::after {
+  content: var(--area);
+  display: block;
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+  color: var(--color-fd-muted-foreground);
+  opacity: 0.8;
+}
+
+/* A request is a row that is all link: it has no mark of its own. */
+.roadmap li.roadmap-request {
+  padding-left: 0;
+}
+
+.roadmap li.roadmap-request::before {
+  content: none;
+}
+
+.roadmap li.roadmap-request a {
+  text-decoration: none;
 }
 
 /* Notes written out on the changelog: their sections sit under the release, not beside it. */

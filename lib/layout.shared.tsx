@@ -11,7 +11,9 @@ export function baseOptions(): BaseLayoutProps {
     nav: {
       title: (
         <>
-          <Image src={products.thaw.icon} alt="" className="size-6" />
+          {/* The width is what the icon is drawn at, not the 512px file's: without it the
+              browser is offered 640 and 1080px copies for a 24px mark. */}
+          <Image src={products.thaw.icon} alt="" width={24} className="size-6" />
           <span className="font-display text-base font-semibold tracking-tight">{siteName}</span>
         </>
       ),
@@ -22,7 +24,7 @@ export function baseOptions(): BaseLayoutProps {
     links: [
       { text: 'Docs', url: `${docsRoute}/thaw`, active: 'nested-url' },
       { text: 'Changelog', url: `${docsRoute}/thaw/changelog`, active: 'nested-url' },
-      { text: 'Roadmap', url: `${docsRoute}/thaw/roadmap` },
+      { text: 'Roadmap', url: '/roadmap' },
       { text: 'Community', url: '/community' },
       { type: 'custom', secondary: true, on: 'nav', children: <HeaderItems /> },
       {

@@ -93,7 +93,7 @@ export function Dock({
           buttonRef={thawRef}
           onClick={onThaw}
         >
-          <Image src={products.thaw.icon} alt="" className="size-full" />
+          <Image src={products.thaw.icon} alt="" width={96} className="size-full" />
         </AppButton>
         {floeInDock && (
           <AppButton
@@ -103,7 +103,7 @@ export function Dock({
             buttonRef={floeRef}
             onClick={onFloe}
           >
-            <Image src={products.floe.icon} alt="" className="size-full" />
+            <Image src={products.floe.icon} alt="" width={96} className="size-full" />
           </AppButton>
         )}
 
@@ -129,7 +129,7 @@ export function Dock({
             buttonRef={floeRef}
             onClick={onFloe}
           >
-            <Image src={products.floe.icon} alt="" className="size-full" />
+            <Image src={products.floe.icon} alt="" width={96} className="size-full" />
           </AppButton>
         )}
         <span

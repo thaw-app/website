@@ -1,4 +1,4 @@
-# thaw-website
+# website
 
 The website for Thaw and Floe: a home page and the documentation for both, on
 one domain. Built with [Fumadocs](https://fumadocs.dev) on Next.js.
@@ -9,7 +9,8 @@ one domain. Built with [Fumadocs](https://fumadocs.dev) on Next.js.
 | `/community` | The project in numbers, where its people are, the team, contributors and translators |
 | `/verified` | What each security badge on the home page means, and who vouches for it |
 | `/built-with` | The stack, the services, the licences and every package, with thanks |
-| `/docs/thaw` | Thaw documentation, roadmap and changelog |
+| `/roadmap` | What is being worked on, what is next and what has shipped; written in `content/site/roadmap.mdx` |
+| `/docs/thaw` | Thaw documentation and changelog |
 | `/docs/floe` | Floe documentation and changelog |
 
 ## Where the content lives
@@ -74,7 +75,19 @@ build or blanks a number.
 | `lib/community.json` | Stars, downloads, contributors, translators, the Verified values | GitHub, Homebrew, Discord, OpenSSF, SonarQube Cloud, `CREDITS.md` |
 | `lib/community.json` (`world`) | Stars, issues and pull requests by country | Every stargazer's and author's GitHub profile location |
 | `lib/roadmap-issues.json` | Whether each issue the roadmap links is open | GitHub |
+| `lib/roadmap-requests.json` | The open feature requests, most thumbs-up first | GitHub |
 | `lib/built-with.json` | Every package and its licence | The three projects' manifests, GitHub, npm, crates.io |
+
+These are optional, and the pages are not. `bun run sync` does both, pages first, and
+is what a build runs. `bun run sync:content` fetches the pages alone, and is what
+`bun run dev` and CI run, so neither waits on a source it does not need. No request
+is waited on for more than twenty seconds.
+
+`lib/community.json` keeps the day each number was last read from its source
+(`readOn`). A number kept from an earlier run keeps its day, and the pages say so
+beside it. Downloads count the app's disk images, archives and update deltas, not
+the checksums, signatures and SBOMs attached to a release; they are fetches, not
+people.
 
 `GITHUB_TOKEN` matters for two of these. Without it the country counts are
 not refreshed at all (they take about 130 requests, and run at most once a
@@ -84,8 +97,11 @@ How a free-text location becomes a country is in `scripts/countries.mjs`: a
 country's name, a US state, or a town on its list. Add a town there when a
 common one is going uncounted.
 
-Two files are made by hand-run scripts and committed, not built each time:
+Three files are made by hand-run scripts and committed, not built each time:
 
+- `assets/desktop-still.png`, the picture of the demo a phone is shown in its place,
+  by `node scripts/capture-demo.mjs` against a running site. Take it again when the
+  demo changes.
 - `lib/world-map.json`, the dotted map, by `node scripts/build-world-map.mjs`
   from the outline in `scripts/data/`.
 - `components/desktop/thaw-panes.json`, Thaw's settings panes in the demo, by
@@ -107,6 +123,15 @@ preview docs you have not pushed, point it at a local checkout in `.env.local`:
     FLOE_DOCS_DIR=/path/to/Floe
 
 `THAW_DOCS_REF` and `FLOE_DOCS_REF` pick another branch or tag to fetch.
+
+To test it:
+
+    bun run test       # the parsers, the counts and the Verified values
+    bun run build      # then, against the built site:
+    bun run test:e2e   # install tabs, search, navigation, the demo on a phone
+
+The browser tests need Chromium once: `bunx playwright install chromium`. CI runs
+all of it, with a production build, on every push.
 
 ## Fonts
 

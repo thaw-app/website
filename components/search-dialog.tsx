@@ -26,7 +26,7 @@ const suggestions: SearchItemType[] = [
   ['Thaw documentation', `${docsRoute}/thaw`],
   ['Frequent issues', `${docsRoute}/thaw/frequent-issues`],
   ['Changelog', `${docsRoute}/thaw/changelog`],
-  ['Roadmap', `${docsRoute}/thaw/roadmap`],
+  ['Roadmap', '/roadmap'],
   ['Community', '/community'],
   ['Built with', '/built-with'],
   ['Floe documentation', `${docsRoute}/floe`],

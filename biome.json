@@ -19,6 +19,7 @@
       "!content/docs/*/readme.mdx",
       "!lib/community.json",
       "!lib/roadmap-issues.json",
+      "!lib/roadmap-requests.json",
       "!lib/world-map.json",
       "!lib/built-with.json",
       "!scripts/data",

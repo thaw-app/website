@@ -34,12 +34,13 @@ export default function HomePage() {
               The open source menu bar manager for macOS.
             </h1>
             <p className="max-w-md text-lg text-fd-muted-foreground text-pretty">
-              Hide the menu bar items you don’t need. Find any of them by search, even the ones a
-              notch cuts off.
+              Take back your menu bar. Hide what you don’t need, and find anything in a keystroke.
             </p>
             <p className="max-w-md text-fd-muted-foreground text-pretty">
-              <span className="font-medium text-fd-foreground">Free under GPL-3.0.</span> When a new
-              macOS comes out, you get an update, not an upgrade to buy.
+              <span className="font-medium text-fd-foreground">
+                Free under GPL-3.0, with no tracking and no account.
+              </span>{' '}
+              When a new macOS comes out, you get an update, not an upgrade to buy.
             </p>
           </div>
 
@@ -50,8 +51,13 @@ export default function HomePage() {
               aria-label="Vercel OSS Program"
               className="tap"
             >
-              <Image src={vercelOssLight} alt="" className="h-6 w-auto dark:hidden" />
-              <Image src={vercelOssDark} alt="" className="hidden h-6 w-auto dark:block" />
+              <Image src={vercelOssLight} alt="" width={240} className="h-6 w-auto dark:hidden" />
+              <Image
+                src={vercelOssDark}
+                alt=""
+                width={240}
+                className="hidden h-6 w-auto dark:block"
+              />
             </a>
             {/* Anthropic has no badge for this programme, so this one is laid out like
                 Vercel's. The wording is the one the maintainers' READMEs use. */}

@@ -4,8 +4,14 @@
  * beta.2) and its own settings panes, and worded as what a person can do
  * with it. Maintenance tools, diagnostics and the individual conditions of a
  * trigger are not features and are left out.
+ *
+ * Install gives a Mac on macOS 26 Thaw 2, which does not have all of it. `beta` marks what
+ * is only in the Thaw 3 beta: `true` for the whole feature, or a sentence naming the part.
+ * It is read off the release notes (2.0.0 says what it left for 2.1 and 3.0) and checked
+ * against the 2.0.1 source. Several of these are in Thaw 2.1 as well, so the marks need
+ * going over when 2.1.0 is the stable release.
  */
-export const thawFeatures = [
+export const thawFeatures: { title: string; detail: string; beta?: true | string }[] = [
   {
     title: 'Hide what you don’t need',
     detail:
@@ -20,41 +26,87 @@ export const thawFeatures = [
     title: 'Search from the keyboard',
     detail:
       'Find any menu bar item, hidden ones included, and open it. Recent items come first, and a shortcut opens an item by its letter.',
+    beta: 'Recent items first and opening by letter are in the Thaw 3 beta.',
   },
   {
     title: 'Groups and folders',
     detail:
       'Group items so they move and hide as one, even across sections. Show a group as a folder with its own icon and colour.',
+    beta: true,
   },
   {
     title: 'Profiles',
     detail:
       'Save a whole setup and switch in one step, or bind it to a display, a Space or a Focus. Thaw shows what a profile would change before you apply it.',
+    beta: 'Binding a profile to a Space is in the Thaw 3 beta.',
   },
   {
     title: 'Zen mode',
     detail:
       'One shortcut hides every section and locks the ways to reveal them, then puts it all back. It can switch on by itself while you present or share your screen.',
+    beta: true,
   },
   {
     title: 'Style the bar',
     detail:
       'Give the bar a shape, glass, a border, a shadow or a tint taken from your wallpaper. You can round the screen corners too, and keep a different look per Space or for light and dark.',
+    beta: 'Rounded screen corners and a look per Space are in the Thaw 3 beta.',
   },
   {
     title: 'Scriptable',
-    detail:
-      'Every action is a thaw:// link, a Shortcuts action and a command in thawctl, so launchers and scripts can drive it.',
+    detail: 'Drive Thaw with thaw:// links from a launcher, a shortcut or a script.',
+    beta: 'Shortcuts actions and Control Center controls are in the Thaw 3 beta.',
   },
   {
     title: 'A privacy pane',
     detail:
-      'See what Thaw reads from your screen and every network call it makes. Each one has its own switch.',
+      'See what Thaw reads from your screen and every network call it makes, and switch them off.',
+    beta: true,
   },
   {
     title: 'Layout editor',
     detail:
       'Arrange every item in one window, with the keyboard if you like. Rest on a tile and the item lights up in the real bar.',
+    beta: 'The editor in its own window is in the Thaw 3 beta. Thaw 2 has a Layout pane in Settings.',
+  },
+];
+
+/** The names in `thawAlso` that are only in the Thaw 3 beta, by the same reading. */
+export const betaOnly = new Set([
+  'Reveal on icon change',
+  'Spacer items',
+  'Stand-ins for Apple’s items',
+  'Rounded corners',
+  'Per-Space appearance',
+  'Per-Space profiles',
+  'Triggers for running apps',
+  'Spotlight actions',
+  'Controls in Control Center',
+  'Shortcuts actions',
+  'Simple Mode',
+  'Open by letter',
+  // Not in 2.0.1 either, by a reading of its source and not only its notes.
+  'Swap shown and hidden',
+  'Manual arrangement',
+  'Layout backups',
+  'Choose any item’s icon',
+  'Adaptive gradient tint',
+  'Gradient angle',
+  'Live Activities stay visible',
+]);
+
+/**
+ * Which Thaw a Mac runs, newest first. A major version is built for one macOS, so the
+ * macOS decides the version, and the version decides which of the features above it has.
+ */
+export const thawVersions = [
+  { thaw: 'Thaw 3', macos: 'macOS 27', channel: 'Beta', install: 'brew install thaw@beta' },
+  { thaw: 'Thaw 2', macos: 'macOS 26', channel: 'Stable', install: 'brew install thaw' },
+  {
+    thaw: 'Thaw 1',
+    macos: 'macOS 14 and 15',
+    channel: 'Earlier releases',
+    install: 'From the releases on GitHub',
   },
 ];
 
@@ -118,7 +170,6 @@ export const thawAlso: { group: string; names: (string | { name: string; href: s
       { name: 'Floe, with no setup', href: '/docs/floe' },
       { name: 'thaw:// links from any app', href: '/docs/thaw/uri-schemes' },
       'Shortcuts actions',
-      'thawctl in the terminal',
     ],
   },
   {

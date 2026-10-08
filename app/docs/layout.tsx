@@ -17,7 +17,10 @@ export default function Layout({ children }: LayoutProps<'/docs'>) {
             ([slug]) => tab.url === `${docsRoute}/${slug}`,
           )?.[1];
           if (!product) return tab;
-          return { ...tab, icon: <Image src={product.icon} alt="" className="size-full" /> };
+          return {
+            ...tab,
+            icon: <Image src={product.icon} alt="" width={36} className="size-full" />,
+          };
         },
       }}
       // Fumadocs centres the whole layout on a wide screen, which leaves the

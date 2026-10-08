@@ -10,6 +10,11 @@
 //   <PREFIX>_DOCS_DIR  path to a local checkout, to preview unpushed docs
 //   <PREFIX>_DOCS_REF  branch or tag to fetch when no checkout is given; the
 //                      default is the product's `ref` below
+//
+// The pages are what a build cannot do without. The numbers and lists the pages quote
+// (stars, downloads, the Verified values, the roadmap's issues, Built with) are refreshed
+// after them and are optional: each keeps its committed copy when it cannot be read, and
+// `--content` skips them altogether, which is what `next dev` and CI run.
 
 import { execFileSync } from 'node:child_process';
 import {
@@ -25,6 +30,7 @@ import { tmpdir } from 'node:os';
 import { join, posix } from 'node:path';
 import { builtWith } from './built-with.mjs';
 import { countCountries } from './countries.mjs';
+import { request } from './request.mjs';
 
 const contentDir = join(import.meta.dirname, '..', 'content', 'docs');
 
@@ -57,8 +63,9 @@ const products = [
       // The project's entry on bestpractices.dev, which holds its OpenSSF badge and Baseline level.
       bestPractices: 13303,
     },
-    // Pages this site writes itself, so the repo's file of the same name is not synced over
-    // them. The roadmap here says more than docs/ROADMAP.md does, for now.
+    // Pages this site writes itself, so the repo's file of the same name is not synced in.
+    // The roadmap is content/site/roadmap.mdx, drawn at /roadmap; it says more than
+    // docs/ROADMAP.md does, for now.
     writtenHere: ['roadmap'],
     // README sections the home page leaves out: it links to the docs itself, and the
     // contributors are on the community page and the licence in the footer.
@@ -244,7 +251,12 @@ function checkout({ slug, repo }, ref) {
 function clone(repo, ref, folders) {
   const root = mkdtempSync(join(tmpdir(), 'thaw-docs-'));
   const git = (...args) =>
-    execFileSync('git', args, { cwd: root, stdio: ['ignore', 'ignore', 'inherit'] });
+    // A clone that hangs would hang the build with it.
+    execFileSync('git', args, {
+      cwd: root,
+      stdio: ['ignore', 'ignore', 'inherit'],
+      timeout: 120_000,
+    });
   git(
     'clone',
     '--depth',
@@ -378,7 +390,7 @@ async function publishedReleases(repo, slug) {
   try {
     const all = [];
     for (let page = 1; ; page++) {
-      const response = await fetch(
+      const response = await request(
         `https://api.github.com/repos/${repo}/releases?per_page=100&page=${page}`,
         {
           headers: {
@@ -405,7 +417,8 @@ async function publishedReleases(repo, slug) {
   } catch (error) {
     if (existsSync(cache)) {
       console.warn(`${repo}: using the saved release list (${error.message}).`);
-      return JSON.parse(readFileSync(cache, 'utf8'));
+      // Marked, so a count taken from it is not dated today.
+      return Object.assign(JSON.parse(readFileSync(cache, 'utf8')), { stale: true });
     }
     console.warn(`${repo}: no release list (${error.message}); the changelog file alone is used.`);
     return [];
@@ -428,7 +441,7 @@ async function contributors({ repo, slug, contributorsSince, notPeople = [] }) {
     let stats;
     // GitHub answers 202 while it works the numbers out, and has them a moment later.
     for (let attempt = 0; attempt < 5 && !stats; attempt++) {
-      const response = await fetch(`https://api.github.com/repos/${repo}/stats/contributors`, {
+      const response = await request(`https://api.github.com/repos/${repo}/stats/contributors`, {
         headers: {
           Accept: 'application/vnd.github+json',
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -454,7 +467,7 @@ async function contributors({ repo, slug, contributorsSince, notPeople = [] }) {
   } catch (error) {
     if (existsSync(cache)) {
       console.warn(`${repo}: using the saved contributor list (${error.message}).`);
-      return JSON.parse(readFileSync(cache, 'utf8'));
+      return Object.assign(JSON.parse(readFileSync(cache, 'utf8')), { stale: true });
     }
     console.warn(`${repo}: no contributor list (${error.message}).`);
     return [];
@@ -520,7 +533,7 @@ async function whereFrom(repo, before, token) {
       // country of whoever opened it: someone with a hundred pull requests is a hundred.
       const places = [];
       for (let after = null; ; ) {
-        const response = await fetch('https://api.github.com/graphql', {
+        const response = await request('https://api.github.com/graphql', {
           method: 'POST',
           headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -547,6 +560,37 @@ async function whereFrom(repo, before, token) {
   }
 }
 
+/**
+ * How often the app itself was fetched from a list of releases: its disk images and
+ * archives, and the deltas its updater takes. The checksums, signatures and SBOMs
+ * attached beside them are read by tools checking a download, and are not downloads.
+ */
+function appDownloads(releases) {
+  let total = 0;
+  for (const release of releases) {
+    for (const asset of release.assets ?? []) {
+      if (/\.(dmg|zip|pkg|delta)$/i.test(asset.name)) total += asset.download_count;
+    }
+  }
+  return total;
+}
+
+/**
+ * What was just read, laid over what was known, with the day each was last really read.
+ * A source that could not be reached keeps its last value and its last day with it, so
+ * the pages can say how old a number is and never date a kept one today.
+ */
+function settle(fresh, before = {}, beforeDays = {}, today) {
+  const values = {};
+  const days = {};
+  for (const [key, value] of Object.entries(fresh)) {
+    const read = value !== null && value !== undefined;
+    values[key] = read ? value : before[key];
+    days[key] = read ? today : values[key] === undefined ? undefined : beforeDays[key];
+  }
+  return { values, days };
+}
+
 async function communityNumbers(product, published, people, root) {
   const file = join(contentDir, '..', '..', 'lib', 'community.json');
   const before = existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) : {};
@@ -554,14 +598,14 @@ async function communityNumbers(product, published, people, root) {
   const github = token ? { Authorization: `Bearer ${token}` } : {};
   const read = async (url, headers = {}) => {
     try {
-      const response = await fetch(url, { headers });
+      const response = await request(url, { headers });
       return response.ok ? await response.json() : null;
     } catch {
       return null;
     }
   };
   const { discordInvite, cask, updatesRepo, team = [], bestPractices } = product.community;
-  // Every file attached to every release of a repo, however many pages that takes.
+  // Every release of a repo, however many pages that takes.
   const downloadsOf = async (name) => {
     let total = 0;
     for (let page = 1; ; page++) {
@@ -570,9 +614,7 @@ async function communityNumbers(product, published, people, root) {
         github,
       );
       if (!Array.isArray(batch)) return null;
-      for (const release of batch) {
-        for (const asset of release.assets) total += asset.download_count;
-      }
+      total += appDownloads(batch);
       if (batch.length < 100) return total;
     }
   };
@@ -621,23 +663,53 @@ async function communityNumbers(product, published, people, root) {
   const baseline = practices
     ? [3, 2, 1].find((level) => practices[`badge_percentage_baseline_${level}`] === 100)
     : undefined;
+  const today = new Date().toISOString().slice(0, 10);
+  // A file from before each number had its own day has one day for all of them.
+  const beforeDays = before.readOn ?? {};
+  const dayOf = (key) => beforeDays[key] ?? before.checked;
+  const counts = settle(
+    {
+      stars: repo?.stargazers_count,
+      downloads: downloads || null,
+      homebrewYear: brew?.analytics?.install?.['365d']?.[cask],
+      discord: discord?.approximate_member_count,
+      // A list from .cache is the last one read, not today's.
+      contributors: people.stale ? null : people.length || null,
+      releases: published.stale ? null : published.length || null,
+    },
+    before,
+    Object.fromEntries(
+      ['stars', 'downloads', 'homebrewYear', 'discord', 'contributors', 'releases'].map((key) => [
+        key,
+        dayOf(key),
+      ]),
+    ),
+    today,
+  );
+  const outside = settle(
+    {
+      bestPractices: practices?.badge_level,
+      baseline,
+      scorecard: scorecard?.score,
+      coverage: Number.isFinite(covered) ? covered : null,
+      field,
+    },
+    before.assurance,
+    Object.fromEntries(
+      ['bestPractices', 'baseline', 'scorecard', 'coverage', 'field'].map((key) => [
+        key,
+        dayOf(key),
+      ]),
+    ),
+    today,
+  );
   const numbers = {
-    stars: repo?.stargazers_count ?? before.stars,
-    downloads: downloads || before.downloads,
-    homebrewYear: brew?.analytics?.install?.['365d']?.[cask] ?? before.homebrewYear,
-    discord: discord?.approximate_member_count ?? before.discord,
-    contributors: people.length || before.contributors,
-    releases: published.length || before.releases,
-    checked: new Date().toISOString().slice(0, 10),
+    ...counts.values,
+    // The day each number above and each Verified value below was last read from its source.
+    readOn: { ...counts.days, ...outside.days },
     people: people.length ? people : (before.people ?? []),
     team: profiles,
-    assurance: {
-      bestPractices: practices?.badge_level ?? before.assurance?.bestPractices,
-      baseline: baseline ?? before.assurance?.baseline,
-      scorecard: scorecard?.score ?? before.assurance?.scorecard,
-      coverage: Number.isFinite(covered) ? covered : before.assurance?.coverage,
-      field: field ?? before.assurance?.field,
-    },
+    assurance: outside.values,
     translators: translators(root) ?? before.translators ?? [],
     world: await whereFrom(product.repo, before.world?.checked ? before.world : null, token),
   };
@@ -649,7 +721,7 @@ async function communityNumbers(product, published, people, root) {
  * say so beside the link. One that cannot be read keeps what was known before.
  */
 async function roadmapIssues(product) {
-  const page = join(contentDir, product.slug, 'roadmap.mdx');
+  const page = join(contentDir, '..', 'site', 'roadmap.mdx');
   const file = join(contentDir, '..', '..', 'lib', 'roadmap-issues.json');
   const before = existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) : {};
   const numbers = existsSync(page)
@@ -664,7 +736,7 @@ async function roadmapIssues(product) {
   await Promise.all(
     numbers.map(async (number) => {
       try {
-        const response = await fetch(
+        const response = await request(
           `https://api.github.com/repos/${product.repo}/issues/${number}`,
           { headers: token ? { Authorization: `Bearer ${token}` } : {} },
         );
@@ -677,6 +749,41 @@ async function roadmapIssues(product) {
     }),
   );
   writeFileSync(file, `${JSON.stringify(states, null, 2)}\n`);
+}
+
+/**
+ * The feature requests open in the project's repository, most thumbs-up first, for the
+ * roadmap's "Asked for". GitHub's issue type tells a request from a bug. If they cannot be
+ * read, the last list stays.
+ */
+async function roadmapRequests(product) {
+  const file = join(contentDir, '..', '..', 'lib', 'roadmap-requests.json');
+  const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
+  const query = new URLSearchParams({
+    q: `repo:${product.repo} is:issue is:open type:Feature`,
+    sort: 'reactions-+1',
+    order: 'desc',
+    per_page: '12',
+  });
+  try {
+    const response = await request(`https://api.github.com/search/issues?${query}`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    if (!response.ok) throw new Error(String(response.status));
+    const found = (await response.json()).items
+      // A request about how the project is run is not one for the app.
+      .filter((issue) => !issue.labels.some((label) => label.name === 'ops'))
+      .map((issue) => ({
+        number: issue.number,
+        // The issue form puts what kind of issue it is in front of every title.
+        title: issue.title.replace(/^\s*\[[^\]]*\]\s*/, '').trim(),
+        votes: issue.reactions?.['+1'] ?? 0,
+      }));
+    writeFileSync(file, `${JSON.stringify(found, null, 2)}\n`);
+  } catch (error) {
+    console.warn(`  could not read ${product.repo}'s feature requests (${error.message})`);
+    if (!existsSync(file)) writeFileSync(file, '[]\n');
+  }
 }
 
 /** Release notes written on GitHub, shaped like a changelog section's body. */
@@ -997,124 +1104,164 @@ function writeChangelog(markdown, repoPath, outDir, product, rewrite, published)
   return order;
 }
 
-async function main() {
-  for (const product of products) {
-    const { slug: productSlug, repo, extraPages } = product;
-    const prefix = productSlug.toUpperCase();
-    const ref = process.env[`${prefix}_DOCS_REF`] || product.ref;
-    const outDir = join(contentDir, productSlug);
-    const { root, cleanup } = checkout(product, ref);
-    const other = clone(shared.repo, shared.ref, ['.github']);
-    const published = await publishedReleases(repo, productSlug);
-    const people = product.contributorsSince ? await contributors(product) : [];
-    if (product.community) await communityNumbers(product, published, people, root);
-    if (product.writtenHere?.includes('roadmap')) await roadmapIssues(product);
-    try {
-      // Every page to write: where its file is, and which repo it came from.
-      const own = [
-        ...readdirSync(join(root, 'docs'))
-          .filter((name) => name.endsWith('.md'))
-          .map((name) => `docs/${name}`),
-        ...Object.keys(extraPages).filter((path) => existsSync(join(root, path))),
-      ].map((path) => ({ path, root, repo, ref, slug: slugOf(path, extraPages) }));
-      const borrowed = Object.entries(shared.pages)
-        .filter(([path]) => existsSync(join(other.root, path)))
-        .map(([path, slug]) => ({
-          path,
-          root: other.root,
-          repo: shared.repo,
-          ref: shared.ref,
-          slug,
-        }));
-      const sources = [...own, ...borrowed];
-      const slugs = new Map(sources.map((source) => [source.path, source.slug]));
-
-      // Everything this script wrote last time; .mdx pages and meta.json are kept.
-      const generated = (dir) =>
-        existsSync(dir) ? readdirSync(dir).filter((name) => name.endsWith('.md')) : [];
-      for (const name of generated(outDir)) rmSync(join(outDir, name));
-      rmSync(join(outDir, 'contribute'), { recursive: true, force: true });
-      // readme.mdx and roadmap.mdx are written over in place: removing them first makes a
-      // running dev server lose the page for a moment, and sometimes for good.
-      // The shared pages written in this repo, pointed at this product's docs.
-      for (const name of readdirSync(shared.dir, { recursive: true })) {
-        const from = join(shared.dir, name);
-        if (!/\.(mdx|json)$/.test(name)) continue;
-        mkdirSync(join(outDir, name, '..'), { recursive: true });
-        writeFileSync(
-          join(outDir, name),
-          readFileSync(from, 'utf8').replaceAll('{{docs}}', `/docs/${productSlug}`),
-        );
-      }
-      rmSync(join(outDir, 'changelog'), { recursive: true, force: true });
-      let releaseCount = 0;
-
-      for (const source of sources) {
-        const { path: repoPath, slug } = source;
-        const links = { product: productSlug, repo: source.repo, ref: source.ref };
-        const markdown = readFileSync(join(source.root, repoPath), 'utf8');
-        if (slug === 'changelog') {
-          const rewrite = (body) => rewriteLinks(body, repoPath, slugs, links);
-          releaseCount = writeChangelog(markdown, repoPath, outDir, product, rewrite, published);
-          continue;
-        }
-        if (product.writtenHere?.includes(slug)) continue;
-        if (slug === 'readme') {
-          writeFileSync(
-            // As MDX, so the README's own HTML (its folded list, its table) is kept.
-            join(outDir, 'readme.mdx'),
-            `${[
-              '---',
-              `title: ${JSON.stringify(`${product.name} readme`)}`,
-              `description: ${JSON.stringify(`The README of the ${product.name} repository.`)}`,
-              `source: ${JSON.stringify(repoPath)}`,
-              '---',
-              '',
-            ].join('\n')}${rewriteLinks(readmeBody(markdown, product), repoPath, slugs, links)}`,
-          );
-          continue;
-        }
-        const { title, body } = splitTitle(markdown, slug);
-        const description = describe(body);
-        const frontmatter = [
-          '---',
-          `title: ${JSON.stringify(product.titles[slug] ?? shared.titles[slug] ?? title)}`,
-          ...(description ? [`description: ${JSON.stringify(description)}`] : []),
-          ...((product.icons[slug] ?? shared.icons[slug])
-            ? [`icon: ${product.icons[slug] ?? shared.icons[slug]}`]
-            : []),
-          `source: ${JSON.stringify(repoPath)}`,
-          // Where to open the file, for a page whose file is not in the product's own repo.
-          ...(source.repo === repo
-            ? []
-            : [
-                'shared: true',
-                `sourceUrl: ${JSON.stringify(`https://github.com/${source.repo}/blob/${source.ref}/${repoPath}`)}`,
-              ]),
-          '---',
-          '',
-        ].join('\n');
-        // The roadmap is written as MDX, so its lists can be drawn as a board.
-        const file = join(outDir, slug === 'roadmap' ? 'roadmap.mdx' : `${slug}.md`);
-        mkdirSync(join(file, '..'), { recursive: true });
-        const linked = rewriteLinks(body, repoPath, slugs, links);
-        writeFileSync(file, frontmatter + (slug === 'roadmap' ? roadmapBody(linked) : linked));
-      }
-
-      console.log(
-        `Synced ${sources.length} ${productSlug} pages and ${releaseCount} releases from ${process.env[`${prefix}_DOCS_DIR`] ?? `${repo}@${ref}`}`,
-      );
-    } finally {
-      cleanup();
-      other.cleanup();
+/**
+ * The numbers and lists a product's pages quote. None of it is needed to build: whatever
+ * cannot be read keeps the copy in lib/, and a failure here is said and passed over.
+ */
+async function refreshNumbers(product, published, root) {
+  const jobs = [];
+  if (product.community) {
+    jobs.push(
+      (async () => {
+        const people = product.contributorsSince ? await contributors(product) : [];
+        await communityNumbers(product, published, people, root);
+      })(),
+    );
+  }
+  if (product.writtenHere?.includes('roadmap')) {
+    jobs.push(roadmapIssues(product), roadmapRequests(product));
+  }
+  for (const result of await Promise.allSettled(jobs)) {
+    if (result.status === 'rejected') {
+      console.warn(`${product.repo}: a number was not refreshed (${result.reason?.message}).`);
     }
+  }
+}
+
+async function main() {
+  const contentOnly = process.argv.includes('--content');
+  // The organisation's policies are the same for every product, so they are fetched once.
+  const other = clone(shared.repo, shared.ref, ['.github']);
+  try {
+    for (const product of products) await syncProduct(product, other, contentOnly);
+  } finally {
+    other.cleanup();
   }
 
   // Last, what all of it is made with.
-  await builtWith();
+  if (!contentOnly) await builtWith();
+}
+
+async function syncProduct(product, other, contentOnly) {
+  const { slug: productSlug, repo, extraPages } = product;
+  const prefix = productSlug.toUpperCase();
+  const ref = process.env[`${prefix}_DOCS_REF`] || product.ref;
+  const outDir = join(contentDir, productSlug);
+  const { root, cleanup } = checkout(product, ref);
+  const published = await publishedReleases(repo, productSlug);
+  try {
+    // Every page to write: where its file is, and which repo it came from.
+    const own = [
+      ...readdirSync(join(root, 'docs'))
+        .filter((name) => name.endsWith('.md'))
+        .map((name) => `docs/${name}`),
+      ...Object.keys(extraPages).filter((path) => existsSync(join(root, path))),
+    ].map((path) => ({ path, root, repo, ref, slug: slugOf(path, extraPages) }));
+    const borrowed = Object.entries(shared.pages)
+      .filter(([path]) => existsSync(join(other.root, path)))
+      .map(([path, slug]) => ({
+        path,
+        root: other.root,
+        repo: shared.repo,
+        ref: shared.ref,
+        slug,
+      }));
+    const sources = [...own, ...borrowed];
+    const slugs = new Map(sources.map((source) => [source.path, source.slug]));
+
+    // Everything this script wrote last time; .mdx pages and meta.json are kept.
+    const generated = (dir) =>
+      existsSync(dir) ? readdirSync(dir).filter((name) => name.endsWith('.md')) : [];
+    for (const name of generated(outDir)) rmSync(join(outDir, name));
+    rmSync(join(outDir, 'contribute'), { recursive: true, force: true });
+    // readme.mdx and roadmap.mdx are written over in place: removing them first makes a
+    // running dev server lose the page for a moment, and sometimes for good.
+    // The shared pages written in this repo, pointed at this product's docs.
+    for (const name of readdirSync(shared.dir, { recursive: true })) {
+      const from = join(shared.dir, name);
+      if (!/\.(mdx|json)$/.test(name)) continue;
+      mkdirSync(join(outDir, name, '..'), { recursive: true });
+      writeFileSync(
+        join(outDir, name),
+        readFileSync(from, 'utf8').replaceAll('{{docs}}', `/docs/${productSlug}`),
+      );
+    }
+    rmSync(join(outDir, 'changelog'), { recursive: true, force: true });
+    let releaseCount = 0;
+
+    for (const source of sources) {
+      const { path: repoPath, slug } = source;
+      const links = { product: productSlug, repo: source.repo, ref: source.ref };
+      const markdown = readFileSync(join(source.root, repoPath), 'utf8');
+      if (slug === 'changelog') {
+        const rewrite = (body) => rewriteLinks(body, repoPath, slugs, links);
+        releaseCount = writeChangelog(markdown, repoPath, outDir, product, rewrite, published);
+        continue;
+      }
+      if (product.writtenHere?.includes(slug)) continue;
+      if (slug === 'readme') {
+        writeFileSync(
+          // As MDX, so the README's own HTML (its folded list, its table) is kept.
+          join(outDir, 'readme.mdx'),
+          `${[
+            '---',
+            `title: ${JSON.stringify(`${product.name} readme`)}`,
+            `description: ${JSON.stringify(`The README of the ${product.name} repository.`)}`,
+            `source: ${JSON.stringify(repoPath)}`,
+            '---',
+            '',
+          ].join('\n')}${rewriteLinks(readmeBody(markdown, product), repoPath, slugs, links)}`,
+        );
+        continue;
+      }
+      const { title, body } = splitTitle(markdown, slug);
+      const description = describe(body);
+      const frontmatter = [
+        '---',
+        `title: ${JSON.stringify(product.titles[slug] ?? shared.titles[slug] ?? title)}`,
+        ...(description ? [`description: ${JSON.stringify(description)}`] : []),
+        ...((product.icons[slug] ?? shared.icons[slug])
+          ? [`icon: ${product.icons[slug] ?? shared.icons[slug]}`]
+          : []),
+        `source: ${JSON.stringify(repoPath)}`,
+        // Where to open the file, for a page whose file is not in the product's own repo.
+        ...(source.repo === repo
+          ? []
+          : [
+              'shared: true',
+              `sourceUrl: ${JSON.stringify(`https://github.com/${source.repo}/blob/${source.ref}/${repoPath}`)}`,
+            ]),
+        '---',
+        '',
+      ].join('\n');
+      // The roadmap is written as MDX, so its lists can be drawn as a board.
+      const file = join(outDir, slug === 'roadmap' ? 'roadmap.mdx' : `${slug}.md`);
+      mkdirSync(join(file, '..'), { recursive: true });
+      const linked = rewriteLinks(body, repoPath, slugs, links);
+      writeFileSync(file, frontmatter + (slug === 'roadmap' ? roadmapBody(linked) : linked));
+    }
+
+    console.log(
+      `Synced ${sources.length} ${productSlug} pages and ${releaseCount} releases from ${process.env[`${prefix}_DOCS_DIR`] ?? `${repo}@${ref}`}`,
+    );
+    // After the pages, and while the checkout is still there to read CREDITS.md from.
+    if (!contentOnly) await refreshNumbers(product, published, root);
+  } finally {
+    cleanup();
+  }
 }
 
 // Imported by its tests, this file does nothing; run, it syncs.
 if (import.meta.main) await main();
 
-export { channelOf, linkMentions, longDate, parseTag, splitReleases, stageRank, tidyNotes };
+export {
+  appDownloads,
+  channelOf,
+  linkMentions,
+  longDate,
+  parseTag,
+  settle,
+  splitReleases,
+  stageRank,
+  tidyNotes,
+};

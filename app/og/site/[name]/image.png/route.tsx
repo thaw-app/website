@@ -9,11 +9,15 @@ export const revalidate = false;
 const cards: Record<string, { title: string; description: string }> = {
   home: {
     title: 'The open source menu bar manager for macOS',
-    description: 'Hide the menu bar items you don’t need. Free under GPL-3.0.',
+    description: 'Take back your menu bar. Free under GPL-3.0, with no tracking and no account.',
   },
   community: {
     title: 'Thaw is built by the people who use it',
     description: 'Thaw in numbers, where its people are, and who has contributed.',
+  },
+  roadmap: {
+    title: 'What we’re building',
+    description: 'What is being worked on now, what comes next, and what has shipped.',
   },
   verified: {
     title: 'Privacy only works if the security around it does',

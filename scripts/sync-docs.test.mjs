@@ -93,3 +93,50 @@ test('release notes have their headings brought up to start at the second level'
 test('a date is written day first, as the pages write theirs', () => {
   expect(longDate('2026-10-07')).toBe('7 October 2026');
 });
+
+// What the pages state as fact. Both of these fail quietly too: a wrong count or a wrong
+// date still renders.
+const { appDownloads, settle } = await import('./sync-docs.mjs');
+
+test('only the app and its updates count as downloads', () => {
+  const releases = [
+    {
+      assets: [
+        { name: 'Thaw.dmg', download_count: 100 },
+        { name: 'Thaw_2.0.1.zip', download_count: 40 },
+        { name: 'Thaw2-1.delta', download_count: 7 },
+        { name: 'Thaw.dmg.sigstore.json', download_count: 3 },
+        { name: 'Thaw_2.0.1.cdx.json', download_count: 5 },
+        { name: 'Thaw_2.0.1.cdx.json.sha256', download_count: 5 },
+        { name: 'Thaw_2.0.1.cdx.json.intoto.jsonl', download_count: 5 },
+      ],
+    },
+    // A release with nothing attached, as a tag-only one has.
+    { assets: [] },
+    {},
+  ];
+  expect(appDownloads(releases)).toBe(147);
+});
+
+test('a number that could not be read keeps its value and the day it was read', () => {
+  const { values, days } = settle(
+    { stars: 12_000, downloads: null, discord: undefined, homebrewYear: 0 },
+    { stars: 11_000, downloads: 300_000, discord: 340 },
+    { stars: '2026-10-01', downloads: '2026-10-01', discord: '2026-09-20' },
+    '2026-10-08',
+  );
+  expect(values).toEqual({ stars: 12_000, downloads: 300_000, discord: 340, homebrewYear: 0 });
+  // Read today, kept from the 1st, kept from September; and a real zero is a reading.
+  expect(days).toEqual({
+    stars: '2026-10-08',
+    downloads: '2026-10-01',
+    discord: '2026-09-20',
+    homebrewYear: '2026-10-08',
+  });
+});
+
+test('a number never read has no value and no day', () => {
+  const { values, days } = settle({ scorecard: null }, {}, {}, '2026-10-08');
+  expect(values.scorecard).toBeUndefined();
+  expect(days.scorecard).toBeUndefined();
+});

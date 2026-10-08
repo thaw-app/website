@@ -1,11 +1,13 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Contributors } from '@/components/contributors';
+import { Lead, PageHeader } from '@/components/page-header';
 import { PageShell } from '@/components/page-shell';
 import { SectionLabel } from '@/components/section-label';
 import { WorldMap } from '@/components/world-map';
 import community from '@/lib/community.json';
 import { compact, docsRoute, links, longDate, repoUrl } from '@/lib/shared';
+import { readDays } from '@/lib/verified';
 
 export const metadata: Metadata = {
   openGraph: { images: '/og/site/community/image.png' },
@@ -26,10 +28,21 @@ const translatorCount = new Set(
   ),
 ).size;
 
+// The day the numbers were read, and any kept from an earlier day.
+const counted = readDays(community.readOn, {
+  stars: 'Stars',
+  downloads: 'Downloads',
+  homebrewYear: 'Homebrew installs',
+  contributors: 'Contributors',
+  releases: 'Releases',
+  discord: 'Discord members',
+});
+
 // Every number is fetched when the site is built; one that could not be is left out.
 const numbers = [
   { label: 'GitHub stars', value: community.stars, unit: 'on thaw-app/Thaw' },
-  { label: 'Downloads', value: community.downloads, unit: 'releases and in-app updates' },
+  // Every fetch of the app or of an update to it: one person on ten releases is ten.
+  { label: 'Downloads', value: community.downloads, unit: 'of the app and its updates' },
   { label: 'Homebrew installs', value: community.homebrewYear, unit: 'in the last year' },
   {
     label: 'Countries',
@@ -80,15 +93,12 @@ const ways = [
 export default function CommunityPage() {
   return (
     <PageShell>
-      <header className="flex flex-col gap-4">
-        <h1 className="font-display text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
-          Thaw is built by the people who use it.
-        </h1>
-        <p className="max-w-2xl text-lg text-fd-muted-foreground text-pretty">
+      <PageHeader label="Community" title="Thaw is built by the people who use it.">
+        <Lead>
           Thaw is free and open source. The people who use it report its bugs, write its fixes and
           translate it.
-        </p>
-      </header>
+        </Lead>
+      </PageHeader>
 
       <section className="flex flex-col gap-6">
         <SectionLabel>In numbers</SectionLabel>
@@ -104,7 +114,9 @@ export default function CommunityPage() {
           ))}
         </dl>
         <p className="text-sm text-fd-muted-foreground">
-          Counted on {longDate(community.checked)}.{' '}
+          {counted.day && `Counted on ${longDate(counted.day)}. `}
+          {counted.older.map((entry) => `${entry.name} are from ${longDate(entry.day)}. `)}
+          Downloads count each time the app or an update was fetched, not how many people use it.{' '}
           <a href="https://trendshift.io/repositories/21173" className="tap link">
             Trendshift
           </a>{' '}

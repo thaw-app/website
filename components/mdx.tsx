@@ -5,7 +5,7 @@ import { Assurance } from './assurance';
 import { FeatureList } from './feature-list';
 import { InstallTabs } from './install-tabs';
 import { Mermaid } from './mermaid';
-import { Issue, Roadmap, RoadmapGroup, RoadmapList } from './roadmap';
+import { Issue, Roadmap, RoadmapGroup, RoadmapList, RoadmapRequests } from './roadmap';
 
 /**
  * The synced docs embed images from GitHub and other hosts. Those go out as
@@ -32,6 +32,7 @@ export function getMDXComponents(components?: MDXComponents) {
     Roadmap,
     RoadmapGroup,
     RoadmapList,
+    RoadmapRequests,
     img: DocsImage,
     ...components,
   } satisfies MDXComponents;

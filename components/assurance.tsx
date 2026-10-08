@@ -1,79 +1,25 @@
 import Link from 'next/link';
 import community from '@/lib/community.json';
-import { compact, docsRoute, longDate, products } from '@/lib/shared';
+import { compact, longDate } from '@/lib/shared';
+import { readDays, verifiedFrom } from '@/lib/verified';
 
 const plain = new Intl.NumberFormat('en');
-const repo = products.thaw.repo;
 const { assurance } = community;
 
-// What outside bodies have verified about how Thaw is built and released. Each is read
-// from its source when the site is built, apart from the SLSA level, which the release
-// pipeline documents; one that could not be read is left out.
-// The colours the bodies' own badges use: gold for the Gold badge, green for a pass.
-const gold = 'var(--verified-gold)';
-const green = 'var(--verified-green)';
+// What outside bodies have verified about how Thaw is built and released.
+export const verified = verifiedFrom(assurance);
 
-export interface Verified {
-  value: string;
-  label: string;
-  detail: string;
-  href: string;
-  /** A level out of so many, drawn as that many steps. */
-  steps?: number;
-  reached?: number;
-  /** A score as a share of its full mark, drawn as one bar. */
-  share?: number;
-  tone: string;
-}
-
-const candidates: (Verified | false | undefined | null | 0 | '')[] = [
-  {
-    value: 'Level 3',
-    label: 'SLSA build',
-    detail: 'Every release comes with a signed record you can check.',
-    steps: 3,
-    reached: 3,
-    tone: green,
-    href: `${docsRoute}/thaw/verifying-releases`,
-  },
-  assurance.bestPractices && {
-    value: assurance.bestPractices.charAt(0).toUpperCase() + assurance.bestPractices.slice(1),
-    label: 'OpenSSF Best Practices',
-    detail: 'The highest of its three badges.',
-    steps: 3,
-    reached: ['passing', 'silver', 'gold'].indexOf(assurance.bestPractices) + 1,
-    tone: assurance.bestPractices === 'gold' ? gold : green,
-    href: 'https://www.bestpractices.dev/projects/13303',
-  },
-  assurance.baseline && {
-    value: `Level ${assurance.baseline}`,
-    label: 'OpenSSF Baseline',
-    detail: 'Thaw meets every control at the top level.',
-    steps: 3,
-    reached: assurance.baseline,
-    tone: green,
-    href: 'https://www.bestpractices.dev/projects/13303',
-  },
-  typeof assurance.scorecard === 'number' && {
-    value: `${assurance.scorecard} / 10`,
-    label: 'OpenSSF Scorecard',
-    detail: 'OpenSSF scores the repository every week.',
-    share: assurance.scorecard / 10,
-    tone: green,
-    href: `https://scorecard.dev/viewer/?uri=github.com/${repo}`,
-  },
-  typeof assurance.coverage === 'number' && {
-    value: `${assurance.coverage}%`,
-    label: 'Test coverage',
-    detail: 'SonarQube Cloud measures it on every change.',
-    share: assurance.coverage / 100,
-    tone: green,
-    href: `https://sonarcloud.io/component_measures?id=${repo.replace('/', '_')}&metric=coverage`,
-  },
-];
-export const verified = candidates.filter((entry): entry is Verified => Boolean(entry));
+// The sentence that counts Thaw among the Gold and Level 3 projects is only true of one.
+const amongTheFew = assurance.bestPractices === 'gold' && assurance.baseline === 3;
 
 const stepped = verified.length === 5;
+
+const read = readDays(community.readOn, {
+  bestPractices: 'the Best Practices badge',
+  baseline: 'the Baseline level',
+  scorecard: 'the Scorecard',
+  coverage: 'test coverage',
+});
 
 const numbers = [
   { value: community.stars, label: 'GitHub stars' },
@@ -104,7 +50,8 @@ export function Assurance() {
               {' '}
               Of the {plain.format(assurance.field.projects)} projects on OpenSSF’s Best Practices
               list, {assurance.field.gold} hold Gold and {assurance.field.baseline3} meet every
-              Baseline control at Level 3. Thaw, a free menu bar app, is one of them.
+              Baseline control at Level 3.
+              {amongTheFew && ' Thaw, a free menu bar app, is one of them.'}
             </>
           )}
         </p>
@@ -114,7 +61,7 @@ export function Assurance() {
         >
           {verified.map((entry, index) => (
             <li
-              key={entry.label}
+              key={entry.id}
               className={`border-r border-b ${stepped ? (index < 2 ? 'sm:col-span-3' : 'sm:col-span-2') : ''}`}
             >
               <Link
@@ -145,14 +92,19 @@ export function Assurance() {
                     </span>
                   )}
                 </span>
+                {/* What the value means, in a line. */}
                 <span className="text-sm text-fd-muted-foreground text-pretty">{entry.detail}</span>
               </Link>
             </li>
           ))}
         </ul>
         <p className="mt-3 text-sm text-fd-muted-foreground text-pretty">
-          Read from OpenSSF and SonarQube Cloud on {longDate(community.checked)}. The SLSA level is
-          the one Thaw’s release pipeline is built to.
+          {read.day && `Read from OpenSSF and SonarQube Cloud on ${longDate(read.day)}. `}
+          {/* One whose source could not be reached since is an older reading, and says so. */}
+          {read.older.map(
+            (entry) => `The value for ${entry.name} is from ${longDate(entry.day)}. `,
+          )}
+          The SLSA level is the one Thaw’s release pipeline is built to.
         </p>
         <Link
           href="/verified"

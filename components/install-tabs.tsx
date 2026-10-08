@@ -2,7 +2,7 @@
 
 import { Check, Copy } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { type KeyboardEvent, useId, useRef, useState } from 'react';
 import { docsRoute } from '@/lib/shared';
 
 // Named by the macOS a visitor is on, which they know, not by the version of Thaw, which
@@ -49,7 +49,15 @@ const screenRecording = {
   detail: 'It gives you live previews and a tint from your wallpaper. Hiding works without it.',
 };
 const factsFor = {
-  'macos-26': [accessibility, screenRecording],
+  // Thaw 2 cannot draw another app's item without it; Thaw 3 falls back to the app's icon.
+  'macos-26': [
+    accessibility,
+    {
+      ...screenRecording,
+      detail:
+        'Hiding works without it. The Thaw Bar, search and the Layout settings need it to show your items.',
+    },
+  ],
   'macos-27': [accessibility, layoutAccess, screenRecording],
   // Either release may be the one downloaded, so the one that is not always asked says when.
   download: [accessibility, { ...layoutAccess, label: 'Needs, on macOS 27' }, screenRecording],
@@ -61,6 +69,24 @@ export function InstallTabs() {
   const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>('idle');
   const way = ways.find((candidate) => candidate.id === chosen) ?? ways[0];
   const facts = factsFor[way.id];
+  const base = useId();
+  const tabs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  // Tabs as a keyboard expects them: one stop for the whole list, and the arrow keys,
+  // Home and End move between tabs, choosing each as it is reached.
+  function onTabKey(event: KeyboardEvent<HTMLButtonElement>, index: number) {
+    const last = ways.length - 1;
+    const to = {
+      ArrowRight: index === last ? 0 : index + 1,
+      ArrowLeft: index === 0 ? last : index - 1,
+      Home: 0,
+      End: last,
+    }[event.key];
+    if (to === undefined) return;
+    event.preventDefault();
+    setChosen(ways[to].id);
+    tabs.current[to]?.focus();
+  }
 
   async function copy(command: string) {
     // A browser can refuse the clipboard, for one when the page is not in focus.
@@ -77,13 +103,20 @@ export function InstallTabs() {
     <div className="not-prose my-6">
       <div className="border">
         <div role="tablist" aria-label="Ways to install Thaw" className="flex gap-5 border-b px-4">
-          {ways.map(({ id, label }) => (
+          {ways.map(({ id, label }, index) => (
             <button
               key={id}
+              ref={(element) => {
+                tabs.current[index] = element;
+              }}
               type="button"
               role="tab"
+              id={`${base}-tab-${id}`}
               aria-selected={id === chosen}
+              aria-controls={`${base}-panel`}
+              tabIndex={id === chosen ? 0 : -1}
               onClick={() => setChosen(id)}
+              onKeyDown={(event) => onTabKey(event, index)}
               className={`tap -mb-px border-b py-2.5 text-sm whitespace-nowrap transition-colors ${
                 id === chosen
                   ? 'border-fd-foreground text-fd-foreground'
@@ -95,7 +128,12 @@ export function InstallTabs() {
           ))}
         </div>
 
-        <div role="tabpanel" className="flex flex-col gap-2.5 px-4 py-4">
+        <div
+          role="tabpanel"
+          id={`${base}-panel`}
+          aria-labelledby={`${base}-tab-${way.id}`}
+          className="flex flex-col gap-2.5 px-4 py-4"
+        >
           {'command' in way ? (
             <>
               <p className="text-sm text-fd-muted-foreground">

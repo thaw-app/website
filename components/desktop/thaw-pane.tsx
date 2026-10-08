@@ -711,6 +711,7 @@ export function Pane({ pane, values, onChange, onInert, onNotice, shift, childre
                   key={key}
                   src={products.thaw.icon}
                   alt=""
+                  width={96}
                   className="thaw-el"
                   style={frame(item, { filter: 'none' })}
                 />

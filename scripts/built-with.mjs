@@ -4,6 +4,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { request } from './request.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const file = join(root, 'lib', 'built-with.json');
@@ -32,7 +33,7 @@ const licenses = {
 };
 
 const raw = async ({ repo, ref }, path) => {
-  const response = await fetch(`https://raw.githubusercontent.com/${repo}/${ref}/${path}`);
+  const response = await request(`https://raw.githubusercontent.com/${repo}/${ref}/${path}`);
   if (!response.ok) throw new Error(`GitHub answered ${response.status} for ${path}`);
   return response.text();
 };
@@ -62,7 +63,7 @@ async function swiftPackages(token, before = []) {
       let license = licenses[slug] ?? before.find((entry) => entry.url === url)?.license ?? null;
       // Asked once per package and then kept: unsigned, GitHub answers only sixty an hour.
       if (!license) {
-        const answer = await fetch(`https://api.github.com/repos/${slug}/license`, { headers });
+        const answer = await request(`https://api.github.com/repos/${slug}/license`, { headers });
         const spdx = answer.ok ? (await answer.json()).license?.spdx_id : null;
         license = spdx && spdx !== 'NOASSERTION' ? spdx : null;
       }
@@ -100,7 +101,7 @@ async function javascriptPackages(before = []) {
       before.find((item) => item.name === name)?.license ??
       null;
     if (!license) {
-      const answer = await fetch(`https://registry.npmjs.org/${name}/latest`);
+      const answer = await request(`https://registry.npmjs.org/${name}/latest`);
       license = answer.ok ? ((await answer.json()).license ?? null) : null;
     }
     // Floe names a range; the number in it is the least it will take.
@@ -118,7 +119,7 @@ async function rustCrates(before = []) {
   for (const [, name, version] of section.matchAll(/^([\w-]+)\s*=\s*"([^"]+)"/gm)) {
     let license = before.find((item) => item.name === name)?.license ?? null;
     if (!license) {
-      const answer = await fetch(`https://crates.io/api/v1/crates/${name}`, {
+      const answer = await request(`https://crates.io/api/v1/crates/${name}`, {
         // crates.io refuses a request that does not say who is asking.
         headers: { 'User-Agent': 'thaw-app website sync (https://github.com/thaw-app)' },
       });

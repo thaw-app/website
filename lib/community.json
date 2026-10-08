@@ -1,11 +1,23 @@
 {
-  "stars": 11847,
-  "downloads": 366024,
+  "stars": 11854,
+  "downloads": 365010,
   "homebrewYear": 27845,
   "discord": 343,
   "contributors": 58,
   "releases": 75,
-  "checked": "2026-10-08",
+  "readOn": {
+    "stars": "2026-10-08",
+    "downloads": "2026-10-08",
+    "homebrewYear": "2026-10-08",
+    "discord": "2026-10-08",
+    "contributors": "2026-10-08",
+    "releases": "2026-10-08",
+    "bestPractices": "2026-10-08",
+    "baseline": "2026-10-08",
+    "scorecard": "2026-10-08",
+    "coverage": "2026-10-08",
+    "field": "2026-10-08"
+  },
   "people": [
     {
       "login": "stonerl",

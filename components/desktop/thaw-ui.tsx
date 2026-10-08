@@ -352,7 +352,7 @@ export function Alert({
   const hasDefault = buttons.some((button) => button.kind === 'default');
   return (
     <Sheet label={title} onCancel={onClose} className="w-[260px] items-center px-4 pt-5 pb-4">
-      <Image src={icon} alt="" className="size-14" />
+      <Image src={icon} alt="" width={56} className="size-14" />
       <p className="mt-3 text-center font-bold">{title}</p>
       {message && (
         <p className={`mt-1.5 text-center text-[11px] leading-[14px] whitespace-pre-line ${dim}`}>

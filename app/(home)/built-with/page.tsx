@@ -3,6 +3,7 @@ import Image, { type StaticImageData } from 'next/image';
 import Link from 'next/link';
 import fumadocs from '@/assets/stack/fumadocs.png';
 import shieldcn from '@/assets/stack/shieldcn.png';
+import { Lead, PageHeader } from '@/components/page-header';
 import { PageShell } from '@/components/page-shell';
 import { SectionLabel } from '@/components/section-label';
 import built from '@/lib/built-with.json';
@@ -162,7 +163,7 @@ const ours = [
 ];
 
 // What is owed that the lists above do not already say. The first two are the ones Thaw's
-// own Acknowledgements name.
+// own Acknowledgements name; Floe's follow.
 const thanks = [
   {
     to: 'Ice, by Jordan Baird',
@@ -175,26 +176,17 @@ const thanks = [
       'Thaw 3’s live system readings and the way it publishes several menu bar items are adapted from Barometer, under the GNU GPLv3 and with permission.',
     href: 'https://github.com/mackid1993/Barometer',
   },
+  // Floe's own, from the "Built from" list in its CREDITS.md.
   {
-    to: 'Everyone who contributes',
-    forWhat: 'Code, documentation and translations. They are listed by name on the community page.',
-    href: '/community',
-  },
-  {
-    to: 'shieldcn',
+    to: 'Droppy Code, by Jordy Spruit',
     forWhat:
-      'They added what our badges needed from a pull request we sent, and their maintainer uses Thaw.',
-    href: 'https://www.shieldcn.dev',
+      'Floe’s login shell environment, its process runner, the tools that answer Ask AI, its hang watchdog and the folder watcher behind hot reload come from Droppy Code, each changed for Floe and used with his permission.',
+    href: 'https://getdroppycode.app',
   },
   {
     to: 'Natural Earth',
     forWhat: 'The outline of the world on the community page’s map, which is in the public domain.',
     href: 'https://www.naturalearthdata.com',
-  },
-  {
-    to: 'Vercel and Anthropic',
-    forWhat: 'Thaw is part of the Vercel OSS Program and the Claude Open Source Program.',
-    href: 'https://vercel.com/open-source-program',
   },
 ];
 
@@ -206,11 +198,18 @@ interface Package {
   users: Partial<Record<User, string | null>>;
 }
 
-// Every package in one list, by what it is written in.
+// What "Made with" already names is not listed a second time as a package, and type
+// definitions are left out: they are part of how the code is checked, not of what ships.
+const namedAbove =
+  /^(next|react|react-dom|tailwindcss|@tailwindcss\/.*|fumadocs-.*|@fumadocs\/.*)$/;
+const shown = (list: Package[]) =>
+  list.filter((item) => !item.name.startsWith('@types/') && !namedAbove.test(item.name));
+
+// The packages in one list each, by what they are written in.
 const packages: { title: string; list: Package[] }[] = [
   { title: 'Swift packages', list: built.swift },
   { title: 'Rust crates', list: built.rust },
-  { title: 'JavaScript packages', list: built.javascript },
+  { title: 'JavaScript packages', list: shown(built.javascript) },
 ];
 
 /** Who uses something, as small quiet tags. */
@@ -238,7 +237,7 @@ function Tools({ tools }: { tools: Tool[] }) {
                   <path d={stackMarks[tool.mark]} />
                 </svg>
               ) : tool.image ? (
-                <Image src={tool.image} alt="" className="size-7" />
+                <Image src={tool.image} alt="" width={28} className="size-7" />
               ) : (
                 // No mark to hand: its initial, in the same square.
                 <span
@@ -269,15 +268,12 @@ function Tools({ tools }: { tools: Tool[] }) {
 export default function BuiltWithPage() {
   return (
     <PageShell>
-      <header className="flex flex-col gap-4">
-        <h1 className="font-display text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
-          What Thaw and Floe are built with.
-        </h1>
-        <p className="max-w-2xl text-lg text-fd-muted-foreground text-pretty">
+      <PageHeader label="Built with" title="What Thaw and Floe are built with.">
+        <Lead>
           The languages and tools behind the two apps and this site, the services the project runs
           on, the licences everything is under, and the people and projects it owes.
-        </p>
-      </header>
+        </Lead>
+      </PageHeader>
 
       <section className="flex flex-col gap-6">
         <SectionLabel>Made with</SectionLabel>

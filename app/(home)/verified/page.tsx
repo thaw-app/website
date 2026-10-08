@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { verified } from '@/components/assurance';
+import { Lead, PageHeader } from '@/components/page-header';
 import { PageShell } from '@/components/page-shell';
 import community from '@/lib/community.json';
 import { longDate } from '@/lib/shared';
-import { meanings } from '@/lib/verified';
+import { meanings, readDays } from '@/lib/verified';
 
 export const metadata: Metadata = {
   openGraph: { images: '/og/site/verified/image.png' },
@@ -13,6 +14,13 @@ export const metadata: Metadata = {
     'What SLSA, the OpenSSF badges, the Scorecard and test coverage are, who vouches for each, and where Thaw stands.',
 };
 
+const read = readDays(community.readOn, {
+  bestPractices: 'The Best Practices badge',
+  baseline: 'The Baseline level',
+  scorecard: 'The Scorecard',
+  coverage: 'Test coverage',
+});
+
 /**
  * The page behind "What does this mean?" on the home page: each thing in the
  * Verified block, what it is, where Thaw stands on it today, and who says so.
@@ -20,26 +28,22 @@ export const metadata: Metadata = {
 export default function VerifiedPage() {
   return (
     <PageShell>
-      <header className="flex flex-col gap-4">
-        <p className="text-sm text-fd-muted-foreground">
-          <Link href="/#verified" className="tap link">
-            Verified
-          </Link>
-        </p>
-        <h1 className="font-display text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
-          Privacy only works if the security around it does.
-        </h1>
-        <p className="max-w-2xl text-lg text-fd-muted-foreground text-pretty">
+      <PageHeader
+        label="Verified"
+        labelHref="/#verified"
+        title="Privacy only works if the security around it does."
+      >
+        <Lead>
           Thaw asks for permissions that reach across your Mac. These are the outside checks on how
           it is built and released: what each one is, and who vouches for it. A score a machine
           gives is not the same as a checklist a project fills in, so each says which it is.
-        </p>
-      </header>
+        </Lead>
+      </PageHeader>
 
       <dl className="border-t">
-        {meanings.map((entry, index) => {
-          // The same five, in the same order, as the cells on the home page.
-          const now = verified[index];
+        {meanings.map((entry) => {
+          // Matched by what it is: a value that could not be read is missing from the list.
+          const now = verified.find((value) => value.id === entry.id);
           return (
             <div
               key={entry.term}
@@ -70,7 +74,8 @@ export default function VerifiedPage() {
       </dl>
 
       <p className="text-sm text-fd-muted-foreground">
-        Values read on {longDate(community.checked)}.{' '}
+        {read.day && `Values read on ${longDate(read.day)}. `}
+        {read.older.map((entry) => `${entry.name} is from ${longDate(entry.day)}. `)}
         <Link href="/docs/thaw/verifying-releases" className="tap link">
           How to verify a release yourself
         </Link>

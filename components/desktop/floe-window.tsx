@@ -519,6 +519,7 @@ export function FloeWindow({
         <Image
           src={name === 'Thaw' ? products.thaw.icon : products.floe.icon}
           alt=""
+          width={96}
           className={size}
         />
       ) : (
@@ -819,7 +820,7 @@ export function FloeWindow({
       <div className="flex min-h-full flex-col items-center justify-center">
         <div className="flex items-center gap-[21px]">
           <h3 className="text-[46px] leading-[56px] font-bold">Floe</h3>
-          <Image src={products.floe.icon} alt="" className="size-[77px]" />
+          <Image src={products.floe.icon} alt="" width={77} className="size-[77px]" />
         </div>
         <p className={`mt-[18px] text-[12px] leading-[15px] ${dim}`}>
           The open source launcher for macOS

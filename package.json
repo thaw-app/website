@@ -1,15 +1,17 @@
 {
-  "name": "thaw-website",
+  "name": "website",
   "version": "0.0.0",
   "private": true,
   "scripts": {
     "sync": "node --env-file-if-exists=.env.local scripts/sync-docs.mjs",
+    "sync:content": "node --env-file-if-exists=.env.local scripts/sync-docs.mjs --content",
     "build": "bun run sync && next build",
-    "dev": "bun run sync && next dev",
+    "dev": "bun run sync:content && next dev",
     "start": "next start",
     "types:check": "next typegen && tsc --noEmit",
     "lint": "biome check",
-    "test": "bun test scripts",
+    "test": "bun test scripts lib",
+    "test:e2e": "playwright test",
     "format": "biome format --write"
   },
   "dependencies": {
@@ -26,6 +28,8 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.5.15",
+    "@playwright/test": "^1.64.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@types/mdx": "^2.0.14",
     "@types/node": "^26.6.4",
@@ -33,7 +37,6 @@
     "@types/react-dom": "^19.3.0",
     "postcss": "^8.5.28",
     "tailwindcss": "^4.3.3",
-    "typescript": "^7.0.2",
-    "@biomejs/biome": "^2.5.15"
+    "typescript": "^7.0.2"
   }
 }
