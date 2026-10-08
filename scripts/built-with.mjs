@@ -8,18 +8,20 @@ import { request } from './request.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const file = join(root, 'lib', 'built-with.json');
+// The apps, as the site and the docs sync know them too.
+const project = JSON.parse(readFileSync(join(root, 'lib', 'project.json'), 'utf8'));
 
 // Where each app keeps its manifests. Floe has three kinds: Swift for the app, JavaScript
 // for the runtime its extensions run in, and Rust for the calculator.
 const apps = {
   Thaw: {
-    repo: 'thaw-app/Thaw',
-    ref: process.env.THAW_DOCS_REF || 'development',
+    repo: project.products.thaw.repo,
+    ref: process.env.THAW_DOCS_REF || project.products.thaw.ref,
     swift: 'Thaw.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved',
   },
   Floe: {
-    repo: 'thaw-app/Floe',
-    ref: process.env.FLOE_DOCS_REF || 'main',
+    repo: project.products.floe.repo,
+    ref: process.env.FLOE_DOCS_REF || project.products.floe.ref,
     swift: 'Package.resolved',
     javascript: 'runtime/package.json',
     rust: 'Vendor/FendCore/rust/Cargo.toml',
