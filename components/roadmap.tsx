@@ -34,7 +34,9 @@ export function Roadmap({ children }: { children: ReactNode }) {
   return (
     <>
       <nav aria-label="Parts of the roadmap" className="not-prose my-8">
-        <ul className="grid grid-cols-2 border-t border-l sm:grid-cols-3 lg:grid-cols-5">
+        <ul
+          className={`grid grid-cols-2 border-t border-l sm:grid-cols-3 ${parts.length === 6 ? 'lg:grid-cols-6' : 'lg:grid-cols-5'}`}
+        >
           {parts.map((part) => (
             // Five in two columns leave the last alone on its row, so on a phone it takes the row.
             <li key={part.title} className="border-r border-b max-sm:last:odd:col-span-2">

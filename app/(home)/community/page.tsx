@@ -107,9 +107,10 @@ export default function CommunityPage() {
       <Section label="In numbers">
         <dl className="crossed grid-cols-2 lg:grid-cols-4">
           {numbers.map((number) => (
-            <div key={number.label} className="flex flex-col gap-1 p-4 sm:p-6">
+            <div key={number.label} className="group flex flex-col gap-1 p-4 sm:p-6">
               <dt className="text-sm text-fd-muted-foreground">{number.label}</dt>
-              <dd className="font-display text-4xl font-semibold tracking-tight xl:text-5xl">
+              {/* The first number, the stars, is the one in the accent. */}
+              <dd className="font-display text-4xl font-semibold tracking-tight group-first:text-(--product-tone) xl:text-5xl">
                 {compact.format(number.value)}
               </dd>
               <dd className="text-sm text-fd-muted-foreground">{number.unit}</dd>

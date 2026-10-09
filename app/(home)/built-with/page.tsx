@@ -187,6 +187,11 @@ const thanks = [
     href: 'https://getdroppycode.app',
   },
   {
+    to: 'The Nix snowflake, by Simon Frankau and Tim Cuthbertson',
+    forWhat: 'The Nix logo on the roadmap, used under the CC BY 4.0 licence.',
+    href: 'https://github.com/NixOS/nixos-artwork/tree/master/logo',
+  },
+  {
     to: 'Natural Earth',
     forWhat: 'The outline of the world on the community page’s map, which is in the public domain.',
     href: 'https://www.naturalearthdata.com',

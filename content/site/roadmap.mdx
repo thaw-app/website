@@ -1,6 +1,6 @@
 {/* The roadmap, drawn by app/(home)/roadmap/page.tsx under its title. */}
 
-Thaw has two lines in development: 3.0 for macOS 27 and 2.1 for macOS 26. This is the plan as it stands, not a promise, and your reports decide the order. It was last brought up to date with the [3.0.0-beta.2 notes](/docs/thaw/changelog/3.0.0/3.0.0-beta.2) of 6 October 2026.
+Thaw has two lines in development: 3.0 for macOS 27 and 2.1 for macOS 26. This is the plan as it stands, not a promise, and your reports decide the order. It was last brought up to date with the [3.0.0-beta.2 notes](/changelog/3.0.0/3.0.0-beta.2) of 6 October 2026.
 
 <Callout type="info" title="macOS 15 is coming back">
   We are adding compatibility with macOS 15 back in Thaw 2.2.0.
@@ -16,12 +16,17 @@ Thaw has two lines in development: 3.0 for macOS 27 and 2.1 for macOS 26. This i
 </RoadmapGroup>
 <RoadmapGroup name="macOS 26" count={1}>
 
-- **Thaw 2.1.0.** At its [first release candidate](/docs/thaw/changelog/2.1.0/2.1.0-rc.1). It ships as 2.1.0 if no new problems turn up.
+- **Thaw 2.1.0.** At its [first release candidate](/changelog/2.1.0/2.1.0-rc.1). It ships as 2.1.0 if no new problems turn up.
 
 </RoadmapGroup>
 </RoadmapList>
 
-<RoadmapList title="Up next" count={7} state="next" note="Planned for the 3.0.0 betas.">
+<RoadmapList title="Up next" count={8} state="next" note="Planned for the 3.0.0 betas.">
+<RoadmapGroup name="Permissions" count={1}>
+
+- **Minimal mode.** Thaw without the Accessibility permission, for anyone who would rather not grant it. It is in the works.
+
+</RoadmapGroup>
 <RoadmapGroup name="Settings" count={1}>
 
 - **Fewer switches.** Every setting is being gone through: some become default behaviour, some move under Advanced, and some go away. Experiments either graduate or get removed. The first pass shipped in 3.0.0-beta.1.
@@ -58,27 +63,45 @@ Thaw has two lines in development: 3.0 for macOS 27 and 2.1 for macOS 26. This i
 </RoadmapGroup>
 </RoadmapList>
 
-<RoadmapList title="Further out" count={6} state="later" note="These come after the beta is solid. The team intends to build them, and none has a date.">
-<RoadmapGroup name="Integrations" count={2}>
+<RoadmapList title="Further out" count={10} state="later" note="These come after the beta is solid. The team intends to build them, and none has a date.">
+<RoadmapGroup name="Integrations" count={5}>
 
 - **An Alfred workflow.** One you can install, on top of the `thaw://` links that [already work with Alfred](/docs/thaw/uri-schemes).
 - **Import from another menu bar manager.** Bring your setup with you, so switching to Thaw doesn’t mean starting over.
+- **More with Droppy and Floe.** Both already drive Thaw through `thaw://` links: they open menu bar items and apply profiles. The plan is to take that further. <Marks of="droppy floe" />
+- **OmniWM.** Work alongside the OmniWM window manager on macOS 26 and 27, so Thaw stays out of the way of its workspaces. It came up on [OmniWM’s issue tracker](https://github.com/OmniNull/OmniWM/issues/752). <Marks of="omniwm" />
+- **MCP support.** A server for AI assistants, so one you already use can read your menu bar and rearrange it when you ask.
 
 </RoadmapGroup>
 <RoadmapGroup name="Installing" count={2}>
 
 - **Modules.** Download only the parts of Thaw you use, and add others when you want them, so the app you install is no bigger than what you need.
-- **Nix support.** A flake, so Thaw can be installed and pinned from a Nix configuration.
+- **Nix support.** A flake, so Thaw can be installed and pinned from a Nix configuration. <Marks of="nix" />
 
 </RoadmapGroup>
 <RoadmapGroup name="Across your Macs" count={1}>
 
-- **iCloud sync.** For profiles, appearance and preferences. Anything tied to one Mac’s displays stays local.
+- **iCloud sync.** For profiles, appearance and preferences. Anything tied to one Mac’s displays stays local. <Marks of="icloud" />
 
 </RoadmapGroup>
-<RoadmapGroup name="Menu bar items" count={1}>
+<RoadmapGroup name="Menu bar items" count={2}>
 
+- **Your own menus in the menu bar.** Make an item yourself and fill its menu with actions: open a link, run a Shortcut, run a script. Thaw puts it in the menu bar and treats it like any other item.
 - **Isolation mode.** Show just one item for a while, with everything else out of the way. <Issue n={970} />
+
+</RoadmapGroup>
+</RoadmapList>
+
+<RoadmapList title="Ideas" count={3} state="later" note="Things we have written up and not decided on. None is planned.">
+<RoadmapGroup name="Integrations" count={2}>
+
+- **Stream Deck and other controllers.** Keys that hide and show sections, switch profiles and stay lit while a mode is on.
+- **Items hosted by Thaw.** Another app hands Thaw an icon and a menu, and Thaw shows it as a menu bar item that follows your sections and profiles like any other.
+
+</RoadmapGroup>
+<RoadmapGroup name="Displays" count={1}>
+
+- **OLED saving mode.** The menu bar sits on the same pixels all day. Thaw could turn it true black, shift the items a point or two now and then, and dim them when the Mac is idle.
 
 </RoadmapGroup>
 </RoadmapList>

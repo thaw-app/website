@@ -2,9 +2,11 @@ import defaultMdxComponents from 'fumadocs-ui/mdx';
 import type { MDXComponents } from 'mdx/types';
 import type { ComponentProps } from 'react';
 import { Assurance } from './assurance';
+import { Callout } from './callout';
 import { FeatureList } from './feature-list';
 import { InstallTabs } from './install-tabs';
 import { Mermaid } from './mermaid';
+import { Marks } from './product-marks';
 import { Issue, Roadmap, RoadmapGroup, RoadmapList, RoadmapRequests } from './roadmap';
 
 /**
@@ -25,8 +27,10 @@ export function getMDXComponents(components?: MDXComponents) {
   return {
     ...defaultMdxComponents,
     Assurance,
+    Callout,
     FeatureList,
     InstallTabs,
+    Marks,
     Mermaid,
     Issue,
     Roadmap,

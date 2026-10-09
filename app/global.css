@@ -449,10 +449,10 @@ html > body[data-scroll-locked] {
   }
 }
 
-/* In progress: a filled mark. Blocked: a broken one. Later: a faint one. */
+/* In progress: a filled mark, in the accent. Blocked: a broken one. Later: a faint one. */
 .roadmap-now li::before {
-  border-color: var(--color-fd-primary);
-  background: var(--color-fd-primary);
+  border-color: var(--product-tone);
+  background: var(--product-tone);
 }
 
 .roadmap-blocked li::before {
@@ -518,7 +518,7 @@ html > body[data-scroll-locked] {
 }
 
 .roadmap-cards li {
-  padding: 1.25rem 1.25rem 1.25rem 3rem;
+  padding: 1.25rem 1.25rem 3.125rem 3rem;
   border-right: 1px solid var(--color-fd-border);
   border-bottom: 1px solid var(--color-fd-border);
 }
@@ -528,10 +528,22 @@ html > body[data-scroll-locked] {
   top: calc(1.25rem + 0.3em);
 }
 
+/* The icons of what a card is about, in its lower right corner, level with its area. */
+.roadmap-cards li .marks {
+  position: absolute;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  margin: 0;
+}
+
+/* The area sits at the foot of its card, however tall the row has made it, so it and the
+   icons across from it are on one line. */
 .roadmap-cards li::after {
   content: var(--area);
-  display: block;
-  margin-top: 0.75rem;
+  position: absolute;
+  left: 3rem;
+  bottom: 1.25rem;
+  line-height: 1.125rem;
   font-size: 0.75rem;
   color: var(--color-fd-muted-foreground);
   opacity: 0.8;
@@ -567,7 +579,7 @@ html > body[data-scroll-locked] {
    does the pairing: a name takes the first column and everything else the second. */
 .release-notes > h2 {
   margin-top: 2rem;
-  font-size: 1.125rem;
+  font-size: 1rem;
 }
 
 .release-notes > h3 {
@@ -866,10 +878,14 @@ h1.font-display {
   border-radius: 50%;
 }
 
-.roadmap-mark-now,
 .roadmap-mark-done {
   border-color: var(--color-fd-primary);
   background: var(--color-fd-primary);
+}
+
+.roadmap-mark-now {
+  border-color: var(--product-tone);
+  background: var(--product-tone);
 }
 
 .roadmap-mark-blocked {
