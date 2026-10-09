@@ -1,12 +1,16 @@
 import { remarkMdxMermaid } from 'fumadocs-core/mdx-plugins/remark-mdx-mermaid';
-import { llms, loader } from 'fumadocs-core/source';
-import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons';
+import { createGetUrl, llms, loader } from 'fumadocs-core/source';
 import { metaSchema, pageSchema } from 'fumadocs-core/source/schema';
 import { applyMdxPreset } from 'fumadocs-mdx/config';
 import { defineDocs } from 'fumadocs-mdx/macro';
 import { z } from 'zod';
 import { remarkGithubAlerts } from './remark-github-alerts';
-import { docsRoute } from './shared';
+import { changelogUrl, docsRoute, products } from './shared';
+
+function withoutIcon<Node extends { icon?: unknown }>(node: Node) {
+  node.icon = undefined;
+  return node;
+}
 
 const docs = defineDocs({
   dir: 'content/docs',
@@ -41,6 +45,9 @@ const docs = defineDocs({
           os: z.string().optional(),
           date: z.string().optional(),
           summary: z.string().optional(),
+          // How many things its notes list as new and as fixed, counted by their headings.
+          added: z.number().optional(),
+          fixed: z.number().optional(),
         })
         .optional(),
     }),
@@ -56,11 +63,28 @@ const docs = defineDocs({
   },
 });
 
+const docsUrl = createGetUrl(docsRoute);
+
 // See https://fumadocs.dev/docs/headless/source-api for more info
 export const source = loader({
   baseUrl: docsRoute,
+  // A changelog and its releases are kept with their product's docs, where the sync writes
+  // them, and served as the site's own pages: everything that asks a page for its address
+  // (search, the feeds, the sitemap, a link in a release's notes) is given that one.
+  url: (slugs, locale) =>
+    slugs[1] === 'changelog' && slugs[0] in products
+      ? changelogUrl(slugs[0], slugs.slice(2))
+      : docsUrl(slugs, locale),
   source: docs.toFumadocsSource(),
-  plugins: [lucideIconsPlugin()],
+  // No icon is drawn beside a page's name in the sidebar: a column of twenty-odd of them
+  // was the busiest thing on a docs page. A page may still name one (`icon`); it is taken
+  // off here, since a name left as it is would be printed as a word.
+  plugins: [
+    {
+      name: 'thaw:no-icons',
+      transformPageTree: { file: withoutIcon, folder: withoutIcon, separator: withoutIcon },
+    },
+  ],
 });
 
 export const docsLlms = llms(source, {

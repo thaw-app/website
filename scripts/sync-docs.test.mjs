@@ -160,3 +160,40 @@ test('quotes in synced prose are curled, and code and addresses are left alone',
     '[ref]: https://example.com "Title"',
   );
 });
+
+const { countChanges } = await import('./sync-docs.mjs');
+
+test('what a release lists as new and as fixed is counted by its own headings', () => {
+  const notes = [
+    '## New Features',
+    '- One',
+    '- Two',
+    '  - a detail of two, not a third',
+    '### Appearance',
+    '- Three, under a heading inside New',
+    '## Improvements & Fixes',
+    '- A fix',
+    '```',
+    '- not an item: this is code',
+    '```',
+    '## New Contributors',
+    '- someone, who is not a feature',
+    '## Donations',
+    '- nor is this',
+  ].join('\n');
+  expect(countChanges(notes)).toEqual({ added: 3, fixed: 1 });
+  expect(countChanges('Just a paragraph.')).toEqual({ added: 0, fixed: 0 });
+  expect(countChanges('## Fixed\n1. One\n2. Two\n   - part of two')).toEqual({
+    added: 0,
+    fixed: 2,
+  });
+});
+
+const { emojiShortcodes } = await import('./sync-docs.mjs');
+
+test('an emoji shortcode becomes the emoji, except in code or when it is not one', () => {
+  expect(emojiShortcodes('A new beta :grin:.')).toBe('A new beta 😁.');
+  expect(emojiShortcodes('Run `:grin:` at 10:30:15, or :not_one:')).toBe(
+    'Run `:grin:` at 10:30:15, or :not_one:',
+  );
+});

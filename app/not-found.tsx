@@ -28,7 +28,7 @@ export default function NotFound() {
               </Link>
             </li>
             <li>
-              <Link href={`${docsRoute}/thaw/changelog`} className="tap link">
+              <Link href={'/changelog'} className="tap link">
                 Changelog
               </Link>
             </li>

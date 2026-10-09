@@ -80,14 +80,14 @@ const commands: Command[] = [
     owner: 'Thaw',
     icon: ScrollText,
     keywords: 'releases',
-    href: `${docsRoute}/thaw/changelog`,
+    href: '/changelog',
   },
   {
     title: 'Floe changelog',
     owner: 'Floe',
     icon: ScrollText,
     keywords: 'releases',
-    href: `${docsRoute}/floe/changelog`,
+    href: '/changelog/floe',
   },
   { title: 'GitHub', owner: 'thaw-app', icon: Code, href: links.github },
   {

@@ -14,6 +14,11 @@ export const sitePages = {
     title: 'Thaw is built by the people who use it.',
     shared: 'Thaw in numbers, where its people are, and who has contributed.',
   },
+  changelog: {
+    label: 'Changelog',
+    title: 'Every release of Thaw.',
+    shared: 'What is new and what was fixed in each release, newest first.',
+  },
   roadmap: {
     label: 'Roadmap',
     title: 'What we’re building.',

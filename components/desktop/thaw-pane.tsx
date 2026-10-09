@@ -124,7 +124,7 @@ const thawRepo = repoUrl('thaw');
  * app's own links (Constants.swift and its Info.plist).
  */
 const aboutLinks: Record<string, string> = {
-  'What’s New': `${docsRoute}/thaw/changelog`,
+  'What’s New': '/changelog',
   'Report a Bug': `${thawRepo}/issues`,
   'Source Code': thawRepo,
   Credits: '/community',

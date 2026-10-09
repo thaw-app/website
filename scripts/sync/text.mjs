@@ -318,12 +318,83 @@ function stageRank(stage) {
   return [kind, ...digitsOf(stage)];
 }
 
+// GitHub draws ":grin:" as a face; here it would stay as typed. The few that notes use.
+const emoji = {
+  grin: '😁',
+  smile: '😄',
+  tada: '🎉',
+  rocket: '🚀',
+  warning: '⚠️',
+  bug: '🐛',
+  heart: '❤️',
+};
+
+/** Turns GitHub's emoji shortcodes into the emoji, outside code. One it does not know is left. */
+function emojiShortcodes(markdown) {
+  let fenced = false;
+  return markdown
+    .split('\n')
+    .map((line) => {
+      if (/^\s*(```|~~~)/.test(line)) fenced = !fenced;
+      if (fenced) return line;
+      return line
+        .split(/(`[^`]*`)/)
+        .map((part) =>
+          part.startsWith('`')
+            ? part
+            : part.replace(/:([a-z_]+):/g, (all, name) => emoji[name] ?? all),
+        )
+        .join('');
+    })
+    .join('\n');
+}
+
+/**
+ * How many things a release's notes list as new and how many as fixed: the items of the
+ * lists under a heading that says so ("New", "New Features", "New & Improved"; "Fixed",
+ * "Fixes", "Improvements & Fixes"). Notes written some other way count as none, so a total
+ * of these is a floor and not a tally.
+ */
+function countChanges(markdown) {
+  const counted = { added: 0, fixed: 0 };
+  let kind = null;
+  let depth = 0;
+  let fenced = false;
+  for (const line of markdown.split('\n')) {
+    if (/^\s*(```|~~~)/.test(line)) {
+      fenced = !fenced;
+      continue;
+    }
+    if (fenced) continue;
+    const heading = line.match(/^(#{2,4})\s+(.*)/);
+    if (heading) {
+      const level = heading[1].length;
+      const name = heading[2].toLowerCase();
+      // A deeper heading inside a counted section is still that section.
+      if (kind === null || level <= depth) {
+        kind = /\bfix/.test(name)
+          ? 'fixed'
+          : /\bnew\b|feature|added/.test(name) && !name.includes('contributor')
+            ? 'added'
+            : null;
+        depth = level;
+      }
+      continue;
+    }
+    // One thing to an item, bulleted or numbered: what is listed under an item is part of it.
+    if (kind && /^([-*]|\d+\.) /.test(line)) counted[kind]++;
+  }
+  return counted;
+}
+
 export {
   channelOf,
+  countChanges,
   curlQuotes,
   descending,
   describe,
   digitsOf,
+  emojiShortcodes,
   linkMentions,
   parseTag,
   promoteHeadings,

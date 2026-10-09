@@ -5,7 +5,7 @@
   "pages": [
     "index",
     "---Using Floe---",
-    "changelog",
+    "!changelog",
     "---Developers---",
     "contribute",
     "development",

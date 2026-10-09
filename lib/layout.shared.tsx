@@ -2,7 +2,7 @@ import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
 import Image from 'next/image';
 import { HeaderItems } from '@/components/header-items';
 import { headerLinks } from './header-links';
-import { docsRoute, products, siteName } from './shared';
+import { changelogRoute, docsRoute, products, siteName } from './shared';
 
 export function baseOptions(): BaseLayoutProps {
   return {
@@ -21,7 +21,7 @@ export function baseOptions(): BaseLayoutProps {
     // they are plain icons.
     links: [
       { text: 'Docs', url: `${docsRoute}/thaw`, active: 'nested-url' },
-      { text: 'Changelog', url: `${docsRoute}/thaw/changelog`, active: 'nested-url' },
+      { text: 'Changelog', url: changelogRoute, active: 'nested-url' },
       { text: 'Roadmap', url: '/roadmap' },
       { text: 'Community', url: '/community' },
       {

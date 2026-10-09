@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { datedReleases, feedTitle, feedUrl } from '@/lib/releases';
-import { docsRoute, type ProductSlug, products, siteUrl } from '@/lib/shared';
+import { changelogUrl, type ProductSlug, products, siteUrl } from '@/lib/shared';
 
 export const revalidate = false;
 
@@ -18,7 +18,7 @@ export async function GET(_req: Request, { params }: RouteContext<'/feed/[name]'
   if (!(product in products)) notFound();
   const slug = product as ProductSlug;
   const releases = datedReleases(slug).slice(0, 40);
-  const changelog = `${siteUrl}${docsRoute}/${slug}/changelog`;
+  const changelog = `${siteUrl}${changelogUrl(slug)}`;
   const self = `${siteUrl}${feedUrl(slug)}`;
 
   const entries = releases.map((release) => {

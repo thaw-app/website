@@ -244,7 +244,9 @@ export { longDate } from '../lib/format.mjs';
 export { appDownloads, settle } from './sync/numbers.mjs';
 export {
   channelOf,
+  countChanges,
   curlQuotes,
+  emojiShortcodes,
   linkMentions,
   parseTag,
   splitReleases,

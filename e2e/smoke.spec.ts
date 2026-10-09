@@ -53,7 +53,8 @@ test('the pages a visitor moves between all answer', async ({ page }) => {
     '/built-with',
     '/docs/thaw',
     '/docs/thaw/getting-started',
-    '/docs/thaw/changelog',
+    '/changelog',
+    '/changelog/floe',
     '/docs/floe',
   ]) {
     const response = await page.goto(path);
@@ -63,6 +64,8 @@ test('the pages a visitor moves between all answer', async ({ page }) => {
   // An address that was moved still arrives.
   await page.goto('/docs/thaw/roadmap');
   await expect(page).toHaveURL(/\/roadmap$/);
+  await page.goto('/docs/thaw/changelog/2.0.0');
+  await expect(page).toHaveURL(/\/changelog\/2\.0\.0$/);
 });
 
 test('search finds a docs page', async ({ page, isMobile }) => {
@@ -158,4 +161,16 @@ test('search engines and feed readers are told what they need', async ({ page, r
   expect(text.match(/<entry>/g)?.length).toBeGreaterThan(5);
   expect((await request.get('/manifest.webmanifest')).ok()).toBe(true);
   expect((await request.get('/privacy')).ok()).toBe(true);
+});
+
+test('an earlier release opens its notes under its line', async ({ page }) => {
+  await page.goto('/changelog');
+  const row = page.locator('li.release-entry').first();
+  const toggle = row.getByRole('button').first();
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+  // Read from the release's own page, so it has that page's sections.
+  await expect(row.locator('.release-notes')).not.toBeEmpty();
+  await toggle.click();
+  await expect(row.locator('.release-notes')).toHaveCount(0);
 });

@@ -11,7 +11,6 @@ import {
   useRef,
   useState,
 } from 'react';
-import { docsRoute } from '@/lib/shared';
 import { Dock } from './dock';
 import { hotkeyMatches } from './floe-controls';
 import { defaultFloeData } from './floe-pages';
@@ -349,7 +348,7 @@ export function Desktop() {
               { label: 'Settings…', onPick: showThawSettings },
               {
                 label: 'What’s New…',
-                onPick: () => router.push(`${docsRoute}/thaw/changelog`),
+                onPick: () => router.push('/changelog'),
               },
             ],
             [inertRow('Search Items…'), inertRow('Show Swap Bar')],

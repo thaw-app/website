@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next';
 import community from '@/lib/community.json';
 import { datedReleases } from '@/lib/releases';
-import { docsRoute, type ProductSlug, products, siteUrl } from '@/lib/shared';
+import { type ProductSlug, products, siteUrl } from '@/lib/shared';
 import { source } from '@/lib/source';
 
 /**
@@ -27,10 +27,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...site.map(([path, day]) => ({ url: `${siteUrl}${path}`, ...(day && { lastModified: day }) })),
     ...source.getPages().map((page) => {
       const day =
-        page.data.release?.date ??
-        (page.url === `${docsRoute}/${page.slugs[0]}/changelog`
-          ? newest[page.slugs[0]]
-          : undefined);
+        page.data.release?.date ?? (page.data.releaseIndex ? newest[page.slugs[0]] : undefined);
       return { url: `${siteUrl}${page.url}`, ...(day && { lastModified: day }) };
     }),
   ];

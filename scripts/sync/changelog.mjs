@@ -7,8 +7,10 @@ import { request } from '../request.mjs';
 import { cacheFile, githubToken } from './config.mjs';
 import {
   channelOf,
+  countChanges,
   descending,
   digitsOf,
+  emojiShortcodes,
   linkMentions,
   parseTag,
   splitReleases,
@@ -75,6 +77,11 @@ function groupReleases(markdown, published, product) {
     ...release,
     date: release.date ?? online.get(release.tag)?.date,
     url: online.get(release.tag)?.url,
+    // A tag that is not a version, such as "macos-27-preview.3", has only a tag in the
+    // file; what it is called is on GitHub.
+    ...(!parseTag(release.tag) && online.get(release.tag)?.name
+      ? { name: online.get(release.tag).name }
+      : {}),
   }));
   const known = new Set(written.map((release) => release.tag));
   const older = published
@@ -118,7 +125,7 @@ function groupReleases(markdown, published, product) {
     }
     groups.get(key).releases.push({
       ...release,
-      body: linkMentions(release.body, repo),
+      body: emojiShortcodes(linkMentions(release.body, repo)),
       stage: parsed?.stage,
       versioned: Boolean(parsed),
     });
@@ -224,6 +231,7 @@ function writeChangelog(markdown, repoPath, outDir, product, rewrite, published)
               ...(url ? { url } : {}),
               ...(name ? { name } : {}),
               ...(os ? { os } : {}),
+              ...countChanges(release.body),
             },
           },
           rewrite(release.body),

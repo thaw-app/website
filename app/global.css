@@ -85,12 +85,32 @@ kbd,
   --world-lit: #c96817;
   --verified-gold: #a87400;
   --verified-green: #1a7f37;
+  /* A day with one, two and three or more releases on the changelog's calendar: the cube's
+     own oranges, deeper for more on a light page and brighter for more on a dark one. */
+  --release-1: #d96c0c;
+  --release-2: #a84407;
+  --release-3: #6f2a04;
+  /* The one accent: the cube's orange, for what is current or the thing to look at. Under
+     Floe's docs it is Floe's blue. */
+  --product-tone: #c96817;
+}
+
+#nd-notebook-layout:has([data-product="floe"]) {
+  --product-tone: #2563c9;
+}
+
+.dark #nd-notebook-layout:has([data-product="floe"]) {
+  --product-tone: #4f93ff;
 }
 
 .dark {
   --world-lit: #fa9a2a;
   --verified-gold: #f0b429;
   --verified-green: #3fb950;
+  --release-1: #c96817;
+  --release-2: #fa9a2a;
+  --release-3: #ffde81;
+  --product-tone: #fa9a2a;
 }
 
 .ascii-cube {
@@ -502,7 +522,21 @@ html > body[data-scroll-locked] {
   text-decoration: none;
 }
 
-/* Notes written out on the changelog: their sections sit under the release, not beside it. */
+/* Notes that follow one another share the rule between them, and the last closes the run. */
+.callout:not(:has(+ .callout)) {
+  border-bottom: 1px solid var(--color-fd-border);
+  padding-bottom: 1.25rem;
+}
+
+.callout + .callout {
+  margin-top: -0.25rem;
+}
+
+/* A release's notes, laid out as Firefox lays its own: each section's name stands at the
+   left with what it lists beside it, and a rule parts one section from the next. What
+   comes before the first section (a headline, an opening paragraph) runs the full width.
+   Markdown gives a section's name and its lists as neighbours, not as a pair, so the grid
+   does the pairing: a name takes the first column and everything else the second. */
 .release-notes > h2 {
   margin-top: 2rem;
   font-size: 1.125rem;
@@ -514,6 +548,48 @@ html > body[data-scroll-locked] {
 
 .release-notes > :first-child {
   margin-top: 0;
+}
+
+@media (min-width: 768px) {
+  .release-notes {
+    display: grid;
+    grid-template-columns: 9.5rem minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .release-notes > * {
+    grid-column: 2;
+    min-width: 0;
+  }
+
+  .release-notes > :not(h2):not(h2 ~ *) {
+    grid-column: 1 / -1;
+  }
+
+  .release-notes > h2 {
+    grid-column: 1;
+    margin: 1.5rem 0 0;
+    padding: 1.25rem 1.5rem 0 0;
+    border-top: 1px solid var(--color-fd-border);
+  }
+
+  .release-notes > h2 + * {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--color-fd-border);
+  }
+
+  /* Each section already has a rule over it, so one written between sections, or just
+     before the first, would double it. */
+  .release-notes > h2 ~ hr,
+  .release-notes > hr:has(+ h2) {
+    display: none;
+  }
+
+  /* A section that opens the notes has no room above its name, so none above its list. */
+  .release-notes > h2:first-child + * {
+    margin-top: 0;
+  }
 }
 
 @keyframes language-drift {

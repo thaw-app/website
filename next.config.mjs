@@ -68,6 +68,13 @@ const config = {
       { source: '/docs', destination: '/docs/thaw', permanent: false },
       // The roadmap was a docs page first; links to it there still arrive.
       { source: '/docs/thaw/roadmap', destination: '/roadmap', permanent: true },
+      // So was the changelog, under each product's docs.
+      { source: '/docs/thaw/changelog/:path*', destination: '/changelog/:path*', permanent: true },
+      {
+        source: '/docs/floe/changelog/:path*',
+        destination: '/changelog/floe/:path*',
+        permanent: true,
+      },
     ];
   },
 };

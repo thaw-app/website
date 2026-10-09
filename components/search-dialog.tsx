@@ -25,7 +25,7 @@ const suggestions: SearchItemType[] = [
   ['Try Thaw in your browser', '/#try'],
   ['Thaw documentation', `${docsRoute}/thaw`],
   ['Frequent issues', `${docsRoute}/thaw/frequent-issues`],
-  ['Changelog', `${docsRoute}/thaw/changelog`],
+  ['Changelog', '/changelog'],
   ['Roadmap', '/roadmap'],
   ['Community', '/community'],
   ['Built with', '/built-with'],

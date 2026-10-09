@@ -1,4 +1,4 @@
-import { type ProductSlug, products } from './shared';
+import { type ProductSlug, productOf, products } from './shared';
 import { source } from './source';
 
 /**
@@ -43,4 +43,14 @@ export function pageAlternates(canonical: string) {
       })),
     },
   };
+}
+
+/** A release's page is titled by its tag alone, which needs the product's name beside it. */
+export function pageTitle(page: NonNullable<ReturnType<typeof source.getPage>>) {
+  const product = productOf(page.slugs);
+  // A release named in words, such as "macOS 27 Preview 3", is left as it is.
+  const numbered = page.data.release
+    ? /^\d/.test(page.data.title)
+    : page.data.releaseGroup && /^\d/.test(page.data.title);
+  return numbered && product ? `${product.name} ${page.data.title}` : page.data.title;
 }

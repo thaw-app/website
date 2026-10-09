@@ -1,5 +1,7 @@
 'use client';
 
+import { choiceClass } from './choice-style';
+
 /**
  * A row of buttons of which one is chosen: the changelog's macOS filter and
  * the map's three views. (The install box has real tabs, with a panel under
@@ -28,11 +30,7 @@ export function Choice<T extends string | null>({
           type="button"
           aria-pressed={option.id === value}
           onClick={() => onChange(option.id)}
-          className={`tap border px-3 py-1.5 text-sm transition-colors ${
-            option.id === value
-              ? 'border-fd-foreground bg-fd-foreground text-fd-background'
-              : 'text-fd-muted-foreground hover:bg-fd-accent hover:text-fd-foreground'
-          }`}
+          className={choiceClass(option.id === value)}
         >
           {option.label}
         </button>

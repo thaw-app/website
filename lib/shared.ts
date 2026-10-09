@@ -12,6 +12,7 @@ export const siteUrl =
 export const siteName = 'Thaw';
 export const siteDescription = 'Open source menu bar manager and launcher for macOS.';
 export const docsRoute = '/docs';
+export const changelogRoute = '/changelog';
 export const docsImageRoute = '/og/docs';
 export const docsContentRoute = '/llms.mdx/docs';
 
@@ -41,6 +42,21 @@ export type ProductSlug = keyof typeof products;
 export function productOf(slugs: string[]) {
   const slug = slugs[0];
   return slug && slug in products ? products[slug as ProductSlug] : undefined;
+}
+
+/**
+ * Where a product's changelog is, and a page under it. The changelog is the site's own
+ * page and not part of the docs: Thaw's is at its top, and Floe's hangs off it by name.
+ */
+export function changelogUrl(product: string, rest: string[] = []) {
+  return [changelogRoute, ...(product === 'thaw' ? [] : [product]), ...rest].join('/');
+}
+
+/** A changelog address read back: whose it is, and where its page is kept in content/docs. */
+export function changelogSlugs(path: string[] = []) {
+  const named = path[0] !== undefined && path[0] !== 'thaw' && path[0] in products;
+  const product = named ? path[0] : 'thaw';
+  return [product, 'changelog', ...(named ? path.slice(1) : path)];
 }
 
 const getContentUrl = createGetUrl(docsContentRoute);

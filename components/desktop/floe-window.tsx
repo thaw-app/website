@@ -29,7 +29,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { docsRoute, products, repoUrl, links as siteLinks } from '@/lib/shared';
+import { products, repoUrl, links as siteLinks } from '@/lib/shared';
 import { HotkeyRecorder, hotkeyText } from './floe-controls';
 import {
   apps,
@@ -898,7 +898,7 @@ export function FloeWindow({
 
         <div className="mt-[25px] flex gap-2">
           {/* The app reads its changelog into a window of its own; the site has it as a page. */}
-          <Link href={`${docsRoute}/floe/changelog`} className={action}>
+          <Link href={'/changelog/floe'} className={action}>
             What’s New
           </Link>
           <a href={`${floeRepo}/issues`} target="_blank" rel="noreferrer" className={action}>
