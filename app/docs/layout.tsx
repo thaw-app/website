@@ -5,7 +5,7 @@ import { docsRoute, products } from '@/lib/shared';
 import { source } from '@/lib/source';
 
 export default function Layout({ children }: LayoutProps<'/docs'>) {
-  const options = baseOptions();
+  const options = baseOptions({ iconsInList: false });
   return (
     // The docs have the site's own bar across the top: its name, where the other pages are,
     // the search and the icons, the same as on every other page. Under it, the sidebar

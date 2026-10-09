@@ -4,7 +4,11 @@ import { HeaderItems } from '@/components/header-items';
 import { headerLinks } from './header-links';
 import { changelogRoute, docsRoute, products, siteName } from './shared';
 
-export function baseOptions(): BaseLayoutProps {
+/**
+ * What every layout's header holds. The site's header sets its icons straight into a list,
+ * so there they are an item of one; the docs' bar does not, and there they stand alone.
+ */
+export function baseOptions({ iconsInList = true } = {}): BaseLayoutProps {
   return {
     nav: {
       title: (
@@ -28,11 +32,12 @@ export function baseOptions(): BaseLayoutProps {
         type: 'custom',
         secondary: true,
         on: 'nav',
-        // The header sets this straight into a list, so it is given as an item of one.
-        children: (
+        children: iconsInList ? (
           <li className="list-none">
             <HeaderItems />
           </li>
+        ) : (
+          <HeaderItems />
         ),
       },
       ...headerLinks.map((link) => ({
