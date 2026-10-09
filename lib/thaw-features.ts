@@ -77,6 +77,7 @@ export const thawAlso: { group: string; names: (string | { name: string; href: s
       'Automatic rehiding',
       'Hide app menus on reveal',
       'Swap shown and hidden',
+      'Open hidden items in the menu bar',
     ],
   },
   {
@@ -99,30 +100,23 @@ export const thawAlso: { group: string; names: (string | { name: string; href: s
       'Rounded corners',
       'Menu bar shadow',
       'Per-Space appearance',
+      'Show or hide the bar per Space',
       'Light and dark looks',
     ],
   },
   {
-    group: 'Profiles and automation',
+    group: 'Profiles',
     names: [
+      'Per-display profiles',
       'Per-Space profiles',
       'Focus Filter profiles',
-      'Triggers for running apps',
       'Script hooks on profiles',
-      'Spotlight actions',
-      'Controls in Control Center',
+      'Profile hotkeys',
     ],
   },
   {
-    // Named with where to get each, since these live outside Thaw.
-    group: 'Works with',
-    names: [
-      { name: 'Raycast, by its extension', href: links.raycast },
-      { name: 'Droppy, as a Droplet', href: links.droppy },
-      { name: 'Floe, with no setup', href: '/docs/floe' },
-      { name: 'thaw:// links from any app', href: '/docs/thaw/uri-schemes' },
-      'Shortcuts actions',
-    ],
+    group: 'Automation',
+    names: ['Triggers for running apps', 'Spotlight actions', 'Controls in Control Center'],
   },
   {
     group: 'Everyday',
@@ -133,5 +127,28 @@ export const thawAlso: { group: string; names: (string | { name: string; href: s
       'Settings search',
       'Tooltips',
     ],
+  },
+];
+
+/**
+ * What Thaw works with, each with how and where to get it, since these live outside Thaw.
+ * `mark` names its icon in components/product-marks.tsx.
+ */
+export const thawWorksWith = [
+  { name: 'Raycast', how: 'By its extension', href: links.raycast, mark: 'raycast' },
+  { name: 'Droppy', how: 'As a Droplet', href: links.droppy, mark: 'droppy' },
+  { name: 'Floe', how: 'With no setup', href: '/docs/floe', mark: 'floe' },
+  {
+    name: 'Shortcuts',
+    how: 'With its own actions',
+    href: '/docs/thaw/shortcuts#shortcuts-and-spotlight',
+    mark: 'shortcuts',
+  },
+  { name: 'Siri', how: 'By voice', href: '/docs/thaw/shortcuts#ask-siri', mark: 'siri' },
+  {
+    name: 'thaw:// links',
+    how: 'From any app or script',
+    href: '/docs/thaw/uri-schemes',
+    mark: 'link',
   },
 ];

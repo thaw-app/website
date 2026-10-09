@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { SectionLabel } from '@/components/section-label';
 import { docsRoute } from '@/lib/shared';
-import { thawAlso, thawFeatures } from '@/lib/thaw-features';
+import { thawAlso, thawFeatures, thawWorksWith } from '@/lib/thaw-features';
+import { Mark } from './product-marks';
 
 /**
  * What Thaw does, as a sheet to read down and not a wall to take in: the ten
@@ -27,6 +28,7 @@ export function FeatureList() {
       </ol>
 
       <SectionLabel as="h3">Also in Thaw</SectionLabel>
+      {/* Six groups, so two or three to a row leaves no cell empty. */}
       <div className="crossed sm:grid-cols-2 lg:grid-cols-3">
         {thawAlso.map(({ group, names }) => (
           <section key={group} className="p-5">
@@ -50,6 +52,25 @@ export function FeatureList() {
           </section>
         ))}
       </div>
+      <SectionLabel as="h3">Works with</SectionLabel>
+      <ul className="crossed grid-cols-2 sm:grid-cols-3">
+        {thawWorksWith.map((item) => (
+          <li key={item.name}>
+            <Link
+              href={item.href}
+              className="flex h-full flex-col gap-3 p-5 transition-colors hover:bg-fd-accent"
+            >
+              <span aria-hidden className="flex h-6 items-center text-2xl text-fd-foreground">
+                <Mark name={item.mark} />
+              </span>
+              <span className="flex flex-col gap-0.5">
+                <span className="text-sm font-medium">{item.name}</span>
+                <span className="text-sm text-fd-muted-foreground">{item.how}</span>
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
       {/* The lists are Thaw 3's, and Install gives a Mac on macOS 26 Thaw 2: said once, with
           where to find which version a Mac gets. */}
       <p className="mt-4 text-sm text-fd-muted-foreground text-pretty">

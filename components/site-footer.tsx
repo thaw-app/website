@@ -10,17 +10,16 @@ const docs = `${docsRoute}/thaw`;
 const repo = repoUrl('thaw');
 
 // The whole site at a glance, in columns, as a map of it: the product, its docs, the people
-// and the project's rules.
+// and the project's rules. Seven to a column, so the three end on one line.
 const columns = [
   {
     title: 'Thaw',
     links: [
       { text: 'Install', href: '/' },
       { text: 'Try it in your browser', href: '/#try' },
-      { text: 'Changelog', href: `${docs}/changelog` },
+      { text: 'Changelog', href: '/changelog' },
       { text: 'Release feed', href: feedUrl('thaw') },
       { text: 'Roadmap', href: '/roadmap' },
-      { text: 'What Verified means', href: '/verified' },
       { text: 'Built with', href: '/built-with' },
       { text: 'Floe, the launcher', href: `${docsRoute}/floe` },
     ],
@@ -29,9 +28,11 @@ const columns = [
     title: 'Docs',
     links: [
       { text: 'Thaw documentation', href: docs },
+      { text: 'Getting started', href: `${docs}/getting-started` },
       { text: 'Frequent issues', href: `${docs}/frequent-issues` },
       { text: 'URL schemes', href: `${docs}/uri-schemes` },
       { text: 'Verifying releases', href: `${docs}/verifying-releases` },
+      { text: 'What Verified means', href: '/verified' },
       { text: 'Architecture', href: `${docs}/architecture` },
     ],
   },
@@ -42,6 +43,7 @@ const columns = [
       { text: 'Contributing', href: `${docs}/contribute` },
       { text: 'Discord', href: links.discord },
       { text: 'GitHub', href: repo },
+      { text: 'Report a problem', href: `${repo}/issues` },
       { text: 'Translate on Crowdin', href: links.crowdin },
       { text: 'Sponsor', href: links.sponsors },
     ],
