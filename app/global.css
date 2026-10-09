@@ -69,6 +69,34 @@ kbd,
   --color-fd-border: rgb(255 255 255 / 0.09);
 }
 
+/* The docs sidebar is a plain list on the page's own ground, with no panel behind it and
+   no rule down its edge: the room between it and the text is what sets them apart. */
+#nd-sidebar {
+  --color-fd-card: var(--color-fd-background);
+}
+
+#nd-sidebar.border-e:not(.border) {
+  border-inline-end-width: 0;
+}
+
+/* Where the reader is: the page in the sidebar and the heading in the list beside the text
+   are marked in the accent. */
+#nd-sidebar a[data-active="true"] {
+  box-shadow: inset 2px 0 0 var(--product-tone);
+}
+
+#nd-toc .bg-fd-primary {
+  background-color: var(--product-tone);
+}
+
+/* The name over a group of pages: the size of the pages under it, and told from them by
+   its weight and its colour, never by being smaller than what it names. */
+#nd-sidebar p.inline-flex {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-fd-foreground);
+}
+
 .dark #nd-sidebar {
   --color-fd-muted: #111111;
   --color-fd-secondary: #141414;
@@ -705,7 +733,7 @@ html > body[data-scroll-locked] {
   #nd-nav button,
   #nd-subnav a,
   #nd-subnav button,
-  #nd-docs-layout [data-toc-popover-trigger],
+  #nd-notebook-layout [data-toc-popover-trigger],
   #nd-page > div:first-of-type button {
     min-width: 44px;
     min-height: 44px;
@@ -875,4 +903,49 @@ h1.font-display {
 /* Code named in running text sits in a square box, as every other box on the site is. */
 .prose :not(pre) > code {
   border-radius: 0;
+}
+
+/* A docs page sits in the middle of the room between the sidebar and the list of its
+   headings. On a wide screen that list's column is kept even for a page with no headings
+   to list, so every page is centred on the same line and none sits further right. */
+#nd-page {
+  justify-self: center;
+  width: 100%;
+}
+
+@media (min-width: 1280px) {
+  #nd-notebook-layout {
+    /* biome-ignore lint/complexity/noImportantStyles: the layout sets this to 0 for such a page with a rule of its own that comes later */
+    --fd-toc-width: 268px !important;
+  }
+}
+
+/* A table in the docs is rows on the page, not a box: a rule under its head and between
+   its rows, and nothing drawn round it, down it or behind it. */
+#nd-page .prose table {
+  border: 0;
+  background: transparent;
+}
+
+#nd-page .prose :is(th, td) {
+  border: 0;
+  border-bottom: 1px solid var(--color-fd-border);
+  background: transparent;
+  padding: 0.625rem 1.5rem 0.625rem 0;
+}
+
+#nd-page .prose th {
+  font-weight: 500;
+  color: var(--color-fd-muted-foreground);
+  /* A column's name stays on one line, so a narrow column is not a stack of single words. */
+  white-space: nowrap;
+}
+
+#nd-page .prose tr:last-child > td {
+  border-bottom: 0;
+}
+
+/* A command in a table is kept on one line: the table scrolls sideways before it breaks. */
+#nd-page .prose td code {
+  white-space: nowrap;
 }

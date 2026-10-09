@@ -1,5 +1,4 @@
-import { DocsLayout } from 'fumadocs-ui/layouts/docs';
-import { ArrowLeft } from 'lucide-react';
+import { DocsLayout } from 'fumadocs-ui/layouts/notebook';
 import Image from 'next/image';
 import { baseOptions } from '@/lib/layout.shared';
 import { docsRoute, products } from '@/lib/shared';
@@ -8,6 +7,9 @@ import { source } from '@/lib/source';
 export default function Layout({ children }: LayoutProps<'/docs'>) {
   const options = baseOptions();
   return (
+    // The docs have the site's own bar across the top: its name, where the other pages are,
+    // the search and the icons, the same as on every other page. Under it, the sidebar
+    // has only the product and its pages.
     <DocsLayout
       tree={source.getPageTree()}
       tabs={{
@@ -37,30 +39,11 @@ export default function Layout({ children }: LayoutProps<'/docs'>) {
       containerProps={{
         style: {
           gridTemplateColumns:
-            '0 min(calc(var(--fd-sidebar-col) * 9999), var(--fd-sidebar-width)) minmax(0, 1fr) var(--fd-toc-width, 0px) 0',
+            '0 min(calc(var(--fd-sidebar-col) * 9999), var(--fd-sidebar-width)) minmax(0, 1fr) var(--fd-toc-col, 0px) 0',
         },
       }}
       {...options}
-      // The picker under it already names the product, so the sidebar's first row is
-      // not the site's name again: it is the way back to the home page.
-      nav={{
-        ...options.nav,
-        title: (
-          <span className="flex items-center gap-2 text-sm font-medium text-fd-muted-foreground transition-colors hover:text-fd-foreground">
-            <ArrowLeft aria-hidden className="size-4" />
-            Home
-          </span>
-        ),
-      }}
-      // The docs sidebar already lists the docs, the changelog and the roadmap, so of the
-      // header's links it keeps the icons, and adds the way to the demo on the home page.
-      // In the header the icons are for the phone's menu only; here they show always.
-      links={[
-        { text: 'Try Thaw', url: '/#try' },
-        ...(options.links ?? [])
-          .filter((link) => link.type === 'icon')
-          .map((link) => ({ ...link, on: 'all' as const })),
-      ]}
+      nav={{ ...options.nav, mode: 'top' }}
     >
       {children}
     </DocsLayout>

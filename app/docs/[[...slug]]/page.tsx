@@ -5,13 +5,12 @@ import {
   DocsTitle,
   MarkdownCopyButton,
   ViewOptionsPopover,
-} from 'fumadocs-ui/layouts/docs/page';
+} from 'fumadocs-ui/layouts/notebook/page';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getMDXComponents } from '@/components/mdx';
-import { ReleaseList, VersionReleases } from '@/components/release-list';
-import { pageAlternates } from '@/lib/releases';
+import { pageAlternates, pageTitle } from '@/lib/releases';
 import { docsRoute, getPageImageUrl, getPageMarkdownUrl, productOf } from '@/lib/shared';
 import { source } from '@/lib/source';
 
@@ -21,106 +20,60 @@ const sharedHome = 'thaw';
 export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
   const params = await props.params;
   const page = source.getPage(params.slug);
-  if (!page) notFound();
+  // The changelog is the site's own page (app/(home)/changelog), not a docs page.
+  if (!page || page.slugs[1] === 'changelog') notFound();
 
   const MDX = page.data.body;
   const markdownUrl = getPageMarkdownUrl(page).url;
   const product = productOf(page.slugs);
 
   return (
-    // Fumadocs caps a page at 900px; here it runs to the right edge of its column.
+    // A column of reading width, at the left of the space it has: lines of about ninety
+    // characters at most, and room beside them.
     <DocsPage
       toc={page.data.toc}
       full={page.data.full}
       // A page with no headings to list gives that column back to its text.
       tableOfContent={{ enabled: page.data.toc.length > 0 }}
-      className="max-w-none"
+      className="max-w-[52rem]"
     >
       {/* global.css reads this to give the page its product's colour. */}
       <span hidden data-product={page.slugs[0]} />
-      <DocsTitle>{pageTitle(page)}</DocsTitle>
+      {/* The title, with what can be done with the page beside it and not on a row of its own. */}
+      <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
+        <DocsTitle className="text-4xl leading-[1.15] tracking-tight">{pageTitle(page)}</DocsTitle>
+        <div className="flex flex-row items-center gap-2 pt-1">
+          <MarkdownCopyButton markdownUrl={markdownUrl} />
+          <ViewOptionsPopover
+            markdownUrl={markdownUrl}
+            githubUrl={
+              page.data.sourceUrl ??
+              (product &&
+                page.data.source &&
+                `https://github.com/${product.repo}/blob/${product.branch}/${page.data.source}`)
+            }
+          />
+        </div>
+      </div>
       {/* A synced page opens with the paragraph its description was taken from. */}
-      {(!page.data.source ||
-        page.data.release ||
-        page.data.releaseIndex ||
-        page.data.releaseGroup) && (
+      {!page.data.source && (
         <DocsDescription className="mb-0">{page.data.description}</DocsDescription>
       )}
-      {page.data.release?.os && (
-        <p className="text-sm text-fd-muted-foreground">For {page.data.release.os}</p>
-      )}
-      <div className="flex flex-row gap-2 items-center border-b pb-6">
-        {page.data.release?.url && (
-          <a
-            href={page.data.release.url}
-            className="border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-fd-accent"
-          >
-            Downloads on GitHub
-          </a>
-        )}
-        <MarkdownCopyButton markdownUrl={markdownUrl} />
-        <ViewOptionsPopover
-          markdownUrl={markdownUrl}
-          githubUrl={
-            page.data.sourceUrl ??
-            (product &&
-              page.data.source &&
-              `https://github.com/${product.repo}/blob/${product.branch}/${page.data.source}`)
-          }
-        />
-      </div>
-      <DocsBody>
+      {/* No rule parts the head from the page: a little room does it. */}
+      <DocsBody className="mt-4">
         <MDX
           components={getMDXComponents({
             // this allows you to link to other pages with relative file paths
             a: createRelativeLink(source, page),
           })}
         />
-        {page.data.releaseIndex && <ReleaseList product={page.slugs[0]} />}
-        {page.data.releaseGroup && (
-          <VersionReleases product={page.slugs[0]} version={page.data.releaseGroup} />
-        )}
-        {/* A version's final release ends with the pre-releases that led up to it. */}
-        {page.data.release?.final && (
-          <FinalReleaseTrail product={page.slugs[0]} version={page.data.release.version} />
-        )}
       </DocsBody>
     </DocsPage>
   );
 }
 
-function FinalReleaseTrail({ product, version }: { product: string; version: string }) {
-  const list = <VersionReleases product={product} version={version} />;
-  // VersionReleases draws nothing for a version with a single release.
-  const any = source
-    .getPages()
-    .some(
-      (page) =>
-        page.slugs[0] === product &&
-        page.data.release?.version === version &&
-        !page.data.release.final,
-    );
-  if (!any) return null;
-  return (
-    <>
-      <h2>Pre-releases</h2>
-      {list}
-    </>
-  );
-}
-
-/** A release's page is titled by its tag alone, which needs the product's name beside it. */
-function pageTitle(page: NonNullable<ReturnType<typeof source.getPage>>) {
-  const product = productOf(page.slugs);
-  // A release named in words, such as "macOS 27 Preview 3", is left as it is.
-  const numbered = page.data.release
-    ? /^\d/.test(page.data.title)
-    : page.data.releaseGroup && /^\d/.test(page.data.title);
-  return numbered && product ? `${product.name} ${page.data.title}` : page.data.title;
-}
-
 export async function generateStaticParams() {
-  return source.generateParams();
+  return source.generateParams().filter((params) => params.slug[1] !== 'changelog');
 }
 
 export async function generateMetadata(props: PageProps<'/docs/[[...slug]]'>): Promise<Metadata> {
