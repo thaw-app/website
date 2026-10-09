@@ -7,8 +7,15 @@ import { siteDescription, siteName, siteUrl } from '@/lib/shared';
 
 // Both are open fonts, fetched at build time and served from the site itself.
 const text = Schibsted_Grotesk({ subsets: ['latin'], variable: '--font-text' });
-// Fragment Mono is drawn in one weight only.
-const code = Fragment_Mono({ subsets: ['latin'], weight: '400', variable: '--font-code' });
+// Fragment Mono is drawn in one weight only. It is not fetched ahead of the page: on a slow
+// line a preloaded font shares the connection with the stylesheet the first paint waits for,
+// and no page opens on code.
+const code = Fragment_Mono({
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-code',
+  preload: false,
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

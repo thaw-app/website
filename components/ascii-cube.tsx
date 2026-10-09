@@ -115,8 +115,16 @@ export function AsciiCube({ className }: { className?: string }) {
     let awakeUntil = performance.now() + restAfter;
     let running = false;
 
+    // A phone draws the cube a dozen times a second: the light crosses slowly, and at full
+    // rate the drawing is most of what a phone's processor does while the page opens.
+    const pause = window.matchMedia('(pointer: coarse)').matches ? 1000 / 12 : 0;
+    let drawn = 0;
+
     function loop(time: number) {
-      if (visible) draw(time);
+      if (visible && time - drawn >= pause) {
+        drawn = time;
+        draw(time);
+      }
       if (time < awakeUntil) frame = requestAnimationFrame(loop);
       else running = false;
     }

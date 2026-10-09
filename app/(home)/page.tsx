@@ -15,7 +15,8 @@ import { sitePages } from '@/lib/site-pages';
 import { source } from '@/lib/source';
 
 // A free serif in the manner of the one Claude's own wordmark is set in.
-const badgeFont = Newsreader({ subsets: ['latin'], weight: ['500'] });
+// Three words low on the page: not worth a place in line ahead of the stylesheet.
+const badgeFont = Newsreader({ subsets: ['latin'], weight: ['500'], preload: false });
 
 export const metadata: Metadata = {
   // One address for the page, whichever domain it was reached on.

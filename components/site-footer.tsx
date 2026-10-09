@@ -3,8 +3,7 @@ import Link from 'next/link';
 import community from '@/lib/community.json';
 import { feedUrl } from '@/lib/releases';
 import { compact, docsRoute, links, products, repoUrl } from '@/lib/shared';
-import { FooterConure } from './footer-conure';
-import { FooterWordmark } from './footer-wordmark';
+import { FooterArt } from './footer-art';
 
 const docs = `${docsRoute}/thaw`;
 const repo = repoUrl('thaw');
@@ -129,10 +128,7 @@ export function SiteFooter() {
 
       {/* Both products' names in moving type, running off the bottom of the page, with a
           conure that comes by to sit on them. */}
-      <div className="footer-art relative w-full overflow-hidden">
-        <FooterConure />
-        <FooterWordmark />
-      </div>
+      <FooterArt />
     </footer>
   );
 }

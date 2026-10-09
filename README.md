@@ -10,7 +10,7 @@ one domain. Built with [Fumadocs](https://fumadocs.dev) on Next.js.
 | `/verified` | What each security badge on the home page means, and who vouches for it |
 | `/built-with` | The stack, the services, the licences and every package, with thanks |
 | `/roadmap` | What is being worked on, what is next and what has shipped; written in `content/site/roadmap.mdx` |
-| `/changelog` | Every release of Thaw, with what each lists as new and fixed; Floe's is at `/changelog/floe` |
+| `/changelog` | Every release of Thaw, with what each lists as new and fixed; a release is at `/changelog/<tag>`, and Floe's are under `/changelog/floe` |
 | `/docs/thaw` | Thaw documentation |
 | `/docs/floe` | Floe documentation |
 
@@ -158,6 +158,19 @@ need every page rendered on each request.
 
 If something new stops loading, the browser's console names the rule that
 refused it. A new outside source goes in that one list, with why.
+
+## What loads later
+
+Three things are kept off a page's first load, since most visits never need them at once:
+
+- The search box and its code, fetched when it is first opened or a search button is
+  pointed at (`components/providers.tsx`).
+- The moving wordmark and the conure at the foot of the page, fetched when the footer is
+  within a screen and a half (`components/footer-art.tsx`).
+- The code font and the badge's serif, which are not preloaded (`app/layout.tsx`,
+  `app/(home)/page.tsx`).
+
+On a touch device the home page's cube redraws twelve times a second.
 
 ## Running it
 
