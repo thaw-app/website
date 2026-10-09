@@ -127,38 +127,73 @@ export function FooterWordmark() {
         // and "floe", where there is no letter to stand in.
         stage.style.setProperty('--floor-x', across(6, 0.5));
         stage.style.setProperty('--floor-drop', `${(box.height * 0.72 * 168) / 200}px`);
-        // The way down off the ampersand, for the conure to climb: where its outline is,
-        // from the top of the bowl out along its right side to the end of its leg. The
-        // glyph is drawn once on its own and read a column at a time, since nothing else
-        // says where a letter's edge is.
+        // The ampersand's shape, for the conure: the glyph is drawn once on its own and
+        // read a pixel at a time, since nothing else says where a letter's ink is.
         const sign = text.getExtentOfChar(5);
         const probe = document.createElement('canvas');
         probe.width = Math.ceil(sign.width) + 40;
         probe.height = 200;
         const ink = probe.getContext('2d', { willReadFrequently: true });
         const unit = matrix.a;
-        const bird = Math.max(2, box.height / 62);
         if (ink && unit > 0) {
           ink.font = `600 168px ${getComputedStyle(text).fontFamily}`;
           ink.fillText('&', 20, 162);
-          const surface = (x: number) => {
-            const column = ink.getImageData(Math.round(x - sign.x + 20), 0, 1, 200).data;
-            for (let y = 0; y < 200; y++) if (column[y * 4 + 3] > 128) return y;
-            return null;
-          };
-          const middle = sign.x + sign.width / 2;
           const origin = stage.getBoundingClientRect();
-          const way = [];
-          // Every few of the bird's own pixels, measured under its feet, which are a
-          // little behind its middle.
-          for (const along of [3, 7, 11, 15, 19]) {
-            const x = middle + (along * bird) / unit;
-            const y = surface(x - (2 * bird) / unit);
-            if (y === null || x > sign.x + sign.width) continue;
-            const spot = new DOMPoint(x, y).matrixTransform(matrix);
-            way.push({ x: spot.x - origin.left, y: spot.y - origin.top });
+          // The opening in the ampersand's lower bowl, which the conure looks out of when
+          // it has gone behind the letter. Everything not ink is flooded from the edges of
+          // the picture; what the flood cannot reach is enclosed by the letter, and the
+          // largest such space is the lower bowl's. The middle of its floor is where the
+          // bird's chin goes.
+          const { width: wide, height: tall } = probe;
+          const pixels = ink.getImageData(0, 0, wide, tall).data;
+          const inked = (index: number) => pixels[index * 4 + 3] > 128;
+          const seen = new Uint8Array(wide * tall);
+          const flood = (from: number) => {
+            const reached = [from];
+            seen[from] = 1;
+            for (let next = 0; next < reached.length; next++) {
+              const here = reached[next];
+              const x = here % wide;
+              for (const to of [
+                here - wide,
+                here + wide,
+                x > 0 ? here - 1 : -1,
+                x < wide - 1 ? here + 1 : -1,
+              ]) {
+                if (to < 0 || to >= wide * tall || seen[to] || inked(to)) continue;
+                seen[to] = 1;
+                reached.push(to);
+              }
+            }
+            return reached;
+          };
+          for (let x = 0; x < wide; x++) {
+            for (const edge of [x, (tall - 1) * wide + x])
+              if (!seen[edge] && !inked(edge)) flood(edge);
           }
-          stage.dataset.conureWay = JSON.stringify(way);
+          for (let y = 0; y < tall; y++) {
+            for (const edge of [y * wide, y * wide + wide - 1])
+              if (!seen[edge] && !inked(edge)) flood(edge);
+          }
+          let bowl: number[] = [];
+          for (let index = 0; index < wide * tall; index++) {
+            if (seen[index] || inked(index)) continue;
+            const space = flood(index);
+            if (space.length > bowl.length) bowl = space;
+          }
+          if (bowl.length > 0) {
+            const xs = bowl.map((index) => index % wide);
+            const across = (Math.min(...xs) + Math.max(...xs)) / 2;
+            // The floor under the middle of the opening, not its lowest point anywhere.
+            const floor = Math.max(
+              ...bowl
+                .filter((index) => Math.abs((index % wide) - across) < 2)
+                .map((index) => Math.floor(index / wide)),
+            );
+            const spot = new DOMPoint(across - 20 + sign.x, floor + 1).matrixTransform(matrix);
+            stage.style.setProperty('--peek-x', `${spot.x - origin.left}px`);
+            stage.style.setProperty('--peek-y', `${spot.y - origin.top}px`);
+          }
         }
       }
     }
@@ -298,6 +333,25 @@ export function FooterWordmark() {
           style={{ fontSize: 168, fontWeight: 600, letterSpacing: '0.01em', wordSpacing: '0.12em' }}
         >
           thaw &amp; floe
+        </text>
+      </svg>
+      {/* The ampersand once more, in front of the conure, for when it goes down behind the
+          letter: the same words in the same place with only the ampersand drawn, and the
+          same holes in it. Shown only while the bird is behind (see footer-conure.tsx). */}
+      <svg
+        aria-hidden
+        viewBox="0 0 1000 200"
+        className="footer-cover pointer-events-none absolute inset-x-0 bottom-[6%] w-full fill-fd-background"
+      >
+        <text
+          mask="url(#footer-bites)"
+          x="500"
+          y="162"
+          textAnchor="middle"
+          className="font-display"
+          style={{ fontSize: 168, fontWeight: 600, letterSpacing: '0.01em', wordSpacing: '0.12em' }}
+        >
+          <tspan fillOpacity={0}>thaw </tspan>&amp;<tspan fillOpacity={0}> floe</tspan>
         </text>
       </svg>
       {/* The type fades in from the page above it. */}

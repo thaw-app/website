@@ -173,6 +173,123 @@ const poses: Record<string, string[]> = {
     '.........EKWKE..........',
     '.........HPPPH..........',
   ],
+  // Out of sight: gone down behind a letter.
+  hidden: [
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+  ],
+  // Only its head and neck, for when it looks over the top of a letter it is behind: from
+  // a photograph of it peering over a ledge with one eye. The rest of the bird is not
+  // drawn, so none of it shows through the letter's openings. Then the same, turned to
+  // face whoever is watching.
+  peek: [
+    '........................',
+    '........................',
+    '............CCP.........',
+    '...........HEKPW........',
+    '...........HHTTW........',
+    '..........GGTTT.........',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+  ],
+  peekFacing: [
+    '........................',
+    '........................',
+    '...........HPPPH........',
+    '...........EKWKE........',
+    '...........HTWTH........',
+    '..........GGTTT.........',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+  ],
+  // Walking, the way a parrot crosses a floor: body level, head out in front, tail straight
+  // out behind, like a small dinosaur. Two steps: legs apart, legs together.
+  stride: [
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '..............HCCP......',
+    '.............HHEKPW.....',
+    '.OOOOOODDDGGGGTTTW......',
+    '..OOOOBDDDGGLLLT........',
+    '.......DDGGLLL..........',
+    '..........F..F..........',
+    '.........F....F.........',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+  ],
+  strideClosed: [
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '..............HCCP......',
+    '.............HHEKPW.....',
+    '.OOOOOODDDGGGGTTTW......',
+    '..OOOOBDDDGGLLLT........',
+    '.......DDGGLLL..........',
+    '...........FF...........',
+    '...........F.F..........',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+  ],
   // Bent forward, beak down at what it is standing on, tail tipped up behind.
   pecking: [
     '........................',
@@ -340,12 +457,26 @@ const chewFrom = -4;
 // Where the beak's tip is in the pecking pose, in the picture's own pixels.
 const beak = { column: 18.5, row: 13.5 };
 
+// How far down, in its own pixels, the bird is when it has dropped right behind a letter.
+const sunk = 12;
+// Looking out of the opening in the ampersand's lower bowl, its chin on the opening's
+// floor: this far lower and the whole head is behind the letter's bottom stroke.
+const ducked = 5;
+// The head is drawn 13 to 14 pixels across the picture and ends 6 down it.
+const head = { column: 13.5, chin: 6 };
+
 // What it does at each stop: a pose, how many seconds it holds it, and how many of its
-// own pixels along from the stop it stands meanwhile. Uneven on purpose, and different
+// own pixels along from the stop it stands meanwhile. A fourth number is how many pixels
+// down behind the letter it is, which is also what puts the letter in front of it. A
+// fifth says it is not on the stop at all but looking out of the letter's lower bowl,
+// and then the fourth is how far it has ducked below that opening's floor. Uneven on purpose, and different
 // at each stop, so it reads as a bird with things on its mind and not as a loop. It
 // only pecks where there is something under its beak: the upright of a letter is
 // narrower than the bird, and pecking there would be pecking at air.
-const routines: Record<Stop, [pose: string, seconds: number, along?: number][]> = {
+const routines: Record<
+  Stop,
+  [pose: string, seconds: number, along?: number, down?: number, from?: 'bowl'][]
+> = {
   // On the h it sidles along the top a step at a time, the way they walk a perch, and
   // back again, then hangs off it head-down for a moment.
   thaw: [
@@ -364,6 +495,7 @@ const routines: Record<Stop, [pose: string, seconds: number, along?: number][]> 
   // The ampersand gets eaten. It hops back so its beak is over the top of the bowl,
   // then stays head down, biting and tugging; each bite takes a piece out of the letter
   // (see `bite` below). The pieces grow back when it has gone.
+  // After eating it falls behind the letter and looks out of its lower bowl.
   sign: [
     ['perched', 0.5],
     ['looking', 0.6],
@@ -377,6 +509,17 @@ const routines: Record<Stop, [pose: string, seconds: number, along?: number][]> 
     ['pecking', 0.24, chewFrom],
     ['tugging', 0.3, chewFrom],
     ['perched', 0.5, chewFrom],
+    // Then it loses its footing and drops down behind the letter. A second of nothing,
+    // and its head comes up in the opening of the lower bowl: one eye first, then a look
+    // straight out, and down again. It does not climb back up: it walks out along the
+    // floor from behind the letter (see `legs`).
+    ['perched', 0.3, chewFrom, sunk],
+    ['hidden', 1, chewFrom, sunk],
+    ['peek', 0.9, 0, 0, 'bowl'],
+    ['peekFacing', 0.8, 0, 0, 'bowl'],
+    ['peek', 0.5, 0, 0, 'bowl'],
+    ['peek', 0.25, 0, ducked, 'bowl'],
+    ['hidden', 0.35, 0, ducked, 'bowl'],
   ],
   // The floor is where the food is: mostly pecking, a hop along to the next crumb,
   // and a look round before it goes back up.
@@ -415,13 +558,13 @@ const routines: Record<Stop, [pose: string, seconds: number, along?: number][]> 
 
 // One visit, a leg at a time. A flight goes from one place to another in so many
 // seconds, rising `over` body-lengths above the straight line on the way; a rest lasts
-// as long as its routine; a climb goes down a letter on foot. Every move goes rightward,
+// as long as its routine; a walk crosses the floor on foot. Every move goes rightward,
 // the way the bird is drawn facing.
 type Leg =
   | { from: Place; to: Place; lasts: number; over: number }
   | { on: Stop; lasts: number }
-  // Getting from one stop to the next on foot, down the outside of the letter between.
-  | { down: Stop; to: Stop; lasts: number };
+  // Out from behind a letter and along the floor to the next stop, on foot.
+  | { walk: Stop; to: Stop; lasts: number };
 const rest = (on: Stop): Leg => ({
   on,
   lasts: routines[on].reduce((sum, [, seconds]) => sum + seconds, 0),
@@ -431,8 +574,8 @@ const legs: Leg[] = [
   rest('thaw'),
   { from: 'thaw', to: 'sign', lasts: 1.1, over: 0.5 },
   rest('sign'),
-  // No flight to the floor: it climbs down the ampersand, a hop at a time.
-  { down: 'sign', to: 'floor', lasts: 2.6 },
+  // No flight to the floor: it comes out from behind the ampersand and struts there.
+  { walk: 'sign', to: 'floor', lasts: 2.4 },
   rest('floor'),
   { from: 'floor', to: 'floe', lasts: 0.9, over: 0.3 },
   rest('floe'),
@@ -507,9 +650,6 @@ export function FooterConure() {
     let fled: { when: number; x: number; y: number } | null = null;
     // What the routine last had it doing, how many bites it has taken of the ampersand
     // this visit, and whether any are waiting to be mended.
-    // The way down the ampersand, as the wordmark last wrote it, read once per writing.
-    let wayRead: string | undefined;
-    let way: { x: number; y: number }[] = [];
     let routinePose = '';
     let bites = 0;
     let eaten = false;
@@ -549,6 +689,7 @@ export function FooterConure() {
       };
 
       if (fled) {
+        delete stage.dataset.conureBehind;
         const part = (now - fled.when) / 1000 / getaway;
         if (part < 1) {
           // Up and away to the right, gathering speed, from wherever it was touched.
@@ -587,21 +728,48 @@ export function FooterConure() {
       if (leg && 'on' in leg) {
         const spot = place(leg.on);
         let before = 0;
+        let sunkBefore = 0;
         let pose = 'perched';
         let along = 0;
+        let lowered = 0;
+        let inBowl = false;
         let into = time;
-        for (const [next, seconds, step = 0] of routines[leg.on]) {
+        for (const [next, seconds, step = 0, down = 0, from] of routines[leg.on]) {
           pose = next;
+          // Arriving in the bowl it starts out of sight below the opening's floor.
+          if (from === 'bowl' && !inBowl) sunkBefore = ducked;
+          inBowl = from === 'bowl';
           // Where it stands changes with a short hop at the start of the beat.
           const hopped = Math.min(1, into / hop);
           along = before + (step - before) * hopped;
           // As high as it is far: a sidestep barely leaves the perch, a hop clears it.
           y = spot.y - Math.sin(hopped * Math.PI) * pixel * Math.min(2, Math.abs(step - before));
+          // Going down behind the letter it falls, gathering speed; coming up it slows
+          // as it arrives. Either takes a quarter of a second, or the beat if that is less.
+          const moved = Math.min(1, into / Math.min(seconds, 0.25));
+          const eased = down > sunkBefore ? moved ** 2 : 1 - (1 - moved) ** 2;
+          lowered = sunkBefore + (down - sunkBefore) * eased;
           if (into < seconds) break;
           into -= seconds;
           before = step;
+          sunkBefore = down;
         }
         x = spot.x + along * pixel;
+        y += lowered * pixel;
+        if (inBowl) {
+          // Its head in the middle of the opening and its chin on the opening's floor,
+          // as the wordmark measured them, or about there until it has.
+          const top = measured('--perch-y', 0);
+          x = measured('--peek-x', spot.x + body / 2) - head.column * pixel;
+          y = measured('--peek-y', top + body * 1.5) - top + (13 - head.chin + lowered) * pixel;
+        }
+        // While any of it is below the letter's top, the letter is drawn over it: the
+        // wordmark keeps a copy of the letter for this, in front of the bird.
+        const behind = lowered > 0 || pose === 'hidden' || pose === 'peek' || pose === 'peekFacing';
+        if (behind !== (stage.dataset.conureBehind === 'true')) {
+          if (behind) stage.dataset.conureBehind = 'true';
+          else delete stage.dataset.conureBehind;
+        }
         // Each time the beak comes down on the ampersand, the wordmark is told where, and
         // takes a piece out of the letter there: a little deeper and to one side each time.
         if (leg.on === 'sign' && pose === 'pecking' && routinePose !== 'pecking') {
@@ -623,7 +791,7 @@ export function FooterConure() {
         // A pointer close by gets looked at, whatever the bird was doing: back over its
         // shoulder if it is behind, neck up if it is overhead, and straight at it otherwise.
         // Measured only while a pointer is over the footer, so nothing is read otherwise.
-        if (pointer) {
+        if (pointer && !behind) {
           const box = bird.getBoundingClientRect();
           const head = { x: box.left + box.width * 0.6, y: box.top + pixel * 3 };
           if (Math.hypot(pointer.x - head.x, pointer.y - head.y) < body * 2.2) {
@@ -632,39 +800,21 @@ export function FooterConure() {
           }
         }
         show(pose);
-      } else if (leg && 'down' in leg) {
-        // The wordmark has measured the letter's outline: stand on each point of it in
-        // turn, then on the floor. A short hop between them, wings out for a long drop.
-        const perch = Number.parseFloat(stage.style.getPropertyValue('--perch-y')) || 0;
-        if (stage.dataset.conureWay !== wayRead) {
-          wayRead = stage.dataset.conureWay;
-          way = JSON.parse(wayRead ?? '[]');
-        }
-        const start = leaving(leg.down);
+      } else if (leg && 'walk' in leg) {
+        // It starts behind the letter, under the bowl it was looking out of, and walks to
+        // the stop on the floor line: level, a step every so often, a small bob to each.
+        // The letter stays in front of it until it has walked clear.
+        stage.dataset.conureBehind = 'true';
         const end = place(leg.to);
-        const points = [
-          start,
-          ...way
-            .map((spot) => ({ x: spot.x - body / 2, y: spot.y - perch }))
-            .filter((spot) => spot.x > start.x + pixel && spot.x < end.x - pixel),
-          end,
-        ];
-        const steps = points.length - 1;
-        const through = Math.min(steps - 1e-6, (time / leg.lasts) * steps);
-        const step = Math.floor(through);
-        // Most of each step is the hop, and the rest is standing where it landed.
-        const hopped = Math.min(1, (through - step) / 0.6);
-        const from = points[step];
-        const to = points[step + 1];
-        const eased = hopped * hopped * (3 - 2 * hopped);
-        const fluttering = hopped < 1 && to.y - from.y > pixel * 5;
-        x = from.x + (to.x - from.x) * eased;
-        y =
-          from.y +
-          (to.y - from.y) * eased -
-          Math.sin(hopped * Math.PI) * pixel * 2 +
-          (fluttering ? tucked * pixel * Math.min(1, 4 * hopped, 4 * (1 - hopped)) : 0);
-        show(fluttering ? wingbeat[Math.floor(now / 80) % wingbeat.length] : 'perched');
+        const start = {
+          x: measured('--peek-x', place(leg.walk).x + body / 2) - head.column * pixel,
+          y: end.y,
+        };
+        const part = time / leg.lasts;
+        const steps = Math.floor(time / 0.16);
+        x = start.x + (end.x - start.x) * part;
+        y = end.y - Math.abs(Math.sin((time / 0.16) * Math.PI)) * pixel * 0.6;
+        show(steps % 2 ? 'strideClosed' : 'stride');
       } else if (leg) {
         const from = leaving(leg.from);
         const to = place(leg.to);

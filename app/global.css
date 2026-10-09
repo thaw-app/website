@@ -568,6 +568,16 @@ html > body[data-scroll-locked] {
   z-index: 1;
 }
 
+/* The ampersand's copy that goes in front of the conure, and only while it is behind. */
+.footer-cover {
+  z-index: 2;
+  visibility: hidden;
+}
+
+[data-conure-behind] > .footer-cover {
+  visibility: visible;
+}
+
 /*
  * Keyboard focus, the same everywhere: a ring in the text colour, clear of the
  * control it surrounds. Browsers draw their own by default, in colours that do
