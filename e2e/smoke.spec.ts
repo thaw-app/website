@@ -66,6 +66,11 @@ test('the pages a visitor moves between all answer', async ({ page }) => {
   await expect(page).toHaveURL(/\/roadmap$/);
   await page.goto('/docs/thaw/changelog/2.0.0');
   await expect(page).toHaveURL(/\/changelog\/2\.0\.0$/);
+  // A release's address is its tag alone; the longer ones it had still arrive.
+  await page.goto('/changelog/3.0.0/3.0.0-beta.2');
+  await expect(page).toHaveURL(/\/changelog\/3\.0\.0-beta\.2$/);
+  await page.goto('/docs/thaw/changelog/2.0.0/2.0.0-rc.3');
+  await expect(page).toHaveURL(/\/changelog\/2\.0\.0-rc\.3$/);
 });
 
 test('search finds a docs page', async ({ page, isMobile }) => {

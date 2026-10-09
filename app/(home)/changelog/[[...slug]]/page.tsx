@@ -9,7 +9,7 @@ import { PageShell } from '@/components/page-shell';
 import { ReleaseList, VersionReleases } from '@/components/release-list';
 import { feedUrl, pageAlternates, pageTitle } from '@/lib/releases';
 import {
-  changelogSlugs,
+  changelogRoute,
   changelogUrl,
   getPageImageUrl,
   type ProductSlug,
@@ -19,10 +19,13 @@ import { sitePages } from '@/lib/site-pages';
 import { source } from '@/lib/source';
 
 /** The page an address under /changelog is for: a changelog, a version or one release. */
-function pageAt(path?: string[]) {
-  const page = source.getPage(changelogSlugs(path));
-  // Thaw's has no name in its address, so one that names it is not an address of anything.
-  if (!page || path?.[0] === 'thaw') notFound();
+function pageAt(path: string[] = []) {
+  // Found by its address, since a release's address leaves out the folder it is filed in.
+  const url = [changelogRoute, ...path].join('/');
+  const page = source
+    .getPages()
+    .find((candidate) => candidate.slugs[1] === 'changelog' && candidate.url === url);
+  if (!page) notFound();
   return page;
 }
 
@@ -134,10 +137,11 @@ function FinalReleaseTrail({ product, version }: { product: string; version: str
 }
 
 export function generateStaticParams() {
-  return source
-    .getPages()
-    .filter((page) => page.slugs[1] === 'changelog')
-    .map((page) => ({ slug: page.url.split('/').slice(2) }));
+  const pages = source.getPages().filter((page) => page.slugs[1] === 'changelog');
+  // Two releases with one tag would share an address, and one would never be seen.
+  const twice = pages.find((page, index) => pages.findIndex((p) => p.url === page.url) !== index);
+  if (twice) throw new Error(`Two changelog pages share the address ${twice.url}`);
+  return pages.map((page) => ({ slug: page.url.split('/').slice(2) }));
 }
 
 export async function generateMetadata(

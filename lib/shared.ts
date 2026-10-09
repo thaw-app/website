@@ -47,16 +47,11 @@ export function productOf(slugs: string[]) {
 /**
  * Where a product's changelog is, and a page under it. The changelog is the site's own
  * page and not part of the docs: Thaw's is at its top, and Floe's hangs off it by name.
+ * A release's address is its tag alone (/changelog/3.0.0-beta.2), whatever folder its
+ * version keeps it in: the tag already says which version it belongs to.
  */
 export function changelogUrl(product: string, rest: string[] = []) {
-  return [changelogRoute, ...(product === 'thaw' ? [] : [product]), ...rest].join('/');
-}
-
-/** A changelog address read back: whose it is, and where its page is kept in content/docs. */
-export function changelogSlugs(path: string[] = []) {
-  const named = path[0] !== undefined && path[0] !== 'thaw' && path[0] in products;
-  const product = named ? path[0] : 'thaw';
-  return [product, 'changelog', ...(named ? path.slice(1) : path)];
+  return [changelogRoute, ...(product === 'thaw' ? [] : [product]), ...rest.slice(-1)].join('/');
 }
 
 const getContentUrl = createGetUrl(docsContentRoute);

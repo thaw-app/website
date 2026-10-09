@@ -68,6 +68,28 @@ const config = {
       { source: '/docs', destination: '/docs/thaw', permanent: false },
       // The roadmap was a docs page first; links to it there still arrive.
       { source: '/docs/thaw/roadmap', destination: '/roadmap', permanent: true },
+      // A release was filed under its version first (/changelog/3.0.0/3.0.0-beta.2), in the
+      // docs and then here. Its address is now its tag alone.
+      {
+        source: '/docs/thaw/changelog/:group/:tag',
+        destination: '/changelog/:tag',
+        permanent: true,
+      },
+      {
+        source: '/docs/floe/changelog/:group/:tag',
+        destination: '/changelog/floe/:tag',
+        permanent: true,
+      },
+      {
+        source: '/changelog/floe/:group/:tag',
+        destination: '/changelog/floe/:tag',
+        permanent: true,
+      },
+      {
+        source: '/changelog/:group((?!floe)[^/]+)/:tag',
+        destination: '/changelog/:tag',
+        permanent: true,
+      },
       // So was the changelog, under each product's docs.
       { source: '/docs/thaw/changelog/:path*', destination: '/changelog/:path*', permanent: true },
       {
