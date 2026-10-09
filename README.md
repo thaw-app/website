@@ -10,8 +10,9 @@ one domain. Built with [Fumadocs](https://fumadocs.dev) on Next.js.
 | `/verified` | What each security badge on the home page means, and who vouches for it |
 | `/built-with` | The stack, the services, the licences and every package, with thanks |
 | `/roadmap` | What is being worked on, what is next and what has shipped; written in `content/site/roadmap.mdx` |
-| `/docs/thaw` | Thaw documentation and changelog |
-| `/docs/floe` | Floe documentation and changelog |
+| `/changelog` | Every release of Thaw, with what each lists as new and fixed; Floe's is at `/changelog/floe` |
+| `/docs/thaw` | Thaw documentation |
+| `/docs/floe` | Floe documentation |
 
 ## Where the content lives
 
@@ -47,16 +48,27 @@ Search engines are pointed at Thaw's copy of each shared page.
 
 ## The changelog
 
+The changelog is the site's own page, not part of the docs. Its pages are written
+by the sync into `content/docs/<product>/changelog`, beside the docs, and served
+under `/changelog` (`app/(home)/changelog`); the old docs addresses redirect.
+
 Each release gets its own page, filed under its version number: `2.0.0` holds
 the final release and, folded under it, the betas and release candidates that
 led to it.
 
-The notes come from two places, merged by the sync script:
+The notes come from `CHANGELOG.md` in the app repo, which lists every release.
+Its sections are named `New`, `Changed`, `Fixed` and `Known issues`; the page sets
+each name beside its list, and counts the items under New and Fixed for the
+numbers at its top. The file's layout is otherwise not touched, since the release
+workflows read it.
 
-- `CHANGELOG.md` in the app repo, for every release it lists. Its format is
-  not touched, since the release workflows read it.
-- The repo's GitHub Releases, for releases older than the changelog file and
-  for any date the file leaves out.
+The changelog page writes out the newest three releases. Each older one is a line
+that fetches its notes from that release's own page when opened
+(`components/release-row.tsx`), so the page does not carry seventy sets of notes.
+
+The repo's GitHub Releases give each release its link to the downloads, a date
+where the file leaves one out, and the notes of any release the file does not
+have yet.
 
 The list of releases is one unauthenticated call to GitHub's API. Set
 `GITHUB_TOKEN` in Vercel to keep it clear of the shared rate limit. If the
@@ -125,6 +137,12 @@ Three files are made by hand-run scripts and committed, not built each time:
   in `scripts/sync/`: `config` (what is read and written), `text` (the
   parsers, tested in `sync-docs.test.mjs`), `changelog`, `numbers` and
   `roadmap`.
+- The one accent colour is `--product-tone` in `app/global.css`: Thaw's orange, and
+  Floe's blue under Floe's docs. It marks what is current or the thing to look at (the
+  roadmap's "Now", the page you are on in the docs, a stable release). The changelog's
+  calendar uses the cube's three oranges, `--release-1` to `--release-3`.
+- A note set apart in a doc (GitHub's `> [!NOTE]`, or `<Callout>`) is drawn by
+  `components/callout.tsx`: a rule, its name at the left, its text beside it.
 - On a page, a section is `<Section label="…">` and a ruled grid is
   `className="crossed"` plus its columns (`components/section-label.tsx`,
   `app/global.css`).
