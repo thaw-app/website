@@ -17,15 +17,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
   );
   const site: [string, string | undefined][] = [
     ['/', read],
+    ['/floe', newest.floe],
+    ['/floe/roadmap', newest.floe],
     ['/community', read],
     ['/verified', read],
     ['/built-with', undefined],
     ['/roadmap', newest.thaw],
     ['/privacy', undefined],
   ];
+  const docs = source.getPages().filter((page) => page.slugs.at(-1) !== 'readme');
   return [
     ...site.map(([path, day]) => ({ url: `${siteUrl}${path}`, ...(day && { lastModified: day }) })),
-    ...source.getPages().map((page) => {
+    // A README is drawn on its product's own page, listed above, and not as a docs page.
+    ...docs.map((page) => {
       const day =
         page.data.release?.date ?? (page.data.releaseIndex ? newest[page.slugs[0]] : undefined);
       return { url: `${siteUrl}${page.url}`, ...(day && { lastModified: day }) };

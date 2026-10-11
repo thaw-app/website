@@ -1,0 +1,79 @@
+{/* Floe's roadmap, drawn by app/(floe)/floe/roadmap/page.tsx under its title. The plan is
+    the one in Floe's README; what shipped is from its changelog. */}
+
+Floe is early: 0.1.0 is its first release. This is the plan as it stands, not a promise, and the order can change. [What Floe does not do yet](/docs/floe/limitations) lists the gaps as they are today.
+
+<Roadmap>
+
+<RoadmapList title="Up next" count={5} state="now" note="What comes next, in this order.">
+<RoadmapGroup name="Documentation" count={1}>
+
+- **A guide for extension authors.** How to run a local extension in Floe, what works and what does not.
+
+</RoadmapGroup>
+<RoadmapGroup name="Extensions" count={2}>
+
+- **Floe’s own sign-in service.** Extensions sign in through Raycast’s service today, which is temporary. Floe’s own takes its place.
+- **More of the extension API.** The grid layout, `launchCommand` and deeplinks.
+
+</RoadmapGroup>
+<RoadmapGroup name="Search" count={1}>
+
+- **Search the front app’s menus.** Built on the menu scanner in [CMD-Z](https://github.com/stonerl/CMD-Z) and shared with Thaw.
+
+</RoadmapGroup>
+<RoadmapGroup name="Across your Macs" count={1}>
+
+- **Settings sync switched on.** Releases signed for iCloud, then the same sync in Thaw. <Marks of="icloud" />
+
+</RoadmapGroup>
+</RoadmapList>
+
+<RoadmapList title="Later" count={3} state="later" note="These come after the list above. None has a date.">
+<RoadmapGroup name="Extensions" count={1}>
+
+- **An `@floe/api` package.** A small one, for what Raycast’s API cannot express.
+
+</RoadmapGroup>
+<RoadmapGroup name="Search" count={1}>
+
+- **Search your notes.**
+
+</RoadmapGroup>
+<RoadmapGroup name="Built in" count={1}>
+
+- **Calculator history.**
+
+</RoadmapGroup>
+</RoadmapList>
+
+<RoadmapList title="Not planned" count={1} state="blocked" note="Not on the plan unless people ask for it.">
+<RoadmapGroup name="Windows" count={1}>
+
+- **Window management.** There are many window managers already, and Floe can work with them.
+
+</RoadmapGroup>
+</RoadmapList>
+
+<RoadmapList title="Shipped" count={12} state="done" note="Everything that has shipped, by release, newest first. The changelog has the detail.">
+<RoadmapGroup name="0.1.0" count={12}>
+
+- One hotkey opens a search over applications, commands, quicklinks and System Settings
+- Raycast extensions, unmodified, with an Extension Store page
+- Aliases, hotkeys and favorites
+- Shell commands, saved commands and script commands
+- Checkpoints, and receipts that undo what Floe changed
+- Reminders, calendar events and timers
+- Snippets, quicklinks, emoji and a calculator with unit conversion
+- File search and menu bar item search
+- Preferred apps: your terminal, editor, browser, notes app and clipboard manager
+- Ask AI, answered by a tool or model you choose
+- Thaw 3’s actions in the search
+- Settings export and import
+
+</RoadmapGroup>
+</RoadmapList>
+
+</Roadmap>
+
+To ask for something, [open an issue](https://github.com/thaw-app/Floe/issues). Every request is considered during the early releases.

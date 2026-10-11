@@ -1,7 +1,8 @@
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import Link from 'next/link';
 import { getMDXComponents } from '@/components/mdx';
-import { compact, longDate } from '@/lib/shared';
+import { commitOf } from '@/lib/releases';
+import { compact, longDate, type ProductSlug } from '@/lib/shared';
 import { source } from '@/lib/source';
 import { ReleaseFilter } from './release-filter';
 import { ReleaseRow } from './release-row';
@@ -229,7 +230,7 @@ function ReleaseNumbers({ pages, since }: { pages: ReleasePage[]; since?: string
  * date, macOS, build and channel on the left, and what changed on the right. The newest few
  * have their notes written out; older ones are a line each, linked to their own page.
  */
-export function ReleaseList({ product }: { product: string }) {
+export function ReleaseList({ product }: { product: ProductSlug }) {
   const pages = byDate(releasesOf(product));
   const systems = [...new Set(pages.flatMap((page) => page.data.release.os ?? []))];
   const dated = pages.flatMap((page) => page.data.release.date ?? []).sort();
@@ -249,6 +250,7 @@ export function ReleaseList({ product }: { product: string }) {
           const details = particulars
             ? [...particulars, ...(said(release.channel) ? [] : [release.channel])]
             : [release.os, release.channel].flatMap((detail) => detail ?? []);
+          const commit = release.commit && commitOf(product, release.commit);
           return (
             <article
               key={page.url}
@@ -272,6 +274,15 @@ export function ReleaseList({ product }: { product: string }) {
                     {detail}
                   </span>
                 ))}
+                {commit && (
+                  <a
+                    href={commit.url}
+                    title={`The commit ${release.tag} was built from`}
+                    className="tap link font-mono text-sm text-fd-muted-foreground"
+                  >
+                    {commit.short}
+                  </a>
+                )}
               </div>
 
               <div className="prose release-notes max-w-none min-w-0">

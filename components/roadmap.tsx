@@ -22,6 +22,13 @@ interface ListProps {
   state?: State;
 }
 
+// One column to a list on a wide screen, so the row has no empty cell at its end.
+const columns: Record<number, string> = {
+  3: 'lg:grid-cols-3',
+  4: 'sm:grid-cols-4',
+  6: 'lg:grid-cols-6',
+};
+
 /**
  * The whole roadmap. Above its lists it draws one row that names each of them
  * with its mark and its count, and jumps to it: the shape of the plan at a
@@ -35,7 +42,7 @@ export function Roadmap({ children }: { children: ReactNode }) {
     <>
       <nav aria-label="Parts of the roadmap" className="not-prose my-8">
         <ul
-          className={`grid grid-cols-2 border-t border-l sm:grid-cols-3 ${parts.length === 6 ? 'lg:grid-cols-6' : 'lg:grid-cols-5'}`}
+          className={`grid grid-cols-2 border-t border-l sm:grid-cols-3 ${columns[parts.length] ?? 'lg:grid-cols-5'}`}
         >
           {parts.map((part) => (
             // Five in two columns leave the last alone on its row, so on a phone it takes the row.

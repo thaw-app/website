@@ -14,7 +14,7 @@ export async function GET(_req: Request, { params }: RouteContext<'/og/site/[nam
   return shareImage({
     title: page.title.replace(/\.$/, ''),
     description: page.shared,
-    withCube: true,
+    ...('product' in page ? { product: page.product } : { withCube: true }),
   });
 }
 

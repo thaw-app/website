@@ -40,6 +40,8 @@ const docs = defineDocs({
           // True for the release its version is named for.
           final: z.boolean(),
           url: z.string().optional(),
+          // The commit its tag points at: what the release was built from.
+          commit: z.string().optional(),
           name: z.string().optional(),
           // The macOS the release runs on, such as "macOS 27".
           os: z.string().optional(),

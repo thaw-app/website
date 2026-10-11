@@ -4,9 +4,11 @@
 import { expect, test } from 'bun:test';
 import {
   channelOf,
+  groupReleases,
   linkMentions,
   longDate,
   parseTag,
+  readmeBody,
   splitReleases,
   stageRank,
   tidyNotes,
@@ -70,6 +72,24 @@ test('a changelog splits into its releases, each with its date and opening line'
   expect(releases[0].body).not.toContain('---');
   expect(releases[0].body).toContain('Triggers can show items');
   expect(releases[1].channel).toBe('Stable');
+});
+
+test('a release is given the commit its tag points at, whichever place its notes are', () => {
+  const published = [
+    { tag: '2.0.1', name: '2.0.1', body: '', date: '2026-09-02', commit: 'a1b2c3d4e5' },
+    { tag: '1.2.0', name: '1.2.0', body: 'Older notes.', date: '2026-01-05', commit: 'f6e5d4c3b2' },
+    { tag: '1.1.0', name: '1.1.0', body: 'A tag GitHub no longer lists.', date: '2025-12-01' },
+  ];
+  const releases = groupReleases(changelog, published, { repo: 'thaw-app/Thaw' }).flatMap(
+    (group) => group.releases,
+  );
+  const commitOf = (tag) => releases.find((release) => release.tag === tag).commit;
+  // In the changelog file, and only on GitHub.
+  expect(commitOf('2.0.1')).toBe('a1b2c3d4e5');
+  expect(commitOf('1.2.0')).toBe('f6e5d4c3b2');
+  // Not published yet, and published without a tag left to find.
+  expect(commitOf('3.0.0-beta.2')).toBeUndefined();
+  expect(commitOf('1.1.0')).toBeUndefined();
 });
 
 test('issue numbers and names become links, and code is left alone', () => {
@@ -195,5 +215,31 @@ test('an emoji shortcode becomes the emoji, except in code or when it is not one
   expect(emojiShortcodes('A new beta :grin:.')).toBe('A new beta 😁.');
   expect(emojiShortcodes('Run `:grin:` at 10:30:15, or :not_one:')).toBe(
     'Run `:grin:` at 10:30:15, or :not_one:',
+  );
+});
+
+test("a README is shown install first, with the site's own parts only where it has them", () => {
+  const readme = [
+    '# App',
+    'A header.',
+    '## Features',
+    '- One',
+    '## Install',
+    'Download it.',
+    '## License',
+    'Free.',
+    '',
+  ].join('\n');
+  const leaves = { readmeLeavesOut: ['License'] };
+  expect(readmeBody(readme, leaves)).toBe('## Install\nDownload it.\n## Features\n- One\n');
+  expect(
+    readmeBody(readme, {
+      ...leaves,
+      readmeParts: { features: '<FeatureList />', last: '<Assurance />' },
+    }),
+  ).toBe('## Install\nDownload it.\n## Features\n<FeatureList />\n\n<Assurance />\n');
+  // An install section with no commands gives way to the site's own box whole.
+  expect(readmeBody(readme, { ...leaves, readmeParts: { install: '<Box />' } })).toBe(
+    '## Install\n\n<Box />\n\n## Features\n- One\n',
   );
 });

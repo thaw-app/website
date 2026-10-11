@@ -11,6 +11,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import type { ProductSlug } from '@/lib/shared';
 import { Dock } from './dock';
 import { hotkeyMatches } from './floe-controls';
 import { defaultFloeData } from './floe-pages';
@@ -59,7 +60,7 @@ const margin = { side: 12, top: 38, bottom: 8 };
  * from the real one, Floe's launcher, and a Dock to open them from. None of
  * it is the real apps, and the page says so beside it.
  */
-export function Desktop() {
+export function Desktop({ start = 'thaw' }: { start?: ProductSlug }) {
   const desktopRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
   const settingsRef = useRef<HTMLDivElement>(null);
@@ -95,8 +96,9 @@ export function Desktop() {
   }, []);
 
   const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
-  const [launcherOpen, setLauncherOpen] = useState(false);
-  const [settingsOpen, setSettingsOpen] = useState(true);
+  // On Floe's page the desktop opens on the launcher, and Thaw's settings wait in the Dock.
+  const [launcherOpen, setLauncherOpen] = useState(start === 'floe');
+  const [settingsOpen, setSettingsOpen] = useState(start === 'thaw');
   // Minimized is not closed: the window stays as it was left, out of sight in the Dock.
   const [settingsMinimized, setSettingsMinimized] = useState(false);
   // From the window's middle to Thaw's Dock icon, the way it shrinks and comes back.
@@ -109,7 +111,9 @@ export function Desktop() {
   const [floeData, setFloeData] = useState(defaultFloeData);
   // Where Floe's own menu hangs from its menu bar item, while it is open.
   const [floeMenu, setFloeMenu] = useState<{ x: number; y: number } | null>(null);
-  const [front, setFront] = useState<'launcher' | 'settings' | 'floe-settings'>('settings');
+  const [front, setFront] = useState<'launcher' | 'settings' | 'floe-settings'>(
+    start === 'floe' ? 'launcher' : 'settings',
+  );
   // The desktop's size, known only once it is on screen.
   const [size, setSize] = useState<{ width: number; height: number } | null>(null);
 

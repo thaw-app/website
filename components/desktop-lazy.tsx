@@ -3,14 +3,27 @@
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
-import still from '@/assets/desktop-still.png';
+import thawStill from '@/assets/desktop-still.png';
+import floeStill from '@/assets/desktop-still-floe.png';
+import type { ProductSlug } from '@/lib/shared';
 
 // The demo is the heaviest thing on the home page and sits two screens down it. Its code
 // is fetched when the visitor is nearly there, not with the first paint.
 const Desktop = dynamic(() => import('@/components/desktop').then((module) => module.Desktop), {
   ssr: false,
-  loading: () => <Frame />,
+  // Only a screen wide enough to hide the picture fetches the demo, so its place is kept
+  // by the frame alone.
+  loading: () => <div className={frame} />,
 });
+
+// The picture a phone gets, of the desktop as it opens for each product.
+const stills = {
+  thaw: { src: thawStill, alt: 'Thaw’s settings window under a menu bar, with a Dock below' },
+  floe: { src: floeStill, alt: 'Floe’s launcher open under a menu bar, with a Dock below' },
+};
+
+// The demo's own shape and ground, before it is there.
+const frame = 'desktop-wallpaper aspect-[1512/982] w-full overflow-hidden rounded-3xl border';
 
 // Below this the desktop is too small to work, and the demo makes itself inert.
 const roomy = '(min-width: 640px)';
@@ -19,14 +32,14 @@ const roomy = '(min-width: 640px)';
  * The demo's place on the page, at its own shape, so nothing moves when it arrives. On a
  * phone it holds a picture of the demo, which is all a phone is ever given: the picture is
  * hidden on a wider screen, and a browser does not fetch a lazy image it is not showing.
- * The picture is taken by scripts/capture-demo.mjs.
+ * The pictures are taken by scripts/capture-demo.mjs.
  */
-function Frame() {
+function Frame({ product }: { product: ProductSlug }) {
   return (
-    <div className="desktop-wallpaper aspect-[1512/982] w-full overflow-hidden rounded-3xl border">
+    <div className={frame}>
       <Image
-        src={still}
-        alt="Thaw’s settings window under a menu bar, with a Dock below"
+        src={stills[product].src}
+        alt={stills[product].alt}
         sizes="100vw"
         className="size-full object-cover sm:hidden"
       />
@@ -34,7 +47,7 @@ function Frame() {
   );
 }
 
-export function DesktopLazy() {
+export function DesktopLazy({ product = 'thaw' }: { product?: ProductSlug }) {
   const holder = useRef<HTMLDivElement>(null);
   const [near, setNear] = useState(false);
 
@@ -66,5 +79,5 @@ export function DesktopLazy() {
     };
   }, []);
 
-  return <div ref={holder}>{near ? <Desktop /> : <Frame />}</div>;
+  return <div ref={holder}>{near ? <Desktop start={product} /> : <Frame product={product} />}</div>;
 }

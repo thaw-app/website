@@ -4,6 +4,7 @@ import type { ComponentProps } from 'react';
 import { Assurance } from './assurance';
 import { Callout } from './callout';
 import { FeatureList } from './feature-list';
+import { FloeAssurance, FloeFeatures, FloeInstall } from './floe-parts';
 import { InstallTabs } from './install-tabs';
 import { Mermaid } from './mermaid';
 import { Marks } from './product-marks';
@@ -29,6 +30,9 @@ export function getMDXComponents(components?: MDXComponents) {
     Assurance,
     Callout,
     FeatureList,
+    FloeAssurance,
+    FloeFeatures,
+    FloeInstall,
     InstallTabs,
     Marks,
     Mermaid,

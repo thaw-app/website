@@ -5,8 +5,6 @@ import { cubeMask } from './ascii-cube-mask';
 
 /** Characters from faintest to boldest. */
 const ramp = ' .·:-=+*#%@';
-const rows = cubeMask.length;
-const columns = cubeMask[0].length;
 /** How long the cube keeps moving after it was last given a reason to, in milliseconds. */
 const restAfter = 6000;
 
@@ -21,14 +19,26 @@ function channels(hex: string) {
  * the cube were catching the sun and starting to melt, and the characters
  * near the pointer brighten. Every character is one of the logo's own colours.
  * It moves for a few seconds and then rests, so it does not pull at the eye for good. With reduced motion it is a single still frame.
+ * Given another icon's grid it draws that one, in the colours its class sets (global.css).
  */
-export function AsciiCube({ className }: { className?: string }) {
+export function AsciiCube({
+  className,
+  mask = cubeMask,
+  label = 'Thaw’s icon, an ice cube, drawn in text characters',
+}: {
+  className?: string;
+  mask?: readonly string[];
+  /** What the drawing is, for someone who cannot see it. */
+  label?: string;
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas?.getContext('2d');
     if (!canvas || !context) return;
+    const rows = mask.length;
+    const columns = mask[0].length;
 
     const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let frame = 0;
@@ -67,7 +77,7 @@ export function AsciiCube({ className }: { className?: string }) {
 
       for (let row = 0; row < rows; row++) {
         for (let column = 0; column < columns; column++) {
-          const mark = cubeMask[row][column];
+          const mark = mask[row][column];
           if (mark === ' ') continue;
 
           // How strongly the cube's lines show here, lifted so the fainter lower edges read.
@@ -117,7 +127,9 @@ export function AsciiCube({ className }: { className?: string }) {
 
     // A phone draws the cube a dozen times a second: the light crosses slowly, and at full
     // rate the drawing is most of what a phone's processor does while the page opens.
-    const pause = window.matchMedia('(pointer: coarse)').matches ? 1000 / 12 : 0;
+    // A little under a twelfth of a second: frames come every sixtieth, and a wait of exactly
+    // five of them would often miss by a hair and take a sixth.
+    const pause = window.matchMedia('(pointer: coarse)').matches ? 1000 / 12 - 4 : 0;
     let drawn = 0;
 
     function loop(time: number) {
@@ -183,14 +195,7 @@ export function AsciiCube({ className }: { className?: string }) {
       canvas.removeEventListener('pointermove', onPointerMove);
       canvas.removeEventListener('pointerleave', onPointerLeave);
     };
-  }, []);
+  }, [mask]);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      role="img"
-      aria-label="Thaw’s icon, an ice cube, drawn in text characters"
-      className={className}
-    />
-  );
+  return <canvas ref={canvasRef} role="img" aria-label={label} className={className} />;
 }

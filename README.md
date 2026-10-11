@@ -9,7 +9,8 @@ one domain. Built with [Fumadocs](https://fumadocs.dev) on Next.js.
 | `/community` | The project in numbers, where its people are, the team, contributors and translators |
 | `/verified` | What each security badge on the home page means, and who vouches for it |
 | `/built-with` | The stack, the services, the licences and every package, with thanks |
-| `/roadmap` | What is being worked on, what is next and what has shipped; written in `content/site/roadmap.mdx` |
+| `/floe` | Floe's page: the same parts as the home page, built from Floe's README, with Floe's launcher open in the demo |
+| `/roadmap` | What is being worked on, what is next and what has shipped; written in `content/site/roadmap.mdx`. Floe's is `/floe/roadmap`, written in `content/site/floe-roadmap.mdx` |
 | `/changelog` | Every release of Thaw, with what each lists as new and fixed; a release is at `/changelog/<tag>`, and Floe's are under `/changelog/floe` |
 | `/docs/thaw` | Thaw documentation |
 | `/docs/floe` | Floe documentation |
@@ -23,7 +24,7 @@ build, so those `.md` files are not committed here.
 | Product | Repo | Files synced |
 |---|---|---|
 | Thaw | `thaw-app/Thaw` | `docs/*.md`, `CHANGELOG.md`, `FREQUENT_ISSUES.md` |
-| Floe | `thaw-app/Floe` | `docs/*.md`, `CHANGELOG.md` |
+| Floe | `thaw-app/Floe` | `docs/*.md`, `CHANGELOG.md`, `README.md` |
 
 **To change a synced page, open a pull request in the app repo.** The site
 picks it up on its next build.
@@ -109,10 +110,11 @@ How a free-text location becomes a country is in `scripts/countries.mjs`: a
 country's name, a US state, or a town on its list. Add a town there when a
 common one is going uncounted.
 
-Three files are made by hand-run scripts and committed, not built each time:
+Four files are made by hand-run scripts and committed, not built each time:
 
-- `assets/desktop-still.png`, the picture of the demo a phone is shown in its place,
-  by `node scripts/capture-demo.mjs` against a running site. Take it again when the
+- `assets/desktop-still.png` and `assets/desktop-still-floe.png`, the pictures of the
+  demo a phone is shown in its place on the home page and on Floe's, by
+  `node scripts/capture-demo.mjs` against a running site. Take them again when the
   demo changes.
 - `lib/world-map.json`, the dotted map, by `node scripts/build-world-map.mjs`
   from the outline in `scripts/data/`.
@@ -137,8 +139,13 @@ Three files are made by hand-run scripts and committed, not built each time:
   in `scripts/sync/`: `config` (what is read and written), `text` (the
   parsers, tested in `sync-docs.test.mjs`), `changelog`, `numbers` and
   `roadmap`.
+- Floe's page, roadmap and changelog are in `app/(floe)`, under a header and footer that
+  are Floe's (`baseOptions({ product: 'floe' })`). The name at the left of every header
+  opens a list of both products (`components/product-switcher.tsx`).
+- One line of news can run over Thaw's pages: `components/site-banner.tsx`. Give a new
+  line a new id, or the people who closed the last one will not see it.
 - The one accent colour is `--product-tone` in `app/global.css`: Thaw's orange, and
-  Floe's blue under Floe's docs. It marks what is current or the thing to look at (the
+  Floe's blue under Floe's docs and on Floe's own pages (`data-tone="floe"`). It marks what is current or the thing to look at (the
   roadmap's "Now", the page you are on in the docs, a stable release). The changelog's
   calendar uses the cube's three oranges, `--release-1` to `--release-3`.
 - A note set apart in a doc (GitHub's `> [!NOTE]`, or `<Callout>`) is drawn by

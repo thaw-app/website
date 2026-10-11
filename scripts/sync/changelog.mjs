@@ -19,6 +19,24 @@ import {
   tidyNotes,
 } from './text.mjs';
 
+/** Every page of a GitHub list, such as a repo's releases or its tags. */
+async function everyPage(path) {
+  const token = githubToken();
+  const all = [];
+  for (let page = 1; ; page++) {
+    const response = await request(`https://api.github.com/${path}?per_page=100&page=${page}`, {
+      headers: {
+        Accept: 'application/vnd.github+json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    });
+    if (!response.ok) throw new Error(`GitHub answered ${response.status}`);
+    const batch = await response.json();
+    all.push(...batch);
+    if (batch.length < 100) return all;
+  }
+}
+
 /**
  * The releases a repo has published on GitHub, newest first. The changelog file
  * only goes back so far and leaves some dates out; GitHub has every release.
@@ -26,30 +44,19 @@ import {
  */
 async function publishedReleases(repo, slug) {
   const cache = cacheFile(`releases-${slug}.json`);
-  const token = githubToken();
   try {
-    const all = [];
-    for (let page = 1; ; page++) {
-      const response = await request(
-        `https://api.github.com/repos/${repo}/releases?per_page=100&page=${page}`,
-        {
-          headers: {
-            Accept: 'application/vnd.github+json',
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
-        },
-      );
-      if (!response.ok) throw new Error(`GitHub answered ${response.status}`);
-      const batch = await response.json();
-      all.push(...batch.filter((release) => !release.draft));
-      if (batch.length < 100) break;
-    }
+    const all = (await everyPage(`repos/${repo}/releases`)).filter((release) => !release.draft);
+    // A release names its tag, and the tag is what names the commit it was built from.
+    const commits = new Map(
+      (await everyPage(`repos/${repo}/tags`)).map((tag) => [tag.name, tag.commit.sha]),
+    );
     const kept = all.map(({ tag_name, name, body, published_at, html_url }) => ({
       tag: tag_name,
       name,
       body: body ?? '',
       date: published_at?.slice(0, 10),
       url: html_url,
+      commit: commits.get(tag_name),
     }));
     mkdirSync(join(cache, '..'), { recursive: true });
     writeFileSync(cache, JSON.stringify(kept));
@@ -77,6 +84,7 @@ function groupReleases(markdown, published, product) {
     ...release,
     date: release.date ?? online.get(release.tag)?.date,
     url: online.get(release.tag)?.url,
+    commit: online.get(release.tag)?.commit,
     // A tag that is not a version, such as "macos-27-preview.3", has only a tag in the
     // file; what it is called is on GitHub.
     ...(!parseTag(release.tag) && online.get(release.tag)?.name
@@ -91,6 +99,7 @@ function groupReleases(markdown, published, product) {
       slug: release.tag.toLowerCase(),
       date: release.date,
       url: release.url,
+      commit: release.commit,
       channel: channelOf(release.tag),
       // A release named for more than its number, such as "1.2.0 - The Global Thaw".
       name: release.name && release.name !== release.tag ? release.name : undefined,
@@ -229,6 +238,7 @@ function writeChangelog(markdown, repoPath, outDir, product, rewrite, published)
               ...(date ? { date } : {}),
               ...(summary ? { summary } : {}),
               ...(url ? { url } : {}),
+              ...(release.commit ? { commit: release.commit } : {}),
               ...(name ? { name } : {}),
               ...(os ? { os } : {}),
               ...countChanges(release.body),

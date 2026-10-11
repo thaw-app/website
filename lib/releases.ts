@@ -1,4 +1,4 @@
-import { type ProductSlug, productOf, products } from './shared';
+import { type ProductSlug, productOf, products, repoUrl } from './shared';
 import { source } from './source';
 
 /**
@@ -20,6 +20,11 @@ export function datedReleases(product: ProductSlug) {
 /** The newest release on the stable channel, if the product has one. */
 export function latestStable(product: ProductSlug) {
   return datedReleases(product).find((release) => release.channel === 'Stable');
+}
+
+/** The commit a release was built from: its short name, and where GitHub shows it. */
+export function commitOf(product: ProductSlug, sha: string) {
+  return { short: sha.slice(0, 7), url: `${repoUrl(product)}/commit/${sha}` };
 }
 
 /** Where a product's changelog can be followed in a feed reader. */

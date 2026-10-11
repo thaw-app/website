@@ -123,6 +123,22 @@ kbd,
   --product-tone: #c96817;
 }
 
+/* Floe's own pages, its changelog among them: the accent and the changelog's calendar are
+   its blues, lighter to deeper as the cube's oranges run. */
+[data-tone="floe"] {
+  --product-tone: #2563c9;
+  --release-1: #3d7df0;
+  --release-2: #0b4fd8;
+  --release-3: #072f86;
+}
+
+.dark [data-tone="floe"] {
+  --product-tone: #4f93ff;
+  --release-1: #1560e8;
+  --release-2: #4f93ff;
+  --release-3: #c4e0ff;
+}
+
 #nd-notebook-layout:has([data-product="floe"]) {
   --product-tone: #2563c9;
 }
@@ -162,6 +178,26 @@ kbd,
   --cube-2: #c96817;
   --cube-3: #fa9a2a;
   --cube-4: #ffde81;
+}
+
+/* Floe's icon in the same characters, in its own blues: on a light page the tile filled in
+   as the app's icon is, and on a dark one the ice drawn pale on deep blue. */
+.ascii-cube.ascii-floe {
+  --cube-1: #3d7df0;
+  --cube-2: #1560e8;
+  --cube-3: #0b4fd8;
+  --cube-4: #072f86;
+  --cube-fill-top: #2f7ff0;
+  --cube-fill-bottom: #0a3a9c;
+}
+
+.dark .ascii-cube.ascii-floe {
+  --cube-fill-top: initial;
+  --cube-fill-bottom: initial;
+  --cube-1: #0a3a9c;
+  --cube-2: #1560e8;
+  --cube-3: #4f93ff;
+  --cube-4: #c4e0ff;
 }
 
 html {

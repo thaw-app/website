@@ -7,7 +7,7 @@ import { getMDXComponents } from '@/components/mdx';
 import { Lead, PageHeader } from '@/components/page-header';
 import { PageShell } from '@/components/page-shell';
 import { ReleaseList, VersionReleases } from '@/components/release-list';
-import { feedUrl, pageAlternates, pageTitle } from '@/lib/releases';
+import { commitOf, feedUrl, pageAlternates, pageTitle } from '@/lib/releases';
 import {
   changelogRoute,
   changelogUrl,
@@ -29,8 +29,12 @@ function pageAt(path: string[] = []) {
   return page;
 }
 
-export default async function ChangelogPage(props: PageProps<'/changelog/[[...slug]]'>) {
-  const page = pageAt((await props.params).slug);
+/**
+ * The page at an address under /changelog, given what follows /changelog in it. Thaw's and
+ * Floe's are the same page under different headers, so each has a route that draws this.
+ */
+export function ChangelogView({ path }: { path?: string[] }) {
+  const page = pageAt(path);
   const slug = page.slugs[0] as ProductSlug;
   const product = products[slug];
   const Notes = page.data.body;
@@ -38,6 +42,7 @@ export default async function ChangelogPage(props: PageProps<'/changelog/[[...sl
   // The line under the title often names the macOS already; it is not said twice.
   const forSystem =
     release?.os && !page.data.description?.includes(release.os) ? release.os : undefined;
+  const commit = release?.commit ? commitOf(slug, release.commit) : undefined;
 
   if (page.data.releaseIndex) {
     // A product with nothing released yet has no changelog to choose.
@@ -45,7 +50,7 @@ export default async function ChangelogPage(props: PageProps<'/changelog/[[...sl
       source.getPages().some((other) => other.slugs[0] === name && other.data.release),
     );
     return (
-      <PageShell>
+      <PageShell tone={slug}>
         <PageHeader
           label={sitePages.changelog.label}
           title={slug === 'thaw' ? sitePages.changelog.title : `Every release of ${product.name}.`}
@@ -82,7 +87,7 @@ export default async function ChangelogPage(props: PageProps<'/changelog/[[...sl
   }
 
   return (
-    <PageShell>
+    <PageShell tone={slug}>
       <article className="mx-auto flex w-full max-w-4xl flex-col gap-10">
         <PageHeader
           label={`${product.name} changelog`}
@@ -90,7 +95,7 @@ export default async function ChangelogPage(props: PageProps<'/changelog/[[...sl
           title={pageTitle(page)}
         >
           {page.data.description && <Lead>{page.data.description}</Lead>}
-          {(forSystem || release?.url) && (
+          {(forSystem || release?.url || commit) && (
             <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
               {forSystem && <span className="text-fd-muted-foreground">For {forSystem}</span>}
               {release?.url && (
@@ -100,6 +105,14 @@ export default async function ChangelogPage(props: PageProps<'/changelog/[[...sl
                 >
                   Downloads on GitHub
                 </a>
+              )}
+              {commit && (
+                <span className="text-fd-muted-foreground">
+                  Built from commit{' '}
+                  <a href={commit.url} className="tap link font-mono">
+                    {commit.short}
+                  </a>
+                </span>
               )}
             </div>
           )}
@@ -136,18 +149,19 @@ function FinalReleaseTrail({ product, version }: { product: string; version: str
   );
 }
 
-export function generateStaticParams() {
+/** Every address under /changelog that is one product's, as what follows /changelog in it. */
+export function changelogPaths(product: ProductSlug) {
   const pages = source.getPages().filter((page) => page.slugs[1] === 'changelog');
   // Two releases with one tag would share an address, and one would never be seen.
   const twice = pages.find((page, index) => pages.findIndex((p) => p.url === page.url) !== index);
   if (twice) throw new Error(`Two changelog pages share the address ${twice.url}`);
-  return pages.map((page) => ({ slug: page.url.split('/').slice(2) }));
+  return pages
+    .filter((page) => page.slugs[0] === product)
+    .map((page) => page.url.split('/').slice(2));
 }
 
-export async function generateMetadata(
-  props: PageProps<'/changelog/[[...slug]]'>,
-): Promise<Metadata> {
-  const page = pageAt((await props.params).slug);
+export function changelogMetadata(path?: string[]): Metadata {
+  const page = pageAt(path);
   const own = page.data.releaseIndex && page.slugs[0] === 'thaw';
   return {
     title: own ? sitePages.changelog.label : pageTitle(page),

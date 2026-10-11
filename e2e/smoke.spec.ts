@@ -47,6 +47,8 @@ test('every Verified value sits under its own name', async ({ page }) => {
 test('the pages a visitor moves between all answer', async ({ page }) => {
   for (const path of [
     '/',
+    '/floe',
+    '/floe/roadmap',
     '/community',
     '/verified',
     '/roadmap',
@@ -178,4 +180,52 @@ test('an earlier release opens its notes under its line', async ({ page }) => {
   await expect(row.locator('.release-notes')).not.toBeEmpty();
   await toggle.click();
   await expect(row.locator('.release-notes')).toHaveCount(0);
+});
+
+test('Floe’s page opens the demo on the launcher', async ({ page, isMobile }) => {
+  await page.goto('/floe');
+  await expect(page.locator('h1')).toHaveText('The open source launcher for macOS.');
+  const frame = page.locator('.desktop-wallpaper');
+  await frame.scrollIntoViewIfNeeded();
+  if (isMobile) await expect(frame.getByRole('img', { name: /launcher/ })).toBeVisible();
+  else await expect(frame.getByPlaceholder(/Search apps/)).toBeVisible();
+});
+
+test('Floe’s pages are under Floe’s own header', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'the header’s links are in a menu on a phone');
+  for (const path of ['/floe', '/floe/roadmap', '/changelog/floe']) {
+    await page.goto(path);
+    const header = page.locator('header').first();
+    await expect(header.getByRole('button', { name: /^Floe\./ }), path).toBeVisible();
+    await expect(header.getByRole('link', { name: 'Roadmap' }), path).toHaveAttribute(
+      'href',
+      '/floe/roadmap',
+    );
+  }
+  // Each roadmap leads to the other's, as each changelog does.
+  await page.goto('/floe/roadmap');
+  await page
+    .getByRole('navigation', { name: 'Whose roadmap' })
+    .getByRole('link', { name: 'Thaw' })
+    .click();
+  await expect(page).toHaveURL(/\/roadmap$/);
+  await expect(
+    page.getByRole('navigation', { name: 'Whose roadmap' }).getByRole('link', { name: 'Floe' }),
+  ).toHaveAttribute('href', '/floe/roadmap');
+  // The name in the header opens a list of both products, and each leads to its own page.
+  await page.goto('/changelog');
+  await page
+    .locator('header')
+    .first()
+    .getByRole('button', { name: /^Thaw\./ })
+    .click();
+  await page.getByRole('link', { name: /Floe\s*Launcher/ }).click();
+  await expect(page).toHaveURL(/\/floe$/);
+  await page
+    .locator('header')
+    .first()
+    .getByRole('button', { name: /^Floe\./ })
+    .click();
+  await page.getByRole('link', { name: /Thaw\s*Menu bar manager/ }).click();
+  await expect(page).toHaveURL(/localhost:\d+\/$/);
 });

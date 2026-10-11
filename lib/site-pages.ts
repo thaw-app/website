@@ -9,6 +9,20 @@ export const sitePages = {
     title: 'The open source menu bar manager for macOS.',
     shared: 'Take back your menu bar. Free under GPL-3.0, with no tracking and no account.',
   },
+  floe: {
+    label: 'Floe',
+    title: 'The open source launcher for macOS.',
+    shared: 'One hotkey, one search, and Raycast extensions, unmodified. Free under AGPL-3.0.',
+    // Its picture carries Floe's own icon and colour, and no cube, which is Thaw's.
+    product: 'floe' as const,
+  },
+  floeRoadmap: {
+    // The words Thaw's roadmap has: the header over the page says whose it is.
+    label: 'Roadmap',
+    title: 'What we’re building.',
+    shared: 'What comes next, what comes later, and what has shipped.',
+    product: 'floe' as const,
+  },
   community: {
     label: 'Community',
     title: 'Thaw is built by the people who use it.',

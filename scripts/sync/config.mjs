@@ -51,6 +51,9 @@ const products = [
     // The roadmap is content/site/roadmap.mdx, drawn at /roadmap; it says more than
     // docs/ROADMAP.md does, for now.
     writtenHere: ['roadmap'],
+    // What the home page draws itself in the README's place: the install commands, the
+    // feature list, and at its end how the project is run.
+    readmeParts: { install: '<InstallTabs />', features: '<FeatureList />', last: '<Assurance />' },
     // README sections the home page leaves out: it links to the docs itself, and the
     // contributors are on the community page and the licence in the footer.
     readmeLeavesOut: [
@@ -107,9 +110,30 @@ const products = [
   {
     slug: 'floe',
     ...project.products.floe,
+    // Floe's README is laid out as Thaw's is, and its page leaves out what the home page
+    // does, for the same reasons. Its roadmap is a page of its own, written in
+    // content/site/floe-roadmap.mdx.
+    readmeLeavesOut: [
+      'Project documentation',
+      'Contributors',
+      'License',
+      'Integrations',
+      'Transparency',
+      'Roadmap',
+    ],
+    // Its page has a download box and feature cells of its own (components/floe-parts.tsx).
+    readmeParts: {
+      install: '<FloeInstall />',
+      features: '<FloeFeatures />',
+      last: '<FloeAssurance />',
+    },
     titles: {},
     icons: { changelog: 'ScrollText', development: 'Hammer' },
-    extraPages: { 'CHANGELOG.md': 'changelog' },
+    extraPages: {
+      'CHANGELOG.md': 'changelog',
+      // Shown at /floe, not in the docs sidebar.
+      'README.md': 'readme',
+    },
   },
 ];
 

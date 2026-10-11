@@ -16,12 +16,16 @@ function readmeBody(markdown, product) {
     // A bare asterisk inside a tag would open emphasis in MDX.
     .replace(/(<su[bp]>)\\?\*/g, '$1\\*');
 
+  // What the site draws itself in a section's place; a README with none is shown as written.
+  const parts = product.readmeParts ?? {};
   const sections = trimmed.split(/^(?=## )/m).map((section) => {
-    // The install commands become tabs, which carry their own notes.
-    if (/^## Install\b/.test(section)) {
+    if (parts.install && /^## Install\b/.test(section)) {
+      // Install commands become the site's own, which carry their notes. A section with
+      // no commands is one download, and gives way to the site's box whole.
+      if (!/```sh\n/.test(section)) return `## Install\n\n${parts.install}\n\n`;
       return (
         section
-          .replace(/```sh\n[\s\S]*?```\n/, '<InstallTabs />\n')
+          .replace(/```sh\n[\s\S]*?```\n/, `${parts.install}\n`)
           .replace(/^Or grab the `\.dmg`[^\n]*\n\n?/m, '')
           // What it needs and asks for is said under the tabs, per macOS (install-tabs.tsx).
           .replace(/^Needs macOS[^\n]*\n\n?/m, '')
@@ -30,9 +34,9 @@ function readmeBody(markdown, product) {
     // The short feature list gives way to the site's own steps of squares, which rank the
     // features differently (lib/thaw-features.ts) and name the ones in the README's folded
     // full list, which is therefore left out.
-    if (/^## Features\b/.test(section)) {
+    if (parts.features && /^## Features\b/.test(section)) {
       return section
-        .replace(/(?:^- .*\n)+/m, '<FeatureList />\n')
+        .replace(/(?:^- .*\n)+/m, `${parts.features}\n`)
         .replace(/<details>[\s\S]*?<\/details>\s*/, '');
     }
     return section;
@@ -41,7 +45,7 @@ function readmeBody(markdown, product) {
   const install = sections.findIndex((section) => /^## Install\b/.test(section));
   if (install > 0) sections.unshift(...sections.splice(install, 1));
   // And last, how the project is run: its numbers and what outside bodies have verified.
-  sections.push('\n<Assurance />\n');
+  if (parts.last) sections.push(`\n${parts.last}\n`);
   const leftOut = product.readmeLeavesOut ?? [];
   return sections
     .filter((section) => !leftOut.some((name) => section.startsWith(`## ${name}\n`)))

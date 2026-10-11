@@ -1,5 +1,6 @@
-// Takes the two pictures of the running site that are kept in the repo: the demo as phones
-// are shown it (assets/desktop-still.png), and the cube for shared links (assets/og/cube.png).
+// Takes the pictures of the running site that are kept in the repo: the demo as phones are
+// shown it on each product's page (assets/desktop-still.png and desktop-still-floe.png),
+// and the cube for shared links (assets/og/cube.png).
 // Run by hand when the demo changes, against a running site:
 //
 //   bun run dev            # or: bun run start
@@ -11,7 +12,12 @@ import { join } from 'node:path';
 import { chromium } from '@playwright/test';
 
 const site = process.argv[2] ?? 'http://localhost:3000';
-const file = join(import.meta.dirname, '..', 'assets', 'desktop-still.png');
+const asset = (name) => join(import.meta.dirname, '..', 'assets', name);
+// Where the demo is, and the picture of it there.
+const stills = [
+  ['/#try', 'desktop-still.png'],
+  ['/floe#try', 'desktop-still-floe.png'],
+];
 
 const browser = await chromium.launch();
 try {
@@ -20,16 +26,18 @@ try {
   const page = await browser.newPage({ viewport: { width: 1592, height: 1200 } });
   page.setDefaultTimeout(30_000);
   // The link straight to the demo loads it without scrolling.
-  await page.goto(`${site}/#try`);
-  const demo = page.locator('.desktop-wallpaper');
-  // The frame is there from the start; the menu bar is there once the demo has loaded.
-  await demo.locator('button').first().waitFor();
-  // Its own pictures only: one further down the page is not loaded until it is scrolled to.
-  await page.waitForFunction(() =>
-    [...document.querySelectorAll('.desktop-wallpaper img')].every((image) => image.complete),
-  );
-  await demo.screenshot({ path: file, animations: 'disabled' });
-  console.log(`Wrote ${file}`);
+  for (const [path, name] of stills) {
+    await page.goto(`${site}${path}`);
+    const demo = page.locator('.desktop-wallpaper');
+    // The frame is there from the start; the menu bar is there once the demo has loaded.
+    await demo.locator('button').first().waitFor();
+    // Its own pictures only: one further down the page is not loaded until it is scrolled to.
+    await page.waitForFunction(() =>
+      [...document.querySelectorAll('.desktop-wallpaper img')].every((image) => image.complete),
+    );
+    await demo.screenshot({ path: asset(name), animations: 'disabled' });
+    console.log(`Wrote ${asset(name)}`);
+  }
 
   // The cube from the top of the home page, for the picture a shared link shows
   // (lib/og.tsx). In the dark theme and held still, so it is the same frame every time,
@@ -47,7 +55,7 @@ try {
   const cube = await dark.evaluate(() =>
     document.querySelector('canvas.ascii-cube').toDataURL('image/png'),
   );
-  const cubeFile = join(import.meta.dirname, '..', 'assets', 'og', 'cube.png');
+  const cubeFile = asset(join('og', 'cube.png'));
   writeFileSync(cubeFile, Buffer.from(cube.split(',')[1], 'base64'));
   console.log(`Wrote ${cubeFile}`);
 } finally {
