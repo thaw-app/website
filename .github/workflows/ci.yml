@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   check:
+    if: github.repository == 'thaw-app/website'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
