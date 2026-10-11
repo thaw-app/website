@@ -67,7 +67,7 @@ export default function FloePage() {
         lead="One hotkey, one search: your apps, commands, quicklinks and System Settings, and Raycast extensions, unmodified."
         terms={[
           'Free under AGPL-3.0, with no analytics and no account.',
-          'Floe is early, and comes from the same project as Thaw.',
+          'Floe is early, and made by the people who make Thaw.',
         ]}
       >
         {/* How to get it and what it does: built from Floe's README, synced from its
