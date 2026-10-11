@@ -197,5 +197,15 @@ export function AsciiCube({
     };
   }, [mask]);
 
-  return <canvas ref={canvasRef} role="img" aria-label={label} className={className} />;
+  return (
+    <canvas
+      ref={canvasRef}
+      role="img"
+      aria-label={label}
+      className={className}
+      // Its shape is known before it is drawn, so the headline under it does not move when
+      // the drawing arrives: a character is twice as tall as it is wide.
+      style={{ aspectRatio: `${mask[0].length} / ${mask.length * 2}` }}
+    />
+  );
 }
