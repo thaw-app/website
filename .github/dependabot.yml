@@ -9,18 +9,17 @@ multi-ecosystem-groups:
       - "dependencies"
     assignees:
       - "diazdesandi"
+    open-pull-requests-limit: 10
 
 updates:
   - package-ecosystem: "bun"
     directory: "/"
-    open-pull-requests-limit: 10
     patterns:
       - "*"
     multi-ecosystem-group: "dependencies"
 
   - package-ecosystem: "github-actions"
     directory: "/"
-    open-pull-requests-limit: 10
     patterns:
       - "*"
     multi-ecosystem-group: "dependencies"
