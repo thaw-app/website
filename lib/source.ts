@@ -50,6 +50,8 @@ const docs = defineDocs({
           // How many things its notes list as new and as fixed, counted by their headings.
           added: z.number().optional(),
           fixed: z.number().optional(),
+          // The GitHub logins its notes name, in the order they are first named.
+          people: z.array(z.string()).optional(),
         })
         .optional(),
     }),

@@ -250,6 +250,7 @@ export {
   emojiShortcodes,
   linkMentions,
   parseTag,
+  peopleIn,
   readmeBody,
   splitReleases,
   stageRank,

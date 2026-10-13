@@ -271,8 +271,10 @@ function linkMentions(markdown, repo) {
             ? part
             : part
                 .replace(/(^|[\s(,])#(\d+)\b/g, `$1[#$2](https://github.com/${repo}/issues/$2)`)
+                // A name can end a sentence ("By @someone."); what it cannot be is the start
+                // of an address (@example.com) or of another name.
                 .replace(
-                  /(^|[\s(,])@([A-Za-z\d](?:[A-Za-z\d-]{0,37}[A-Za-z\d])?)\b(?![.@])/g,
+                  /(^|[\s(,])@([A-Za-z\d](?:[A-Za-z\d-]{0,37}[A-Za-z\d])?)\b(?!\.\w|@)/g,
                   (whole, before, name) =>
                     swiftAttributes.has(name)
                       ? whole
@@ -391,6 +393,24 @@ function countChanges(markdown) {
   return counted;
 }
 
+// Accounts that are not people: their work is credited to whoever asked for it.
+const notPeople = new Set(['dependabot', 'github-actions', 'renovate', 'crowdin-bot', 'copilot']);
+
+/**
+ * The people a release's notes name, as GitHub logins in the order they are first named:
+ * whoever the notes credit with a change, a report or a review. Read from notes whose
+ * mentions are already links (linkMentions), so a Swift attribute or a name inside code
+ * is never taken for a person. One login is one person, however it is capitalised.
+ */
+function peopleIn(markdown) {
+  const seen = new Map();
+  for (const [, login] of markdown.matchAll(/\[@([A-Za-z\d-]+)\]\(https:\/\/github\.com\/\1\)/g)) {
+    const key = login.toLowerCase();
+    if (!notPeople.has(key) && !seen.has(key)) seen.set(key, login);
+  }
+  return [...seen.values()];
+}
+
 export {
   channelOf,
   countChanges,
@@ -401,6 +421,7 @@ export {
   emojiShortcodes,
   linkMentions,
   parseTag,
+  peopleIn,
   promoteHeadings,
   readmeBody,
   rewriteLinks,
