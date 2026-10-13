@@ -5,6 +5,7 @@ import vercelOssDark from '@/assets/vercel-oss-dark.png';
 import vercelOssLight from '@/assets/vercel-oss-light.png';
 import { AsciiCube } from '@/components/ascii-cube';
 import { ClaudeMark } from '@/components/claude-mark';
+import { FaqPrompt } from '@/components/faq';
 import { getMDXComponents } from '@/components/mdx';
 import { PageFade } from '@/components/page-fade';
 import { ProductHuntMark } from '@/components/product-hunt-mark';
@@ -13,6 +14,7 @@ import { latestStable, pageAlternates } from '@/lib/releases';
 import { products, repoUrl, siteUrl } from '@/lib/shared';
 import { sitePages } from '@/lib/site-pages';
 import { source } from '@/lib/source';
+import { homeFaq, thawFaq } from '@/lib/thaw-faq';
 
 // A free serif in the manner of the one Claude's own wordmark is set in.
 // Three words low on the page: not worth a place in line ahead of the stylesheet.
@@ -137,6 +139,10 @@ export default function HomePage() {
           ]}
           phone="This is Thaw, rebuilt in the browser. It is too small to use on a phone: open this page on a Mac to click around in it."
         />
+
+        {/* What people ask before installing has a page of its own; these are the first of
+            them, and the way to it. */}
+        <FaqPrompt questions={homeFaq} total={thawFaq.length} />
       </main>
     </PageFade>
   );

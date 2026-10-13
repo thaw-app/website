@@ -21,6 +21,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ['/floe/roadmap', newest.floe],
     ['/community', read],
     ['/verified', read],
+    ['/faq', undefined],
     ['/built-with', undefined],
     ['/roadmap', newest.thaw],
     ['/privacy', undefined],

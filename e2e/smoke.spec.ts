@@ -53,6 +53,7 @@ test('the pages a visitor moves between all answer', async ({ page }) => {
     '/verified',
     '/roadmap',
     '/built-with',
+    '/faq',
     '/docs/thaw',
     '/docs/thaw/getting-started',
     '/changelog',
@@ -168,6 +169,31 @@ test('search engines and feed readers are told what they need', async ({ page, r
   expect(text.match(/<entry>/g)?.length).toBeGreaterThan(5);
   expect((await request.get('/manifest.webmanifest')).ok()).toBe(true);
   expect((await request.get('/privacy')).ok()).toBe(true);
+});
+
+test('the questions open one at a time, and search engines get the ones on the page', async ({
+  page,
+}) => {
+  // The home page ends on the first of them, and leads to the rest.
+  await page.goto('/');
+  await expect(page.locator('.faq details')).toHaveCount(4);
+  await page.getByRole('link', { name: /All \d+ questions/ }).click();
+  await expect(page).toHaveURL(/\/faq$/);
+  // None is open until one is asked for, and then only that one.
+  const open = page.locator('.faq details[open]');
+  await expect(open).toHaveCount(0);
+  await page.getByText('Is Thaw free?').click();
+  await expect(open).toHaveCount(1);
+  await page.getByText('How do I uninstall it?').click();
+  await expect(open).toHaveCount(1);
+  await expect(open.locator('ol li')).toHaveCount(3);
+  // Each question given to a search engine is one a visitor can read on the page.
+  const questions = JSON.parse(
+    (await page.locator('script[type="application/ld+json"]').textContent()) ?? '{}',
+  );
+  expect(questions['@type']).toBe('FAQPage');
+  expect(questions.mainEntity.length).toBeGreaterThan(0);
+  for (const { name } of questions.mainEntity) await expect(page.getByText(name)).toBeVisible();
 });
 
 test('an earlier release opens its notes under its line', async ({ page }) => {
