@@ -740,6 +740,125 @@ html > body[data-scroll-locked] {
   outline-offset: 2px;
 }
 
+/* The link that skips the header: out of sight until the keyboard reaches it, then a
+   plain box at the top left, over everything. */
+.skip-link {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 100;
+  padding: 0.5rem 0.875rem;
+  background: var(--color-fd-foreground);
+  color: var(--color-fd-background);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.skip-link:not(:focus) {
+  clip-path: inset(50%);
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* The header stays at the top, so the page the link lands on starts under it. */
+#content {
+  scroll-margin-top: 3.5rem;
+}
+
+/* A boxed control gives by a pixel while it is pressed, as a key does. */
+.press:active {
+  translate: 0 1px;
+}
+
+/* A link to a place on the same page glides there, so the reader sees how far it went.
+   Not for someone who has asked for less motion. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/*
+ * From one page to the next (components/page-fade.tsx): the page that is left fades out
+ * quickly and the one arrived at fades in after it, a fifth of a second in all. Short
+ * enough that a click still feels answered at once, and enough that a page is seen to
+ * change and not to blink. The header takes no part: it is the same header on both pages,
+ * and stays where it is, over the pages as they change.
+ */
+::view-transition-old(.page) {
+  animation: 70ms ease-in both page-fade reverse;
+}
+
+::view-transition-new(.page) {
+  animation: 140ms ease-out 60ms both page-fade;
+}
+
+@keyframes page-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+/* What stays put between two pages (the header, the footer and everything else that is not
+   a page's own) is not faded from itself to itself. */
+::view-transition-group(root) {
+  animation: none;
+}
+
+::view-transition-old(root) {
+  display: none;
+}
+
+::view-transition-new(root) {
+  animation: none;
+}
+
+/* The header is named only while two pages are changing over. Named all the time, it would
+   lose the blur of the page behind it: a named element is cut off from what is under it. */
+:root:active-view-transition :is(#nd-nav, #nd-subnav) {
+  view-transition-name: site-header;
+}
+
+::view-transition-group(site-header) {
+  z-index: 100;
+  animation: none;
+}
+
+::view-transition-old(site-header) {
+  display: none;
+}
+
+::view-transition-new(site-header) {
+  animation: none;
+}
+
+/* A click made while two pages are changing over still lands on the page. */
+::view-transition {
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    /* biome-ignore lint/complexity/noImportantStyles: over every animation above, whatever names it */
+    animation-duration: 0s !important;
+    /* biome-ignore lint/complexity/noImportantStyles: as above */
+    animation-delay: 0s !important;
+  }
+}
+
+/* A link or a button answers the pointer at once and lets go of it gently: its change of
+   colour has no delay on the way in, and the usual fade on the way out. A fade on the way
+   in is what makes a page feel a beat behind the hand. The mock desktop is left out: its
+   controls are drawn to move as macOS moves them. */
+:is(a, button):hover:not(.desktop-wallpaper *) {
+  transition-duration: 0s;
+}
+
 /* A link in running text, the same everywhere: underlined, the line a little fainter than
    the words until it is pointed at. .link-quiet is the same in the secondary colour. */
 .link {
@@ -905,6 +1024,14 @@ h1.font-display {
   #nd-nav > nav > div {
     padding-inline: 2.5rem 2rem;
   }
+}
+
+/* The header's own controls are square, as every other control on the site is: Fumadocs
+   draws its search box and its theme switch as pills. Thaw's dot stays round, being a dot. */
+/* With three choices the switch is a box of buttons and not one button, so the box is named too. */
+:is(#nd-nav, #nd-subnav, #nd-sidebar-mobile)
+:is(button, button > svg, kbd, div:has(> button[aria-label="System"])) {
+  border-radius: 0;
 }
 
 /* The roadmap's marks again, small, in the row that sums it up. */

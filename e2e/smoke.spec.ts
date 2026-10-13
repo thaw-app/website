@@ -196,7 +196,7 @@ test('Floe’s pages are under Floe’s own header', async ({ page, isMobile }) 
   for (const path of ['/floe', '/floe/roadmap', '/changelog/floe']) {
     await page.goto(path);
     const header = page.locator('header').first();
-    await expect(header.getByRole('button', { name: /^Floe\./ }), path).toBeVisible();
+    await expect(header.getByRole('link', { name: 'Floe, home' }), path).toBeVisible();
     await expect(header.getByRole('link', { name: 'Roadmap' }), path).toHaveAttribute(
       'href',
       '/floe/roadmap',
@@ -212,20 +212,14 @@ test('Floe’s pages are under Floe’s own header', async ({ page, isMobile }) 
   await expect(
     page.getByRole('navigation', { name: 'Whose roadmap' }).getByRole('link', { name: 'Floe' }),
   ).toHaveAttribute('href', '/floe/roadmap');
-  // The name in the header opens a list of both products, and each leads to its own page.
+  // The name in the header leads to its product's own page, and the last of the header's
+  // links to the other product's.
   await page.goto('/changelog');
-  await page
-    .locator('header')
-    .first()
-    .getByRole('button', { name: /^Thaw\./ })
-    .click();
-  await page.getByRole('link', { name: /Floe\s*Launcher/ }).click();
+  const header = page.locator('header').first();
+  await expect(header.getByRole('link', { name: 'Thaw, home' })).toHaveAttribute('href', '/');
+  await header.getByRole('link', { name: 'Floe', exact: true }).click();
   await expect(page).toHaveURL(/\/floe$/);
-  await page
-    .locator('header')
-    .first()
-    .getByRole('button', { name: /^Floe\./ })
-    .click();
-  await page.getByRole('link', { name: /Thaw\s*Menu bar manager/ }).click();
+  await expect(header.getByRole('link', { name: 'Floe, home' })).toHaveAttribute('href', '/floe');
+  await header.getByRole('link', { name: 'Thaw', exact: true }).click();
   await expect(page).toHaveURL(/localhost:\d+\/$/);
 });

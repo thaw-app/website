@@ -10,6 +10,7 @@ import { createRelativeLink } from 'fumadocs-ui/mdx';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getMDXComponents } from '@/components/mdx';
+import { PageFade } from '@/components/page-fade';
 import { pageAlternates, pageTitle } from '@/lib/releases';
 import { docsRoute, getPageImageUrl, getPageMarkdownUrl, productOf } from '@/lib/shared';
 import { source } from '@/lib/source';
@@ -28,47 +29,53 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
   const product = productOf(page.slugs);
 
   return (
-    // A column of reading width, at the left of the space it has: lines of about ninety
-    // characters at most, and room beside them.
-    <DocsPage
-      toc={page.data.toc}
-      full={page.data.full}
-      // A page with no headings to list gives that column back to its text.
-      tableOfContent={{ enabled: page.data.toc.length > 0 }}
-      className="max-w-[52rem]"
-    >
-      {/* global.css reads this to give the page its product's colour. */}
-      <span hidden data-product={page.slugs[0]} />
-      {/* The title, with what can be done with the page beside it and not on a row of its own. */}
-      <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
-        <DocsTitle className="text-4xl leading-[1.15] tracking-tight">{pageTitle(page)}</DocsTitle>
-        <div className="flex flex-row items-center gap-2 pt-1">
-          <MarkdownCopyButton markdownUrl={markdownUrl} />
-          <ViewOptionsPopover
-            markdownUrl={markdownUrl}
-            githubUrl={
-              page.data.sourceUrl ??
-              (product &&
-                page.data.source &&
-                `https://github.com/${product.repo}/blob/${product.branch}/${page.data.source}`)
-            }
-          />
+    <PageFade>
+      {/* A column of reading width, at the left of the space it has: lines of about ninety
+          characters at most, and room beside them. */}
+      <DocsPage
+        toc={page.data.toc}
+        full={page.data.full}
+        // A page with no headings to list gives that column back to its text.
+        tableOfContent={{ enabled: page.data.toc.length > 0 }}
+        className="max-w-[52rem]"
+      >
+        {/* global.css reads this to give the page its product's colour. */}
+        <span hidden data-product={page.slugs[0]} />
+        {/* Where the link that skips the header lands (app/layout.tsx). */}
+        <span id="content" />
+        {/* The title, with what can be done with the page beside it and not on a row of its own. */}
+        <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
+          <DocsTitle className="text-4xl leading-[1.15] tracking-tight">
+            {pageTitle(page)}
+          </DocsTitle>
+          <div className="flex flex-row items-center gap-2 pt-1">
+            <MarkdownCopyButton markdownUrl={markdownUrl} />
+            <ViewOptionsPopover
+              markdownUrl={markdownUrl}
+              githubUrl={
+                page.data.sourceUrl ??
+                (product &&
+                  page.data.source &&
+                  `https://github.com/${product.repo}/blob/${product.branch}/${page.data.source}`)
+              }
+            />
+          </div>
         </div>
-      </div>
-      {/* A synced page opens with the paragraph its description was taken from. */}
-      {!page.data.source && (
-        <DocsDescription className="mb-0">{page.data.description}</DocsDescription>
-      )}
-      {/* No rule parts the head from the page: a little room does it. */}
-      <DocsBody className="mt-4">
-        <MDX
-          components={getMDXComponents({
-            // this allows you to link to other pages with relative file paths
-            a: createRelativeLink(source, page),
-          })}
-        />
-      </DocsBody>
-    </DocsPage>
+        {/* A synced page opens with the paragraph its description was taken from. */}
+        {!page.data.source && (
+          <DocsDescription className="mb-0">{page.data.description}</DocsDescription>
+        )}
+        {/* No rule parts the head from the page: a little room does it. */}
+        <DocsBody className="mt-4">
+          <MDX
+            components={getMDXComponents({
+              // this allows you to link to other pages with relative file paths
+              a: createRelativeLink(source, page),
+            })}
+          />
+        </DocsBody>
+      </DocsPage>
+    </PageFade>
   );
 }
 

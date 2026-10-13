@@ -26,7 +26,7 @@ export function HeaderItems() {
             href={item.href}
             aria-label={item.label}
             title={item.label}
-            className="flex size-9 shrink-0 items-center justify-center text-fd-foreground transition-colors hover:bg-fd-accent"
+            className="flex size-9 shrink-0 items-center justify-center text-fd-foreground transition-colors hover:bg-fd-accent active:bg-fd-foreground/15"
           >
             {item.icon}
           </a>
@@ -40,7 +40,7 @@ export function HeaderItems() {
         }
         title={hidden ? 'Show the hidden icons' : 'Hide these icons, as Thaw would'}
         onClick={() => setHidden(!hidden)}
-        className="flex size-9 shrink-0 items-center justify-center text-fd-foreground transition-colors hover:bg-fd-accent"
+        className="flex size-9 shrink-0 items-center justify-center text-fd-foreground transition-colors hover:bg-fd-accent active:bg-fd-foreground/15"
       >
         <span aria-hidden className="size-[7px] rounded-full bg-current" />
       </button>

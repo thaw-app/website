@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { type CSSProperties, useEffect } from 'react';
 import { Lead, PageHeader } from '@/components/page-header';
 import { PageShell } from '@/components/page-shell';
+import { SiteContainer } from '@/components/site-container';
 import { baseOptions } from '@/lib/layout.shared';
 import { links } from '@/lib/shared';
 
@@ -25,7 +26,11 @@ export default function ErrorPage({
   }, [error]);
 
   return (
-    <HomeLayout {...baseOptions()} style={{ '--fd-layout-width': '100%' } as CSSProperties}>
+    <HomeLayout
+      {...baseOptions()}
+      slots={{ container: SiteContainer }}
+      style={{ '--fd-layout-width': '100%' } as CSSProperties}
+    >
       <PageShell>
         <PageHeader label="Error" title="This page did not load." className="py-10">
           <Lead>Something went wrong on our side while showing it. Trying again often works.</Lead>
@@ -34,7 +39,7 @@ export default function ErrorPage({
               <button
                 type="button"
                 onClick={() => retry()}
-                className="tap border px-3.5 py-2 text-sm font-medium transition-colors hover:bg-fd-accent"
+                className="tap press border px-3.5 py-2 text-sm font-medium transition-colors hover:bg-fd-accent"
               >
                 Try again
               </button>

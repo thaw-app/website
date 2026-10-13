@@ -3,6 +3,7 @@ import Link from 'next/link';
 import type { CSSProperties } from 'react';
 import { Lead, PageHeader } from '@/components/page-header';
 import { PageShell } from '@/components/page-shell';
+import { SiteContainer } from '@/components/site-container';
 import { SiteFooter } from '@/components/site-footer';
 import { baseOptions } from '@/lib/layout.shared';
 import { docsRoute } from '@/lib/shared';
@@ -12,7 +13,11 @@ export const metadata = { title: 'Not found' };
 /** For an address that is no page: say so, and offer the places most people wanted. */
 export default function NotFound() {
   return (
-    <HomeLayout {...baseOptions()} style={{ '--fd-layout-width': '100%' } as CSSProperties}>
+    <HomeLayout
+      {...baseOptions()}
+      slots={{ container: SiteContainer }}
+      style={{ '--fd-layout-width': '100%' } as CSSProperties}
+    >
       <PageShell>
         <PageHeader label="404" title="There is no page at this address." className="py-10">
           <Lead>It may have moved, or the link that brought you here was mistyped.</Lead>
