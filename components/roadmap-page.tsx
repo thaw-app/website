@@ -3,6 +3,7 @@ import type { MDXContent } from 'mdx/types';
 import Link from 'next/link';
 import type { ComponentProps } from 'react';
 import { choiceClass } from '@/components/choice-style';
+import { HoverItem } from '@/components/hover-lines';
 import { getMDXComponents } from '@/components/mdx';
 import { PageHeader } from '@/components/page-header';
 import { PageShell } from '@/components/page-shell';
@@ -74,7 +75,9 @@ export function RoadmapView({
     <PageShell tone={product}>
       <div>
         <PageHeader label={label} title={title} className="mb-4" />
-        <Lists components={getMDXComponents({ p: Opening, h2: Section, Roadmap: Chosen })} />
+        <Lists
+          components={getMDXComponents({ p: Opening, h2: Section, li: HoverItem, Roadmap: Chosen })}
+        />
       </div>
     </PageShell>
   );

@@ -550,8 +550,9 @@ html > body[data-scroll-locked] {
   font-size: 0.875em;
 }
 
-/* What is planned, as a sheet of cards: every area's items share one grid, and each
-   card says which area it is from. */
+/* What is planned, an item to a cell: every area's items share one grid, and each says
+   which area it is from. Ruled into cards for what is being finished now, and set open for
+   the rest (.roadmap-open, below). */
 .roadmap-cards ul {
   display: contents;
 }
@@ -586,6 +587,142 @@ html > body[data-scroll-locked] {
   font-size: 0.75rem;
   color: var(--color-fd-muted-foreground);
   opacity: 0.8;
+}
+
+/* Set open, with no rules round each. The area follows the item's own words and is not
+   held to the foot of the row: with no card to share a foot, it would hang a long way
+   under a short item. */
+.roadmap-open li {
+  align-self: start;
+  border: 0;
+  padding: 0 0 0 1.75rem;
+}
+
+.roadmap-open li::before {
+  left: 0;
+  top: 0.3em;
+}
+
+.roadmap-open li::after {
+  position: static;
+  display: block;
+  margin-top: 0.5rem;
+}
+
+.roadmap-open li .marks {
+  right: 0;
+  bottom: 0;
+}
+
+/* The last of an odd number of cards runs the width of the two columns (components/roadmap.tsx). */
+@media (min-width: 40rem) {
+  .roadmap-odd > :last-child li:last-child {
+    grid-column: span 2;
+  }
+}
+
+/* What is being finished is the head of the plan, and is named a size up. */
+.roadmap-now .roadmap-cards li > strong:first-child {
+  font-size: 1.125rem;
+}
+
+/*
+ * The road (components/roadmap.tsx): one line down the left of the roadmap, with a stop on
+ * it for each list. Each stop draws its own stretch of the line, from its mark down to the
+ * next stop's, so the line can change with what it leads to: unbroken to what is being
+ * built and planned, broken where the way is blocked, and fading out after the last stop,
+ * where the plan stops being known.
+ */
+.road {
+  margin-block: 2.5rem 3.5rem;
+}
+
+.road-stop {
+  position: relative;
+  padding: 0 0 3.5rem 2.25rem;
+}
+
+.road-stop:last-child {
+  padding-bottom: 0.5rem;
+}
+
+.road-stop::before {
+  content: "";
+  position: absolute;
+  /* Down the middle of the marks, which are 15px wide. */
+  left: 7px;
+  top: 0.5rem;
+  bottom: -0.5rem;
+  border-left: 1px solid
+    color-mix(in oklab, var(--color-fd-foreground) 30%, var(--color-fd-background));
+}
+
+.road-stop.roadmap-blocked::before {
+  border-left-style: dashed;
+}
+
+.road-stop:last-child::before {
+  bottom: 0;
+  mask-image: linear-gradient(#000 40%, transparent);
+}
+
+/* A stop's mark, on the line and level with its name. It has the page's ground behind it,
+   so the line does not show through a hollow one. */
+.road-node.roadmap-mark {
+  position: absolute;
+  left: 0;
+  top: 0.4rem;
+  z-index: 1;
+  width: 15px;
+  height: 15px;
+}
+
+.road-node.roadmap-mark:not(.roadmap-mark-done, .roadmap-mark-now) {
+  background-color: var(--color-fd-background);
+}
+
+/* A faint mark is made fainter by its colour here and not by letting the line show through it. */
+.road-node.roadmap-mark-later {
+  border-color: color-mix(
+    in oklab,
+    var(--color-fd-muted-foreground) 55%,
+    var(--color-fd-background)
+  );
+  opacity: 1;
+}
+
+.road-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.75rem;
+  letter-spacing: -0.02em;
+  color: var(--color-fd-foreground);
+}
+
+.road-count {
+  margin-inline-start: 0.125rem;
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--color-fd-muted-foreground);
+}
+
+/* A stop's mark says where its items stand, so they have none of their own. */
+.road .roadmap-cards li::before {
+  content: none;
+}
+
+.road .roadmap-open li {
+  padding-left: 0;
+}
+
+.road .roadmap-cards:not(.roadmap-open) li {
+  padding-left: 1.25rem;
+}
+
+.road .roadmap-cards:not(.roadmap-open) li::after {
+  left: 1.25rem;
 }
 
 /* A request is a row that is all link: it has no mark of its own. */
