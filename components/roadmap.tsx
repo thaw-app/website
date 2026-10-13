@@ -7,6 +7,7 @@ import {
   type ReactElement,
   type ReactNode,
 } from 'react';
+import { HoverLines } from '@/components/hover-lines';
 import issues from '@/lib/roadmap-issues.json';
 import requests from '@/lib/roadmap-requests.json';
 import { longDate, repoUrl, slug } from '@/lib/shared';
@@ -22,51 +23,46 @@ interface ListProps {
   state?: State;
 }
 
-// One column to a list on a wide screen, so the row has no empty cell at its end.
-const columns: Record<number, string> = {
-  3: 'lg:grid-cols-3',
-  4: 'sm:grid-cols-4',
-  6: 'lg:grid-cols-6',
-};
-
 /**
- * The whole roadmap. Above its lists it draws one row that names each of them
- * with its mark and its count, and jumps to it: the shape of the plan at a
- * glance, and the key to what the marks mean.
+ * The whole roadmap, as a road down the page: a line with a stop on it for each list, in
+ * the order things happen. What has shipped is behind, so it is the first stop, shut;
+ * then what is being worked on, and after it what is planned, nearer first. Above the
+ * road one line names each stop with its mark and its count, and jumps to it.
+ *
+ * The lists are written in the order a reader wants them (what is next before what is
+ * done), so the done ones are moved to the front here. What is not a list (the requests
+ * people have made) is not a stop on the road, and follows it.
  */
 export function Roadmap({ children }: { children: ReactNode }) {
-  const parts = Children.toArray(children).flatMap((child) =>
-    isValidElement<ListProps>(child) && child.props.title ? [child.props] : [],
-  );
+  const all = Children.toArray(children);
+  const isList = (child: unknown): child is ReactElement<ListProps> =>
+    isValidElement<ListProps>(child) && Boolean(child.props.title);
+  const stateOf = (list: ListProps) => list.state ?? (list.done ? 'done' : 'next');
+  const lists = all.filter(isList);
+  const stops = [
+    ...lists.filter((list) => stateOf(list.props) === 'done'),
+    ...lists.filter((list) => stateOf(list.props) !== 'done'),
+  ];
   return (
     <>
-      <nav aria-label="Parts of the roadmap" className="not-prose my-8">
-        <ul
-          className={`grid grid-cols-2 border-t border-l sm:grid-cols-3 ${columns[parts.length] ?? 'lg:grid-cols-5'}`}
-        >
-          {parts.map((part) => (
-            // Five in two columns leave the last alone on its row, so on a phone it takes the row.
-            <li key={part.title} className="border-r border-b max-sm:last:odd:col-span-2">
+      <nav aria-label="Stops on the roadmap" className="not-prose my-8">
+        <ul className="flex flex-wrap gap-x-7 gap-y-1 text-sm">
+          {stops.map(({ props: part }) => (
+            <li key={part.title}>
               <a
                 href={`#${slug(part.title)}`}
-                className="flex h-full flex-col gap-1 p-4 transition-colors hover:bg-fd-accent"
+                className="group tap flex items-center gap-2 py-1 text-fd-muted-foreground transition-colors hover:text-fd-foreground"
               >
-                <span className="font-display text-3xl leading-none font-semibold tracking-tight tabular-nums">
-                  {part.count}
-                </span>
-                <span className="flex items-center gap-2 text-sm text-fd-muted-foreground">
-                  <span
-                    aria-hidden
-                    className={`roadmap-mark roadmap-mark-${part.state ?? (part.done ? 'done' : 'next')}`}
-                  />
-                  {part.title}
-                </span>
+                <span aria-hidden className={`roadmap-mark roadmap-mark-${stateOf(part)}`} />
+                <span className="underline-offset-4 group-hover:underline">{part.title}</span>
+                <span className="font-medium text-fd-foreground tabular-nums">{part.count}</span>
               </a>
             </li>
           ))}
         </ul>
       </nav>
-      {children}
+      <div className="road not-prose">{stops}</div>
+      {all.filter((child) => !isList(child))}
     </>
   );
 }
@@ -94,12 +90,17 @@ export function Issue({ n }: { n: number }) {
   );
 }
 
-/** One part of the roadmap: what is in progress, what is next, what has shipped. */
+/**
+ * One stop on the road: what has shipped, what is in progress, what is next. Its mark sits
+ * on the road's line and says which it is, so the items under it carry no marks of their
+ * own.
+ */
 export function RoadmapList({
   title,
   count,
   done,
   state = done ? 'done' : 'next',
+  here,
   note,
   children,
 }: {
@@ -107,38 +108,73 @@ export function RoadmapList({
   count: number;
   done?: boolean;
   state?: State;
+  /** The stop the project is at today, which is told to the reader in so many words. */
+  here?: boolean;
   /** A line under the title saying how firm this part of the plan is. */
   note?: string;
   children: ReactNode;
 }) {
+  const counted = <span className="road-count tabular-nums">{count}</span>;
   return (
-    <section className={`roadmap roadmap-${state} not-prose my-14`}>
-      <Heading as="h2" id={slug(title)} className="section-label scroll-mt-24">
-        {title} <span className="font-normal tabular-nums">{count}</span>
-      </Heading>
-      {note && <p className="mt-6 max-w-2xl text-fd-muted-foreground text-pretty">{note}</p>}
+    <section className={`road-stop roadmap roadmap-${state}`}>
+      <span aria-hidden className={`road-node roadmap-mark roadmap-mark-${state}`} />
       {state === 'done' ? (
-        <div className={`border-t ${note ? 'mt-4' : 'mt-6'}`}>
-          {
-            // Each release folds; the newest starts open.
-            Children.toArray(children)
-              .filter((child) => isValidElement<{ name: string }>(child) && child.props.name)
-              .map((child, index) =>
-                cloneElement(child as ReactElement<{ folded?: boolean; open?: boolean }>, {
-                  folded: true,
-                  open: index === 0,
-                }),
-              )
-          }
-        </div>
+        // What has shipped is the road already travelled: one line, which opens on its
+        // releases, so the plan is not pushed down the page by eighty things that are done.
+        <details className="group/stop">
+          <summary className="tap flex cursor-pointer list-none flex-wrap items-baseline gap-x-3 gap-y-1 [&::-webkit-details-marker]:hidden">
+            <h2 id={slug(title)} className="road-title scroll-mt-24">
+              {title} {counted}
+            </h2>
+            <span
+              aria-hidden
+              className="text-fd-muted-foreground transition-transform group-open/stop:rotate-90"
+            >
+              ›
+            </span>
+            {note && <span className="text-fd-muted-foreground text-pretty">{note}</span>}
+          </summary>
+          <div className="mt-5 border-t">
+            {
+              // Each release folds; the newest starts open.
+              Children.toArray(children)
+                .filter((child) => isValidElement<{ name: string }>(child) && child.props.name)
+                .map((child, index) =>
+                  cloneElement(child as ReactElement<{ folded?: boolean; open?: boolean }>, {
+                    folded: true,
+                    open: index === 0,
+                  }),
+                )
+            }
+          </div>
+        </details>
       ) : (
-        // What is planned is a sheet of cards, one to an item, after Obsidian's roadmap and
-        // Zed's: its name, a sentence, and the area it belongs to.
-        <div
-          className={`roadmap-cards grid border-t border-l sm:grid-cols-2 lg:grid-cols-3 ${note ? 'mt-5' : 'mt-6'}`}
-        >
-          {children}
-        </div>
+        <>
+          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <Heading as="h2" id={slug(title)} className="road-title scroll-mt-24">
+              {title} {counted}
+            </Heading>
+            {here && (
+              <span className="text-sm font-medium text-(--product-tone)">You are here</span>
+            )}
+          </div>
+          {note && <p className="mt-1.5 max-w-2xl text-fd-muted-foreground text-pretty">{note}</p>}
+          {/* What is being finished now is ruled into cards, the one boxed thing on the
+              page, so it is what the eye lands on. Everything planned after it is set open
+              in columns by name, and a name opens on its sentence (hover-lines.tsx). */}
+          {state === 'now' ? (
+            // An odd number in two columns would leave a hole at the end: the last takes the row.
+            <div
+              className={`roadmap-cards mt-5 grid border-t border-l sm:grid-cols-2 ${count % 2 ? 'roadmap-odd' : ''}`}
+            >
+              {children}
+            </div>
+          ) : (
+            <HoverLines className="roadmap-cards roadmap-open mt-5 grid gap-x-10 gap-y-5 sm:grid-cols-2 lg:grid-cols-3">
+              {children}
+            </HoverLines>
+          )}
+        </>
       )}
     </section>
   );

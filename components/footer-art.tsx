@@ -19,7 +19,7 @@ const FooterWordmark = dynamic(
  * comes by to sit on it. Its room is kept from the start (the stylesheet gives it a
  * height), so nothing moves when it arrives.
  */
-export function FooterArt() {
+export function FooterArt({ conure = true }: { conure?: boolean }) {
   const stage = useRef<HTMLDivElement>(null);
   const [near, setNear] = useState(false);
 
@@ -43,7 +43,7 @@ export function FooterArt() {
     <div ref={stage} className="footer-art relative w-full overflow-hidden">
       {near && (
         <>
-          <FooterConure />
+          {conure && <FooterConure />}
           <FooterWordmark />
         </>
       )}

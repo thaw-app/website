@@ -26,7 +26,7 @@ const thawDocs = `${docsRoute}/thaw`;
 const floeDocs = `${docsRoute}/floe`;
 
 // The whole site at a glance, in columns, as a map of it: the product, its docs, the people
-// and the project's rules. Thaw's are seven to a column, so the three end on one line;
+// and the project's rules. Thaw's are seven or eight to a column;
 // Floe's are shorter, as Floe has fewer pages.
 const feet: Record<ProductSlug, Foot> = {
   thaw: {
@@ -40,6 +40,7 @@ const feet: Record<ProductSlug, Foot> = {
         links: [
           { text: 'Install', href: '/' },
           { text: 'Try it in your browser', href: '/#try' },
+          { text: 'Questions', href: '/faq' },
           { text: 'Changelog', href: '/changelog' },
           { text: 'Release feed', href: feedUrl('thaw') },
           { text: 'Roadmap', href: '/roadmap' },
@@ -128,7 +129,14 @@ const feet: Record<ProductSlug, Foot> = {
 };
 
 /** The foot of every page outside the docs: what the product is, a map of the site, and its licence. */
-export function SiteFooter({ product = 'thaw' }: { product?: ProductSlug }) {
+export function SiteFooter({
+  product = 'thaw',
+  conure = true,
+}: {
+  product?: ProductSlug;
+  /** Whether the conure comes by. Not on a page where it is already somewhere else. */
+  conure?: boolean;
+}) {
   const { about, stars, license, columns, policies } = feet[product];
   const { name, icon, branch } = products[product];
   const repo = repoUrl(product);
@@ -140,7 +148,7 @@ export function SiteFooter({ product = 'thaw' }: { product?: ProductSlug }) {
           <p className="max-w-sm text-fd-muted-foreground text-pretty">{about}</p>
           <a
             href={repo}
-            className="tap flex items-center gap-3 border px-3.5 py-2 text-sm font-medium transition-colors hover:bg-fd-accent"
+            className="tap press flex items-center gap-3 border px-3.5 py-2 text-sm font-medium transition-colors hover:bg-fd-accent"
           >
             Star {name} on GitHub
             {stars !== undefined && (
@@ -196,7 +204,7 @@ export function SiteFooter({ product = 'thaw' }: { product?: ProductSlug }) {
 
       {/* Both products' names in moving type, running off the bottom of the page, with a
           conure that comes by to sit on them. */}
-      <FooterArt />
+      <FooterArt conure={conure} />
     </footer>
   );
 }

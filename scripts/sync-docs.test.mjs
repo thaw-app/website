@@ -8,6 +8,7 @@ import {
   linkMentions,
   longDate,
   parseTag,
+  peopleIn,
   readmeBody,
   splitReleases,
   stageRank,
@@ -92,6 +93,19 @@ test('a release is given the commit its tag points at, whichever place its notes
   expect(commitOf('1.1.0')).toBeUndefined();
 });
 
+test('what the changelog lists as not out yet is not a release', () => {
+  const withUnreleased = changelog.replace(
+    '## [3.0.0-beta.2]',
+    '## [Unreleased]\n\n### Fixed\n\n- Not out yet.\n\n---\n\n## [3.0.0-beta.2]',
+  );
+  // The file is read as it is written, and the pages are made without it.
+  expect(splitReleases(withUnreleased).map((release) => release.tag)).toContain('Unreleased');
+  const tags = groupReleases(withUnreleased, [], { repo: 'thaw-app/Thaw' }).flatMap((group) =>
+    group.releases.map((release) => release.tag),
+  );
+  expect(tags).toEqual(['3.0.0-beta.2', '2.0.1']);
+});
+
 test('issue numbers and names become links, and code is left alone', () => {
   const linked = linkMentions('Fixed by @diazdesandi in #1223.', 'thaw-app/Thaw');
   expect(linked).toContain('[@diazdesandi](https://github.com/diazdesandi)');
@@ -102,6 +116,16 @@ test('issue numbers and names become links, and code is left alone', () => {
     'Run `gh issue view #12`.',
   );
   expect(linkMentions('```\n@someone #5\n```', 'thaw-app/Thaw')).toBe('```\n@someone #5\n```');
+});
+
+test('the people a release credits are the ones its notes name, each once', () => {
+  const notes = linkMentions(
+    'Fixed by @diazdesandi. Reported by @mi3suuu and @Diazdesandi.\n\n- Bumped by @dependabot.\n- Moved to @Observable.\n- Run `gh pr view @someone`.',
+    'thaw-app/Thaw',
+  );
+  // In the order first named; a bot, a Swift attribute and a name inside code are no one.
+  expect(peopleIn(notes)).toEqual(['diazdesandi', 'mi3suuu']);
+  expect(peopleIn('Nobody is named here.')).toEqual([]);
 });
 
 test('release notes have their headings brought up to start at the second level', () => {

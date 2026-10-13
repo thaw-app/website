@@ -109,7 +109,7 @@ export function Assurance() {
         </p>
         <Link
           href="/verified"
-          className="tap mt-3 flex items-center justify-between gap-x-6 gap-y-1 border px-5 py-3 font-medium transition-colors hover:bg-fd-accent max-sm:flex-col max-sm:items-start"
+          className="tap press mt-3 flex items-center justify-between gap-x-6 gap-y-1 border px-5 py-3 font-medium transition-colors hover:bg-fd-accent max-sm:flex-col max-sm:items-start"
         >
           What does this mean?
           <span aria-hidden className="text-fd-muted-foreground">

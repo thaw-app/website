@@ -79,11 +79,8 @@ kbd,
   border-inline-end-width: 0;
 }
 
-/* Where the reader is: the page in the sidebar and the heading in the list beside the text
-   are marked in the accent. */
-#nd-sidebar a[data-active="true"] {
-  box-shadow: inset 2px 0 0 var(--product-tone);
-}
+/* Where the reader is on a page: the heading in the list beside the text is marked in the
+   accent, as the page is in the sidebar (see "The docs, kept as plain as a manual"). */
 
 #nd-toc .bg-fd-primary {
   background-color: var(--product-tone);
@@ -137,6 +134,11 @@ kbd,
   --release-1: #1560e8;
   --release-2: #4f93ff;
   --release-3: #c4e0ff;
+}
+
+/* The news over the docs is Thaw's, so it is not over Floe's docs (app/docs/layout.tsx). */
+body:has(#nd-notebook-layout [data-product="floe"]) .docs-banner {
+  display: none;
 }
 
 #nd-notebook-layout:has([data-product="floe"]) {
@@ -416,19 +418,20 @@ html > body[data-scroll-locked] {
   }
 }
 
-/* The README on the home page: its folded feature list and its table of languages. */
-.readme details {
+/* The README on the home page: its folded feature list and its table of languages. A line
+   that opens (components/hover-lines.tsx) is not one of its folds, and styles itself. */
+.readme details:not(.line) {
   margin-block: 1.25rem;
   border-block: 1px solid var(--color-fd-border);
 }
 
-.readme summary {
+.readme details:not(.line) > summary {
   cursor: pointer;
   padding-block: 0.75rem;
   color: var(--color-fd-muted-foreground);
 }
 
-.readme summary:hover {
+.readme details:not(.line) > summary:hover {
   color: var(--color-fd-foreground);
 }
 
@@ -547,8 +550,9 @@ html > body[data-scroll-locked] {
   font-size: 0.875em;
 }
 
-/* What is planned, as a sheet of cards: every area's items share one grid, and each
-   card says which area it is from. */
+/* What is planned, an item to a cell: every area's items share one grid, and each says
+   which area it is from. Ruled into cards for what is being finished now, and set open for
+   the rest (.roadmap-open, below). */
 .roadmap-cards ul {
   display: contents;
 }
@@ -583,6 +587,142 @@ html > body[data-scroll-locked] {
   font-size: 0.75rem;
   color: var(--color-fd-muted-foreground);
   opacity: 0.8;
+}
+
+/* Set open, with no rules round each. The area follows the item's own words and is not
+   held to the foot of the row: with no card to share a foot, it would hang a long way
+   under a short item. */
+.roadmap-open li {
+  align-self: start;
+  border: 0;
+  padding: 0 0 0 1.75rem;
+}
+
+.roadmap-open li::before {
+  left: 0;
+  top: 0.3em;
+}
+
+.roadmap-open li::after {
+  position: static;
+  display: block;
+  margin-top: 0.5rem;
+}
+
+.roadmap-open li .marks {
+  right: 0;
+  bottom: 0;
+}
+
+/* The last of an odd number of cards runs the width of the two columns (components/roadmap.tsx). */
+@media (min-width: 40rem) {
+  .roadmap-odd > :last-child li:last-child {
+    grid-column: span 2;
+  }
+}
+
+/* What is being finished is the head of the plan, and is named a size up. */
+.roadmap-now .roadmap-cards li > strong:first-child {
+  font-size: 1.125rem;
+}
+
+/*
+ * The road (components/roadmap.tsx): one line down the left of the roadmap, with a stop on
+ * it for each list. Each stop draws its own stretch of the line, from its mark down to the
+ * next stop's, so the line can change with what it leads to: unbroken to what is being
+ * built and planned, broken where the way is blocked, and fading out after the last stop,
+ * where the plan stops being known.
+ */
+.road {
+  margin-block: 2.5rem 3.5rem;
+}
+
+.road-stop {
+  position: relative;
+  padding: 0 0 3.5rem 2.25rem;
+}
+
+.road-stop:last-child {
+  padding-bottom: 0.5rem;
+}
+
+.road-stop::before {
+  content: "";
+  position: absolute;
+  /* Down the middle of the marks, which are 15px wide. */
+  left: 7px;
+  top: 0.5rem;
+  bottom: -0.5rem;
+  border-left: 1px solid
+    color-mix(in oklab, var(--color-fd-foreground) 30%, var(--color-fd-background));
+}
+
+.road-stop.roadmap-blocked::before {
+  border-left-style: dashed;
+}
+
+.road-stop:last-child::before {
+  bottom: 0;
+  mask-image: linear-gradient(#000 40%, transparent);
+}
+
+/* A stop's mark, on the line and level with its name. It has the page's ground behind it,
+   so the line does not show through a hollow one. */
+.road-node.roadmap-mark {
+  position: absolute;
+  left: 0;
+  top: 0.4rem;
+  z-index: 1;
+  width: 15px;
+  height: 15px;
+}
+
+.road-node.roadmap-mark:not(.roadmap-mark-done, .roadmap-mark-now) {
+  background-color: var(--color-fd-background);
+}
+
+/* A faint mark is made fainter by its colour here and not by letting the line show through it. */
+.road-node.roadmap-mark-later {
+  border-color: color-mix(
+    in oklab,
+    var(--color-fd-muted-foreground) 55%,
+    var(--color-fd-background)
+  );
+  opacity: 1;
+}
+
+.road-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.75rem;
+  letter-spacing: -0.02em;
+  color: var(--color-fd-foreground);
+}
+
+.road-count {
+  margin-inline-start: 0.125rem;
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--color-fd-muted-foreground);
+}
+
+/* A stop's mark says where its items stand, so they have none of their own. */
+.road .roadmap-cards li::before {
+  content: none;
+}
+
+.road .roadmap-open li {
+  padding-left: 0;
+}
+
+.road .roadmap-cards:not(.roadmap-open) li {
+  padding-left: 1.25rem;
+}
+
+.road .roadmap-cards:not(.roadmap-open) li::after {
+  left: 1.25rem;
 }
 
 /* A request is a row that is all link: it has no mark of its own. */
@@ -720,6 +860,28 @@ html > body[data-scroll-locked] {
   z-index: 1;
 }
 
+/* The same bird at the end of the 404 page's headline, standing on the line the words sit
+   on: its feet are 13 pixels down the picture, and its tail hangs below the line. The box
+   in the line is only as wide as its body, so the tail's tip does not push it off the words. */
+.stray-conure {
+  --pixel: 3px;
+  position: relative;
+  display: inline-block;
+  width: calc(13 * var(--pixel));
+  height: 0;
+  margin-inline-start: 0.2em;
+}
+
+.stray-conure > canvas {
+  position: absolute;
+  bottom: calc(-7 * var(--pixel));
+  left: calc(-4 * var(--pixel));
+  width: calc(24 * var(--pixel));
+  max-width: none;
+  height: calc(20 * var(--pixel));
+  image-rendering: pixelated;
+}
+
 /* The ampersand's copy that goes in front of the conure, and only while it is behind. */
 .footer-cover {
   z-index: 2;
@@ -738,6 +900,190 @@ html > body[data-scroll-locked] {
 :where(a, button, summary, [role="tab"], [tabindex]):focus-visible {
   outline: 2px solid var(--color-fd-foreground);
   outline-offset: 2px;
+}
+
+/* The link that skips the header: out of sight until the keyboard reaches it, then a
+   plain box at the top left, over everything. */
+.skip-link {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 100;
+  padding: 0.5rem 0.875rem;
+  background: var(--color-fd-foreground);
+  color: var(--color-fd-background);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.skip-link:not(:focus) {
+  clip-path: inset(50%);
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* The header stays at the top, so the page the link lands on starts under it. */
+#content {
+  scroll-margin-top: 3.5rem;
+}
+
+/* A boxed control gives by a pixel while it is pressed, as a key does. */
+.press:active {
+  translate: 0 1px;
+}
+
+/* A link to a place on the same page glides there, so the reader sees how far it went.
+   Not for someone who has asked for less motion. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/*
+ * From one page to the next (components/page-fade.tsx): the page that is left fades out
+ * quickly and the one arrived at fades in after it, a fifth of a second in all. Short
+ * enough that a click still feels answered at once, and enough that a page is seen to
+ * change and not to blink. The header takes no part: it is the same header on both pages,
+ * and stays where it is, over the pages as they change.
+ */
+::view-transition-old(.page) {
+  animation: 70ms ease-in both page-fade reverse;
+}
+
+::view-transition-new(.page) {
+  animation: 140ms ease-out 60ms both page-fade;
+}
+
+@keyframes page-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+/* What stays put between two pages (the header, the footer and everything else that is not
+   a page's own) is not faded from itself to itself. */
+::view-transition-group(root) {
+  animation: none;
+}
+
+::view-transition-old(root) {
+  display: none;
+}
+
+::view-transition-new(root) {
+  animation: none;
+}
+
+/* The header is named only while two pages are changing over. Named all the time, it would
+   lose the blur of the page behind it: a named element is cut off from what is under it. */
+:root:active-view-transition :is(#nd-nav, #nd-subnav) {
+  view-transition-name: site-header;
+}
+
+::view-transition-group(site-header) {
+  z-index: 100;
+  animation: none;
+}
+
+::view-transition-old(site-header) {
+  display: none;
+}
+
+::view-transition-new(site-header) {
+  animation: none;
+}
+
+/* A click made while two pages are changing over still lands on the page. */
+::view-transition {
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    /* biome-ignore lint/complexity/noImportantStyles: over every animation above, whatever names it */
+    animation-duration: 0s !important;
+    /* biome-ignore lint/complexity/noImportantStyles: as above */
+    animation-delay: 0s !important;
+  }
+}
+
+/* A line opens on what is under it by growing to it, and shuts by shrinking
+   (components/hover-lines.tsx). A browser that cannot grow a box to "as tall as it needs"
+   opens it at once, as any such list opens. */
+.lines details.line::details-content {
+  height: 0;
+  overflow: clip;
+}
+
+.lines details.line[open]::details-content {
+  height: auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .lines {
+    interpolate-size: allow-keywords;
+  }
+
+  .lines details.line::details-content {
+    transition:
+      height 0.2s ease-out,
+      content-visibility 0.2s allow-discrete;
+  }
+
+  /* As the box grows, what is in it comes in by its opacity. */
+  .lines details.line[open] .line-more {
+    animation: page-fade 0.3s ease-out both;
+  }
+
+  .line-name,
+  .line-name strong {
+    transition: color 0.3s ease-out;
+  }
+}
+
+/* While one line is open the others step back, as the lines on Vercel's home page do. Only
+   where there is a pointer to rest on a line: a phone has opened one by a tap, and the rest
+   are still to be read. */
+@media (hover: hover) {
+  .lines:has(details.line[open]) details.line:not([open]) :is(.line-name, .line-name strong) {
+    color: var(--color-fd-muted-foreground);
+  }
+}
+
+/* A touch screen has no pointer to find out by that a line opens, so there a line says so,
+   unless its name draws a sign of its own. */
+@media (hover: none) {
+  .line:not(.line-marked) > summary {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .line:not(.line-marked) > summary::after {
+    content: "+";
+    flex: none;
+    color: var(--color-fd-muted-foreground);
+  }
+
+  .line[open]:not(.line-marked) > summary::after {
+    content: "\2212";
+  }
+}
+
+/* A link or a button answers the pointer at once and lets go of it gently: its change of
+   colour has no delay on the way in, and the usual fade on the way out. A fade on the way
+   in is what makes a page feel a beat behind the hand. The mock desktop is left out: its
+   controls are drawn to move as macOS moves them. */
+:is(a, button):hover:not(.desktop-wallpaper *) {
+  transition-duration: 0s;
 }
 
 /* A link in running text, the same everywhere: underlined, the line a little fainter than
@@ -907,6 +1253,14 @@ h1.font-display {
   }
 }
 
+/* The header's own controls are square, as every other control on the site is: Fumadocs
+   draws its search box and its theme switch as pills. Thaw's dot stays round, being a dot. */
+/* With three choices the switch is a box of buttons and not one button, so the box is named too. */
+:is(#nd-nav, #nd-subnav, #nd-sidebar-mobile)
+:is(button, button > svg, kbd, div:has(> button[aria-label="System"])) {
+  border-radius: 0;
+}
+
 /* The roadmap's marks again, small, in the row that sums it up. */
 .roadmap-mark {
   width: 0.625rem;
@@ -957,6 +1311,128 @@ h1.font-display {
 /* Code named in running text sits in a square box, as every other box on the site is. */
 .prose :not(pre) > code {
   border-radius: 0;
+}
+
+/*
+ * The docs, kept as plain as a manual: a line for where the reader is, and no boxes round
+ * what is only a link.
+ */
+
+/* The docs' header is the site's own header, part for part and pixel for pixel: the name at
+   the same place, the pages beside it at the same distances, the search and the controls
+   at the same place on the right. Going from a page of the site into the docs and back,
+   nothing in the header moves, which is most of what makes a site feel quick. Fumadocs
+   builds this header differently (the search in the middle, the pages after it), so its
+   wrappers are seen through and their parts put in order. */
+@media (min-width: 64rem) {
+  #nd-subnav [data-header-body] {
+    padding-inline: 2.5rem 2rem;
+  }
+
+  #nd-subnav [data-header-body] > div,
+  #nd-subnav [data-header-body] > div:last-child > :is(:first-child, :last-child) {
+    display: contents;
+  }
+
+  /* The name. */
+  #nd-subnav [data-header-body] > div:first-child > :first-child {
+    order: 1;
+    align-self: center;
+  }
+
+  /* The pages. */
+  #nd-subnav [data-header-body] > div:last-child > :first-child > * {
+    order: 2;
+    align-self: center;
+    margin-inline-start: 1rem;
+  }
+
+  #nd-subnav [data-header-body] > div:last-child > :first-child > :first-child {
+    margin-inline-start: 1.5rem;
+  }
+
+  /* The docs' one control of their own, which folds the sidebar: before the search, so
+     that everything after it is where the site has it. */
+  #nd-subnav [data-header-body] > div:last-child > :last-child > button {
+    order: 3;
+    align-self: center;
+    margin-inline-start: auto;
+  }
+
+  #nd-subnav [data-header-body] [data-search-full] {
+    order: 4;
+    align-self: center;
+    width: 15rem;
+  }
+
+  /* The theme switch, then GitHub and Thaw's dot. */
+  #nd-subnav [data-header-body] > div:last-child > :last-child > div {
+    order: 5;
+    align-self: center;
+    /* The site's header sets these two a little closer than the gap here. */
+    margin-inline-start: -2px;
+  }
+
+  #nd-subnav [data-header-body] > div:last-child > :first-child > :last-child {
+    order: 6;
+    /* The site's header sets these two a little closer than the gap here. */
+    margin-inline-start: -2px;
+  }
+}
+
+/* The page the reader is on: the text's own colour, and a thin line in the accent beside
+   it. No panel behind it. The line is what tells it from the name over a group of pages,
+   which is set in the same colour and weight. */
+:is(#nd-sidebar, #nd-sidebar-mobile) a[data-active="true"] {
+  background: transparent;
+  box-shadow: inset 2px 0 0 var(--product-tone);
+  border-radius: 0;
+  color: var(--color-fd-foreground);
+  font-weight: 500;
+}
+
+/* A page's line in the sidebar is a little closer to the next than Fumadocs sets it. */
+#nd-sidebar a[data-active] {
+  padding-block: 0.375rem;
+}
+
+/* At a page's foot, the pages before and after it: their names, each under the word for
+   which it is, with no box and no half-sentence cut short beside them. */
+#nd-page .\@container.grid > a {
+  gap: 0.25rem;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--color-fd-foreground);
+}
+
+#nd-page .\@container.grid > a::before {
+  content: "Previous";
+  font-size: 0.8125rem;
+  color: var(--color-fd-muted-foreground);
+}
+
+#nd-page .\@container.grid > a:has(.flex-row-reverse) {
+  align-items: flex-end;
+}
+
+#nd-page .\@container.grid > a:has(.flex-row-reverse)::before {
+  content: "Next";
+}
+
+#nd-page .\@container.grid > a > p {
+  display: none;
+}
+
+#nd-page .\@container.grid > a:hover p {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+#nd-page .\@container.grid {
+  margin-top: 1rem;
+  border-top: 1px solid var(--color-fd-border);
+  padding-top: 1.5rem;
 }
 
 /* A docs page sits in the middle of the room between the sidebar and the list of its

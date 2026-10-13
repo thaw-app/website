@@ -37,8 +37,18 @@ export const viewport: Viewport = {
 
 export default function Layout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang="en" className={`${text.variable} ${code.variable}`} suppressHydrationWarning>
-      <body className="flex flex-col min-h-screen">
+    <html
+      lang="en"
+      // In-page links glide (global.css); a move to another page still opens at its top.
+      data-scroll-behavior="smooth"
+      className={`${text.variable} ${code.variable}`}
+      suppressHydrationWarning
+    >
+      <body className="flex flex-col min-h-dvh">
+        {/* The first stop for the keyboard: past the banner and the header to the page. */}
+        <a href="#content" className="skip-link">
+          Skip to content
+        </a>
         <Providers>{children}</Providers>
       </body>
     </html>

@@ -53,6 +53,7 @@ test('the pages a visitor moves between all answer', async ({ page }) => {
     '/verified',
     '/roadmap',
     '/built-with',
+    '/faq',
     '/docs/thaw',
     '/docs/thaw/getting-started',
     '/changelog',
@@ -170,6 +171,31 @@ test('search engines and feed readers are told what they need', async ({ page, r
   expect((await request.get('/privacy')).ok()).toBe(true);
 });
 
+test('the questions open one at a time, and search engines get the ones on the page', async ({
+  page,
+}) => {
+  // The home page ends on the first of them, and leads to the rest.
+  await page.goto('/');
+  await expect(page.locator('.faq details')).toHaveCount(4);
+  await page.getByRole('link', { name: /All \d+ questions/ }).click();
+  await expect(page).toHaveURL(/\/faq$/);
+  // None is open until one is asked for, and then only that one.
+  const open = page.locator('.faq details[open]');
+  await expect(open).toHaveCount(0);
+  await page.getByText('Is Thaw free?').click();
+  await expect(open).toHaveCount(1);
+  await page.getByText('How do I uninstall it?').click();
+  await expect(open).toHaveCount(1);
+  await expect(open.locator('ol li')).toHaveCount(3);
+  // Each question given to a search engine is one a visitor can read on the page.
+  const questions = JSON.parse(
+    (await page.locator('script[type="application/ld+json"]').textContent()) ?? '{}',
+  );
+  expect(questions['@type']).toBe('FAQPage');
+  expect(questions.mainEntity.length).toBeGreaterThan(0);
+  for (const { name } of questions.mainEntity) await expect(page.getByText(name)).toBeVisible();
+});
+
 test('an earlier release opens its notes under its line', async ({ page }) => {
   await page.goto('/changelog');
   const row = page.locator('li.release-entry').first();
@@ -196,7 +222,7 @@ test('Floe’s pages are under Floe’s own header', async ({ page, isMobile }) 
   for (const path of ['/floe', '/floe/roadmap', '/changelog/floe']) {
     await page.goto(path);
     const header = page.locator('header').first();
-    await expect(header.getByRole('button', { name: /^Floe\./ }), path).toBeVisible();
+    await expect(header.getByRole('link', { name: 'Floe, home' }), path).toBeVisible();
     await expect(header.getByRole('link', { name: 'Roadmap' }), path).toHaveAttribute(
       'href',
       '/floe/roadmap',
@@ -212,20 +238,14 @@ test('Floe’s pages are under Floe’s own header', async ({ page, isMobile }) 
   await expect(
     page.getByRole('navigation', { name: 'Whose roadmap' }).getByRole('link', { name: 'Floe' }),
   ).toHaveAttribute('href', '/floe/roadmap');
-  // The name in the header opens a list of both products, and each leads to its own page.
+  // The name in the header leads to its product's own page, and the last of the header's
+  // links to the other product's.
   await page.goto('/changelog');
-  await page
-    .locator('header')
-    .first()
-    .getByRole('button', { name: /^Thaw\./ })
-    .click();
-  await page.getByRole('link', { name: /Floe\s*Launcher/ }).click();
+  const header = page.locator('header').first();
+  await expect(header.getByRole('link', { name: 'Thaw, home' })).toHaveAttribute('href', '/');
+  await header.getByRole('link', { name: 'Floe', exact: true }).click();
   await expect(page).toHaveURL(/\/floe$/);
-  await page
-    .locator('header')
-    .first()
-    .getByRole('button', { name: /^Floe\./ })
-    .click();
-  await page.getByRole('link', { name: /Thaw\s*Menu bar manager/ }).click();
+  await expect(header.getByRole('link', { name: 'Floe, home' })).toHaveAttribute('href', '/floe');
+  await header.getByRole('link', { name: 'Thaw', exact: true }).click();
   await expect(page).toHaveURL(/localhost:\d+\/$/);
 });

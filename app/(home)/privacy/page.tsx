@@ -27,7 +27,7 @@ const facts = [
   },
   {
     name: 'Kept in your browser',
-    said: 'One thing: whether you chose the light or the dark theme, so the site opens that way next time. It stays in your browser and is not sent anywhere.',
+    said: 'Two things: which theme you chose (light, dark or your Mac’s), so the site opens that way next time, and that you closed the line of news at the top, so it stays closed. Both stay in your browser and are not sent anywhere.',
   },
   {
     name: 'Search',
@@ -46,7 +46,7 @@ const others = [
   },
   {
     name: 'GitHub',
-    said: 'The community page shows contributors’ pictures, which your browser loads from GitHub. GitHub receives that request as it would for any picture on its own site. Following a link to GitHub, Discord or Crowdin takes you to them, under their policies.',
+    said: 'The community page and the changelog show contributors’ pictures, which your browser loads from GitHub. GitHub receives that request as it would for any picture on its own site. Following a link to GitHub, Discord or Crowdin takes you to them, under their policies.',
   },
 ];
 

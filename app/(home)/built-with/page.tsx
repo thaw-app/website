@@ -233,12 +233,18 @@ function Users({ users }: { users: User[] }) {
   );
 }
 
-function Tools({ tools }: { tools: Tool[] }) {
+/** A set of tools: ruled into cells, or `open` on the page where a second grid would only repeat the first. */
+function Tools({ tools, open = false }: { tools: Tool[]; open?: boolean }) {
   return (
-    <ul className="crossed grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+    <ul
+      className={`grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 ${open ? 'grid gap-x-10 gap-y-10' : 'crossed'}`}
+    >
       {tools.map((tool) => (
         <li key={tool.name}>
-          <a href={tool.href} className="flex h-full flex-col gap-3 p-5 hover:bg-fd-accent">
+          <a
+            href={tool.href}
+            className={`group flex h-full flex-col gap-3 ${open ? '' : 'p-5 transition-colors hover:bg-fd-accent'}`}
+          >
             <span className="flex items-start justify-between gap-3">
               {tool.mark ? (
                 <svg viewBox="0 0 24 24" aria-hidden className="size-7 shrink-0 fill-current">
@@ -258,7 +264,9 @@ function Tools({ tools }: { tools: Tool[] }) {
               {tool.users && <Users users={tool.users} />}
             </span>
             <span className="flex flex-col gap-0.5">
-              <span className="font-medium">{tool.name}</span>
+              <span className="font-medium underline-offset-4 group-hover:underline">
+                {tool.name}
+              </span>
               <span className="text-sm text-fd-muted-foreground text-pretty">{tool.use}</span>
             </span>
           </a>
@@ -288,16 +296,16 @@ export default function BuiltWithPage() {
       </Section>
 
       <Section label="Runs on">
-        <Tools tools={runsOn} />
+        <Tools tools={runsOn} open />
       </Section>
 
       <Section label="Licences">
-        <ul className="crossed sm:grid-cols-2">
+        <ul className="grid gap-x-10 gap-y-8 sm:grid-cols-2">
           {ours.map((item) => (
             <li key={item.name}>
-              <a href={item.href} className="flex h-full flex-col gap-1 p-6 hover:bg-fd-accent">
+              <a href={item.href} className="group flex flex-col gap-1">
                 <span className="text-sm text-fd-muted-foreground">{item.name}</span>
-                <span className="font-display text-3xl font-semibold tracking-tight">
+                <span className="font-display text-3xl font-semibold tracking-tight underline-offset-4 group-hover:underline">
                   {item.license}
                 </span>
                 <span className="text-sm text-fd-muted-foreground">{item.detail}</span>

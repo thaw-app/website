@@ -38,6 +38,11 @@ export const sitePages = {
     title: 'What we’re building.',
     shared: 'What is being worked on now, what comes next, and what has shipped.',
   },
+  faq: {
+    label: 'FAQ',
+    title: 'Frequently asked questions.',
+    shared: 'Whether Thaw is free, which macOS it needs, and what its permissions are for.',
+  },
   verified: {
     label: 'Verified',
     title: 'Privacy only works if the security around it does.',

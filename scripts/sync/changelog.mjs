@@ -13,6 +13,7 @@ import {
   emojiShortcodes,
   linkMentions,
   parseTag,
+  peopleIn,
   splitReleases,
   splitSummary,
   stageRank,
@@ -80,17 +81,21 @@ async function publishedReleases(repo, slug) {
 function groupReleases(markdown, published, product) {
   const { repo, namedGroups = {} } = product;
   const online = new Map(published.map((release) => [release.tag, release]));
-  const written = splitReleases(markdown).map((release) => ({
-    ...release,
-    date: release.date ?? online.get(release.tag)?.date,
-    url: online.get(release.tag)?.url,
-    commit: online.get(release.tag)?.commit,
-    // A tag that is not a version, such as "macos-27-preview.3", has only a tag in the
-    // file; what it is called is on GitHub.
-    ...(!parseTag(release.tag) && online.get(release.tag)?.name
-      ? { name: online.get(release.tag).name }
-      : {}),
-  }));
+  // What the file lists as not out yet is left out: the changelog is of releases, and one
+  // that has not happened has no date, no download and no one who can install it.
+  const written = splitReleases(markdown)
+    .filter((release) => release.channel !== 'Unreleased')
+    .map((release) => ({
+      ...release,
+      date: release.date ?? online.get(release.tag)?.date,
+      url: online.get(release.tag)?.url,
+      commit: online.get(release.tag)?.commit,
+      // A tag that is not a version, such as "macos-27-preview.3", has only a tag in the
+      // file; what it is called is on GitHub.
+      ...(!parseTag(release.tag) && online.get(release.tag)?.name
+        ? { name: online.get(release.tag).name }
+        : {}),
+    }));
   const known = new Set(written.map((release) => release.tag));
   const older = published
     .filter((release) => !known.has(release.tag))
@@ -242,6 +247,8 @@ function writeChangelog(markdown, repoPath, outDir, product, rewrite, published)
               ...(name ? { name } : {}),
               ...(os ? { os } : {}),
               ...countChanges(release.body),
+              // Who its notes name, for their pictures beside it on the changelog.
+              ...(peopleIn(release.body).length ? { people: peopleIn(release.body) } : {}),
             },
           },
           rewrite(release.body),

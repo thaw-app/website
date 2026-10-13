@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { AsciiCube } from '@/components/ascii-cube';
 import { floeMask } from '@/components/ascii-cube-mask';
 import { getMDXComponents } from '@/components/mdx';
+import { PageFade } from '@/components/page-fade';
 import { ProductLanding, TryIt } from '@/components/product-landing';
 import { latestStable, pageAlternates } from '@/lib/releases';
 import { products, repoUrl, siteUrl } from '@/lib/shared';
@@ -46,44 +47,46 @@ export default function FloePage() {
   const Readme = readme.data.body;
 
   return (
-    <main data-tone="floe" className="flex flex-1 flex-col">
-      <script
-        type="application/ld+json"
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: data for search engines, built here from the site's own values and with "<" escaped, as the Next.js guide has it
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(structuredData()).replace(/</g, '\\u003c'),
-        }}
-      />
-      <ProductLanding
-        // Floe's icon in characters and in its own blue, where Thaw's page has its cube.
-        mark={
-          <AsciiCube
-            mask={floeMask}
-            label="Floe’s icon, a floe of ice, drawn in text characters"
-            className="ascii-cube ascii-floe mx-auto w-full max-w-52 sm:max-w-64 lg:max-w-[20rem] xl:max-w-[21.5rem]"
-          />
-        }
-        title={sitePages.floe.title}
-        lead="One hotkey, one search: your apps, commands, quicklinks and System Settings, and Raycast extensions, unmodified."
-        terms={[
-          'Free under AGPL-3.0, with no analytics and no account.',
-          'Floe is early, and made by the people who make Thaw.',
-        ]}
-      >
-        {/* How to get it and what it does: built from Floe's README, synced from its
+    <PageFade>
+      <main id="content" data-tone="floe" className="flex flex-1 flex-col">
+        <script
+          type="application/ld+json"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: data for search engines, built here from the site's own values and with "<" escaped, as the Next.js guide has it
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(structuredData()).replace(/</g, '\\u003c'),
+          }}
+        />
+        <ProductLanding
+          // Floe's icon in characters and in its own blue, where Thaw's page has its cube.
+          mark={
+            <AsciiCube
+              mask={floeMask}
+              label="Floe’s icon, a floe of ice, drawn in text characters"
+              className="ascii-cube ascii-floe mx-auto w-full max-w-52 sm:max-w-64 lg:max-w-[min(20rem,max(12rem,calc(100dvh-37rem)))] xl:max-w-[min(21.5rem,max(12rem,calc(100dvh-37rem)))]"
+            />
+          }
+          title={sitePages.floe.title}
+          lead="One hotkey, one search: your apps, commands, quicklinks and System Settings, and Raycast extensions, unmodified."
+          terms={[
+            'Free under AGPL-3.0, with no analytics and no account.',
+            'Floe is early, and made by the people who make Thaw.',
+          ]}
+        >
+          {/* How to get it and what it does: built from Floe's README, synced from its
             repository like the docs are. */}
-        <Readme components={getMDXComponents()} />
-      </ProductLanding>
+          <Readme components={getMDXComponents()} />
+        </ProductLanding>
 
-      <TryIt
-        product="floe"
-        things={[
-          'Type “settings” and press Return',
-          'Search the web with a quicklink',
-          'Press Control-Option-Space to close and reopen it',
-        ]}
-        phone="This is Floe, rebuilt in the browser. It is too small to use on a phone: open this page on a Mac to type into it."
-      />
-    </main>
+        <TryIt
+          product="floe"
+          things={[
+            'Type “settings” and press Return',
+            'Search the web with a quicklink',
+            'Press Control-Option-Space to close and reopen it',
+          ]}
+          phone="This is Floe, rebuilt in the browser. It is too small to use on a phone: open this page on a Mac to type into it."
+        />
+      </main>
+    </PageFade>
   );
 }

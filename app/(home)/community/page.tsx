@@ -42,17 +42,14 @@ const counted = readDays(community.readOn, {
   discord: 'Discord members',
 });
 
-// Every number is fetched when the site is built; one that could not be is left out.
+// Every number is fetched when the site is built; one that could not be is left out. Six,
+// each said once on the page: the countries are counted beside the map under them, and the
+// Discord's members where the page says how to join it.
 const numbers = [
   { label: 'GitHub stars', value: community.stars, unit: 'on thaw\u2011app/Thaw' },
   // Every fetch of the app or of an update to it: one person on ten releases is ten.
   { label: 'Downloads', value: community.downloads, unit: 'of the app and its updates' },
   { label: 'Homebrew installs', value: community.homebrewYear, unit: 'in the last year' },
-  {
-    label: 'Countries',
-    value: community.world?.stargazers.list.length,
-    unit: 'its stars come from',
-  },
   {
     label: 'Contributors',
     value: contributors.length + community.team.length,
@@ -65,7 +62,6 @@ const numbers = [
     unit: 'English and its translations',
   },
   { label: 'Releases', value: community.releases, unit: 'published on GitHub' },
-  { label: 'Discord members', value: community.discord, unit: 'on the Thaw server' },
 ].filter((number) => typeof number.value === 'number');
 
 // The ways in, each to the place it happens. One row, since the footer has the same doors.
@@ -105,7 +101,7 @@ export default function CommunityPage() {
       </PageHeader>
 
       <Section label="In numbers">
-        <dl className="crossed grid-cols-2 lg:grid-cols-4">
+        <dl className="crossed grid-cols-2 lg:grid-cols-3">
           {numbers.map((number) => (
             <div key={number.label} className="group flex flex-col gap-1 p-4 sm:p-6">
               <dt className="text-sm text-fd-muted-foreground">{number.label}</dt>
@@ -117,7 +113,7 @@ export default function CommunityPage() {
             </div>
           ))}
         </dl>
-        <p className="text-sm text-fd-muted-foreground">
+        <p className="max-w-3xl text-sm text-fd-muted-foreground text-pretty">
           {counted.day && `Counted on ${longDate(counted.day)}. `}
           {counted.older.map((entry) => `${entry.name} are from ${longDate(entry.day)}. `)}
           Downloads count each time the app or an update was fetched, not how many people use it.{' '}
@@ -136,12 +132,12 @@ export default function CommunityPage() {
 
       {community.team.length > 0 && (
         <Section label="The team">
-          <ul className="crossed sm:grid-cols-3 lg:grid-cols-5">
+          <ul className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3 lg:grid-cols-5">
             {community.team.map((member) => (
               <li key={member.login}>
                 <a
                   href={`https://github.com/${member.login}`}
-                  className="flex h-full flex-col gap-4 p-5 transition-colors hover:bg-fd-accent"
+                  className="group flex flex-col gap-4"
                 >
                   {/* biome-ignore lint/performance/noImgElement: a remote avatar, not worth an image pipeline */}
                   <img
@@ -155,7 +151,7 @@ export default function CommunityPage() {
                     className="size-24"
                   />
                   <span className="flex flex-col gap-0.5">
-                    <span className="font-display text-lg leading-tight font-semibold tracking-tight">
+                    <span className="font-display text-lg leading-tight font-semibold tracking-tight underline-offset-4 group-hover:underline">
                       {'name' in member && member.name ? member.name : member.login}
                     </span>
                     <span className="text-sm text-fd-muted-foreground">@{member.login}</span>
@@ -170,7 +166,7 @@ export default function CommunityPage() {
       {community.people.length > 0 && (
         <Section label="Contributors">
           <Contributors people={contributors} />
-          <p className="text-sm text-fd-muted-foreground">
+          <p className="max-w-3xl text-sm text-fd-muted-foreground text-pretty">
             Everyone else with a commit since Thaw began in January 2026. Translators are listed
             below.
           </p>
@@ -207,7 +203,7 @@ export default function CommunityPage() {
               </div>
             ))}
           </dl>
-          <p className="text-sm text-fd-muted-foreground">
+          <p className="max-w-3xl text-sm text-fd-muted-foreground text-pretty">
             {translatorCount} people across {community.translators.length} languages, from Thaw’s{' '}
             <a href={`${repo}/blob/development/CREDITS.md`} className="tap link">
               credits
@@ -218,14 +214,11 @@ export default function CommunityPage() {
       )}
 
       <Section label="Take part">
-        <ul className="crossed sm:grid-cols-2 lg:grid-cols-4">
+        <ul className="grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
           {ways.map((way) => (
             <li key={way.title}>
-              <Link
-                href={way.href}
-                className="flex h-full flex-col gap-1.5 p-6 transition-colors hover:bg-fd-accent"
-              >
-                <span className="font-display text-xl font-semibold tracking-tight">
+              <Link href={way.href} className="group flex flex-col gap-1.5">
+                <span className="font-display text-xl font-semibold tracking-tight link group-hover:decoration-current">
                   {way.title}
                 </span>
                 <span className="text-sm text-fd-muted-foreground text-pretty">{way.detail}</span>
@@ -233,7 +226,7 @@ export default function CommunityPage() {
             </li>
           ))}
         </ul>
-        <p className="text-sm text-fd-muted-foreground">
+        <p className="max-w-3xl text-sm text-fd-muted-foreground text-pretty">
           New here? There is a list of{' '}
           <a
             href={`${repo}/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22`}

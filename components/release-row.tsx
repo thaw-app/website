@@ -48,7 +48,7 @@ export function ReleaseRow({
   }
 
   return (
-    <li data-os={os} className="release-entry">
+    <li data-os={os} data-stable={stable ? '' : undefined} className="release-entry">
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline sm:grid-cols-[13rem_minmax(0,1fr)]">
         <Link href={href} className="tap justify-self-start py-2.5 font-mono text-sm sm:ps-3">
           <span

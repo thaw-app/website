@@ -6,7 +6,8 @@ import { choiceClass } from '@/components/choice-style';
 import { getMDXComponents } from '@/components/mdx';
 import { Lead, PageHeader } from '@/components/page-header';
 import { PageShell } from '@/components/page-shell';
-import { ReleaseList, VersionReleases } from '@/components/release-list';
+import { hasEarlierReleases, ReleaseList, VersionReleases } from '@/components/release-list';
+import { ReleasePeople } from '@/components/release-people';
 import { commitOf, feedUrl, pageAlternates, pageTitle } from '@/lib/releases';
 import {
   changelogRoute,
@@ -56,8 +57,10 @@ export function ChangelogView({ path }: { path?: string[] }) {
           title={slug === 'thaw' ? sitePages.changelog.title : `Every release of ${product.name}.`}
         >
           <Lead>
-            What changed in each release, newest first. The newest three have their notes written
-            out. A line of an older one opens its notes under it.
+            What changed in each release, newest first.
+            {/* Only said of a changelog long enough to have older releases folded away. */}
+            {hasEarlierReleases(slug) &&
+              ' The newest has its notes written out. A line of an older one opens its notes under it.'}
           </Lead>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
             {others.length > 1 && (
@@ -101,7 +104,7 @@ export function ChangelogView({ path }: { path?: string[] }) {
               {release?.url && (
                 <a
                   href={release.url}
-                  className="tap border px-3 py-1.5 font-medium transition-colors hover:bg-fd-accent"
+                  className="tap press border px-3 py-1.5 font-medium transition-colors hover:bg-fd-accent"
                 >
                   Downloads on GitHub
                 </a>
@@ -115,6 +118,12 @@ export function ChangelogView({ path }: { path?: string[] }) {
                 </span>
               )}
             </div>
+          )}
+          {release?.people && (
+            <p className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-fd-muted-foreground">
+              Credited in the notes
+              <ReleasePeople people={release.people} max={24} />
+            </p>
           )}
         </PageHeader>
         <div className={`prose max-w-none ${release ? 'release-notes' : ''}`}>

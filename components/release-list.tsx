@@ -5,13 +5,22 @@ import { commitOf } from '@/lib/releases';
 import { compact, longDate, type ProductSlug } from '@/lib/shared';
 import { source } from '@/lib/source';
 import { ReleaseFilter } from './release-filter';
+import { ReleasePeople } from './release-people';
 import { ReleaseRow } from './release-row';
 
 type Page = ReturnType<typeof source.getPages>[number];
 type ReleasePage = Page & { data: { release: NonNullable<Page['data']['release']> } };
 
-/** How many of the newest releases have their notes written out in full on the changelog. */
-const writtenOut = 3;
+/**
+ * How many of the newest releases have their notes written out in full on the changelog.
+ * One: three made a page fourteen screens long before the list of releases began.
+ */
+const writtenOut = 1;
+
+/** Whether a product's changelog has older releases folded to a line each under the newest. */
+export function hasEarlierReleases(product: string) {
+  return releasesOf(product).length > writtenOut;
+}
 
 /**
  * What a release's one-line summary is: its particulars ("macOS 26 only · Build 63"), or
@@ -58,7 +67,7 @@ function Row({ page }: { page: ReleasePage }) {
         </span>
         {release.date && (
           <time dateTime={release.date} className="text-sm text-fd-muted-foreground tabular-nums">
-            {release.date}
+            {longDate(release.date)}
           </time>
         )}
       </Link>
@@ -180,9 +189,10 @@ function ReleaseCalendar({ pages }: { pages: ReleasePage[] }) {
 }
 
 /**
- * The changelog in three numbers, over the calendar: how many releases, and how much they
- * list as new and as fixed. A product with only a handful of releases has nothing here
- * worth counting, and is shown none.
+ * The changelog in three numbers, as a line over the calendar: how many releases, and how
+ * much they list as new and as fixed. A line and not a row of cells, so the first release
+ * is not pushed off the screen by figures about releases. A product with only a handful of
+ * releases has nothing here worth counting, and is shown none.
  */
 function ReleaseNumbers({ pages, since }: { pages: ReleasePage[]; since?: string }) {
   if (pages.length < 10) return null;
@@ -203,25 +213,20 @@ function ReleaseNumbers({ pages, since }: { pages: ReleasePage[]; since?: string
   ].filter((number) => number.value > 0);
 
   return (
-    <div className="not-prose mb-10">
-      <dl className={numbers.length === 3 ? 'crossed grid-cols-3' : 'crossed grid-cols-2'}>
-        {numbers.map((number) => (
-          <div
-            key={number.label}
-            className="flex flex-col items-center gap-1 px-2 py-4 text-center sm:p-5"
-          >
-            <dd className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-              {compact.format(number.value)}
-            </dd>
-            <dt className="text-sm text-fd-muted-foreground">{number.label}</dt>
-          </div>
-        ))}
-      </dl>
-      <p className="mt-3 text-center text-sm text-fd-muted-foreground text-pretty">
-        {since && `Since ${longDate(since)}. `}
-        New features and fixes are the items each release’s notes list under New and Fixed.
-      </p>
-    </div>
+    <p className="not-prose mb-5 flex flex-wrap items-baseline gap-x-8 gap-y-1 text-fd-muted-foreground">
+      {numbers.map((number) => (
+        <span key={number.label}>
+          <span className="font-display text-2xl font-semibold tracking-tight text-fd-foreground">
+            {compact.format(number.value)}
+          </span>{' '}
+          {number.label}
+        </span>
+      ))}
+      <span className="text-sm">
+        {since && `Since ${longDate(since)}, `}
+        {since ? 'counted' : 'Counted'} from each release’s notes.
+      </span>
+    </p>
   );
 }
 
@@ -239,7 +244,13 @@ export function ReleaseList({ product }: { product: ProductSlug }) {
     <>
       <ReleaseNumbers pages={pages} since={dated[0]} />
       <ReleaseCalendar pages={pages} />
-      <ReleaseFilter systems={systems}>
+      <ReleaseFilter
+        systems={systems}
+        entries={pages.map(({ data: { release } }) => ({
+          os: release.os,
+          stable: release.channel === 'Stable',
+        }))}
+      >
         {pages.slice(0, writtenOut).map((page) => {
           const release = page.data.release;
           const Notes = page.data.body;
@@ -255,6 +266,7 @@ export function ReleaseList({ product }: { product: ProductSlug }) {
             <article
               key={page.url}
               data-os={release.os}
+              data-stable={release.channel === 'Stable' ? '' : undefined}
               className="release-entry grid gap-x-10 gap-y-4 border-t py-10 lg:grid-cols-[11rem_minmax(0,1fr)]"
             >
               <div className="not-prose flex flex-col items-start gap-2 self-start lg:sticky lg:top-24">
@@ -282,6 +294,10 @@ export function ReleaseList({ product }: { product: ProductSlug }) {
                   >
                     {commit.short}
                   </a>
+                )}
+                {/* Who the notes credit: a release is its people as much as its number. */}
+                {release.people && (
+                  <ReleasePeople people={release.people} max={14} className="mt-2 max-w-44" />
                 )}
               </div>
 

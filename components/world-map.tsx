@@ -63,7 +63,9 @@ export function WorldMap() {
           strokeWidth={0.55}
           strokeLinecap="round"
         >
-          <path d={land} className="stroke-fd-foreground/15" />
+          {/* Land with no one counted in it: faint, but a shade stronger on a light page, where
+              grey dots on grey all but go. */}
+          <path d={land} className="stroke-fd-foreground/25 dark:stroke-fd-foreground/15" />
           {countries.map((country) =>
             dots[country.code] ? (
               // The fewest still show: a square root keeps one person from vanishing
