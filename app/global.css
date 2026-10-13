@@ -79,11 +79,8 @@ kbd,
   border-inline-end-width: 0;
 }
 
-/* Where the reader is: the page in the sidebar and the heading in the list beside the text
-   are marked in the accent. */
-#nd-sidebar a[data-active="true"] {
-  box-shadow: inset 2px 0 0 var(--product-tone);
-}
+/* Where the reader is on a page: the heading in the list beside the text is marked in the
+   accent, as the page is in the sidebar (see "The docs, kept as plain as a manual"). */
 
 #nd-toc .bg-fd-primary {
   background-color: var(--product-tone);
@@ -137,6 +134,11 @@ kbd,
   --release-1: #1560e8;
   --release-2: #4f93ff;
   --release-3: #c4e0ff;
+}
+
+/* The news over the docs is Thaw's, so it is not over Floe's docs (app/docs/layout.tsx). */
+body:has(#nd-notebook-layout [data-product="floe"]) .docs-banner {
+  display: none;
 }
 
 #nd-notebook-layout:has([data-product="floe"]) {
@@ -1084,6 +1086,128 @@ h1.font-display {
 /* Code named in running text sits in a square box, as every other box on the site is. */
 .prose :not(pre) > code {
   border-radius: 0;
+}
+
+/*
+ * The docs, kept as plain as a manual: a line for where the reader is, and no boxes round
+ * what is only a link.
+ */
+
+/* The docs' header is the site's own header, part for part and pixel for pixel: the name at
+   the same place, the pages beside it at the same distances, the search and the controls
+   at the same place on the right. Going from a page of the site into the docs and back,
+   nothing in the header moves, which is most of what makes a site feel quick. Fumadocs
+   builds this header differently (the search in the middle, the pages after it), so its
+   wrappers are seen through and their parts put in order. */
+@media (min-width: 64rem) {
+  #nd-subnav [data-header-body] {
+    padding-inline: 2.5rem 2rem;
+  }
+
+  #nd-subnav [data-header-body] > div,
+  #nd-subnav [data-header-body] > div:last-child > :is(:first-child, :last-child) {
+    display: contents;
+  }
+
+  /* The name. */
+  #nd-subnav [data-header-body] > div:first-child > :first-child {
+    order: 1;
+    align-self: center;
+  }
+
+  /* The pages. */
+  #nd-subnav [data-header-body] > div:last-child > :first-child > * {
+    order: 2;
+    align-self: center;
+    margin-inline-start: 1rem;
+  }
+
+  #nd-subnav [data-header-body] > div:last-child > :first-child > :first-child {
+    margin-inline-start: 1.5rem;
+  }
+
+  /* The docs' one control of their own, which folds the sidebar: before the search, so
+     that everything after it is where the site has it. */
+  #nd-subnav [data-header-body] > div:last-child > :last-child > button {
+    order: 3;
+    align-self: center;
+    margin-inline-start: auto;
+  }
+
+  #nd-subnav [data-header-body] [data-search-full] {
+    order: 4;
+    align-self: center;
+    width: 15rem;
+  }
+
+  /* The theme switch, then GitHub and Thaw's dot. */
+  #nd-subnav [data-header-body] > div:last-child > :last-child > div {
+    order: 5;
+    align-self: center;
+    /* The site's header sets these two a little closer than the gap here. */
+    margin-inline-start: -2px;
+  }
+
+  #nd-subnav [data-header-body] > div:last-child > :first-child > :last-child {
+    order: 6;
+    /* The site's header sets these two a little closer than the gap here. */
+    margin-inline-start: -2px;
+  }
+}
+
+/* The page the reader is on: the text's own colour, and a thin line in the accent beside
+   it. No panel behind it. The line is what tells it from the name over a group of pages,
+   which is set in the same colour and weight. */
+:is(#nd-sidebar, #nd-sidebar-mobile) a[data-active="true"] {
+  background: transparent;
+  box-shadow: inset 2px 0 0 var(--product-tone);
+  border-radius: 0;
+  color: var(--color-fd-foreground);
+  font-weight: 500;
+}
+
+/* A page's line in the sidebar is a little closer to the next than Fumadocs sets it. */
+#nd-sidebar a[data-active] {
+  padding-block: 0.375rem;
+}
+
+/* At a page's foot, the pages before and after it: their names, each under the word for
+   which it is, with no box and no half-sentence cut short beside them. */
+#nd-page .\@container.grid > a {
+  gap: 0.25rem;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--color-fd-foreground);
+}
+
+#nd-page .\@container.grid > a::before {
+  content: "Previous";
+  font-size: 0.8125rem;
+  color: var(--color-fd-muted-foreground);
+}
+
+#nd-page .\@container.grid > a:has(.flex-row-reverse) {
+  align-items: flex-end;
+}
+
+#nd-page .\@container.grid > a:has(.flex-row-reverse)::before {
+  content: "Next";
+}
+
+#nd-page .\@container.grid > a > p {
+  display: none;
+}
+
+#nd-page .\@container.grid > a:hover p {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+#nd-page .\@container.grid {
+  margin-top: 1rem;
+  border-top: 1px solid var(--color-fd-border);
+  padding-top: 1.5rem;
 }
 
 /* A docs page sits in the middle of the room between the sidebar and the list of its
