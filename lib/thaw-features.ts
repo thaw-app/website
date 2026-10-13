@@ -1,7 +1,7 @@
 import { links } from './shared';
 
 /**
- * What the home page leads with, most important first, numbered in that order.
+ * What the home page leads with, most important first.
  * Everything here is something Thaw 3 does, taken from its release notes (3.0.0-alpha.1 through
  * beta.2) and its own settings panes, and worded as what a person can do
  * with it. Maintenance tools, diagnostics and the individual conditions of a
@@ -64,68 +64,159 @@ export const thawFeatures = [
 
 /**
  * Everything else Thaw 3 does, by name, filed under what it is for so a name
- * can be looked up, and with what it works alongside.
+ * can be looked up, and with what it works alongside. Each says what it is in a sentence,
+ * taken from the release notes and the app's own settings, which opens under its name
+ * (components/hover-lines.tsx).
  */
-export const thawAlso: { group: string; names: (string | { name: string; href: string })[] }[] = [
+export const thawAlso: { group: string; names: (string | { name: string; about: string })[] }[] = [
   {
     group: 'Revealing',
     names: [
-      'Reveal on click',
-      'Reveal on hover',
-      'Reveal on scroll',
-      'Reveal on icon change',
-      'Automatic rehiding',
-      'Hide app menus on reveal',
-      'Swap shown and hidden',
-      'Open hidden items in the menu bar',
+      {
+        name: 'Reveal on click',
+        about: 'Click an empty part of the menu bar to show hidden items.',
+      },
+      {
+        name: 'Reveal on hover',
+        about: 'Hidden items appear when you rest the pointer on an empty part of the menu bar.',
+      },
+      { name: 'Reveal on scroll', about: 'Scroll or swipe in the menu bar to show hidden items.' },
+      {
+        name: 'Reveal on icon change',
+        about: 'A hidden item shows briefly when its icon changes, so you see its alert.',
+      },
+      {
+        name: 'Automatic rehiding',
+        about: 'Shown items hide again after a set time, or when you click away or switch apps.',
+      },
+      {
+        name: 'Hide app menus on reveal',
+        about: 'The current app’s menus move out of the way when shown items need the room.',
+      },
+      {
+        name: 'Swap shown and hidden',
+        about:
+          'One press trades the items in view with the hidden ones, and another trades them back.',
+      },
+      {
+        name: 'Open hidden items in the menu bar',
+        about: 'A hidden item shows in the menu bar and opens its menu under its own icon.',
+      },
     ],
   },
   {
     group: 'Layout',
     names: [
-      'Manual arrangement',
-      'Spacer items',
-      'An always-hidden section',
-      'Per-display spacing',
-      'Layout backups',
-      'Stand-ins for Apple’s items',
-      'Choose any item’s icon',
+      {
+        name: 'Manual arrangement',
+        about: 'You drag items into place yourself, and Thaw only hides and shows them.',
+      },
+      {
+        name: 'Spacer items',
+        about: 'Add gaps between items, pick their width, and drag them like any item.',
+      },
+      {
+        name: 'An always-hidden section',
+        about: 'A second hidden section keeps items out of view until you ask for them.',
+      },
+      { name: 'Per-display spacing', about: 'Set how far apart items sit on each display.' },
+      {
+        name: 'Layout backups',
+        about:
+          'Thaw saves your item positions before a reset, and you can restore them from Settings.',
+      },
+      {
+        name: 'Stand-ins for Apple’s items',
+        about:
+          'Thaw swaps Apple items it can’t hide, like Time Machine, for icons you can move or hide.',
+      },
+      {
+        name: 'Choose any item’s icon',
+        about: 'Pick the picture Thaw shows for an item when it has none of its own to show.',
+      },
     ],
   },
   {
     group: 'Appearance',
     names: [
-      'Adaptive gradient tint',
-      'Gradient angle',
-      'Rounded corners',
-      'Menu bar shadow',
-      'Per-Space appearance',
-      'Show or hide the bar per Space',
-      'Light and dark looks',
+      {
+        name: 'Adaptive gradient tint',
+        about: 'The bar takes a gradient from the two main colours of your wallpaper.',
+      },
+      { name: 'Gradient angle', about: 'A slider sets the direction a gradient runs in.' },
+      {
+        name: 'Rounded corners',
+        about: 'Thaw draws black over the corners of every display so they look rounded.',
+      },
+      { name: 'Menu bar shadow', about: 'Switch on a shadow for the shape you give the bar.' },
+      { name: 'Per-Space appearance', about: 'Give each Space its own look for the bar.' },
+      {
+        name: 'Show or hide the bar per Space',
+        about: 'Hide the menu bar on one Space while your other Spaces keep theirs.',
+      },
+      {
+        name: 'Light and dark looks',
+        about: 'Set one look for Light Mode and another for Dark Mode.',
+      },
     ],
   },
   {
     group: 'Profiles',
     names: [
-      'Per-display profiles',
-      'Per-Space profiles',
-      'Focus Filter profiles',
-      'Script hooks on profiles',
-      'Profile hotkeys',
+      {
+        name: 'Per-display profiles',
+        about: 'Assign a profile to each display, and Thaw switches when your displays change.',
+      },
+      {
+        name: 'Per-Space profiles',
+        about: 'Assign a profile to a Space, and Thaw uses it while you’re there.',
+      },
+      {
+        name: 'Focus Filter profiles',
+        about: 'Thaw switches to a profile when a Focus starts and goes back when it ends.',
+      },
+      {
+        name: 'Script hooks on profiles',
+        about: 'Run a script of your own before or after a profile switch.',
+      },
+      { name: 'Profile hotkeys', about: 'Set a keyboard shortcut that switches to a profile.' },
     ],
   },
   {
     group: 'Automation',
-    names: ['Triggers for running apps', 'Spotlight actions', 'Controls in Control Center'],
+    names: [
+      {
+        name: 'Triggers for running apps',
+        about: 'Chosen items show while an app is running and go back when it quits.',
+      },
+      {
+        name: 'Spotlight actions',
+        about: 'Show hidden items, open an item or switch profile from Spotlight.',
+      },
+      {
+        name: 'Controls in Control Center',
+        about: 'Add controls to Control Center that show hidden items or turn Zen Mode on and off.',
+      },
+    ],
   },
   {
     group: 'Everyday',
     names: [
-      'Simple Mode',
-      'Live Activities stay visible',
-      'Open by letter',
-      'Settings search',
-      'Tooltips',
+      {
+        name: 'Simple Mode',
+        about: 'Settings becomes one page of essentials, and everything else keeps working.',
+      },
+      {
+        name: 'Live Activities stay visible',
+        about:
+          'Live Activities and the camera indicator stay on the menu bar while apps are hidden.',
+      },
+      {
+        name: 'Open by letter',
+        about: 'Press a shortcut, each item gets a letter, and typing a letter clicks that item.',
+      },
+      { name: 'Settings search', about: 'Type in the Settings toolbar to find any setting.' },
+      { name: 'Tooltips', about: 'Rest the pointer on a menu bar item to see its name.' },
     ],
   },
 ];

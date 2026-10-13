@@ -1,9 +1,10 @@
 'use client';
 
-import { Check, Copy } from 'lucide-react';
+import { Check, Copy, Download } from 'lucide-react';
 import Link from 'next/link';
 import { type KeyboardEvent, useId, useRef, useState } from 'react';
-import { docsRoute, repoUrl } from '@/lib/shared';
+import { InstallFacts } from '@/components/install-facts';
+import { repoUrl } from '@/lib/shared';
 
 // Named by the macOS a visitor is on, which they know, not by the version of Thaw, which
 // they would have to work out. A browser does not say which macOS it runs on, so the
@@ -151,7 +152,7 @@ export function InstallTabs() {
                   type="button"
                   onClick={() => copy(way.command)}
                   aria-label={`Copy the command ${way.command}`}
-                  className="flex min-w-0 flex-1 items-center gap-3 px-4 py-3 text-left font-mono text-[0.9375rem] hover:bg-fd-foreground/[0.04]"
+                  className="flex min-w-0 flex-1 items-center gap-3 px-4 py-3 text-left font-mono text-[0.9375rem] transition-colors hover:bg-fd-foreground/[0.04] active:bg-fd-foreground/[0.08]"
                 >
                   <span aria-hidden className="text-fd-muted-foreground select-none">
                     $
@@ -163,7 +164,7 @@ export function InstallTabs() {
                   onClick={() => copy(way.command)}
                   aria-live="polite"
                   // On a phone the icon alone, so the command beside it is not cut short to make room.
-                  className="tap flex items-center justify-center gap-2 border-l px-4 text-sm font-medium hover:bg-fd-foreground/[0.06] sm:min-w-24"
+                  className="tap flex items-center justify-center gap-2 border-l px-4 text-sm font-medium transition-colors hover:bg-fd-foreground/[0.06] active:bg-fd-foreground/[0.12] sm:min-w-24"
                 >
                   {copyState === 'copied' ? (
                     <Check aria-hidden className="size-4" />
@@ -181,38 +182,32 @@ export function InstallTabs() {
               </div>
             </>
           ) : (
-            <p className="text-sm text-fd-muted-foreground">
-              {way.note}{' '}
-              <a href={way.href} className="text-fd-foreground link">
-                Releases
+            <>
+              <p className="text-sm text-fd-muted-foreground">{way.note}</p>
+              {/* For someone who has never opened Terminal this is the whole install, so it is
+                  a button as large as the command beside it, not a link in a sentence. */}
+              <a
+                href={way.href}
+                className="press flex items-center justify-between gap-3 border bg-fd-foreground/[0.04] px-4 py-3 font-medium transition-colors hover:bg-fd-foreground/[0.08]"
+              >
+                Download Thaw from GitHub
+                <Download aria-hidden className="size-4" />
               </a>
-            </p>
+            </>
           )}
         </div>
 
         {/* What a person weighs before installing something that moves their menu bar about:
             what it asks for and what is optional. */}
-        <dl
-          className={`grid border-t sm:divide-x max-sm:divide-y ${
-            facts.length === 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2'
-          }`}
-        >
-          {facts.map((fact) => (
-            <div key={fact.value} className="flex flex-col gap-1 px-4 py-3.5">
-              <dt className="text-sm text-fd-muted-foreground">{fact.label}</dt>
-              <dd className="font-medium">{fact.value}</dd>
-              <dd className="text-sm text-fd-muted-foreground text-pretty">{fact.detail}</dd>
-            </div>
-          ))}
-        </dl>
+        <InstallFacts facts={facts} />
 
         <p className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1 border-t px-4 py-2.5 text-sm">
           <Link href="/#try" className="tap font-medium link">
             Try it in your browser first
           </Link>
-          <Link href={`${docsRoute}/thaw/frequent-issues`} className="tap link link-quiet">
-            Stuck? Frequent issues
-          </Link>
+          <a href={`${repoUrl('thaw')}/issues`} className="tap link link-quiet">
+            Stuck? Ask on GitHub
+          </a>
         </p>
       </div>
     </div>

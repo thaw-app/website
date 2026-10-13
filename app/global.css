@@ -418,19 +418,20 @@ html > body[data-scroll-locked] {
   }
 }
 
-/* The README on the home page: its folded feature list and its table of languages. */
-.readme details {
+/* The README on the home page: its folded feature list and its table of languages. A line
+   that opens (components/hover-lines.tsx) is not one of its folds, and styles itself. */
+.readme details:not(.line) {
   margin-block: 1.25rem;
   border-block: 1px solid var(--color-fd-border);
 }
 
-.readme summary {
+.readme details:not(.line) > summary {
   cursor: pointer;
   padding-block: 0.75rem;
   color: var(--color-fd-muted-foreground);
 }
 
-.readme summary:hover {
+.readme details:not(.line) > summary:hover {
   color: var(--color-fd-foreground);
 }
 
@@ -850,6 +851,71 @@ html > body[data-scroll-locked] {
     animation-duration: 0s !important;
     /* biome-ignore lint/complexity/noImportantStyles: as above */
     animation-delay: 0s !important;
+  }
+}
+
+/* A line opens on what is under it by growing to it, and shuts by shrinking
+   (components/hover-lines.tsx). A browser that cannot grow a box to "as tall as it needs"
+   opens it at once, as any such list opens. */
+.lines details.line::details-content {
+  height: 0;
+  overflow: clip;
+}
+
+.lines details.line[open]::details-content {
+  height: auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .lines {
+    interpolate-size: allow-keywords;
+  }
+
+  .lines details.line::details-content {
+    transition:
+      height 0.2s ease-out,
+      content-visibility 0.2s allow-discrete;
+  }
+
+  /* As the box grows, what is in it comes in by its opacity. */
+  .lines details.line[open] .line-more {
+    animation: page-fade 0.3s ease-out both;
+  }
+
+  .line-name,
+  .line-name strong {
+    transition: color 0.3s ease-out;
+  }
+}
+
+/* While one line is open the others step back, as the lines on Vercel's home page do. Only
+   where there is a pointer to rest on a line: a phone has opened one by a tap, and the rest
+   are still to be read. */
+@media (hover: hover) {
+  .lines:has(details.line[open]) details.line:not([open]) :is(.line-name, .line-name strong) {
+    color: var(--color-fd-muted-foreground);
+  }
+}
+
+/* A touch screen has no pointer to find out by that a line opens, so there a line says so,
+   unless its name draws a sign of its own. */
+@media (hover: none) {
+  .line:not(.line-marked) > summary {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .line:not(.line-marked) > summary::after {
+    content: "+";
+    flex: none;
+    color: var(--color-fd-muted-foreground);
+  }
+
+  .line[open]:not(.line-marked) > summary::after {
+    content: "\2212";
   }
 }
 

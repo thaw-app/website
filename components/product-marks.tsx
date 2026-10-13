@@ -6,14 +6,19 @@ import floeGlyph from '@/assets/floe-glyph.png';
 import nixMark from '@/assets/nix-mark.png';
 import omniwmMark from '@/assets/omniwm-mark.png';
 import raycastGlyph from '@/assets/raycast-glyph.png';
+import { aiMarks, appleIntelligenceMark } from '@/lib/ai-marks';
 import { products } from '@/lib/shared';
+import { ClaudeMark } from './claude-mark';
 
 // Every mark is drawn in one colour, black on a light page and white on a dark one, so a
 // row of them reads as a set. `glyph` is artwork that is already white; `flat` is coloured
 // artwork reduced to its outline. An app's own icon (Thaw's) keeps its colours.
 const marks: Record<
   string,
-  { src: StaticImageData; glyph?: boolean; flat?: boolean } | { icon: ReactNode }
+  | { src: StaticImageData; glyph?: boolean; flat?: boolean }
+  | { icon: ReactNode }
+  // One path in the text's colour, on a 24 by 24 square unless it names its own.
+  | { path: string; box?: string }
 > = {
   droppy: { src: droppyGlyph, glyph: true },
   raycast: { src: raycastGlyph, glyph: true },
@@ -33,15 +38,37 @@ const marks: Record<
   shortcuts: { icon: <Layers className="size-[1.125em]" strokeWidth={1.75} /> },
   siri: { icon: <AudioLines className="size-[1.125em]" strokeWidth={1.75} /> },
   link: { icon: <Link2 className="size-[1.125em]" strokeWidth={1.75} /> },
+  // What can answer Floe's Ask AI (lib/ai-marks.ts).
+  claude: { icon: <ClaudeMark className="size-[1.125em]" /> },
+  openai: { path: aiMarks.openai },
+  opencode: { path: aiMarks.opencode },
+  pi: { path: aiMarks.pi },
+  ollama: { path: aiMarks.ollama },
+  lmstudio: { path: aiMarks.lmstudio },
+  openrouter: { path: aiMarks.openrouter },
+  zai: { path: aiMarks.zai },
+  // Apple's own mark, at the owner's request: the signs above for iCloud, Shortcuts and Siri
+  // stay plain.
+  'apple-intelligence': appleIntelligenceMark,
 };
 
 /** One icon by name, the height of the text it is set in; nothing for a name it does not know. */
 export function Mark({ name }: { name: string }) {
   const mark = marks[name];
   if (!mark) return null;
-  return 'icon' in mark ? (
-    <span className="inline-flex">{mark.icon}</span>
-  ) : (
+  if ('icon' in mark) return <span className="inline-flex">{mark.icon}</span>;
+  if ('path' in mark)
+    return (
+      <svg
+        viewBox={mark.box ?? '0 0 24 24'}
+        fill="currentColor"
+        aria-hidden
+        className="size-[1.125em]"
+      >
+        <path d={mark.path} />
+      </svg>
+    );
+  return (
     <Image
       src={mark.src}
       alt=""
