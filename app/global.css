@@ -860,6 +860,28 @@ html > body[data-scroll-locked] {
   z-index: 1;
 }
 
+/* The same bird at the end of the 404 page's headline, standing on the line the words sit
+   on: its feet are 13 pixels down the picture, and its tail hangs below the line. The box
+   in the line is only as wide as its body, so the tail's tip does not push it off the words. */
+.stray-conure {
+  --pixel: 3px;
+  position: relative;
+  display: inline-block;
+  width: calc(13 * var(--pixel));
+  height: 0;
+  margin-inline-start: 0.2em;
+}
+
+.stray-conure > canvas {
+  position: absolute;
+  bottom: calc(-7 * var(--pixel));
+  left: calc(-4 * var(--pixel));
+  width: calc(24 * var(--pixel));
+  max-width: none;
+  height: calc(20 * var(--pixel));
+  image-rendering: pixelated;
+}
+
 /* The ampersand's copy that goes in front of the conure, and only while it is behind. */
 .footer-cover {
   z-index: 2;

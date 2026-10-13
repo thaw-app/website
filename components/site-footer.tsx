@@ -129,7 +129,14 @@ const feet: Record<ProductSlug, Foot> = {
 };
 
 /** The foot of every page outside the docs: what the product is, a map of the site, and its licence. */
-export function SiteFooter({ product = 'thaw' }: { product?: ProductSlug }) {
+export function SiteFooter({
+  product = 'thaw',
+  conure = true,
+}: {
+  product?: ProductSlug;
+  /** Whether the conure comes by. Not on a page where it is already somewhere else. */
+  conure?: boolean;
+}) {
   const { about, stars, license, columns, policies } = feet[product];
   const { name, icon, branch } = products[product];
   const repo = repoUrl(product);
@@ -197,7 +204,7 @@ export function SiteFooter({ product = 'thaw' }: { product?: ProductSlug }) {
 
       {/* Both products' names in moving type, running off the bottom of the page, with a
           conure that comes by to sit on them. */}
-      <FooterArt />
+      <FooterArt conure={conure} />
     </footer>
   );
 }

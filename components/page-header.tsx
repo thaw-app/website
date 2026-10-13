@@ -10,6 +10,7 @@ export function PageHeader({
   label,
   labelHref,
   title,
+  titleEnd,
   className,
   children,
 }: {
@@ -17,6 +18,8 @@ export function PageHeader({
   /** Where the label leads, when the page hangs off a part of another. */
   labelHref?: string;
   title: string;
+  /** Something small set at the end of the headline, on its line. */
+  titleEnd?: ReactNode;
   className?: string;
   /** The line on the page's picture for shared links, which the page itself does not show. */
   shared?: string;
@@ -36,6 +39,7 @@ export function PageHeader({
       </p>
       <h1 className="font-display text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
         {title}
+        {titleEnd}
       </h1>
       {children}
     </header>
