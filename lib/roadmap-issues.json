@@ -8,11 +8,11 @@
     "reason": "completed"
   },
   "1126": {
-    "state": "open",
-    "reason": "reopened"
+    "state": "closed",
+    "reason": "duplicate"
   },
   "1154": {
-    "state": "open",
-    "reason": null
+    "state": "closed",
+    "reason": "completed"
   }
 }

@@ -1,10 +1,5 @@
 [
   {
-    "number": 1083,
-    "title": "Promote a revealed item to Visible by Command-drag",
-    "votes": 0
-  },
-  {
     "number": 1086,
     "title": "Show menu bar only in selected fullscreen apps",
     "votes": 0
@@ -17,6 +12,16 @@
   {
     "number": 970,
     "title": "\"Isolation\" Mode",
+    "votes": 0
+  },
+  {
+    "number": 1301,
+    "title": "Full Arabic Language and RTL Support Across the Entire App",
+    "votes": 0
+  },
+  {
+    "number": 1083,
+    "title": "Promote a revealed item to Visible by Command-drag",
     "votes": 0
   }
 ]
