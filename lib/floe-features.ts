@@ -18,12 +18,12 @@ export const floeFeatures = [
   {
     title: 'The basics, built in',
     detail:
-      'Snippets, emoji, file search, calendar, a calculator with unit conversion, system commands, the menu bar’s items from the keyboard, and your shortcuts from Apple’s Shortcuts app, run by name once you turn that on.',
+      'Snippets, emoji, file search, calendar, a calculator that converts units, system commands and the menu bar’s items. Turn it on and your Apple Shortcuts run by name too.',
   },
   {
     title: 'Your own apps',
     detail:
-      'Pick the terminal, editor, browser, notes app and clipboard manager you already use, and Floe hands work to them, down to a host from your SSH configuration, which opens in your terminal.',
+      'Pick the terminal, editor, browser, notes app and clipboard manager you already use, and Floe hands work to them. A host from your SSH configuration opens in your terminal.',
   },
   {
     title: 'Ask AI',
@@ -59,7 +59,7 @@ export const floeAlso = [
       {
         name: 'Scopes',
         about:
-          'Start with files, menu, tabs, windows, bookmarks or recent to search only that one place.',
+          'Start a search with files, menu, tabs, windows, bookmarks or recent to look in that one place.',
       },
       {
         name: 'Window switcher',
@@ -109,7 +109,7 @@ export const floeAlso = [
       {
         name: 'Actions menu',
         about:
-          'Press Command-K on an app or a file to quit it, show it in Finder, open it with another app or move it to the Trash.',
+          'Press Command-K on an app or a file for its actions, such as Quit, Show in Finder, Open With and Move to Trash.',
       },
       {
         name: 'A picker for scripts',
@@ -182,7 +182,7 @@ export const floeAlso = [
       {
         name: 'Text changes',
         about:
-          'Type base64, urlencode, uppercase or sha256 and some text to change it, or what you last copied.',
+          'Type base64, urlencode, uppercase or sha256 and some text to change it. With no text, it changes what you last copied.',
       },
       {
         name: 'Quick Look',
@@ -264,7 +264,7 @@ export const floeAlso = [
       {
         name: 'Remove any extension',
         about:
-          'Remove an extension whether Floe or Raycast installed it, and put it back from the Trash.',
+          'Remove an extension whether Floe or Raycast installed it. Raycast loses it too, and it goes to the Trash so you can put it back.',
       },
       {
         name: 'Extension sign-in',

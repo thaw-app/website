@@ -104,15 +104,15 @@ export function FloeAssurance() {
           Part of the way.
         </p>
         <p className="mb-6 text-fd-muted-foreground text-pretty">
-          Floe is signed and notarised by Apple, each release carries a record of how it was built,
-          and the project has an{' '}
+          Floe is signed and notarised, each release comes with a record of how it was built, and
+          the project has an{' '}
           <a
             href="https://scorecard.dev/viewer/?uri=github.com/thaw-app/Floe"
             className="tap text-fd-foreground link"
           >
             OpenSSF Scorecard
           </a>
-          . The rest of what Thaw has, such as its OpenSSF Best Practices badge, is still to come.
+          . Thaw’s other checks, such as its OpenSSF Best Practices badge, are still to come.
         </p>
         <Link
           href="/#verified"
