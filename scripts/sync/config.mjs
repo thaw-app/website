@@ -15,6 +15,9 @@ const cacheFile = (name) => join(root, '.cache', name);
 
 /** The token GitHub is asked with, when there is one: without it the shared limits apply. */
 const githubToken = () => process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
+/** The header that signs a request to GitHub, or none where there is no token to sign with. */
+const githubHeaders = (token = githubToken()) =>
+  token ? { Authorization: `Bearer ${token}` } : {};
 
 // What a product is called, where it lives and its ids with outside services, which the
 // site reads too (lib/shared.ts).
@@ -157,4 +160,14 @@ const shared = {
   dir: join(contentDir, '..', 'shared'),
 };
 
-export { cacheFile, contentDir, githubToken, libFile, products, project, root, shared };
+export {
+  cacheFile,
+  contentDir,
+  githubHeaders,
+  githubToken,
+  libFile,
+  products,
+  project,
+  root,
+  shared,
+};

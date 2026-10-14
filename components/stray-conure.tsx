@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { columns, drawPose, rows } from './conure-poses';
+import { onThemeChange } from '@/lib/on-theme-change';
+import { columns, drawPose, rows, touches } from './conure-poses';
 
 // What it does when left alone, a pose and how many seconds it holds it: it stands, looks
 // back at the sentence it is at the end of, and pecks at the line it is standing on.
@@ -49,10 +50,9 @@ export function StrayConure() {
     const show = () =>
       drawPose(context, routine === idle && watching ? watching : routine[step][0]);
     show();
-    const themed = new MutationObserver(show);
-    themed.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    const unthemed = onThemeChange(show);
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      return () => themed.disconnect();
+      return unthemed;
     }
 
     function hold() {
@@ -93,13 +93,7 @@ export function StrayConure() {
     // The bird itself takes no clicks, so the words beside it can still be selected.
     function onPointerDown(event: PointerEvent) {
       if (!bird || routine === bob) return;
-      const box = bird.getBoundingClientRect();
-      const inside =
-        event.clientX >= box.left &&
-        event.clientX <= box.right &&
-        event.clientY >= box.top &&
-        event.clientY <= box.bottom;
-      if (!inside) return;
+      if (!touches(event, bird)) return;
       window.clearTimeout(timer);
       routine = bob;
       step = 0;
@@ -109,7 +103,7 @@ export function StrayConure() {
     window.addEventListener('pointerdown', onPointerDown);
     return () => {
       window.clearTimeout(timer);
-      themed.disconnect();
+      unthemed();
       window.removeEventListener('pointermove', onPointerMove);
       window.removeEventListener('pointerdown', onPointerDown);
     };

@@ -6,6 +6,7 @@ import vercelOssLight from '@/assets/vercel-oss-light.png';
 import { AsciiCube } from '@/components/ascii-cube';
 import { ClaudeMark } from '@/components/claude-mark';
 import { FaqPrompt } from '@/components/faq';
+import { JsonLd } from '@/components/json-ld';
 import { getMDXComponents } from '@/components/mdx';
 import { PageFade } from '@/components/page-fade';
 import { ProductHuntMark } from '@/components/product-hunt-mark';
@@ -58,19 +59,11 @@ export default function HomePage() {
   return (
     <PageFade>
       <main id="content" className="flex flex-1 flex-col">
-        <script
-          type="application/ld+json"
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: data for search engines, built here from the site's own values and with "<" escaped, as the Next.js guide has it
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(structuredData()).replace(/</g, '\\u003c'),
-          }}
-        />
+        <JsonLd data={structuredData()} />
         <ProductLanding
-          // Centred in the column, and the same size on a short window as on a tall one: the
-          // column scrolls with the page when it is taller than the window.
-          mark={
-            <AsciiCube className="ascii-cube mx-auto w-full max-w-52 sm:max-w-64 lg:max-w-[20rem] xl:max-w-[21.5rem]" />
-          }
+          // The same size on a short window as on a tall one: the column scrolls with the
+          // page when it is taller than the window.
+          mark={<AsciiCube />}
           title={sitePages.home.title}
           lead="Take back your menu bar. Hide what you don’t need, and find anything in a keystroke."
           terms={[

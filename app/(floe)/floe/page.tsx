@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { AsciiCube } from '@/components/ascii-cube';
 import { floeMask } from '@/components/ascii-cube-mask';
+import { JsonLd } from '@/components/json-ld';
 import { getMDXComponents } from '@/components/mdx';
 import { PageFade } from '@/components/page-fade';
 import { ProductLanding, TryIt } from '@/components/product-landing';
@@ -49,20 +50,14 @@ export default function FloePage() {
   return (
     <PageFade>
       <main id="content" data-tone="floe" className="flex flex-1 flex-col">
-        <script
-          type="application/ld+json"
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: data for search engines, built here from the site's own values and with "<" escaped, as the Next.js guide has it
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(structuredData()).replace(/</g, '\\u003c'),
-          }}
-        />
+        <JsonLd data={structuredData()} />
         <ProductLanding
           // Floe's icon in characters and in its own blue, where Thaw's page has its cube.
           mark={
             <AsciiCube
               mask={floeMask}
               label="Floe’s icon, a floe of ice, drawn in text characters"
-              className="ascii-cube ascii-floe mx-auto w-full max-w-52 sm:max-w-64 lg:max-w-[20rem] xl:max-w-[21.5rem]"
+              className="ascii-floe"
             />
           }
           title={sitePages.floe.title}

@@ -1,7 +1,8 @@
 'use client';
 
 import { MeshGradient } from '@paper-design/shaders-react';
-import { useEffect, useRef, useState } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { onThemeChange } from '@/lib/on-theme-change';
 
 // Lightest to darkest, the classic ramp for pictures in type.
 const ramp = ' .\'`^",:;Il!i><~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$';
@@ -11,6 +12,113 @@ const cellShape = 2;
 const rate = 16;
 /** How far across an h the middle of its upright is. The SVG knows the letter's box, not its shape. */
 const stemOfH = 0.2;
+
+// The words' own picture: a box this wide and tall, the line they sit on this far down it,
+// the size and weight of the type, and how far above the line its capitals stand as a
+// share of that size. The conure's perches are worked out from the same numbers.
+const box = { width: 1000, height: 200 };
+const baseline = 162;
+const type = { size: 168, weight: 600, capHeight: 0.72 };
+const wordStyle = {
+  fontSize: type.size,
+  fontWeight: type.weight,
+  letterSpacing: '0.01em',
+  wordSpacing: '0.12em',
+};
+
+// Where the opening in the ampersand's lower bowl is, per typeface: it depends on the
+// letter's shape and not on the window, so it is found once and kept.
+const bowls = new Map<string, { across: number; floor: number } | null>();
+
+/**
+ * The middle of the floor of the ampersand's lower bowl, in the words' own units from the
+ * letter's left edge and the top of the box. The glyph is drawn on its own and read a
+ * pixel at a time, since nothing else says where a letter's ink is. Everything not ink is
+ * flooded from the edges of the picture; what the flood cannot reach is enclosed by the
+ * letter, and the largest such space is the lower bowl's.
+ */
+function bowlOf(fontFamily: string, signWidth: number) {
+  const key = `${fontFamily} ${Math.ceil(signWidth)}`;
+  const known = bowls.get(key);
+  if (known !== undefined) return known;
+  const margin = 20;
+  const probe = document.createElement('canvas');
+  probe.width = Math.ceil(signWidth) + margin * 2;
+  probe.height = box.height;
+  const ink = probe.getContext('2d', { willReadFrequently: true });
+  if (!ink) return null;
+  ink.font = `${type.weight} ${type.size}px ${fontFamily}`;
+  ink.fillText('&', margin, baseline);
+  const { width: wide, height: tall } = probe;
+  const pixels = ink.getImageData(0, 0, wide, tall).data;
+  const inked = (index: number) => pixels[index * 4 + 3] > 128;
+  const seen = new Uint8Array(wide * tall);
+  const flood = (from: number) => {
+    const reached = [from];
+    seen[from] = 1;
+    for (let next = 0; next < reached.length; next++) {
+      const here = reached[next];
+      const x = here % wide;
+      for (const to of [
+        here - wide,
+        here + wide,
+        x > 0 ? here - 1 : -1,
+        x < wide - 1 ? here + 1 : -1,
+      ]) {
+        if (to < 0 || to >= wide * tall || seen[to] || inked(to)) continue;
+        seen[to] = 1;
+        reached.push(to);
+      }
+    }
+    return reached;
+  };
+  for (let x = 0; x < wide; x++) {
+    for (const edge of [x, (tall - 1) * wide + x]) if (!seen[edge] && !inked(edge)) flood(edge);
+  }
+  for (let y = 0; y < tall; y++) {
+    for (const edge of [y * wide, y * wide + wide - 1])
+      if (!seen[edge] && !inked(edge)) flood(edge);
+  }
+  let bowl: number[] = [];
+  for (let index = 0; index < wide * tall; index++) {
+    if (seen[index] || inked(index)) continue;
+    const space = flood(index);
+    if (space.length > bowl.length) bowl = space;
+  }
+  let found: { across: number; floor: number } | null = null;
+  if (bowl.length > 0) {
+    const xs = bowl.map((index) => index % wide);
+    const middle = (Math.min(...xs) + Math.max(...xs)) / 2;
+    // The floor under the middle of the opening, not its lowest point anywhere.
+    const floor = Math.max(
+      ...bowl
+        .filter((index) => Math.abs((index % wide) - middle) < 2)
+        .map((index) => Math.floor(index / wide)),
+    );
+    found = { across: middle - margin, floor: floor + 1 };
+  }
+  bowls.set(key, found);
+  return found;
+}
+
+/**
+ * The names as type, with what the conure has eaten cut out of them. Drawn twice, once
+ * whole and once as the ampersand alone, and the two only line up while they are the same.
+ */
+function Words({ children }: { children: ReactNode }) {
+  return (
+    <text
+      mask="url(#footer-bites)"
+      x={box.width / 2}
+      y={baseline}
+      textAnchor="middle"
+      className="font-display"
+      style={wordStyle}
+    >
+      {children}
+    </text>
+  );
+}
 
 // Soft lights that wander slowly round their own spots. Where several overlap the type
 // is dense; between them it thins. Positions are fractions of the band; the lights keep
@@ -99,12 +207,15 @@ export function FooterWordmark() {
       context.setTransform(scale, 0, 0, scale, 0, 0);
       // The conure lands on the letters: this is how far down their tops are, and the
       // size of one of its pixels, which follows the size of the words.
-      // The words sit on a line 162 units down a box 200 tall, and their capitals stand
-      // about 0.72 of the type size (168) above it: that is where the conure's feet go.
-      const box = words.getBoundingClientRect();
-      const top = box.top - stage.getBoundingClientRect().top;
-      stage.style.setProperty('--perch-y', `${top + (box.height * (162 - 0.72 * 168)) / 200}px`);
-      stage.style.setProperty('--pixel', `${Math.max(2, box.height / 62)}px`);
+      // The tops of the capitals are where the conure's feet go.
+      const drawn = words.getBoundingClientRect();
+      const top = drawn.top - stage.getBoundingClientRect().top;
+      const capitals = (drawn.height * type.capHeight * type.size) / box.height;
+      stage.style.setProperty(
+        '--perch-y',
+        `${top + (drawn.height * baseline) / box.height - capitals}px`,
+      );
+      stage.style.setProperty('--pixel', `${Math.max(2, drawn.height / 62)}px`);
       // And where across: the middle of the ampersand, which is not the middle of the
       // page, since "thaw" and "floe" are not the same width.
       const text = words.querySelector('text');
@@ -126,74 +237,16 @@ export function FooterWordmark() {
         // And the floor: the line the words stand on, in the gap between the ampersand
         // and "floe", where there is no letter to stand in.
         stage.style.setProperty('--floor-x', across(6, 0.5));
-        stage.style.setProperty('--floor-drop', `${(box.height * 0.72 * 168) / 200}px`);
-        // The ampersand's shape, for the conure: the glyph is drawn once on its own and
-        // read a pixel at a time, since nothing else says where a letter's ink is.
+        stage.style.setProperty('--floor-drop', `${capitals}px`);
+        // The opening in the ampersand's lower bowl, which the conure looks out of when it
+        // has gone behind the letter: the middle of its floor is where the bird's chin goes.
         const sign = text.getExtentOfChar(5);
-        const probe = document.createElement('canvas');
-        probe.width = Math.ceil(sign.width) + 40;
-        probe.height = 200;
-        const ink = probe.getContext('2d', { willReadFrequently: true });
-        const unit = matrix.a;
-        if (ink && unit > 0) {
-          ink.font = `600 168px ${getComputedStyle(text).fontFamily}`;
-          ink.fillText('&', 20, 162);
+        const bowl = bowlOf(getComputedStyle(text).fontFamily, sign.width);
+        if (bowl && matrix.a > 0) {
           const origin = stage.getBoundingClientRect();
-          // The opening in the ampersand's lower bowl, which the conure looks out of when
-          // it has gone behind the letter. Everything not ink is flooded from the edges of
-          // the picture; what the flood cannot reach is enclosed by the letter, and the
-          // largest such space is the lower bowl's. The middle of its floor is where the
-          // bird's chin goes.
-          const { width: wide, height: tall } = probe;
-          const pixels = ink.getImageData(0, 0, wide, tall).data;
-          const inked = (index: number) => pixels[index * 4 + 3] > 128;
-          const seen = new Uint8Array(wide * tall);
-          const flood = (from: number) => {
-            const reached = [from];
-            seen[from] = 1;
-            for (let next = 0; next < reached.length; next++) {
-              const here = reached[next];
-              const x = here % wide;
-              for (const to of [
-                here - wide,
-                here + wide,
-                x > 0 ? here - 1 : -1,
-                x < wide - 1 ? here + 1 : -1,
-              ]) {
-                if (to < 0 || to >= wide * tall || seen[to] || inked(to)) continue;
-                seen[to] = 1;
-                reached.push(to);
-              }
-            }
-            return reached;
-          };
-          for (let x = 0; x < wide; x++) {
-            for (const edge of [x, (tall - 1) * wide + x])
-              if (!seen[edge] && !inked(edge)) flood(edge);
-          }
-          for (let y = 0; y < tall; y++) {
-            for (const edge of [y * wide, y * wide + wide - 1])
-              if (!seen[edge] && !inked(edge)) flood(edge);
-          }
-          let bowl: number[] = [];
-          for (let index = 0; index < wide * tall; index++) {
-            if (seen[index] || inked(index)) continue;
-            const space = flood(index);
-            if (space.length > bowl.length) bowl = space;
-          }
-          if (bowl.length > 0) {
-            const xs = bowl.map((index) => index % wide);
-            const across = (Math.min(...xs) + Math.max(...xs)) / 2;
-            // The floor under the middle of the opening, not its lowest point anywhere.
-            const floor = Math.max(
-              ...bowl
-                .filter((index) => Math.abs((index % wide) - across) < 2)
-                .map((index) => Math.floor(index / wide)),
-            );
-            const spot = new DOMPoint(across - 20 + sign.x, floor + 1).matrixTransform(matrix);
-            stage.style.setProperty('--peek-x', `${spot.x - origin.left}px`);
-            stage.style.setProperty('--peek-y', `${spot.y - origin.top}px`);
-          }
+          const spot = new DOMPoint(bowl.across + sign.x, bowl.floor).matrixTransform(matrix);
+          stage.style.setProperty('--peek-x', `${spot.x - origin.left}px`);
+          stage.style.setProperty('--peek-y', `${spot.y - origin.top}px`);
         }
       }
     }
@@ -259,8 +312,6 @@ export function FooterWordmark() {
 
     const sized = new ResizeObserver(() => {
       resize();
-      // The letters change width when the display face arrives, and nothing resizes then.
-      document.fonts?.ready.then(resize);
       draw(still ? 0 : performance.now());
     });
     sized.observe(canvas);
@@ -269,9 +320,9 @@ export function FooterWordmark() {
     });
     seen.observe(canvas);
     // The colours differ per theme, so a still picture is drawn again when the theme changes.
-    const themed = new MutationObserver(() => draw(still ? 0 : performance.now()));
-    themed.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-    // The words move a little when the font arrives, and the conure has to follow.
+    const unthemed = onThemeChange(() => draw(still ? 0 : performance.now()));
+    // The letters change width when the display face arrives, and nothing resizes then:
+    // the words move a little, and the conure has to follow.
     document.fonts?.ready.then(resize);
 
     resize();
@@ -281,7 +332,7 @@ export function FooterWordmark() {
       cancelAnimationFrame(frame);
       sized.disconnect();
       seen.disconnect();
-      themed.disconnect();
+      unthemed();
     };
   }, []);
 
@@ -313,46 +364,37 @@ export function FooterWordmark() {
       <svg
         ref={wordsRef}
         aria-hidden
-        viewBox="0 0 1000 200"
+        viewBox={`0 0 ${box.width} ${box.height}`}
         className="pointer-events-none absolute inset-x-0 bottom-[6%] w-full fill-fd-background"
       >
         {/* What the conure has eaten out of the letters: holes in the words, through which
             the type behind shows again. */}
-        <mask id="footer-bites" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="200">
-          <rect width="1000" height="200" fill="white" />
+        <mask
+          id="footer-bites"
+          maskUnits="userSpaceOnUse"
+          x="0"
+          y="0"
+          width={box.width}
+          height={box.height}
+        >
+          <rect width={box.width} height={box.height} fill="white" />
           {bites.map((bite) => (
             <circle key={`${bite.x}-${bite.y}`} cx={bite.x} cy={bite.y} r={bite.r} fill="black" />
           ))}
         </mask>
-        <text
-          mask="url(#footer-bites)"
-          x="500"
-          y="162"
-          textAnchor="middle"
-          className="font-display"
-          style={{ fontSize: 168, fontWeight: 600, letterSpacing: '0.01em', wordSpacing: '0.12em' }}
-        >
-          thaw &amp; floe
-        </text>
+        <Words>thaw &amp; floe</Words>
       </svg>
       {/* The ampersand once more, in front of the conure, for when it goes down behind the
           letter: the same words in the same place with only the ampersand drawn, and the
           same holes in it. Shown only while the bird is behind (see footer-conure.tsx). */}
       <svg
         aria-hidden
-        viewBox="0 0 1000 200"
+        viewBox={`0 0 ${box.width} ${box.height}`}
         className="footer-cover pointer-events-none absolute inset-x-0 bottom-[6%] w-full fill-fd-background"
       >
-        <text
-          mask="url(#footer-bites)"
-          x="500"
-          y="162"
-          textAnchor="middle"
-          className="font-display"
-          style={{ fontSize: 168, fontWeight: 600, letterSpacing: '0.01em', wordSpacing: '0.12em' }}
-        >
+        <Words>
           <tspan fillOpacity={0}>thaw </tspan>&amp;<tspan fillOpacity={0}> floe</tspan>
-        </text>
+        </Words>
       </svg>
       {/* The type fades in from the page above it. */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-linear-to-b from-fd-background to-transparent" />

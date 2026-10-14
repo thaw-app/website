@@ -126,7 +126,7 @@ export default function CommunityPage() {
 
       {community.world && community.world.stargazers.list.length > 0 && (
         <Section label="Worldwide">
-          <WorldMap />
+          <WorldMap counts={community.world} />
         </Section>
       )}
 

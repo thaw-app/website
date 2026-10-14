@@ -4,7 +4,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { request } from '../request.mjs';
-import { contentDir, githubToken, libFile } from './config.mjs';
+import { contentDir, githubHeaders, libFile } from './config.mjs';
 
 /**
  * Whether each issue the roadmap links to is open or closed, so the page can
@@ -21,14 +21,13 @@ async function roadmapIssues(product) {
         ),
       ]
     : [];
-  const token = githubToken();
   const states = {};
   await Promise.all(
     numbers.map(async (number) => {
       try {
         const response = await request(
           `https://api.github.com/repos/${product.repo}/issues/${number}`,
-          { headers: token ? { Authorization: `Bearer ${token}` } : {} },
+          { headers: githubHeaders() },
         );
         if (!response.ok) throw new Error(String(response.status));
         const issue = await response.json();
@@ -48,7 +47,6 @@ async function roadmapIssues(product) {
  */
 async function roadmapRequests(product) {
   const file = libFile('roadmap-requests.json');
-  const token = githubToken();
   const query = new URLSearchParams({
     q: `repo:${product.repo} is:issue is:open type:Feature`,
     sort: 'reactions-+1',
@@ -57,7 +55,7 @@ async function roadmapRequests(product) {
   });
   try {
     const response = await request(`https://api.github.com/search/issues?${query}`, {
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      headers: githubHeaders(),
     });
     if (!response.ok) throw new Error(String(response.status));
     const found = (await response.json()).items

@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { columns, drawPose, rows } from './conure-poses';
+import { onThemeChange } from '@/lib/on-theme-change';
+import { columns, drawPose, rows, touches } from './conure-poses';
 
 // Where the bird can be: off either side of the picture, on the h of "thaw", on the
 // ampersand, on the l of "floe", and on the floor between the ampersand and "floe".
@@ -178,10 +179,9 @@ export function FooterConure() {
     }
 
     show('perched');
-    const themed = new MutationObserver(() => show(shown, true));
-    themed.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    const unthemed = onThemeChange(() => show(shown, true));
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      return () => themed.disconnect();
+      return unthemed;
     }
 
     // The visit is timed from when the footer comes into view, not from when the page
@@ -401,13 +401,7 @@ export function FooterConure() {
     }
     function onPointerDown(event: PointerEvent) {
       if (!bird || fled) return;
-      const box = bird.getBoundingClientRect();
-      const inside =
-        event.clientX >= box.left &&
-        event.clientX <= box.right &&
-        event.clientY >= box.top &&
-        event.clientY <= box.bottom;
-      if (inside) fled = { when: performance.now(), ...at };
+      if (touches(event, bird)) fled = { when: performance.now(), ...at };
     }
     stage.addEventListener('pointermove', onPointerMove);
     stage.addEventListener('pointerleave', onPointerLeave);
@@ -422,7 +416,7 @@ export function FooterConure() {
     return () => {
       cancelAnimationFrame(frame);
       seen.disconnect();
-      themed.disconnect();
+      unthemed();
       stage.removeEventListener('pointermove', onPointerMove);
       stage.removeEventListener('pointerleave', onPointerLeave);
       stage.removeEventListener('pointerdown', onPointerDown);
