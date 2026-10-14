@@ -8,7 +8,7 @@ export const floeFeatures = [
   {
     title: 'One hotkey, one search',
     detail:
-      'Apps, commands, quicklinks and System Settings panes, ranked by how often and how recently you use them. Give the ones you use most an alias or a hotkey.',
+      'Apps, commands, quicklinks and System Settings panes, ranked by how often and how recently you use them. Give the ones you use most an alias, a hotkey or a place at the top.',
   },
   {
     title: 'Runs Raycast extensions',
@@ -18,12 +18,12 @@ export const floeFeatures = [
   {
     title: 'The basics, built in',
     detail:
-      'Snippets, emoji, file search, calendar, a calculator with unit conversion, system commands, and your shortcuts from Apple’s Shortcuts app, run by name.',
+      'Snippets, emoji, file search, calendar, a calculator with unit conversion, system commands, the menu bar’s items from the keyboard, and your shortcuts from Apple’s Shortcuts app, run by name once you turn that on.',
   },
   {
     title: 'Your own apps',
     detail:
-      'Pick the terminal, editor, browser, notes app and clipboard manager you already use, and Floe hands work to them.',
+      'Pick the terminal, editor, browser, notes app and clipboard manager you already use, and Floe hands work to them, down to a host from your SSH configuration, which opens in your terminal.',
   },
   {
     title: 'Ask AI',
@@ -41,7 +41,8 @@ export const floeFeatures = [
  * Everything else, by name, filed under what it is for: taken from the full feature list
  * folded away in Floe's README, which the page leaves out as Thaw's does. Six groups, so
  * two or three to a row leaves no cell empty. Each says what it is in a sentence, in the
- * words of Floe's 0.1.0 notes, which opens under its name (components/hover-lines.tsx).
+ * words of Floe's README and release notes, which opens under its name
+ * (components/hover-lines.tsx).
  */
 export const floeAlso = [
   {
@@ -56,8 +57,22 @@ export const floeAlso = [
         about: 'Mark the apps and commands you use most and they stay at the top.',
       },
       {
-        name: 'Scopes for files, menus and tabs',
-        about: 'Start with files, menu or tabs to search only that one place.',
+        name: 'Scopes',
+        about:
+          'Start with files, menu, tabs, windows, bookmarks or recent to search only that one place.',
+      },
+      {
+        name: 'Window switcher',
+        about: 'Type windows and a title to switch to an open window, minimise it or close it.',
+      },
+      {
+        name: 'Bookmarks',
+        about:
+          'Type bookmarks and some text to find a bookmark in Chrome, Brave, Edge, Arc, Vivaldi, Dia or Helium.',
+      },
+      {
+        name: 'Recent files of an app',
+        about: 'Press Tab on an app to see the files you used lately that open in it.',
       },
       {
         name: 'Open browser tabs',
@@ -70,6 +85,10 @@ export const floeAlso = [
       {
         name: 'Search history',
         about: 'Press the Up arrow to bring back your last 50 searches that opened something.',
+      },
+      {
+        name: 'Every keyword, listed',
+        about: 'Type keywords or a question mark to see every word the search answers to.',
       },
     ],
   },
@@ -87,6 +106,15 @@ export const floeAlso = [
           'Scripts written for Raycast, placed in Floe’s Scripts folder, show up in the search.',
       },
       { name: 'Manual pages', about: 'Type man and a program’s name to open its manual.' },
+      {
+        name: 'Actions menu',
+        about:
+          'Press Command-K on an app or a file to quit it, show it in Finder, open it with another app or move it to the Trash.',
+      },
+      {
+        name: 'A picker for scripts',
+        about: 'A script can hand Floe a list and get back the line you choose.',
+      },
       {
         name: 'Checkpoints',
         about: 'Type pause and a name to save your open files, browser tabs and a note for later.',
@@ -144,6 +172,23 @@ export const floeAlso = [
         about: 'Type define and a word to read its meaning from the dictionaries on your Mac.',
       },
       {
+        name: 'Time in another city',
+        about: 'Type time in tokyo, or time 5pm in berlin, to see the time somewhere else.',
+      },
+      {
+        name: 'Something to paste',
+        about: 'Type uuid, password 24 or lorem 3, and Return copies what Floe made.',
+      },
+      {
+        name: 'Text changes',
+        about:
+          'Type base64, urlencode, uppercase or sha256 and some text to change it, or what you last copied.',
+      },
+      {
+        name: 'Quick Look',
+        about: 'Press Command-Y on a file to see it in Quick Look.',
+      },
+      {
         name: 'Snippets',
         about: 'Keep pieces of text you type often, and Floe expands them for you.',
       },
@@ -162,6 +207,15 @@ export const floeAlso = [
   {
     group: 'System',
     names: [
+      {
+        name: 'Menu bar items',
+        about: 'Search the menu bar’s items and open their menus from the keyboard.',
+      },
+      {
+        name: 'Apple Shortcuts',
+        about:
+          'Run the shortcuts you made in Apple’s Shortcuts app by name, once you turn this on.',
+      },
       {
         name: 'Media controls',
         about: 'Play, pause or skip tracks in Spotify or Music, and see what is playing.',
@@ -183,6 +237,11 @@ export const floeAlso = [
         name: 'What is on a port',
         about: 'Type port and a number to see which program is listening on that network port.',
       },
+      {
+        name: 'The launcher’s look',
+        about:
+          'Pick a glass style, tint and shadow, or a compact layout that shows only the search field until you type.',
+      },
     ],
   },
   {
@@ -190,7 +249,8 @@ export const floeAlso = [
     names: [
       {
         name: 'Extension Store',
-        about: 'Browse, install and update extensions from a page inside Floe.',
+        about:
+          'Browse, install and update extensions from a page inside Floe, or find it by typing store.',
       },
       {
         name: 'Extension menu bar commands',
@@ -200,6 +260,16 @@ export const floeAlso = [
         name: 'What each extension reached',
         about:
           'See the sites each extension contacted, the folders it touched and the programs it started.',
+      },
+      {
+        name: 'Remove any extension',
+        about:
+          'Remove an extension whether Floe or Raycast installed it, and put it back from the Trash.',
+      },
+      {
+        name: 'Extension sign-in',
+        about:
+          'Extensions sign in to GitHub and GitLab through their command line tools, and to others through the browser.',
       },
       {
         name: 'Follow-up questions',
