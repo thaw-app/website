@@ -253,7 +253,8 @@ export function RoadmapRequests() {
       <p className="mt-6 max-w-2xl text-fd-muted-foreground text-pretty">
         The feature requests open on GitHub. A thumbs-up on one tells the team it matters to you,
         and the ones with the most are looked at first.{' '}
-        <a href={`${repo}/issues/new/choose`}>Ask for something that is missing</a>.
+        <a href={`${repo}/issues/new/choose`}>Ask for something that is missing</a>, or see the{' '}
+        <a href={`${repo}/issues/316`}>ways to contribute</a>.
       </p>
       {list.length > 0 && (
         <ol className="mt-5 border-t">
