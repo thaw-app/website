@@ -458,3 +458,14 @@ export function drawPose(context: CanvasRenderingContext2D, pose: string) {
     });
   });
 }
+
+/** Whether a click or a tap landed on the bird, which takes none itself so what is behind it stays reachable. */
+export function touches(event: PointerEvent, bird: HTMLCanvasElement) {
+  const box = bird.getBoundingClientRect();
+  return (
+    event.clientX >= box.left &&
+    event.clientX <= box.right &&
+    event.clientY >= box.top &&
+    event.clientY <= box.bottom
+  );
+}

@@ -215,7 +215,7 @@
       "url": "https://www.npmjs.com/package/lucide-react",
       "license": "ISC",
       "users": {
-        "Site": "1.52.0"
+        "Site": "1.53.0"
       }
     },
     {
@@ -231,7 +231,7 @@
       "url": "https://www.npmjs.com/package/next",
       "license": "MIT",
       "users": {
-        "Site": "16.3.8"
+        "Site": "16.4.0"
       }
     },
     {
@@ -307,6 +307,22 @@
       "license": "MIT",
       "users": {
         "Floe": "1.5.8"
+      }
+    },
+    {
+      "name": "nucleo-matcher",
+      "url": "https://crates.io/crates/nucleo-matcher",
+      "license": "MPL-2.0",
+      "users": {
+        "Floe": "0.3.1"
+      }
+    },
+    {
+      "name": "rayon",
+      "url": "https://crates.io/crates/rayon",
+      "license": "MIT OR Apache-2.0",
+      "users": {
+        "Floe": "1.10"
       }
     }
   ]

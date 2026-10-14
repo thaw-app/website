@@ -154,9 +154,7 @@ export function RoadmapList({
             <Heading as="h2" id={slug(title)} className="road-title scroll-mt-24">
               {title} {counted}
             </Heading>
-            {here && (
-              <span className="text-sm font-medium text-(--product-tone)">You are here</span>
-            )}
+            {here && <span className="text-sm font-medium text-(--product-ink)">You are here</span>}
           </div>
           {note && <p className="mt-1.5 max-w-2xl text-fd-muted-foreground text-pretty">{note}</p>}
           {/* What is being finished now is ruled into cards, the one boxed thing on the
@@ -253,7 +251,8 @@ export function RoadmapRequests() {
       <p className="mt-6 max-w-2xl text-fd-muted-foreground text-pretty">
         The feature requests open on GitHub. A thumbs-up on one tells the team it matters to you,
         and the ones with the most are looked at first.{' '}
-        <a href={`${repo}/issues/new/choose`}>Ask for something that is missing</a>.
+        <a href={`${repo}/issues/new/choose`}>Ask for something that is missing</a>, or see the{' '}
+        <a href={`${repo}/issues/316`}>ways to contribute</a>.
       </p>
       {list.length > 0 && (
         <ol className="mt-5 border-t">

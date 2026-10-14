@@ -25,8 +25,8 @@ interface Lines {
 const LinesContext = createContext<Lines | null>(null);
 
 /**
- * A list read a line at a time, as Vercel sets the three lines on its home page: every line
- * is shut to begin with, and the pointer does the asking. Resting on a line opens what is
+ * A list read a line at a time: every line is shut to begin with, and the pointer does the
+ * asking. Resting on a line opens what is
  * under it and dims the rest; moving off the list shuts it again. A click keeps a line open
  * after the pointer has gone, and a tap, or the Enter key, opens and shuts one as it does
  * any such list. One line is open at a time.

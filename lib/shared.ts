@@ -39,6 +39,12 @@ export const products = {
 
 export type ProductSlug = keyof typeof products;
 
+/**
+ * The picture in the browser's tab on Floe's pages. Every other page has Thaw's, from
+ * app/icon.png, which a page takes unless it names another.
+ */
+export const floeTabIcons = { icon: '/icons/floe-96.png', apple: '/icons/floe-180.png' };
+
 export function productOf(slugs: string[]) {
   const slug = slugs[0];
   return slug && slug in products ? products[slug as ProductSlug] : undefined;

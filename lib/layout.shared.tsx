@@ -32,9 +32,7 @@ export function baseOptions({
     // Light, dark, or whichever the Mac is set to: a new visitor already gets the Mac's, and
     // the third choice is the way back to it after picking one of the others.
     themeSwitch: { mode: 'light-dark-system' },
-    // The site's own pages first, then Thaw's integrations and GitHub. On a wide screen
-    // those sit behind Thaw's dot, which hides and shows them; in a menu or a sidebar
-    // they are plain icons.
+    // The site's own pages first, then Thaw's integrations and GitHub as icons.
     links: [
       ...(bothProducts
         ? [

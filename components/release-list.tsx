@@ -13,7 +13,7 @@ type ReleasePage = Page & { data: { release: NonNullable<Page['data']['release']
 
 /**
  * How many of the newest releases have their notes written out in full on the changelog.
- * One: three made a page fourteen screens long before the list of releases began.
+ * More than one pushes the list of releases screens down the page.
  */
 const writtenOut = 1;
 

@@ -1,11 +1,10 @@
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { choiceClass } from '@/components/choice-style';
 import { getMDXComponents } from '@/components/mdx';
 import { Lead, PageHeader } from '@/components/page-header';
 import { PageShell } from '@/components/page-shell';
+import { ProductChoice } from '@/components/product-choice';
 import { hasEarlierReleases, ReleaseList, VersionReleases } from '@/components/release-list';
 import { ReleasePeople } from '@/components/release-people';
 import { commitOf, feedUrl, pageAlternates, pageTitle } from '@/lib/releases';
@@ -64,18 +63,11 @@ export function ChangelogView({ path }: { path?: string[] }) {
           </Lead>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
             {others.length > 1 && (
-              <nav aria-label="Whose changelog" className="flex flex-wrap gap-2">
-                {others.map((name) => (
-                  <Link
-                    key={name}
-                    href={changelogUrl(name)}
-                    aria-current={name === slug ? 'page' : undefined}
-                    className={choiceClass(name === slug)}
-                  >
-                    {products[name].name}
-                  </Link>
-                ))}
-              </nav>
+              <ProductChoice
+                label="Whose changelog"
+                choices={others.map((name) => ({ product: name, href: changelogUrl(name) }))}
+                current={slug}
+              />
             )}
             <a href={feedUrl(slug)} className="tap link text-sm">
               Follow in a feed reader

@@ -19,12 +19,13 @@ const facts = [
   {
     label: 'Needs',
     value: 'macOS 26 or later',
-    detail: 'Floe is signed and notarized, and updates itself.',
+    detail: 'Floe is signed and notarised, and updates itself.',
   },
   {
     label: 'Needs',
     value: 'Accessibility',
-    detail: 'The one permission Floe requires. Calendar, Reminders and Contacts are optional.',
+    detail:
+      'The one permission Floe requires. Calendar, Reminders, Contacts and Screen Recording are optional.',
   },
   {
     label: 'Know first',
@@ -101,10 +102,18 @@ export function FloeAssurance() {
       </Heading>
       <div className="not-prose my-6">
         <p className="mb-3 font-display text-2xl leading-tight font-semibold tracking-tight text-balance sm:text-3xl">
-          Incoming.
+          Part of the way.
         </p>
         <p className="mb-6 text-fd-muted-foreground text-pretty">
-          Floe is early, and we are committed to bringing it on par with Thaw in this area.
+          Floe is signed and notarised, each release comes with a record of how it was built, and
+          the project has an{' '}
+          <a
+            href="https://scorecard.dev/viewer/?uri=github.com/thaw-app/Floe"
+            className="tap text-fd-foreground link"
+          >
+            OpenSSF Scorecard
+          </a>
+          . Thaw’s other checks, such as its OpenSSF Best Practices badge, are still to come.
         </p>
         <Link
           href="/#verified"

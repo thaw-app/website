@@ -4,7 +4,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { longDate } from '../../lib/format.mjs';
 import { request } from '../request.mjs';
-import { cacheFile, githubToken } from './config.mjs';
+import { cacheFile, githubHeaders } from './config.mjs';
 import {
   channelOf,
   countChanges,
@@ -22,13 +22,12 @@ import {
 
 /** Every page of a GitHub list, such as a repo's releases or its tags. */
 async function everyPage(path) {
-  const token = githubToken();
   const all = [];
   for (let page = 1; ; page++) {
     const response = await request(`https://api.github.com/${path}?per_page=100&page=${page}`, {
       headers: {
         Accept: 'application/vnd.github+json',
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...githubHeaders(),
       },
     });
     if (!response.ok) throw new Error(`GitHub answered ${response.status}`);

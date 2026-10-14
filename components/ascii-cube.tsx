@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { onThemeChange } from '@/lib/on-theme-change';
 import { cubeMask } from './ascii-cube-mask';
 
 /** Characters from faintest to boldest. */
@@ -22,10 +23,11 @@ function channels(hex: string) {
  * Given another icon's grid it draws that one, in the colours its class sets (global.css).
  */
 export function AsciiCube({
-  className,
+  className = '',
   mask = cubeMask,
   label = 'Thaw’s icon, an ice cube, drawn in text characters',
 }: {
+  /** The class that sets another icon's colours, such as `ascii-floe`. */
   className?: string;
   mask?: readonly string[];
   /** What the drawing is, for someone who cannot see it. */
@@ -168,10 +170,9 @@ export function AsciiCube({
     });
     sized.observe(canvas);
     // The tones differ per theme, so a resting cube is drawn again when the theme changes.
-    const themed = new MutationObserver(() => {
+    const unthemed = onThemeChange(() => {
       if (still || !running) draw(still ? 0 : performance.now());
     });
-    themed.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
     // Nothing is drawn while the icon is scrolled out of view.
     const seen = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
@@ -190,7 +191,7 @@ export function AsciiCube({
     return () => {
       cancelAnimationFrame(frame);
       sized.disconnect();
-      themed.disconnect();
+      unthemed();
       seen.disconnect();
       canvas.removeEventListener('pointermove', onPointerMove);
       canvas.removeEventListener('pointerleave', onPointerLeave);
@@ -202,7 +203,8 @@ export function AsciiCube({
       ref={canvasRef}
       role="img"
       aria-label={label}
-      className={className}
+      // Centred in its column, and one size on every page that has it.
+      className={`ascii-cube mx-auto w-full max-w-52 sm:max-w-64 lg:max-w-[20rem] xl:max-w-[21.5rem] ${className}`}
       // Its shape is known before it is drawn, so the headline under it does not move when
       // the drawing arrives: a character is twice as tall as it is wide.
       style={{ aspectRatio: `${mask[0].length} / ${mask.length * 2}` }}

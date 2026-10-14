@@ -7,12 +7,12 @@ import nixMark from '@/assets/nix-mark.png';
 import omniwmMark from '@/assets/omniwm-mark.png';
 import raycastGlyph from '@/assets/raycast-glyph.png';
 import { aiMarks, appleIntelligenceMark } from '@/lib/ai-marks';
-import { products } from '@/lib/shared';
 import { ClaudeMark } from './claude-mark';
+import { ThawMark } from './thaw-mark';
 
 // Every mark is drawn in one colour, black on a light page and white on a dark one, so a
 // row of them reads as a set. `glyph` is artwork that is already white; `flat` is coloured
-// artwork reduced to its outline. An app's own icon (Thaw's) keeps its colours.
+// artwork reduced to its outline.
 const marks: Record<
   string,
   | { src: StaticImageData; glyph?: boolean; flat?: boolean }
@@ -25,7 +25,8 @@ const marks: Record<
   // Floe's menu bar item: the floe of its app icon in one colour, drawn from the same
   // points as Sources/Floe/App/MenuBarGlyph.swift in thaw-app/Floe.
   floe: { src: floeGlyph, glyph: true },
-  thaw: { src: products.thaw.icon },
+  // Thaw's cube in one colour, like the rest of the row (thaw-mark.tsx).
+  thaw: { icon: <ThawMark className="size-[1.125em]" /> },
   // OmniWM's own one-colour mark, unchanged: assets/brand/source/omniwm-mark-monochrome.svg
   // in github.com/OmniNull/OmniWM.
   omniwm: { src: omniwmMark, flat: true },

@@ -21,8 +21,6 @@ export function PageHeader({
   /** Something small set at the end of the headline, on its line. */
   titleEnd?: ReactNode;
   className?: string;
-  /** The line on the page's picture for shared links, which the page itself does not show. */
-  shared?: string;
   /** The opening lines, and anything that belongs under them. */
   children?: ReactNode;
 }) {

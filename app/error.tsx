@@ -1,12 +1,10 @@
 'use client';
 
-import { HomeLayout } from 'fumadocs-ui/layouts/home';
 import Link from 'next/link';
-import { type CSSProperties, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Lead, PageHeader } from '@/components/page-header';
 import { PageShell } from '@/components/page-shell';
-import { SiteContainer } from '@/components/site-container';
-import { baseOptions } from '@/lib/layout.shared';
+import { SiteFrame } from '@/components/site-frame';
 import { links } from '@/lib/shared';
 
 /**
@@ -26,11 +24,7 @@ export default function ErrorPage({
   }, [error]);
 
   return (
-    <HomeLayout
-      {...baseOptions()}
-      slots={{ container: SiteContainer }}
-      style={{ '--fd-layout-width': '100%' } as CSSProperties}
-    >
+    <SiteFrame>
       <PageShell>
         <PageHeader label="Error" title="This page did not load." className="py-10">
           <Lead>Something went wrong on our side while showing it. Trying again often works.</Lead>
@@ -57,6 +51,6 @@ export default function ErrorPage({
           </ul>
         </PageHeader>
       </PageShell>
-    </HomeLayout>
+    </SiteFrame>
   );
 }

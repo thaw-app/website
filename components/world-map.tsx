@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { Choice } from '@/components/choice';
-import community from '@/lib/community.json';
 import { longDate } from '@/lib/shared';
 import world from '@/lib/world-map.json';
 
@@ -21,16 +20,20 @@ function path(list: [number, number][]) {
 
 const land = path(Object.values(dots).flat());
 
+// The counts are the page's to hand over: read here, the whole of the community's numbers
+// and its roster would be sent to the browser along with the map.
+type World = typeof import('@/lib/community.json')['world'];
+
 /**
  * Where Thaw's stars, pull requests and issues come from: the world as a grid
  * of dots, with each country lit by its share. The counts are made when the site is built,
  * from the locations on GitHub profiles, and cover only the people who give one.
  */
-export function WorldMap() {
+export function WorldMap({ counts }: { counts: World | null | undefined }) {
   const [view, setView] = useState<(typeof views)[number]['id']>('stargazers');
   const chosen = views.find((candidate) => candidate.id === view) ?? views[0];
   // A first build with no token has no counts yet: draw nothing, as the page expects.
-  const counted = community.world?.[view];
+  const counted = counts?.[view];
   if (!counted) return null;
   const { list: countries, placed } = counted;
   // A country's part of the stars, issues or pull requests that could be placed. Under one in a hundred is
@@ -104,7 +107,7 @@ export function WorldMap() {
       </div>
       <p className="text-sm text-fd-muted-foreground">
         Share of the {chosen.of} whose GitHub profile names a place. Counted on{' '}
-        {longDate(community.world.checked)}.
+        {longDate(counts.checked)}.
       </p>
     </div>
   );

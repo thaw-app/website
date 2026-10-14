@@ -6,7 +6,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { countCountries } from '../countries.mjs';
 import { request } from '../request.mjs';
-import { cacheFile, githubToken, libFile } from './config.mjs';
+import { cacheFile, githubHeaders, githubToken, libFile } from './config.mjs';
 
 /**
  * The people with commits in a repo since a given day, most commits first.
@@ -16,7 +16,6 @@ import { cacheFile, githubToken, libFile } from './config.mjs';
  */
 async function contributors({ repo, slug, contributorsSince, notPeople = [] }) {
   const cache = cacheFile(`contributors-${slug}.json`);
-  const token = githubToken();
   // Weeks start on Sunday, so the week the day falls in counts from its start.
   const day = new Date(`${contributorsSince}T00:00:00Z`);
   const since = day.getTime() / 1000 - day.getUTCDay() * 86_400;
@@ -27,7 +26,7 @@ async function contributors({ repo, slug, contributorsSince, notPeople = [] }) {
       const response = await request(`https://api.github.com/repos/${repo}/stats/contributors`, {
         headers: {
           Accept: 'application/vnd.github+json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...githubHeaders(),
         },
       });
       if (response.status === 202) await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -178,7 +177,7 @@ async function communityNumbers(product, published, people, root) {
   const file = libFile('community.json');
   const before = existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) : {};
   const token = githubToken();
-  const github = token ? { Authorization: `Bearer ${token}` } : {};
+  const github = githubHeaders(token);
   const read = async (url, headers = {}) => {
     try {
       const response = await request(url, { headers });

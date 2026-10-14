@@ -118,19 +118,26 @@ kbd,
   /* The one accent: the cube's orange, for what is current or the thing to look at. Under
      Floe's docs it is Floe's blue. */
   --product-tone: #c96817;
+  /* The same accent for small text, deep enough to read on a light page. */
+  --product-ink: #a84407;
 }
 
 /* Floe's own pages, its changelog among them: the accent and the changelog's calendar are
-   its blues, lighter to deeper as the cube's oranges run. */
-[data-tone="floe"] {
+   its blues, lighter to deeper as the cube's oranges run. Floe's docs are told by what is on
+   the page, since their contents and sidebar sit outside it. */
+[data-tone="floe"],
+#nd-notebook-layout:has([data-product="floe"]) {
   --product-tone: #2563c9;
+  --product-ink: #2563c9;
   --release-1: #3d7df0;
   --release-2: #0b4fd8;
   --release-3: #072f86;
 }
 
-.dark [data-tone="floe"] {
+.dark [data-tone="floe"],
+.dark #nd-notebook-layout:has([data-product="floe"]) {
   --product-tone: #4f93ff;
+  --product-ink: #4f93ff;
   --release-1: #1560e8;
   --release-2: #4f93ff;
   --release-3: #c4e0ff;
@@ -141,14 +148,6 @@ body:has(#nd-notebook-layout [data-product="floe"]) .docs-banner {
   display: none;
 }
 
-#nd-notebook-layout:has([data-product="floe"]) {
-  --product-tone: #2563c9;
-}
-
-.dark #nd-notebook-layout:has([data-product="floe"]) {
-  --product-tone: #4f93ff;
-}
-
 .dark {
   --world-lit: #fa9a2a;
   --verified-gold: #f0b429;
@@ -157,6 +156,7 @@ body:has(#nd-notebook-layout [data-product="floe"]) .docs-banner {
   --release-2: #fa9a2a;
   --release-3: #ffde81;
   --product-tone: #fa9a2a;
+  --product-ink: #fa9a2a;
 }
 
 .ascii-cube {
@@ -488,30 +488,12 @@ html > body[data-scroll-locked] {
   }
 }
 
-/* In progress: a filled mark, in the accent. Blocked: a broken one. Later: a faint one. */
-.roadmap-now li::before {
-  border-color: var(--product-tone);
-  background: var(--product-tone);
-}
-
-.roadmap-blocked li::before {
-  border-style: dashed;
-}
-
-.roadmap-later li::before {
-  opacity: 0.55;
-}
-
 .roadmap li strong {
   font-weight: 600;
   color: var(--color-fd-foreground);
 }
 
 .roadmap li {
-  color: var(--color-fd-muted-foreground);
-}
-
-.roadmap-done li {
   color: var(--color-fd-muted-foreground);
 }
 
@@ -532,7 +514,8 @@ html > body[data-scroll-locked] {
   rotate: 45deg;
 }
 
-/* Not a section's own name, which is a link to itself and is not to look like one. */
+/* Not a section's own name, which is a link to itself and is not to look like one: Fumadocs
+   marks that link with data-card. */
 .roadmap a:not([data-card]) {
   color: var(--color-fd-foreground);
   text-decoration: underline;
@@ -558,14 +541,14 @@ html > body[data-scroll-locked] {
 }
 
 .roadmap-cards li {
-  padding: 1.25rem 1.25rem 3.125rem 3rem;
+  padding: 1.25rem 1.25rem 3.125rem;
   border-right: 1px solid var(--color-fd-border);
   border-bottom: 1px solid var(--color-fd-border);
 }
 
+/* A stop's mark on the road says where its items stand, so they have none of their own. */
 .roadmap-cards li::before {
-  left: 1.25rem;
-  top: calc(1.25rem + 0.3em);
+  content: none;
 }
 
 /* The icons of what a card is about, in its lower right corner, level with its area. */
@@ -581,7 +564,7 @@ html > body[data-scroll-locked] {
 .roadmap-cards li::after {
   content: var(--area);
   position: absolute;
-  left: 3rem;
+  left: 1.25rem;
   bottom: 1.25rem;
   line-height: 1.125rem;
   font-size: 0.75rem;
@@ -595,12 +578,7 @@ html > body[data-scroll-locked] {
 .roadmap-open li {
   align-self: start;
   border: 0;
-  padding: 0 0 0 1.75rem;
-}
-
-.roadmap-open li::before {
-  left: 0;
-  top: 0.3em;
+  padding: 0;
 }
 
 .roadmap-open li::after {
@@ -708,23 +686,6 @@ html > body[data-scroll-locked] {
   color: var(--color-fd-muted-foreground);
 }
 
-/* A stop's mark says where its items stand, so they have none of their own. */
-.road .roadmap-cards li::before {
-  content: none;
-}
-
-.road .roadmap-open li {
-  padding-left: 0;
-}
-
-.road .roadmap-cards:not(.roadmap-open) li {
-  padding-left: 1.25rem;
-}
-
-.road .roadmap-cards:not(.roadmap-open) li::after {
-  left: 1.25rem;
-}
-
 /* A request is a row that is all link: it has no mark of its own. */
 .roadmap li.roadmap-request {
   padding-left: 0;
@@ -808,41 +769,10 @@ html > body[data-scroll-locked] {
   }
 }
 
-@keyframes language-drift {
-  to {
-    translate: -100% 0;
-  }
-}
-
-/* The band the wordmark sits in: as tall as the words need, which follows the window. */
+/* The band the wordmark sits in: as tall as the words need, which follows the window
+   however wide it is. A limit on it squeezed the words on a wide one and then cut their tops off. */
 .footer-art {
   height: calc(24vw + 5rem);
-  max-height: 30rem;
-}
-
-/* "thaw & floe" in moving type at the foot of the page, in the four tones of the logo:
-   the same ones the cube on the home page is drawn in. */
-.footer-wordmark {
-  --cube-1: #e2a468;
-  --cube-2: #c96817;
-  --cube-3: #993a06;
-  --cube-4: #6f2a04;
-  /* And the four of Floe's icon, in the same order. */
-  --floe-1: #9cc2ff;
-  --floe-2: #3d7df0;
-  --floe-3: #0b4fd8;
-  --floe-4: #072f86;
-}
-
-.dark .footer-wordmark {
-  --cube-1: #993a06;
-  --cube-2: #c96817;
-  --cube-3: #fa9a2a;
-  --cube-4: #ffde81;
-  --floe-1: #0a3a9c;
-  --floe-2: #1560e8;
-  --floe-3: #4f93ff;
-  --floe-4: #c4e0ff;
 }
 
 /* The conure on the footer's wordmark: 24 pixels by 20, drawn large with hard edges.
@@ -1478,4 +1408,10 @@ h1.font-display {
 /* A command in a table is kept on one line: the table scrolls sideways before it breaks. */
 #nd-page .prose td code {
   white-space: nowrap;
+}
+
+/* The light, dark and system buttons: Fumadocs fills their pictures in, which sets them
+   apart from every other icon on the page. They are drawn in line, as the rest are. */
+[data-theme-toggle] svg {
+  fill: none;
 }

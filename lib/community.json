@@ -1,22 +1,22 @@
 {
-  "stars": 11890,
-  "downloads": 367451,
-  "homebrewYear": 27845,
-  "discord": 345,
-  "contributors": 58,
-  "releases": 75,
+  "stars": 12033,
+  "downloads": 383318,
+  "homebrewYear": 28594,
+  "discord": 361,
+  "contributors": 60,
+  "releases": 76,
   "readOn": {
-    "stars": "2026-10-08",
-    "downloads": "2026-10-08",
-    "homebrewYear": "2026-10-08",
-    "discord": "2026-10-08",
-    "contributors": "2026-10-08",
-    "releases": "2026-10-08",
-    "bestPractices": "2026-10-08",
-    "baseline": "2026-10-08",
-    "scorecard": "2026-10-08",
-    "coverage": "2026-10-08",
-    "field": "2026-10-08"
+    "stars": "2026-10-14",
+    "downloads": "2026-10-14",
+    "homebrewYear": "2026-10-14",
+    "discord": "2026-10-14",
+    "contributors": "2026-10-14",
+    "releases": "2026-10-14",
+    "bestPractices": "2026-10-14",
+    "baseline": "2026-10-14",
+    "scorecard": "2026-10-14",
+    "coverage": "2026-10-14",
+    "field": "2026-10-14"
   },
   "people": [
     {
@@ -27,7 +27,7 @@
     {
       "login": "diazdesandi",
       "avatar": "https://avatars.githubusercontent.com/u/17421494?v=4",
-      "commits": 380
+      "commits": 389
     },
     {
       "login": "7a6163",
@@ -200,6 +200,11 @@
       "commits": 1
     },
     {
+      "login": "django23",
+      "avatar": "https://avatars.githubusercontent.com/u/827397?v=4",
+      "commits": 1
+    },
+    {
       "login": "dyxushuai",
       "avatar": "https://avatars.githubusercontent.com/u/5157648?v=4",
       "commits": 1
@@ -242,6 +247,11 @@
     {
       "login": "MarcoTerzulli",
       "avatar": "https://avatars.githubusercontent.com/u/48279455?v=4",
+      "commits": 1
+    },
+    {
+      "login": "mi3suuu",
+      "avatar": "https://avatars.githubusercontent.com/u/284501735?v=4",
       "commits": 1
     },
     {
@@ -343,9 +353,9 @@
     "scorecard": 9.1,
     "coverage": 92.3,
     "field": {
-      "projects": 12714,
-      "gold": 106,
-      "baseline3": 77
+      "projects": 12877,
+      "gold": 107,
+      "baseline3": 79
     }
   },
   "translators": [

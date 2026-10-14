@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { FaqList, faqData } from '@/components/faq';
+import { JsonLd } from '@/components/json-ld';
 import { Lead, PageHeader } from '@/components/page-header';
 import { PageShell } from '@/components/page-shell';
 import { pageAlternates } from '@/lib/releases';
@@ -23,13 +24,7 @@ export const metadata: Metadata = {
 export default function FaqPage() {
   return (
     <PageShell>
-      <script
-        type="application/ld+json"
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: data for search engines, built here from the site's own values and with "<" escaped, as the Next.js guide has it
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(faqData(thawFaq)).replace(/</g, '\\u003c'),
-        }}
-      />
+      <JsonLd data={faqData(thawFaq)} />
       <PageHeader {...sitePages.faq}>
         <Lead>
           What people ask before they install Thaw. If yours is not here,{' '}
