@@ -66,10 +66,10 @@ export default function HomePage() {
           }}
         />
         <ProductLanding
-          // Centred in the column, and sized so the headline and the lines under it fit one
-          // screen with it: on a short window the cube gives up height before the words do.
+          // Centred in the column, and the same size on a short window as on a tall one: the
+          // column scrolls with the page when it is taller than the window.
           mark={
-            <AsciiCube className="ascii-cube mx-auto w-full max-w-52 sm:max-w-64 lg:max-w-[min(20rem,max(12rem,calc(100dvh-37rem)))] xl:max-w-[min(21.5rem,max(12rem,calc(100dvh-37rem)))]" />
+            <AsciiCube className="ascii-cube mx-auto w-full max-w-52 sm:max-w-64 lg:max-w-[20rem] xl:max-w-[21.5rem]" />
           }
           title={sitePages.home.title}
           lead="Take back your menu bar. Hide what you don’t need, and find anything in a keystroke."

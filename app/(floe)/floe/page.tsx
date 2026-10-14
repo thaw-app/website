@@ -62,7 +62,7 @@ export default function FloePage() {
             <AsciiCube
               mask={floeMask}
               label="Floe’s icon, a floe of ice, drawn in text characters"
-              className="ascii-cube ascii-floe mx-auto w-full max-w-52 sm:max-w-64 lg:max-w-[min(20rem,max(12rem,calc(100dvh-37rem)))] xl:max-w-[min(21.5rem,max(12rem,calc(100dvh-37rem)))]"
+              className="ascii-cube ascii-floe mx-auto w-full max-w-52 sm:max-w-64 lg:max-w-[20rem] xl:max-w-[21.5rem]"
             />
           }
           title={sitePages.floe.title}

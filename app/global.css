@@ -814,10 +814,10 @@ html > body[data-scroll-locked] {
   }
 }
 
-/* The band the wordmark sits in: as tall as the words need, which follows the window. */
+/* The band the wordmark sits in: as tall as the words need, which follows the window
+   however wide it is. A limit on it squeezed the words on a wide one and then cut their tops off. */
 .footer-art {
   height: calc(24vw + 5rem);
-  max-height: 30rem;
 }
 
 /* "thaw & floe" in moving type at the foot of the page, in the four tones of the logo:
