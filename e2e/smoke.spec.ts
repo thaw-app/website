@@ -249,3 +249,45 @@ test('Floe’s pages are under Floe’s own header', async ({ page, isMobile }) 
   await header.getByRole('link', { name: 'Thaw', exact: true }).click();
   await expect(page).toHaveURL(/localhost:\d+\/$/);
 });
+
+test('the cube is one size on a short window and a tall one', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'a phone has one size of window');
+  // It once gave up height on a short window, and came out a third smaller on a laptop.
+  for (const path of ['/', '/floe']) {
+    const widths: number[] = [];
+    for (const height of [620, 900]) {
+      await page.setViewportSize({ width: 1280, height });
+      await page.goto(path);
+      const cube = page.locator('canvas.ascii-cube');
+      await expect.poll(async () => (await cube.boundingBox())?.width ?? 0).toBeGreaterThan(300);
+      widths.push(Math.round((await cube.boundingBox())?.width ?? 0));
+    }
+    expect(widths[0]).toBe(widths[1]);
+  }
+});
+
+test('the conure is on the page that is not there, and not in its footer too', async ({ page }) => {
+  const response = await page.goto('/no-such-page');
+  expect(response?.status()).toBe(404);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+    'There is no page at this address.',
+  );
+  // 24 pixels by 20, each drawn three across.
+  const bird = page.locator('.stray-conure canvas');
+  await expect.poll(async () => (await bird.boundingBox())?.width).toBe(72);
+  expect((await bird.boundingBox())?.height).toBe(60);
+  // The footer's art arrives when the foot of the page is near, and brings no second bird.
+  await page.locator('.footer-art').scrollIntoViewIfNeeded();
+  await expect(page.locator('.footer-art canvas.footer-wordmark')).toBeVisible();
+  await expect(page.locator('.footer-conure')).toHaveCount(0);
+});
+
+test('the footer’s band keeps growing with a wide window', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'a phone is never this wide');
+  // A limit on it once squeezed the words on a wide window and cut their tops off.
+  await page.setViewportSize({ width: 2560, height: 1200 });
+  await page.goto('/faq');
+  // A quarter of the window's width, near enough: the limit was 480 pixels.
+  const band = await page.locator('.footer-art').boundingBox();
+  expect(band?.height).toBeGreaterThan(650);
+});
