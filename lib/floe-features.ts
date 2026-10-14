@@ -219,12 +219,12 @@ export const floeAlso = [
       {
         name: 'Clipboard history',
         about:
-          'Floe keeps what you copy, with its formatting, links, images and files. Return pastes one, and anything a password manager marks private is left out.',
+          'Floe keeps what you copy: text with its formatting, links, images and files. Return pastes one, and anything a password manager marks private is left out.',
       },
       {
         name: 'Translate',
         about:
-          'Type translate and a sentence to translate it with Apple’s translation, on your Mac.',
+          'Type translate and a sentence to see it in another language, translated by Apple on your Mac.',
       },
       {
         name: 'QR codes',
@@ -267,11 +267,13 @@ export const floeAlso = [
       },
       {
         name: 'Sound devices',
-        about: 'Type output or input to choose the sound device, and see your AirPods’ battery.',
+        about:
+          'Type output or input to choose which speakers or microphone your Mac uses, and see your AirPods’ battery.',
       },
       {
         name: 'Battery, disk, memory and IP',
-        about: 'Type battery, disk, memory or ip to see how your Mac is doing.',
+        about:
+          'Type battery, disk, memory or ip to see your Mac’s battery level, free disk space, memory use or IP address.',
       },
       {
         name: 'Colour and text from the screen',
