@@ -1409,3 +1409,9 @@ h1.font-display {
 #nd-page .prose td code {
   white-space: nowrap;
 }
+
+/* The light, dark and system buttons: Fumadocs fills their pictures in, which sets them
+   apart from every other icon on the page. They are drawn in line, as the rest are. */
+[data-theme-toggle] svg {
+  fill: none;
+}
