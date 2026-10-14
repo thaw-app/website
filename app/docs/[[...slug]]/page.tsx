@@ -12,7 +12,13 @@ import { notFound } from 'next/navigation';
 import { getMDXComponents } from '@/components/mdx';
 import { PageFade } from '@/components/page-fade';
 import { pageAlternates, pageTitle } from '@/lib/releases';
-import { docsRoute, getPageImageUrl, getPageMarkdownUrl, productOf } from '@/lib/shared';
+import {
+  docsRoute,
+  floeTabIcons,
+  getPageImageUrl,
+  getPageMarkdownUrl,
+  productOf,
+} from '@/lib/shared';
 import { source } from '@/lib/source';
 
 /** The product whose copy of a shared page is the one search engines are pointed to. */
@@ -101,5 +107,6 @@ export async function generateMetadata(props: PageProps<'/docs/[[...slug]]'>): P
     openGraph: {
       images: getPageImageUrl(page).url,
     },
+    ...(page.slugs[0] === 'floe' && { icons: floeTabIcons }),
   };
 }

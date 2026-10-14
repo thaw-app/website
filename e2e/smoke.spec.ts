@@ -291,3 +291,15 @@ test('the footer’s band keeps growing with a wide window', async ({ page, isMo
   const band = await page.locator('.footer-art').boundingBox();
   expect(band?.height).toBeGreaterThan(650);
 });
+
+test('the tab shows Floe’s icon on Floe’s pages and Thaw’s on the rest', async ({ page }) => {
+  const icon = page.locator('link[rel="icon"]');
+  for (const path of ['/floe', '/floe/roadmap', '/changelog/floe', '/docs/floe']) {
+    await page.goto(path);
+    await expect(icon).toHaveAttribute('href', /\/icons\/floe-96\.png/);
+  }
+  for (const path of ['/', '/docs/thaw']) {
+    await page.goto(path);
+    await expect(icon).toHaveAttribute('href', /\/icon\.png/);
+  }
+});
