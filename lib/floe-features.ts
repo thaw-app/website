@@ -18,7 +18,7 @@ export const floeFeatures = [
   {
     title: 'The basics, built in',
     detail:
-      'Snippets, emoji, file search, calendar, a calculator that converts units, system commands and the menu bar’s items. Turn it on and your Apple Shortcuts run by name too.',
+      'Snippets, emoji, a clipboard history, file search, calendar, a calculator that converts units, system commands and the menu bar’s items. Turn it on and your Apple Shortcuts run by name too.',
   },
   {
     title: 'Your own apps',
@@ -90,6 +90,15 @@ export const floeAlso = [
         name: 'Every keyword, listed',
         about: 'Type keywords or a question mark to see every word the search answers to.',
       },
+      {
+        name: 'Quick Look',
+        about: 'Press Command-Y on a file to see it in Quick Look.',
+      },
+      {
+        name: 'File search',
+        about:
+          'Find files by name. Turn on Fast file search and the ones you opened lately come first.',
+      },
     ],
   },
   {
@@ -123,6 +132,10 @@ export const floeAlso = [
         name: 'Receipts, with undo',
         about: 'Floe lists what it changed, and Return puts a file back from the Trash.',
       },
+      {
+        name: 'Homebrew',
+        about: 'Type brew and a package to install or upgrade it in your terminal.',
+      },
     ],
   },
   {
@@ -152,6 +165,16 @@ export const floeAlso = [
       {
         name: 'Notes, and daily notes',
         about: 'Type note and some text to save it to your notes app or add to today’s note.',
+      },
+      {
+        name: 'Browse notes',
+        about:
+          'Read and write the notes in a folder you chose, such as an Obsidian vault, without leaving Floe.',
+      },
+      {
+        name: 'Places in Maps',
+        about:
+          'Type maps and what you are looking for to find places with Apple Maps. What you type is sent to Apple.',
       },
     ],
   },
@@ -185,10 +208,6 @@ export const floeAlso = [
           'Type base64, urlencode, uppercase or sha256 and some text to change it. With no text, it changes what you last copied.',
       },
       {
-        name: 'Quick Look',
-        about: 'Press Command-Y on a file to see it in Quick Look.',
-      },
-      {
         name: 'Snippets',
         about: 'Keep pieces of text you type often, and Floe expands them for you.',
       },
@@ -198,9 +217,18 @@ export const floeAlso = [
         about: 'Find an emoji or a symbol by typing, in the skin tone you choose.',
       },
       {
-        name: 'File search',
+        name: 'Clipboard history',
         about:
-          'Find files by name. Turn on Fast file search and the ones you opened lately come first.',
+          'Floe keeps what you copy, with its formatting, links, images and files. Return pastes one, and anything a password manager marks private is left out.',
+      },
+      {
+        name: 'Translate',
+        about:
+          'Type translate and a sentence to translate it with Apple’s translation, on your Mac.',
+      },
+      {
+        name: 'QR codes',
+        about: 'Type qr and a link to make a QR code to copy, look at or save.',
       },
     ],
   },
@@ -236,6 +264,19 @@ export const floeAlso = [
       {
         name: 'What is on a port',
         about: 'Type port and a number to see which program is listening on that network port.',
+      },
+      {
+        name: 'Sound devices',
+        about: 'Type output or input to choose the sound device, and see your AirPods’ battery.',
+      },
+      {
+        name: 'Battery, disk, memory and IP',
+        about: 'Type battery, disk, memory or ip to see how your Mac is doing.',
+      },
+      {
+        name: 'Colour and text from the screen',
+        about:
+          'Pick a colour from anywhere on screen, or drag over part of it to copy its text. Copying text needs Screen Recording.',
       },
       {
         name: 'The launcher’s look',

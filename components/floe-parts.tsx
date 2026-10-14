@@ -24,7 +24,8 @@ const facts = [
   {
     label: 'Needs',
     value: 'Accessibility',
-    detail: 'The one permission Floe requires. Calendar, Reminders and Contacts are optional.',
+    detail:
+      'The one permission Floe requires. Calendar, Reminders, Contacts and Screen Recording are optional.',
   },
   {
     label: 'Know first',
