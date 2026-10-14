@@ -17,7 +17,12 @@ Thaw has two lines in development: 3.0 for macOS 27 and 2.1 for macOS 26. This i
 </RoadmapGroup>
 </RoadmapList>
 
-<RoadmapList title="Up next" count={8} state="next" note="Planned for the 3.0.0 betas.">
+<RoadmapList title="Up next" count={9} state="next" note="Planned for the 3.0.0 betas, and for 2.2.0.">
+<RoadmapGroup name="macOS 15" count={1}>
+
+- **macOS 15 again.** Thaw 2.2.0 brings back compatibility with macOS 15.
+
+</RoadmapGroup>
 <RoadmapGroup name="Permissions" count={1}>
 
 - **Minimal mode.** Thaw without the Accessibility permission, for anyone who would rather not grant it. It is in the works.
@@ -44,16 +49,15 @@ Thaw has two lines in development: 3.0 for macOS 27 and 2.1 for macOS 26. This i
 </RoadmapGroup>
 </RoadmapList>
 
-<RoadmapList title="Blocked by macOS 27" count={4} state="blocked" note="These run into limits in macOS 27 itself. The team is looking for ways around them and can’t promise them for the beta.">
-<RoadmapGroup name="Hiding" count={2}>
+<RoadmapList title="Blocked by macOS 27" count={3} state="blocked" note="These run into limits in macOS 27 itself. The team is looking for ways around them and can’t promise them for the beta.">
+<RoadmapGroup name="Hiding" count={1}>
 
-- **Separate items from the same app.** macOS 27 hides and shows an app’s items together, so one of an app’s items can’t yet go in Hidden while another stays in Visible. <Issue n={1125} />
-- **The Shortcuts item.** macOS 27 can hide it at launch, and Thaw can’t bring it back yet. <Issue n={1154} />
+- **Separate items from the same app.** macOS 27 hides and shows an app’s items together, so one of an app’s items can’t yet go in Hidden while another stays in Visible.
 
 </RoadmapGroup>
 <RoadmapGroup name="Layout" count={2}>
 
-- **Even spacing.** Each app adds its own padding around its items, so the same spacing setting can still leave uneven gaps. <Issue n={1126} />
+- **Even spacing.** Each app adds its own padding around its items, so the same spacing setting can still leave uneven gaps. <Issue n={1106} />
 - **A Timer stand-in.** Thaw can’t remove Apple’s Timer, so it can’t put one of its own in its place.
 
 </RoadmapGroup>
@@ -157,7 +161,7 @@ Thaw has two lines in development: 3.0 for macOS 27 and 2.1 for macOS 26. This i
 - Image-change triggers, with comparison modes and a preview
 - Menu bar item groups
 - Individual spacer items
-- Zen mode
+- Zen Mode
 - Simple Mode
 - Per-Space profiles and per-Space appearance
 - Wallpaper changes re-tint the bar right away
@@ -217,7 +221,7 @@ Thaw has two lines in development: 3.0 for macOS 27 and 2.1 for macOS 26. This i
 </RoadmapGroup>
 <RoadmapGroup name="1.1.0" count={4}>
 
-- Localized in 12 languages
+- Localised in 12 languages
 - Double-click the menu bar to reveal the always-hidden section
 - The active menu bar detected on each screen
 - The Thaw Bar for displays with a notch only

@@ -19,7 +19,7 @@ const facts = [
   {
     label: 'Needs',
     value: 'macOS 26 or later',
-    detail: 'Floe is signed and notarized, and updates itself.',
+    detail: 'Floe is signed and notarised, and updates itself.',
   },
   {
     label: 'Needs',
@@ -101,10 +101,11 @@ export function FloeAssurance() {
       </Heading>
       <div className="not-prose my-6">
         <p className="mb-3 font-display text-2xl leading-tight font-semibold tracking-tight text-balance sm:text-3xl">
-          Incoming.
+          Not yet.
         </p>
         <p className="mb-6 text-fd-muted-foreground text-pretty">
-          Floe is early, and we are committed to bringing it on par with Thaw in this area.
+          Floe is signed and notarised. It does not yet have the independent checks Thaw’s releases
+          have.
         </p>
         <Link
           href="/#verified"

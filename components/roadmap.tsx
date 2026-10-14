@@ -154,9 +154,7 @@ export function RoadmapList({
             <Heading as="h2" id={slug(title)} className="road-title scroll-mt-24">
               {title} {counted}
             </Heading>
-            {here && (
-              <span className="text-sm font-medium text-(--product-tone)">You are here</span>
-            )}
+            {here && <span className="text-sm font-medium text-(--product-ink)">You are here</span>}
           </div>
           {note && <p className="mt-1.5 max-w-2xl text-fd-muted-foreground text-pretty">{note}</p>}
           {/* What is being finished now is ruled into cards, the one boxed thing on the

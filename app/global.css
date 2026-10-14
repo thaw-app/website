@@ -118,12 +118,15 @@ kbd,
   /* The one accent: the cube's orange, for what is current or the thing to look at. Under
      Floe's docs it is Floe's blue. */
   --product-tone: #c96817;
+  /* The same accent for small text, deep enough to read on a light page. */
+  --product-ink: #a84407;
 }
 
 /* Floe's own pages, its changelog among them: the accent and the changelog's calendar are
    its blues, lighter to deeper as the cube's oranges run. */
 [data-tone="floe"] {
   --product-tone: #2563c9;
+  --product-ink: #2563c9;
   --release-1: #3d7df0;
   --release-2: #0b4fd8;
   --release-3: #072f86;
@@ -131,6 +134,7 @@ kbd,
 
 .dark [data-tone="floe"] {
   --product-tone: #4f93ff;
+  --product-ink: #4f93ff;
   --release-1: #1560e8;
   --release-2: #4f93ff;
   --release-3: #c4e0ff;
@@ -157,6 +161,7 @@ body:has(#nd-notebook-layout [data-product="floe"]) .docs-banner {
   --release-2: #fa9a2a;
   --release-3: #ffde81;
   --product-tone: #fa9a2a;
+  --product-ink: #fa9a2a;
 }
 
 .ascii-cube {

@@ -37,7 +37,7 @@ export const thawFeatures = [
       'Save a whole setup and switch in one step, or bind it to a display, a Space or a Focus. Thaw shows what a profile would change before you apply it.',
   },
   {
-    title: 'Zen mode',
+    title: 'Zen Mode',
     detail:
       'One shortcut hides every section and locks the ways to reveal them, then puts it all back. It can switch on by itself while you present or share your screen.',
   },

@@ -41,7 +41,7 @@ export function Assurance() {
       </Heading>
       <div className="not-prose my-6">
         {/* Why any of this is on the page, in the words the maintainer gave when asked what
-            Thaw's permissions are for (issue 687). */}
+            Thaw's permissions are for. */}
         <p className="mb-3 font-display text-2xl leading-tight font-semibold tracking-tight text-balance sm:text-3xl">
           Privacy only works if the security around it does.
         </p>
@@ -54,7 +54,7 @@ export function Assurance() {
               Of the {plain.format(assurance.field.projects)} projects on OpenSSF’s Best Practices
               list, {assurance.field.gold} hold Gold and {assurance.field.baseline3} meet every
               Baseline control at Level 3.
-              {amongTheFew && ' Thaw, a free menu bar app, is one of them.'}
+              {amongTheFew && ' Thaw, a free menu bar app, is in both groups.'}
             </>
           )}
         </p>

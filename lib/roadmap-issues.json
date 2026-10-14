@@ -3,15 +3,7 @@
     "state": "open",
     "reason": "reopened"
   },
-  "1125": {
-    "state": "closed",
-    "reason": "completed"
-  },
-  "1126": {
-    "state": "closed",
-    "reason": "duplicate"
-  },
-  "1154": {
+  "1106": {
     "state": "closed",
     "reason": "completed"
   }

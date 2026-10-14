@@ -38,7 +38,7 @@ const feet: Record<ProductSlug, Foot> = {
       {
         title: 'Thaw',
         links: [
-          { text: 'Install', href: '/' },
+          { text: 'Install', href: '/#install' },
           { text: 'Try it in your browser', href: '/#try' },
           { text: 'Questions', href: '/faq' },
           { text: 'Changelog', href: '/changelog' },
@@ -88,7 +88,7 @@ const feet: Record<ProductSlug, Foot> = {
       {
         title: 'Floe',
         links: [
-          { text: 'Install', href: '/floe' },
+          { text: 'Install', href: '/floe#install' },
           { text: 'Try it in your browser', href: '/floe#try' },
           { text: 'Changelog', href: changelogUrl('floe') },
           { text: 'Release feed', href: feedUrl('floe') },
