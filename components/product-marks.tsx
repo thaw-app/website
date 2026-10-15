@@ -5,7 +5,6 @@ import droppyGlyph from '@/assets/droppy-glyph.png';
 import floeGlyph from '@/assets/floe-glyph.png';
 import nixMark from '@/assets/nix-mark.png';
 import omniwmMark from '@/assets/omniwm-mark.png';
-import raycastGlyph from '@/assets/raycast-glyph.png';
 import { aiMarks, appleIntelligenceMark } from '@/lib/ai-marks';
 import { ClaudeMark } from './claude-mark';
 import { ThawMark } from './thaw-mark';
@@ -21,7 +20,10 @@ const marks: Record<
   | { path: string; box?: string }
 > = {
   droppy: { src: droppyGlyph, glyph: true },
-  raycast: { src: raycastGlyph, glyph: true },
+  // Raycast's mark from Simple Icons (simpleicons.org, CC0), as a path so it stays sharp.
+  raycast: {
+    path: 'M6.004 15.492v2.504L0 11.992l1.258-1.249Zm2.504 2.504H6.004L12.008 24l1.253-1.253zm14.24-4.747L24 11.997 12.003 0 10.75 1.251 15.491 6h-2.865L9.317 2.692 8.065 3.944l2.06 2.06H8.691v9.31H18v-1.432l2.06 2.06 1.252-1.252-3.312-3.32V8.506ZM6.63 5.372 5.38 6.625l1.342 1.343 1.251-1.253Zm10.655 10.655-1.247 1.251 1.342 1.343 1.253-1.251zM3.944 8.059 2.692 9.31l3.312 3.314v-2.506zm9.936 9.937h-2.504l3.314 3.312 1.25-1.252z',
+  },
   // Floe's menu bar item: the floe of its app icon in one colour, drawn from the same
   // points as Sources/Floe/App/MenuBarGlyph.swift in thaw-app/Floe.
   floe: { src: floeGlyph, glyph: true },
