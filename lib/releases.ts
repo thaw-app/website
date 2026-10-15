@@ -35,10 +35,10 @@ export function feedUrl(product: ProductSlug) {
 export const feedTitle = (product: ProductSlug) => `${products[product].name} releases`;
 
 /**
- * A page's own address, with the feeds beside it. A page that names its address replaces
- * what the root layout says here and does not add to it, so the feeds are said again.
+ * A page's own address, and the other forms it is in: the release feeds, the list of the
+ * site's pages that AI tools read first (llms.txt), and for a docs page its Markdown.
  */
-export function pageAlternates(canonical: string) {
+export function pageAlternates(canonical: string, markdown?: string) {
   return {
     canonical,
     types: {
@@ -46,6 +46,8 @@ export function pageAlternates(canonical: string) {
         url: feedUrl(slug),
         title: feedTitle(slug),
       })),
+      'text/plain': [{ url: '/llms.txt', title: 'The site’s pages, for AI tools' }],
+      ...(markdown && { 'text/markdown': [{ url: markdown, title: 'This page in Markdown' }] }),
     },
   };
 }

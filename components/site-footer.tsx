@@ -78,6 +78,8 @@ const feet: Record<ProductSlug, Foot> = {
       { text: 'Security', href: `${thawDocs}/security` },
       { text: 'Code of Conduct', href: `${thawDocs}/contribute/code-of-conduct` },
       { text: 'Governance', href: `${thawDocs}/governance` },
+      // The site's pages listed for AI tools, which look for it from the home page.
+      { text: 'For AI tools', href: '/llms.txt' },
     ],
   },
   floe: {
@@ -124,6 +126,7 @@ const feet: Record<ProductSlug, Foot> = {
         text: 'Governance',
         href: `${repoUrl('floe')}/blob/${products.floe.branch}/.github/GOVERNANCE.md`,
       },
+      { text: 'For AI tools', href: '/llms.txt' },
     ],
   },
 };
