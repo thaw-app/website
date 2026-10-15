@@ -47,18 +47,11 @@ const layoutAccess = {
 const screenRecording = {
   label: 'Optional',
   value: 'Screen Recording',
-  detail: 'It gives you live previews and a tint from your wallpaper. Hiding works without it.',
+  detail:
+    'It gives you live previews and a tint from your wallpaper. Without it, items show as their app’s icon.',
 };
 const factsFor = {
-  // Thaw 2 cannot draw another app's item without it; Thaw 3 falls back to the app's icon.
-  'macos-26': [
-    accessibility,
-    {
-      ...screenRecording,
-      detail:
-        'Hiding works without it. The Thaw Bar, search and the Layout settings need it to show your items.',
-    },
-  ],
+  'macos-26': [accessibility, screenRecording],
   'macos-27': [accessibility, layoutAccess, screenRecording],
   // Either release may be the one downloaded, so the one that is not always asked says when.
   download: [accessibility, { ...layoutAccess, label: 'Needs, on macOS 27' }, screenRecording],
