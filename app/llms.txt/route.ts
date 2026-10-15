@@ -1,7 +1,7 @@
-import { docsLlms } from '@/lib/source';
+import { llmsIndex } from '@/lib/llms';
 
 export const revalidate = false;
 
-export async function GET() {
-  return new Response(await docsLlms.index());
+export function GET() {
+  return new Response(llmsIndex());
 }

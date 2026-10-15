@@ -107,6 +107,22 @@ const products = [
         'Put Thaw’s layout or settings back to how they started, or remove Thaw and what it leaves behind.',
       shortcuts:
         'Keyboard shortcuts, Shortcuts, Spotlight and Siri actions, Control Center controls, and more thaw:// links.',
+      'frequent-issues':
+        'Known problems and their workarounds, for Thaw 3 on macOS 27 and Thaw 2 on macOS 26. Check here before filing a bug.',
+      'uri-schemes':
+        'Run Thaw actions and read or change its settings from thaw:// links, in Raycast, Alfred, Shortcuts or a shell script.',
+      'hidden-flags':
+        'Switches Thaw reads but Settings doesn’t show, for working out menu bar reorder problems. Most people never need them.',
+      development:
+        'What you need to build Thaw from source, how to build and test it, and its code style.',
+      architecture:
+        'A map of Thaw’s main parts, where it keeps its data, and how it is built and released.',
+      releases:
+        'How Thaw’s installers and in-app updates are published, and what each update channel gets.',
+      'verifying-releases':
+        'What each Thaw release is signed with, and how to check a download yourself.',
+      'assurance-case':
+        'The case that Thaw meets its security requirements: its threat model, trust boundaries and the risks that remain.',
     },
     icons: {
       'frequent-issues': 'LifeBuoy',
@@ -156,6 +172,10 @@ const products = [
       last: '<FloeAssurance />',
     },
     titles: {},
+    descriptions: {
+      development:
+        'How to build and run Floe from source, how it runs Raycast extensions, and how to add one.',
+    },
     icons: { changelog: 'ScrollText', development: 'Hammer' },
     extraPages: {
       'CHANGELOG.md': 'changelog',
@@ -179,6 +199,12 @@ const shared = {
     security: 'Security policy',
     'contribute/guidelines': 'Contribution guidelines',
     'contribute/code-of-conduct': 'Code of Conduct',
+  },
+  descriptions: {
+    security:
+      'How to report a vulnerability privately, which versions get fixes, and how disclosure works.',
+    'contribute/code-of-conduct':
+      'How people are expected to treat each other in the project’s spaces, and how that is enforced. Adapted from the Contributor Covenant.',
   },
   icons: { security: 'ShieldAlert' },
   // Written in this repo. "{{docs}}" in them stands for the product's own docs.

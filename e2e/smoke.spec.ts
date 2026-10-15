@@ -303,3 +303,19 @@ test('the tab shows Floe’s icon on Floe’s pages and Thaw’s on the rest', a
     await expect(icon).toHaveAttribute('href', /\/icon\.png/);
   }
 });
+
+test('llms.txt says what Thaw and Floe are, and every page it names answers', async ({
+  request,
+}) => {
+  const text = await (await request.get('/llms.txt')).text();
+  expect(text).toMatch(/^# Thaw\n\n> Thaw is /);
+  // A heading always has pages under it.
+  expect(text).not.toMatch(/^## .+\n\n(?!- )/m);
+  const paths = [...text.matchAll(/\]\((https?:\/\/[^)]+)\)/g)].map(
+    ([, url]) => new URL(url).pathname,
+  );
+  expect(paths).toEqual(
+    expect.arrayContaining(['/', '/faq', '/floe', '/docs/thaw/getting-started']),
+  );
+  for (const path of paths) expect((await request.get(path)).status(), path).toBe(200);
+});
