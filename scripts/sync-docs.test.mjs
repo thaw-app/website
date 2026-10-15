@@ -10,6 +10,7 @@ import {
   parseTag,
   peopleIn,
   readmeBody,
+  rewriteLinks,
   splitReleases,
   stageRank,
   tidyNotes,
@@ -266,4 +267,25 @@ test("a README is shown install first, with the site's own parts only where it h
   expect(readmeBody(readme, { ...leaves, readmeParts: { install: '<Box />' } })).toBe(
     '## Install\n\n<Box />\n\n## Features\n- One\n',
   );
+});
+
+test('a link to another synced file goes to its docs page, and one to the README to the product page', () => {
+  const slugs = new Map([
+    ['docs/PERMISSIONS.md', 'permissions'],
+    ['README.md', 'readme'],
+  ]);
+  const links = { product: 'thaw', repo: 'thaw-app/Thaw', ref: 'development' };
+  const body = [
+    'See [permissions](PERMISSIONS.md#screen-recording).',
+    'The [feature list](../README.md#features).',
+    'The [code](../Thaw/App.swift).',
+  ].join('\n');
+  expect(rewriteLinks(body, 'docs/VERSIONS.md', slugs, links).split('\n')).toEqual([
+    'See [permissions](/docs/thaw/permissions#screen-recording).',
+    'The [feature list](/#features).',
+    'The [code](https://github.com/thaw-app/Thaw/blob/development/Thaw/App.swift).',
+  ]);
+  expect(
+    rewriteLinks('[it](../README.md)', 'docs/X.md', slugs, { ...links, product: 'floe' }),
+  ).toBe('[it](/floe)');
 });

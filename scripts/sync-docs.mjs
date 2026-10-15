@@ -200,7 +200,7 @@ async function syncProduct(product, other, contentOnly) {
       const split = splitTitle(markdown, slug);
       const title = curlQuotes(split.title);
       const body = curlQuotes(split.body);
-      const description = describe(body);
+      const description = product.descriptions?.[slug] ?? describe(body);
       const frontmatter = [
         '---',
         `title: ${JSON.stringify(product.titles[slug] ?? shared.titles[slug] ?? title)}`,
@@ -252,6 +252,7 @@ export {
   parseTag,
   peopleIn,
   readmeBody,
+  rewriteLinks,
   splitReleases,
   stageRank,
   tidyNotes,

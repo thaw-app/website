@@ -166,6 +166,8 @@ function rewriteLinks(body, repoPath, slugs, { product, repo, ref }) {
         const resolved = posix.normalize(posix.join(dir, path));
         const hash = fragment ? `#${fragment}` : '';
         const slug = slugs.get(resolved);
+        // The README is the product's own page on this site, not a page of the docs.
+        if (slug === 'readme') return `](${product === 'thaw' ? '/' : `/${product}`}${hash})`;
         return slug
           ? `](/docs/${product}/${slug}${hash})`
           : `](https://github.com/${repo}/blob/${ref}/${resolved}${hash})`;

@@ -81,6 +81,10 @@ const products = [
     },
     titles: {
       'frequent-issues': 'Frequent issues',
+      'getting-started': 'Getting started',
+      network: 'What Thaw sends over the network',
+      'reset-and-uninstall': 'Reset or uninstall',
+      shortcuts: 'Shortcuts and automation',
       'uri-schemes': 'URL schemes',
       'hidden-flags': 'Hidden flags',
       architecture: 'Architecture',
@@ -89,8 +93,29 @@ const products = [
       'assurance-case': 'Security assurance case',
       governance: 'Governance',
     },
+    // What a page is about, for search results and the docs index, where its own opening
+    // lines would only start the page over.
+    descriptions: {
+      'getting-started':
+        'Install Thaw, give it the permissions it asks for, and hide your first menu bar item.',
+      permissions:
+        'What each permission Thaw asks for is used for, which ones you can refuse, and how to grant one again.',
+      versions:
+        'Which Thaw runs on which macOS, how to install it, and which updates each channel sends you.',
+      network: 'Every network call Thaw makes, what each is for, and how to switch it off.',
+      'reset-and-uninstall':
+        'Put Thaw’s layout or settings back to how they started, or remove Thaw and what it leaves behind.',
+      shortcuts:
+        'Keyboard shortcuts, Shortcuts, Spotlight and Siri actions, Control Center controls, and more thaw:// links.',
+    },
     icons: {
       'frequent-issues': 'LifeBuoy',
+      'getting-started': 'Rocket',
+      permissions: 'KeyRound',
+      versions: 'GitBranch',
+      network: 'Globe',
+      'reset-and-uninstall': 'RotateCcw',
+      shortcuts: 'Keyboard',
       'uri-schemes': 'Link',
       'hidden-flags': 'Flag',
       roadmap: 'Map',
