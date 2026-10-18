@@ -4,6 +4,7 @@ import type { SharedProps } from 'fumadocs-ui/components/dialog/search';
 import { RootProvider } from 'fumadocs-ui/provider/next';
 import dynamic from 'next/dynamic';
 import { type ReactNode, useEffect, useState } from 'react';
+import { WebMcp } from './web-mcp';
 
 const FloeSearchDialog = dynamic(
   () => import('./search-dialog').then((module) => module.FloeSearchDialog),
@@ -61,6 +62,7 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <RootProvider theme={{ scriptProps }} search={{ SearchDialog: SearchOnDemand }}>
       {children}
+      <WebMcp />
     </RootProvider>
   );
 }

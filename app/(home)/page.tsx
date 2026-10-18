@@ -5,14 +5,14 @@ import vercelOssDark from '@/assets/vercel-oss-dark.png';
 import vercelOssLight from '@/assets/vercel-oss-light.png';
 import { AsciiCube } from '@/components/ascii-cube';
 import { ClaudeMark } from '@/components/claude-mark';
-import { FaqPrompt } from '@/components/faq';
+import { FaqPrompt, faqData } from '@/components/faq';
 import { JsonLd } from '@/components/json-ld';
 import { getMDXComponents } from '@/components/mdx';
 import { PageFade } from '@/components/page-fade';
 import { ProductHuntMark } from '@/components/product-hunt-mark';
 import { ProductLanding, TryIt } from '@/components/product-landing';
 import { latestStable, pageAlternates } from '@/lib/releases';
-import { products, repoUrl, siteUrl } from '@/lib/shared';
+import { links, products, repoUrl, siteName, siteUrl } from '@/lib/shared';
 import { sitePages } from '@/lib/site-pages';
 import { source } from '@/lib/source';
 import { homeFaq, thawFaq } from '@/lib/thaw-faq';
@@ -50,6 +50,8 @@ function structuredData() {
     downloadUrl: `${repoUrl('thaw')}/releases`,
     codeRepository: repoUrl('thaw'),
     image: `${siteUrl}/icons/thaw-512.png`,
+    // The same app elsewhere, so a reader of this data can tell which Thaw it is.
+    sameAs: [repoUrl('thaw'), links.raycast, 'https://www.producthunt.com/products/thaw-2'],
   };
 }
 
@@ -62,6 +64,16 @@ export default function HomePage() {
     <PageFade>
       <main id="content" className="flex flex-1 flex-col">
         <JsonLd data={structuredData()} />
+        <JsonLd
+          data={{
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            name: siteName,
+            url: siteUrl,
+          }}
+        />
+        {/* The questions at the foot of the page, as the FAQ page gives them all. */}
+        <JsonLd data={faqData(homeFaq)} />
         <ProductLanding
           // The same size on a short window as on a tall one: the column scrolls with the
           // page when it is taller than the window.

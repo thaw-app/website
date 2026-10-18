@@ -84,6 +84,10 @@ Before you start:
 
 export const skillNames = skills.map((skill) => skill.name);
 
+/** Each skill's name, title and what it is for, for the site's agent catalog (lib/ard.ts). */
+export const skillCatalog = () =>
+  skills.map(({ name, title, description }) => ({ name, title, description }));
+
 /** A skill as a SKILL.md: what it is for and how to help, then its docs pages in full. */
 export async function skillMarkdown(name: string) {
   const skill = skills.find((entry) => entry.name === name);

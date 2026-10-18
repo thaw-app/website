@@ -153,10 +153,11 @@ test('search engines and feed readers are told what they need', async ({ page, r
   await page.goto('/');
   // One address for the page, the app described, and the release feeds named.
   await expect(page.locator('link[rel="canonical"]')).toHaveCount(1);
-  const described = JSON.parse(
-    (await page.locator('script[type="application/ld+json"]').textContent()) ?? '{}',
+  const data = (await page.locator('script[type="application/ld+json"]').allTextContents()).map(
+    (text) => JSON.parse(text),
   );
-  expect(described['@type']).toBe('SoftwareApplication');
+  const described = data.find((item) => item['@type'] === 'SoftwareApplication');
+  expect(data.map((item) => item['@type'])).toEqual(['SoftwareApplication', 'WebSite', 'FAQPage']);
   expect(described.operatingSystem).toBe('macOS');
   expect(described.offers.price).toBe('0');
   await expect(page.locator('link[type="application/atom+xml"]')).toHaveCount(2);
@@ -369,4 +370,36 @@ test('AI tools get each page as Markdown, a Markdown not-found, and a skill', as
     expect(skill.digest, skill.name).toBe(`sha256:${digest}`);
   }
   expect(await (await request.get('/llms-full.txt')).text()).toContain('# Built with');
+});
+
+test('the search API is described, and says what went wrong in JSON', async ({ request }) => {
+  const found = await request.get('/api/search?query=permissions&limit=3');
+  expect(found.ok()).toBe(true);
+  const results = await found.json();
+  expect(results.length).toBeGreaterThan(0);
+  expect(results.length).toBeLessThanOrEqual(3);
+
+  for (const [path, status, code] of [
+    ['/api/search', 400, 'missing_query'],
+    ['/api/search?query=x&limit=0', 400, 'invalid_limit'],
+    ['/api/nothing-here', 404, 'not_found'],
+  ] as const) {
+    const response = await request.get(path);
+    expect(response.status(), path).toBe(status);
+    expect(response.headers()['content-type'], path).toContain('application/problem+json');
+    const problem = await response.json();
+    expect(problem.code, path).toBe(code);
+    expect(problem.resolution, path).toBeTruthy();
+  }
+  expect((await request.post('/api/search')).status()).toBe(405);
+
+  const spec = await (await request.get('/openapi.json')).json();
+  expect(spec.paths['/api/search'].get.operationId).toBe('searchDocs');
+  const catalog = await request.get('/.well-known/api-catalog');
+  expect(catalog.headers()['content-type']).toContain('application/linkset+json');
+  expect((await catalog.json()).linkset[0]['service-desc'][0].href).toContain('/openapi.json');
+  const ard = await (await request.get('/.well-known/ard.json')).json();
+  expect(ard.entries.map((entry: { identifier: string }) => entry.identifier)).toContain(
+    'urn:air:localhost:api:search',
+  );
 });
