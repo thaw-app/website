@@ -153,10 +153,11 @@ test('search engines and feed readers are told what they need', async ({ page, r
   await page.goto('/');
   // One address for the page, the app described, and the release feeds named.
   await expect(page.locator('link[rel="canonical"]')).toHaveCount(1);
-  const described = JSON.parse(
-    (await page.locator('script[type="application/ld+json"]').textContent()) ?? '{}',
+  const data = (await page.locator('script[type="application/ld+json"]').allTextContents()).map(
+    (text) => JSON.parse(text),
   );
-  expect(described['@type']).toBe('SoftwareApplication');
+  const described = data.find((item) => item['@type'] === 'SoftwareApplication');
+  expect(data.map((item) => item['@type'])).toEqual(['SoftwareApplication', 'WebSite', 'FAQPage']);
   expect(described.operatingSystem).toBe('macOS');
   expect(described.offers.price).toBe('0');
   await expect(page.locator('link[type="application/atom+xml"]')).toHaveCount(2);
