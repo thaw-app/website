@@ -204,7 +204,7 @@ const shared = {
     security:
       'How to report a vulnerability privately, which versions get fixes, and how disclosure works.',
     'contribute/code-of-conduct':
-      'How people are expected to treat each other in the project’s spaces, and how that is enforced. Adapted from the Contributor Covenant.',
+      'How people are expected to treat each other in every community space, and how that is enforced. Adapted from the Contributor Covenant.',
   },
   icons: { security: 'ShieldAlert' },
   // Written in this repo. "{{docs}}" in them stands for the product's own docs.
