@@ -199,7 +199,8 @@ function splitReleases(markdown) {
       slug: tag.toLowerCase(),
       date: heading[2].match(/\d{4}-\d{2}-\d{2}/)?.[0],
       summary,
-      channel: channelOf(tag),
+      // "## [3.0.0-alpha.10] - Unreleased" is a version that is not out yet either.
+      channel: /unreleased/i.test(heading[2]) ? 'Unreleased' : channelOf(tag),
       body: promoteHeadings(body),
     };
   });

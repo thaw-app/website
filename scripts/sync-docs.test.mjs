@@ -107,6 +107,17 @@ test('what the changelog lists as not out yet is not a release', () => {
   expect(tags).toEqual(['3.0.0-beta.2', '2.0.1']);
 });
 
+test('a version the changelog dates as unreleased is not a release yet', () => {
+  const withNext = changelog.replace(
+    '## [3.0.0-beta.2]',
+    '## [3.0.0-beta.3] - Unreleased\n\n### Fixed\n\n- Not out yet.\n\n---\n\n## [3.0.0-beta.2]',
+  );
+  const tags = groupReleases(withNext, [], { repo: 'thaw-app/Thaw' }).flatMap((group) =>
+    group.releases.map((release) => release.tag),
+  );
+  expect(tags).toEqual(['3.0.0-beta.2', '2.0.1']);
+});
+
 test('issue numbers and names become links, and code is left alone', () => {
   const linked = linkMentions('Fixed by @diazdesandi in #1223.', 'thaw-app/Thaw');
   expect(linked).toContain('[@diazdesandi](https://github.com/diazdesandi)');
