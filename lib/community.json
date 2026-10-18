@@ -1,22 +1,22 @@
 {
-  "stars": 12033,
-  "downloads": 383318,
-  "homebrewYear": 28594,
-  "discord": 361,
+  "stars": 12138,
+  "downloads": 402409,
+  "homebrewYear": 29044,
+  "discord": 369,
   "contributors": 60,
-  "releases": 76,
+  "releases": 78,
   "readOn": {
-    "stars": "2026-10-14",
-    "downloads": "2026-10-14",
-    "homebrewYear": "2026-10-14",
-    "discord": "2026-10-14",
-    "contributors": "2026-10-14",
-    "releases": "2026-10-14",
-    "bestPractices": "2026-10-14",
-    "baseline": "2026-10-14",
-    "scorecard": "2026-10-14",
-    "coverage": "2026-10-14",
-    "field": "2026-10-14"
+    "stars": "2026-10-18",
+    "downloads": "2026-10-18",
+    "homebrewYear": "2026-10-18",
+    "discord": "2026-10-18",
+    "contributors": "2026-10-18",
+    "releases": "2026-10-18",
+    "bestPractices": "2026-10-18",
+    "baseline": "2026-10-18",
+    "scorecard": "2026-10-18",
+    "coverage": "2026-10-18",
+    "field": "2026-10-18"
   },
   "people": [
     {
@@ -27,7 +27,7 @@
     {
       "login": "diazdesandi",
       "avatar": "https://avatars.githubusercontent.com/u/17421494?v=4",
-      "commits": 389
+      "commits": 391
     },
     {
       "login": "7a6163",
@@ -353,9 +353,9 @@
     "scorecard": 9.1,
     "coverage": 92.3,
     "field": {
-      "projects": 12877,
-      "gold": 107,
-      "baseline3": 79
+      "projects": 13047,
+      "gold": 110,
+      "baseline3": 91
     }
   },
   "translators": [
