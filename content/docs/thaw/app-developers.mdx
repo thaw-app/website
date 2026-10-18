@@ -7,6 +7,14 @@ Thaw moves and hides other apps’ menu bar items. Up to macOS 26, each item had
 
 This page is for the developers of those apps, and came out of [a question in Discussions](https://github.com/orgs/thaw-app/discussions/1242). Most of it was measured while making [Barometer](https://github.com/mackid1993/Barometer) work with menu bar managers on macOS 27.
 
+## In short
+
+1. Give every item a fixed `autosaveName` and accessibility identifier, before it is first shown.
+2. Keep changing text, such as a temperature, out of the button’s title. Draw it into the image.
+3. Make each item once, and hide it with `isVisible`.
+4. Show each item that should hide on its own from a helper app with its own bundle identifier.
+5. Test from `/Applications`, then check the item in Thaw’s Menu Bar Layout.
+
 ## How Thaw tells items apart
 
 Thaw knows an item by two things:
@@ -14,7 +22,7 @@ Thaw knows an item by two things:
 1. The bundle identifier of the app that made it.
 2. The item’s name, which it reads from the item’s `autosaveName` and its accessibility title, identifier, description and value.
 
-If either changes, Thaw treats it as an item it has never seen, and the item loses its place. An item that renames itself when its icon changes is the most common reason an item seems to wander or go missing.
+If either changes, Thaw treats it as an item it has never seen, and the item loses its place. An item that renames itself when its icon changes is a common reason an item seems to wander or go missing.
 
 ## Give every item a fixed name
 
@@ -49,16 +57,24 @@ button.setAccessibilityValue("62 °C")
 
 Thaw has worked around a number of apps whose item names change all the time:
 
-- **Dato** shows the date and a countdown to your next event, so its name changes every minute, and with every date format ([#1175](https://github.com/thaw-app/Thaw/issues/1175)).
+- **Dato** shows the date and a countdown to your next event, so its name keeps changing, whatever date format you pick ([#1175](https://github.com/thaw-app/Thaw/issues/1175)).
 - **Amphetamine**’s one item switches between `Item-0`, `∞` and `𝗧`.
 - **ThermalForge**, **MacThrottle**, **Macs Fan Control** and **iStat Menus** show live temperatures and readings.
 - **Outlook** puts a countdown to your next meeting in front of its name.
 
-For these, Thaw strips out the changing part or tells the items apart by where they sit. It learns the same for an app with a single item that renames itself, such as WeChat with its unread count. With several items, though, position is all Thaw has, so moving one can swap which is which. Each of these needed a change in Thaw itself, and Thaw no longer adds workarounds for single apps, so a fixed name is the only fix that lasts.
+A fixed name in your own app is the fix that lasts. Each app above needed a change in Thaw itself, and Thaw no longer adds workarounds for single apps.
+
+For these apps, Thaw strips out the changing part of the name, or tells the items apart by where they sit. It learns to do the same for an app with a single item that renames itself, such as WeChat with its unread count.
+
+Position only goes so far. When an app has several items, moving one can swap which is which.
 
 ### Items with no name
 
-An item that publishes no name of its own gets a placeholder from macOS by its position: `Item-0`, `Item-1` and so on. Thaw can’t tell two of an app’s unnamed items apart except by their order, so moving one can make them trade places in Layout, or trade sections. It has happened to Little Snitch, whose item can appear as `com.apple.controlcenter:Item-0` with no app behind it, and to Rectangle, whose item became `Item-0` when its old AppKit placeholder name could no longer be read. Setting an autosave name and an accessibility identifier, as above, keeps your items from ever being one of these.
+Set an autosave name and an accessibility identifier, as above, and your items never end up as one of these.
+
+An item that publishes no name of its own gets a placeholder from macOS by its position: `Item-0`, `Item-1` and so on. Thaw can tell two of an app’s unnamed items apart only by their order, so moving one can make them trade places in Layout, or trade sections.
+
+It has happened to Little Snitch, whose item can appear as `com.apple.controlcenter:Item-0` with no app behind it. It also happened to Rectangle, whose item became `Item-0` when its old AppKit placeholder name could no longer be read.
 
 ## Let each item be hidden on its own
 
@@ -76,13 +92,16 @@ On macOS 27, a menu bar manager then lists the helper’s item on its own, and c
 
 ## Other things that cost an item its place
 
-- **Don’t edit saved positions.** Leave AppKit’s visibility and position defaults, and Control Center’s preferences, alone. An app that wrote to Control Center’s preferences sent its own icon to Hidden in every menu bar manager ([#605](https://github.com/thaw-app/Thaw/issues/605)).
+- **Don’t edit saved positions.** Leave AppKit’s visibility and position defaults, and Control Center’s preferences, alone. An app that wrote to Control Center’s preferences sent its own icon to Hidden in Thaw and other menu bar managers ([#605](https://github.com/thaw-app/Thaw/issues/605)).
 - **Don’t reorder items from code.** Leave where an item sits to macOS and the person using it.
 - **Let `LSUIElement` make it an agent.** Setting the `.accessory` activation policy before the run loop starts gives items no height on macOS 27, and no manager can place them.
 - **Test from `/Applications`.** The same app launched from a build folder can get items with no height. Install it before you judge how it works with a manager.
-- **Expect to be relaunched.** To apply a new menu bar spacing, Thaw asks apps with menu bar items to quit and opens them again. An app that also restarts its own helper ends up with two icons.
-- **Run one copy.** A second launch should hand over to the first one and quit.
+- **Run one copy, and expect to be relaunched.** A second launch should hand over to the first one and quit. To apply a new menu bar spacing, Thaw asks apps with menu bar items to quit and opens them again, and an app that also restarts its own helper ends up with two icons.
 
 ## Check it
 
-Open Menu Bar Layout in Thaw’s Settings. Each of your items should be listed once, under its own name, and stay in the section you put it in after your app quits and opens again. If it doesn’t and you’ve followed this page, [open an issue](https://github.com/thaw-app/Thaw/issues) with your app’s bundle identifier and the autosave names of its items.
+1. Open Menu Bar Layout in Thaw’s Settings, and put each of your items in a section.
+2. Quit your app and open it again.
+3. Check that each item is listed once, under its own name, in the section you put it in.
+
+If it isn’t and you’ve followed this page, [open an issue](https://github.com/thaw-app/Thaw/issues) with your app’s bundle identifier and the autosave names of its items.
