@@ -74,7 +74,19 @@ Set an autosave name and an accessibility identifier, as above, and your items n
 
 An item that publishes no name of its own gets a placeholder from macOS by its position: `Item-0`, `Item-1` and so on. Thaw can tell two of an app’s unnamed items apart only by their order, so moving one can make them trade places in Layout, or trade sections.
 
-It has happened to Little Snitch, whose item can appear as `com.apple.controlcenter:Item-0` with no app behind it. It also happened to Rectangle, whose item became `Item-0` when its old AppKit placeholder name could no longer be read.
+It happened to Rectangle, whose item became `Item-0` when its old AppKit placeholder name could no longer be read. Little Snitch had it worst, below.
+
+### What Little Snitch went through
+
+Little Snitch’s agent shows its item through Control Center, so Thaw saw it as `com.apple.controlcenter:Item-0`, with no name and no app behind it. Thaw had to work out which item was Little Snitch’s by matching it indirectly. For months, people saw what looked like Thaw bugs:
+
+1. It wasn’t listed by name in Layout, and dragging it there didn’t last ([#709](https://github.com/thaw-app/Thaw/issues/709), [#372](https://github.com/thaw-app/Thaw/issues/372)).
+2. It went back to Hidden a few minutes after being moved, and in 2.0.0-beta.13 it wouldn’t stay anywhere ([#651](https://github.com/thaw-app/Thaw/issues/651), [#575](https://github.com/thaw-app/Thaw/issues/575), [#643](https://github.com/thaw-app/Thaw/issues/643)).
+3. Clicking it while hidden made Thaw’s own icon chase the cursor ([#332](https://github.com/thaw-app/Thaw/issues/332)).
+4. Its agent came back twice after the Mac woke from sleep ([#641](https://github.com/thaw-app/Thaw/issues/641)).
+5. On macOS 27 it was missing from Thaw altogether, and clicking it opened Thaw’s hidden items, until its GUI Scripting option was turned on ([#1179](https://github.com/thaw-app/Thaw/issues/1179), [#1220](https://github.com/thaw-app/Thaw/issues/1220)).
+
+Each one took a fix or a workaround in Thaw, and some still need people to ⌘-drag the icon by hand. An item that comes from your own app’s process, with a fixed name, avoids all of it.
 
 ## Let each item be hidden on its own
 
