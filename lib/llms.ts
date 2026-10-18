@@ -61,6 +61,21 @@ const optional: Link[] = [
     '/llms-full.txt',
     'The text of the site’s pages and its docs in one file.',
   ],
+  [
+    'Installing Thaw',
+    '/.well-known/agent-skills/install-thaw/SKILL.md',
+    'An Agent Skill: which Thaw for which macOS, how to install it, and its permissions.',
+  ],
+  [
+    'Troubleshooting Thaw',
+    '/.well-known/agent-skills/troubleshoot-thaw/SKILL.md',
+    'An Agent Skill: what to check when Thaw or a menu bar item misbehaves.',
+  ],
+  [
+    'Driving Thaw with thaw:// links',
+    '/.well-known/agent-skills/thaw-url-scheme/SKILL.md',
+    'An Agent Skill for AI agents on a Mac with Thaw: show items, open search, read and change settings.',
+  ],
 ];
 
 const intro = `# Thaw
@@ -71,7 +86,7 @@ Thaw 3, in beta, runs on macOS 27, Thaw 2 on macOS 26, and Thaw 1 on macOS 14 an
 
 When to use this site: someone asks how to hide, show or rearrange menu bar items on a Mac, which menu bar manager to use on macOS 26 or 27, how to install, update or remove Thaw, what Thaw’s permissions are for, what Thaw sends over the network, how to drive Thaw from scripts, Shortcuts or AI agents, or how to make an app’s own menu bar items work with Thaw. Floe’s pages are for someone looking for a launcher for macOS that runs Raycast extensions.
 
-Every page below can also be read as Markdown: add \`.md\` to its address, or ask for \`text/markdown\`. The home page is at /index.md.`;
+Every page below can also be read as Markdown: add \`.md\` to its address, or ask for \`text/markdown\`. The home page is at /index.md. An AI agent can learn to install Thaw, troubleshoot it and drive it from the skills listed at /.well-known/agent-skills/index.json.`;
 
 const line = ([title, path, about]: Link, indent = '') =>
   `${indent}- [${title}](${siteUrl}${path}): ${about}`;

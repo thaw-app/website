@@ -80,7 +80,7 @@ const config = {
         '/changelog/:path*',
       ].map((source) => ({ source, headers: [{ key: 'Vary', value: 'Accept' }] })),
       // The home page names what an AI tool can read about the site (RFC 8288): the list of
-      // its pages, its Markdown form and the docs.
+      // its pages, its Markdown form, the docs, and the skill for driving Thaw.
       {
         source: '/',
         headers: [
@@ -90,6 +90,7 @@ const config = {
               '</llms.txt>; rel="describedby"; type="text/plain"',
               '</index.md>; rel="alternate"; type="text/markdown"',
               '</docs/thaw>; rel="service-doc"',
+              '</.well-known/agent-skills/index.json>; rel="describedby"; type="application/json"',
             ].join(', '),
           },
         ],

@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { expect, test } from '@playwright/test';
 
 test('the install tabs work from the keyboard and give the right command', async ({ page }) => {
@@ -320,7 +321,9 @@ test('llms.txt says what Thaw and Floe are, and every page it names answers', as
   for (const path of paths) expect((await request.get(path)).status(), path).toBe(200);
 });
 
-test('AI tools get each page as Markdown, and a Markdown not-found', async ({ request }) => {
+test('AI tools get each page as Markdown, a Markdown not-found, and a skill', async ({
+  request,
+}) => {
   const markdown = { headers: { Accept: 'text/markdown' } };
   for (const path of [
     '/',
@@ -350,5 +353,20 @@ test('AI tools get each page as Markdown, and a Markdown not-found', async ({ re
   expect(home.headers().link).toContain('rel="describedby"');
   expect(await (await request.get('/robots.txt')).text()).toContain('Content-Signal:');
 
+  // Each skill is where the index says, and is what its digest says.
+  const index = await (await request.get('/.well-known/agent-skills/index.json')).json();
+  expect(index.skills.map((skill: { name: string }) => skill.name)).toEqual([
+    'install-thaw',
+    'troubleshoot-thaw',
+    'thaw-url-scheme',
+  ]);
+  for (const skill of index.skills) {
+    const body = await (await request.get(new URL(skill.url).pathname)).text();
+    expect(body, skill.name).toContain(`name: ${skill.name}`);
+    // A description is quoted, so YAML reads one with a colon in it.
+    expect(body, skill.name).toContain(`description: ${JSON.stringify(skill.description)}`);
+    const digest = createHash('sha256').update(body).digest('hex');
+    expect(skill.digest, skill.name).toBe(`sha256:${digest}`);
+  }
   expect(await (await request.get('/llms-full.txt')).text()).toContain('# Built with');
 });
