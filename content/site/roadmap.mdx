@@ -1,23 +1,19 @@
 {/* The roadmap, drawn by app/(home)/roadmap/page.tsx under its title. */}
 
-Thaw has two lines in development: 3.0 for macOS 27 and 2.1 for macOS 26. This is the plan as it stands, not a promise, and your reports decide the order. It was last brought up to date with the [3.0.0-beta.2 notes](/changelog/3.0.0-beta.2) of 6 October 2026.
+Thaw 3.0 for macOS 27 is in development, and Thaw 2.1 for macOS 26 is out. Thaw is getting smaller: a reworked Simple Mode first, then the larger features as modules you add only if you want them. This is the plan as it stands, not a promise, and your reports decide the order. It was last brought up to date on 17 October 2026, after the [discussion in #1353](https://github.com/thaw-app/Thaw/issues/1353).
 
 <Roadmap>
 
-<RoadmapList title="Now" count={2} state="now" here note="The two releases being finished.">
-<RoadmapGroup name="macOS 27" count={1}>
+<RoadmapList title="Now" count={2} state="now" here note="The release being finished.">
+<RoadmapGroup name="macOS 27" count={2}>
 
 - **Thaw 3.0.0.** In beta. It is a rebuilt menu bar core for macOS 27, and the interface is being trimmed and tidied over the next betas.
-
-</RoadmapGroup>
-<RoadmapGroup name="macOS 26" count={1}>
-
-- **Thaw 2.1.0.** At its [first release candidate](/changelog/2.1.0-rc.1). It ships as 2.1.0 if no new problems turn up.
+- **Moving several items at once.** Command-click or Shift-click items in Layout, then drag them or move them all to another section in one go. It is built and comes in the next Thaw 3 build.
 
 </RoadmapGroup>
 </RoadmapList>
 
-<RoadmapList title="Coming next" count={1} state="next" note="The release after those two.">
+<RoadmapList title="Coming next" count={1} state="next" note="The next release of Thaw 2, after 2.1.0.">
 <RoadmapGroup name="macOS 15" count={1}>
 
 - **Thaw 2.2.0.** It brings back compatibility with macOS 15.
@@ -25,15 +21,20 @@ Thaw has two lines in development: 3.0 for macOS 27 and 2.1 for macOS 26. This i
 </RoadmapGroup>
 </RoadmapList>
 
-<RoadmapList title="Up next" count={8} state="next" note="Planned for the 3.0.0 betas.">
+<RoadmapList title="Up next" count={9} state="next" note="The reworked Simple Mode and Modules come first, and the rest follows them.">
 <RoadmapGroup name="Permissions" count={1}>
 
-- **Minimal mode.** Thaw without the Accessibility permission, for anyone who would rather not grant it. It is in the works.
+- **A reworked Simple Mode.** A lightweight Thaw that hides menu bar items and nothing else, and works without the Accessibility permission. It is in the works.
+
+</RoadmapGroup>
+<RoadmapGroup name="Installing" count={1}>
+
+- **Modules.** Scripts, triggers and automation become optional downloads. You install only the parts of Thaw you use, and add others when you want them.
 
 </RoadmapGroup>
 <RoadmapGroup name="Settings" count={1}>
 
-- **Fewer switches.** Every setting is being gone through: some become default behaviour, some move under Advanced, and some go away. Experiments either graduate or get removed. The first pass shipped in 3.0.0-beta.1.
+- **Fewer switches.** Every setting is being gone through: some become default behaviour and some go away, and panes are merged. Experiments either graduate or get removed. It began in 3.0.0-alpha.4, which removed the Advanced pane, and 3.0.0-alpha.9 was mostly fixes and Settings cleanup.
 
 </RoadmapGroup>
 <RoadmapGroup name="Layout" count={2}>
@@ -42,10 +43,10 @@ Thaw has two lines in development: 3.0 for macOS 27 and 2.1 for macOS 26. This i
 - **Undo for drags.** Command-Z will undo mouse moves in Layout, the way it already undoes keyboard moves.
 
 </RoadmapGroup>
-<RoadmapGroup name="Coming over from 2.1" count={4}>
+<RoadmapGroup name="From 2.1, after Modules" count={4}>
 
-- **Scripts.** Script-driven bar modules, tested by macOS 26 users on 2.1.0, are the next thing coming to 3.0. The Scripts pane is already there as a preview.
-- **The full trigger engine.** In 2.1 an item can move on battery level, the frontmost app, a network, a Focus and more. 3.0 has part of it: 3.0.0-beta.2 added showing items while an app runs.
+- **Scripts.** Scripts that make their own menu bar items, tested by macOS 26 users on 2.1.0, come to 3.0 as a module you can add. The Scripts pane is already there as a preview.
+- **The full trigger engine.** In 2.1 an item can move on battery level, the frontmost app, a network, a Focus and more. 3.0 has part of it: 3.0.0-beta.2 added showing items while an app runs. The rest comes as a module.
 - **Widgets.** The Widgets pane is a placeholder so the destination is discoverable. It holds no settings yet.
 - **Rotating diagnostic logs.** Keeping and cycling through diagnostic logs will appear in a later 3.0 build.
 
@@ -66,7 +67,7 @@ Thaw has two lines in development: 3.0 for macOS 27 and 2.1 for macOS 26. This i
 </RoadmapGroup>
 </RoadmapList>
 
-<RoadmapList title="Further out" count={10} state="later" note="These come after the beta is solid. The team intends to build them, and none has a date.">
+<RoadmapList title="Further out" count={9} state="later" note="These come after the move to modules. The team intends to build them, and none has a date.">
 <RoadmapGroup name="Integrations" count={5}>
 
 - **An Alfred workflow.** One you can install, on top of the `thaw://` links that [already work with Alfred](/docs/thaw/uri-schemes).
@@ -76,15 +77,14 @@ Thaw has two lines in development: 3.0 for macOS 27 and 2.1 for macOS 26. This i
 - **MCP support.** A server for AI assistants, so one you already use can read your menu bar and rearrange it when you ask.
 
 </RoadmapGroup>
-<RoadmapGroup name="Installing" count={2}>
+<RoadmapGroup name="Installing" count={1}>
 
-- **Modules.** Download only the parts of Thaw you use, and add others when you want them, so the app you install is no bigger than what you need.
 - **Nix support.** A flake, so Thaw can be installed and pinned from a Nix configuration. <Marks of="nix" />
 
 </RoadmapGroup>
 <RoadmapGroup name="Across your Macs" count={1}>
 
-- **iCloud sync.** For profiles, appearance and preferences. Anything tied to one Mac’s displays stays local. <Marks of="icloud" />
+- **iCloud backups.** For profiles, appearance and preferences, as a few options in the panes they belong to, not a new pane. Anything tied to one Mac’s displays stays local. <Marks of="icloud" />
 
 </RoadmapGroup>
 <RoadmapGroup name="Menu bar items" count={2}>

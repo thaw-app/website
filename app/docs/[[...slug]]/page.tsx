@@ -103,6 +103,8 @@ export async function generateMetadata(props: PageProps<'/docs/[[...slug]]'>): P
       page.data.shared
         ? `${docsRoute}/${[sharedHome, ...page.slugs.slice(1)].join('/')}`
         : page.url,
+      // The same page in Markdown, which proxy.ts serves at the page's address plus .md.
+      `${page.url}.md`,
     ),
     openGraph: {
       images: getPageImageUrl(page).url,

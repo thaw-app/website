@@ -61,7 +61,12 @@ const securityHeaders = [
 const config = {
   reactStrictMode: true,
   async headers() {
-    return [{ source: '/:path*', headers: securityHeaders }];
+    return [
+      { source: '/:path*', headers: securityHeaders },
+      // A docs page is HTML or Markdown at one address, chosen by what the request accepts
+      // (proxy.ts), so a cache keeps the two apart.
+      { source: '/docs/:path*', headers: [{ key: 'Vary', value: 'Accept' }] },
+    ];
   },
   async redirects() {
     return [

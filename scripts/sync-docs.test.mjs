@@ -10,6 +10,7 @@ import {
   parseTag,
   peopleIn,
   readmeBody,
+  rewriteLinks,
   splitReleases,
   stageRank,
   tidyNotes,
@@ -101,6 +102,17 @@ test('what the changelog lists as not out yet is not a release', () => {
   // The file is read as it is written, and the pages are made without it.
   expect(splitReleases(withUnreleased).map((release) => release.tag)).toContain('Unreleased');
   const tags = groupReleases(withUnreleased, [], { repo: 'thaw-app/Thaw' }).flatMap((group) =>
+    group.releases.map((release) => release.tag),
+  );
+  expect(tags).toEqual(['3.0.0-beta.2', '2.0.1']);
+});
+
+test('a version the changelog dates as unreleased is not a release yet', () => {
+  const withNext = changelog.replace(
+    '## [3.0.0-beta.2]',
+    '## [3.0.0-beta.3] - Unreleased\n\n### Fixed\n\n- Not out yet.\n\n---\n\n## [3.0.0-beta.2]',
+  );
+  const tags = groupReleases(withNext, [], { repo: 'thaw-app/Thaw' }).flatMap((group) =>
     group.releases.map((release) => release.tag),
   );
   expect(tags).toEqual(['3.0.0-beta.2', '2.0.1']);
@@ -266,4 +278,25 @@ test("a README is shown install first, with the site's own parts only where it h
   expect(readmeBody(readme, { ...leaves, readmeParts: { install: '<Box />' } })).toBe(
     '## Install\n\n<Box />\n\n## Features\n- One\n',
   );
+});
+
+test('a link to another synced file goes to its docs page, and one to the README to the product page', () => {
+  const slugs = new Map([
+    ['docs/PERMISSIONS.md', 'permissions'],
+    ['README.md', 'readme'],
+  ]);
+  const links = { product: 'thaw', repo: 'thaw-app/Thaw', ref: 'development' };
+  const body = [
+    'See [permissions](PERMISSIONS.md#screen-recording).',
+    'The [feature list](../README.md#features).',
+    'The [code](../Thaw/App.swift).',
+  ].join('\n');
+  expect(rewriteLinks(body, 'docs/VERSIONS.md', slugs, links).split('\n')).toEqual([
+    'See [permissions](/docs/thaw/permissions#screen-recording).',
+    'The [feature list](/#features).',
+    'The [code](https://github.com/thaw-app/Thaw/blob/development/Thaw/App.swift).',
+  ]);
+  expect(
+    rewriteLinks('[it](../README.md)', 'docs/X.md', slugs, { ...links, product: 'floe' }),
+  ).toBe('[it](/floe)');
 });

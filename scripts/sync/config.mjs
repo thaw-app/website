@@ -53,7 +53,8 @@ const products = [
     // Pages this site writes itself, so the repo's file of the same name is not synced in.
     // The roadmap is content/site/roadmap.mdx, drawn at /roadmap; it says more than
     // docs/ROADMAP.md does, for now.
-    writtenHere: ['roadmap'],
+    // app-developers is content/docs/thaw/app-developers.mdx, written here first.
+    writtenHere: ['roadmap', 'app-developers'],
     // What the home page draws itself in the README's place: the install commands, the
     // feature list, and at its end how the project is run.
     readmeParts: { install: '<InstallTabs />', features: '<FeatureList />', last: '<Assurance />' },
@@ -81,6 +82,10 @@ const products = [
     },
     titles: {
       'frequent-issues': 'Frequent issues',
+      'getting-started': 'Getting started',
+      network: 'What Thaw sends over the network',
+      'reset-and-uninstall': 'Reset or uninstall',
+      shortcuts: 'Shortcuts and automation',
       'uri-schemes': 'URL schemes',
       'hidden-flags': 'Hidden flags',
       architecture: 'Architecture',
@@ -89,8 +94,45 @@ const products = [
       'assurance-case': 'Security assurance case',
       governance: 'Governance',
     },
+    // What a page is about, for search results and the docs index, where its own opening
+    // lines would only start the page over.
+    descriptions: {
+      'getting-started':
+        'Install Thaw, give it the permissions it asks for, and hide your first menu bar item.',
+      permissions:
+        'What each permission Thaw asks for is used for, which ones you can refuse, and how to grant one again.',
+      versions:
+        'Which Thaw runs on which macOS, how to install it, and which updates each channel sends you.',
+      network: 'Every network call Thaw makes, what each is for, and how to switch it off.',
+      'reset-and-uninstall':
+        'Put Thaw’s layout or settings back to how they started, or remove Thaw and what it leaves behind.',
+      shortcuts:
+        'Keyboard shortcuts, Shortcuts, Spotlight and Siri actions, Control Center controls, and more thaw:// links.',
+      'frequent-issues':
+        'Known problems and their workarounds, for Thaw 3 on macOS 27 and Thaw 2 on macOS 26. Check here before filing a bug.',
+      'uri-schemes':
+        'Run Thaw actions and read or change its settings from thaw:// links, in Raycast, Alfred, Shortcuts or a shell script.',
+      'hidden-flags':
+        'Switches Thaw reads but Settings doesn’t show, for working out menu bar reorder problems. Most people never need them.',
+      development:
+        'What you need to build Thaw from source, how to build and test it, and its code style.',
+      architecture:
+        'A map of Thaw’s main parts, where it keeps its data, and how it is built and released.',
+      releases:
+        'How Thaw’s installers and in-app updates are published, and what each update channel gets.',
+      'verifying-releases':
+        'What each Thaw release is signed with, and how to check a download yourself.',
+      'assurance-case':
+        'The case that Thaw meets its security requirements: its threat model, trust boundaries and the risks that remain.',
+    },
     icons: {
       'frequent-issues': 'LifeBuoy',
+      'getting-started': 'Rocket',
+      permissions: 'KeyRound',
+      versions: 'GitBranch',
+      network: 'Globe',
+      'reset-and-uninstall': 'RotateCcw',
+      shortcuts: 'Keyboard',
       'uri-schemes': 'Link',
       'hidden-flags': 'Flag',
       roadmap: 'Map',
@@ -131,6 +173,10 @@ const products = [
       last: '<FloeAssurance />',
     },
     titles: {},
+    descriptions: {
+      development:
+        'How to build and run Floe from source, how it runs Raycast extensions, and how to add one.',
+    },
     icons: { changelog: 'ScrollText', development: 'Hammer' },
     extraPages: {
       'CHANGELOG.md': 'changelog',
@@ -154,6 +200,12 @@ const shared = {
     security: 'Security policy',
     'contribute/guidelines': 'Contribution guidelines',
     'contribute/code-of-conduct': 'Code of Conduct',
+  },
+  descriptions: {
+    security:
+      'How to report a vulnerability privately, which versions get fixes, and how disclosure works.',
+    'contribute/code-of-conduct':
+      'How people are expected to treat each other in every community space, and how that is enforced. Adapted from the Contributor Covenant.',
   },
   icons: { security: 'ShieldAlert' },
   // Written in this repo. "{{docs}}" in them stands for the product's own docs.
