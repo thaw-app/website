@@ -62,6 +62,11 @@ const optional: Link[] = [
     'The text of the site’s pages and its docs in one file.',
   ],
   [
+    'Search API',
+    '/openapi.json',
+    'Search the docs and release notes from code: GET /api/search?query=…, read-only, no key. Described in OpenAPI.',
+  ],
+  [
     'Installing Thaw',
     '/.well-known/agent-skills/install-thaw/SKILL.md',
     'An Agent Skill: which Thaw for which macOS, how to install it, and its permissions.',
