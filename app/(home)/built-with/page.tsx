@@ -10,7 +10,7 @@ import { stackMarks } from '@/lib/stack-marks';
 
 export const metadata: Metadata = {
   // One address for the page, whichever domain it was reached on.
-  alternates: pageAlternates('/built-with'),
+  alternates: pageAlternates('/built-with', '/built-with.md'),
   openGraph: { images: '/og/site/home/image.png' },
   title: 'Built with',
   description:

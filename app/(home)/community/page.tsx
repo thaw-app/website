@@ -13,7 +13,7 @@ import { sitePages } from '@/lib/site-pages';
 
 export const metadata: Metadata = {
   // One address for the page, whichever domain it was reached on.
-  alternates: pageAlternates('/community'),
+  alternates: pageAlternates('/community', '/community.md'),
   openGraph: { images: '/og/site/community/image.png' },
   title: 'Community',
   description: 'Thaw in numbers, where to find the people behind it, and who has contributed.',

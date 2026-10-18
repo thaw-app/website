@@ -66,6 +66,34 @@ const config = {
       // A docs page is HTML or Markdown at one address, chosen by what the request accepts
       // (proxy.ts), so a cache keeps the two apart.
       { source: '/docs/:path*', headers: [{ key: 'Vary', value: 'Accept' }] },
+      // So is each of the site's own pages that has a Markdown form (lib/site-markdown.ts).
+      ...[
+        '/',
+        '/floe',
+        '/floe/roadmap',
+        '/faq',
+        '/roadmap',
+        '/privacy',
+        '/community',
+        '/verified',
+        '/built-with',
+        '/changelog/:path*',
+      ].map((source) => ({ source, headers: [{ key: 'Vary', value: 'Accept' }] })),
+      // The home page names what an AI tool can read about the site (RFC 8288): the list of
+      // its pages, its Markdown form and the docs.
+      {
+        source: '/',
+        headers: [
+          {
+            key: 'Link',
+            value: [
+              '</llms.txt>; rel="describedby"; type="text/plain"',
+              '</index.md>; rel="alternate"; type="text/markdown"',
+              '</docs/thaw>; rel="service-doc"',
+            ].join(', '),
+          },
+        ],
+      },
     ];
   },
   async redirects() {

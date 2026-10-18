@@ -11,7 +11,7 @@ import { meanings, readDays } from '@/lib/verified';
 
 export const metadata: Metadata = {
   // One address for the page, whichever domain it was reached on.
-  alternates: pageAlternates('/verified'),
+  alternates: pageAlternates('/verified', '/verified.md'),
   openGraph: { images: '/og/site/verified/image.png' },
   title: 'What Verified means',
   description:

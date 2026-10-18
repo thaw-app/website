@@ -56,7 +56,11 @@ const optional: Link[] = [
     '/privacy',
     'What this website collects about its visitors: no analytics, no cookies and no tracking.',
   ],
-  ['Every docs page in full', '/llms-full.txt', 'The text of all the docs pages in one file.'],
+  [
+    'Every page in full',
+    '/llms-full.txt',
+    'The text of the site’s pages and its docs in one file.',
+  ],
 ];
 
 const intro = `# Thaw
@@ -65,7 +69,9 @@ const intro = `# Thaw
 
 Thaw 3, in beta, runs on macOS 27, Thaw 2 on macOS 26, and Thaw 1 on macOS 14 and 15. Thaw is under GPL-3.0 and Floe under AGPL-3.0. Thaw has no account, no analytics and no tracking.
 
-Every docs page below can also be read as Markdown: add \`.md\` to its address.`;
+When to use this site: someone asks how to hide, show or rearrange menu bar items on a Mac, which menu bar manager to use on macOS 26 or 27, how to install, update or remove Thaw, what Thaw’s permissions are for, what Thaw sends over the network, how to drive Thaw from scripts, Shortcuts or AI agents, or how to make an app’s own menu bar items work with Thaw. Floe’s pages are for someone looking for a launcher for macOS that runs Raycast extensions.
+
+Every page below can also be read as Markdown: add \`.md\` to its address, or ask for \`text/markdown\`. The home page is at /index.md.`;
 
 const line = ([title, path, about]: Link, indent = '') =>
   `${indent}- [${title}](${siteUrl}${path}): ${about}`;

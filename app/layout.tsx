@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   title: { default: siteName, template: `%s | ${siteName}` },
   description: siteDescription,
   // Pages that do not name a picture of their own are shared with the site's.
-  openGraph: { images: '/og/site/home/image.png' },
+  openGraph: { type: 'website', images: '/og/site/home/image.png' },
   // Each product's releases, for a feed reader to find from any page.
   alternates: { types: pageAlternates('/').types },
 };

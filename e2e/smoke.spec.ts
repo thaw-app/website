@@ -319,3 +319,36 @@ test('llms.txt says what Thaw and Floe are, and every page it names answers', as
   );
   for (const path of paths) expect((await request.get(path)).status(), path).toBe(200);
 });
+
+test('AI tools get each page as Markdown, and a Markdown not-found', async ({ request }) => {
+  const markdown = { headers: { Accept: 'text/markdown' } };
+  for (const path of [
+    '/',
+    '/floe',
+    '/faq',
+    '/roadmap',
+    '/privacy',
+    '/community',
+    '/verified',
+    '/built-with',
+    '/changelog/2.1.0',
+  ]) {
+    const response = await request.get(path, markdown);
+    expect(response.status(), path).toBe(200);
+    expect(response.headers()['content-type'], path).toContain('text/markdown');
+    expect(response.headers().vary, path).toContain('Accept');
+    expect(Number(response.headers()['x-markdown-tokens']), path).toBeGreaterThan(0);
+    expect(await response.text(), path).toMatch(/^# /);
+  }
+  expect((await request.get('/index.md')).headers()['content-type']).toContain('text/markdown');
+  // An address with no page says so, in Markdown.
+  const missing = await request.get('/no-such-page', markdown);
+  expect(missing.status()).toBe(404);
+  expect(await missing.text()).toContain('/llms.txt');
+
+  const home = await request.get('/');
+  expect(home.headers().link).toContain('rel="describedby"');
+  expect(await (await request.get('/robots.txt')).text()).toContain('Content-Signal:');
+
+  expect(await (await request.get('/llms-full.txt')).text()).toContain('# Built with');
+});

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: 'Privacy',
   description:
     'What this website collects about its visitors: no analytics, no cookies and no tracking.',
-  alternates: pageAlternates('/privacy'),
+  alternates: pageAlternates('/privacy', '/privacy.md'),
 };
 
 /**

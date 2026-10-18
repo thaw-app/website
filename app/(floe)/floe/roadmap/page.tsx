@@ -6,7 +6,7 @@ import { sitePages } from '@/lib/site-pages';
 
 export const metadata: Metadata = {
   // One address for the page, whichever domain it was reached on.
-  alternates: pageAlternates('/floe/roadmap'),
+  alternates: pageAlternates('/floe/roadmap', '/floe/roadmap.md'),
   openGraph: { images: '/og/site/floeRoadmap/image.png' },
   title: 'Floe roadmap',
   description:

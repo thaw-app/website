@@ -12,7 +12,7 @@ import { source } from '@/lib/source';
 
 export const metadata: Metadata = {
   // One address for the page, whichever domain it was reached on.
-  alternates: pageAlternates('/floe'),
+  alternates: pageAlternates('/floe', '/floe.md'),
   openGraph: { images: '/og/site/floe/image.png' },
   title: 'Floe',
   description:

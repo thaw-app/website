@@ -10,7 +10,7 @@ import { thawFaq } from '@/lib/thaw-faq';
 
 export const metadata: Metadata = {
   // One address for the page, whichever domain it was reached on.
-  alternates: pageAlternates('/faq'),
+  alternates: pageAlternates('/faq', '/faq.md'),
   openGraph: { images: '/og/site/faq/image.png' },
   title: 'Frequently asked questions',
   description:
