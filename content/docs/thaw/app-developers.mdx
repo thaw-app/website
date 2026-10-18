@@ -45,6 +45,21 @@ button.image = reading // the text, drawn into an image
 button.setAccessibilityValue("62 °C")
 ```
 
+### Apps whose names keep changing
+
+Thaw has worked around a number of apps whose item names change all the time:
+
+- **Dato** shows the date and a countdown to your next event, so its name changes every minute, and with every date format ([#1175](https://github.com/thaw-app/Thaw/issues/1175)).
+- **Amphetamine**’s one item switches between `Item-0`, `∞` and `𝗧`.
+- **ThermalForge**, **MacThrottle**, **Macs Fan Control** and **iStat Menus** show live temperatures and readings.
+- **Outlook** puts a countdown to your next meeting in front of its name.
+
+For these, Thaw strips out the changing part or tells the items apart by where they sit. It learns the same for an app with a single item that renames itself, such as WeChat with its unread count. With several items, though, position is all Thaw has, so moving one can swap which is which. Each of these needed a change in Thaw itself, and Thaw no longer adds workarounds for single apps, so a fixed name is the only fix that lasts.
+
+### Items with no name
+
+An item that publishes no name of its own gets a placeholder from macOS by its position: `Item-0`, `Item-1` and so on. Thaw can’t tell two of an app’s unnamed items apart except by their order, so moving one can make them trade places in Layout, or trade sections. It has happened to Little Snitch, whose item can appear as `com.apple.controlcenter:Item-0` with no app behind it, and to Rectangle, whose item became `Item-0` when its old AppKit placeholder name could no longer be read. Setting an autosave name and an accessibility identifier, as above, keeps your items from ever being one of these.
+
 ## Let each item be hidden on its own
 
 macOS 27 hides menu bar items by app, not by item. Thaw can tell macOS which apps’ items to hide, so all of one app’s items go to Hidden together, and one item left in Visible keeps the others there too. This is on the [roadmap as blocked by macOS 27](/roadmap#blocked-by-macos-27).
