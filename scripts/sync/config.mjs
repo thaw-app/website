@@ -53,7 +53,8 @@ const products = [
     // Pages this site writes itself, so the repo's file of the same name is not synced in.
     // The roadmap is content/site/roadmap.mdx, drawn at /roadmap; it says more than
     // docs/ROADMAP.md does, for now.
-    writtenHere: ['roadmap'],
+    // app-developers is content/docs/thaw/app-developers.mdx, written here first.
+    writtenHere: ['roadmap', 'app-developers'],
     // What the home page draws itself in the README's place: the install commands, the
     // feature list, and at its end how the project is run.
     readmeParts: { install: '<InstallTabs />', features: '<FeatureList />', last: '<Assurance />' },
