@@ -369,3 +369,23 @@ export const floeAskAi = [
 ];
 
 export const floeDownload = `${repoUrl('floe')}/releases/latest`;
+
+// What a person weighs before installing a launcher that runs other people's extensions.
+export const floeInstallFacts = [
+  {
+    label: 'Needs',
+    value: 'macOS 26 or later',
+    detail: 'Floe is signed and notarised, and updates itself.',
+  },
+  {
+    label: 'Needs',
+    value: 'Accessibility',
+    detail:
+      'The one permission Floe requires. Calendar, Reminders, Contacts and Screen Recording are optional.',
+  },
+  {
+    label: 'Know first',
+    value: 'Floe is early',
+    detail: 'Extensions are not sandboxed, so install only the ones you trust.',
+  },
+];

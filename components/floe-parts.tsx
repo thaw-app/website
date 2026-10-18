@@ -9,30 +9,11 @@ import {
   floeAskAi,
   floeDownload,
   floeFeatures,
+  floeInstallFacts,
   floeWorksWith,
 } from '@/lib/floe-features';
 import { latestStable } from '@/lib/releases';
 import { docsRoute } from '@/lib/shared';
-
-// What a person weighs before installing a launcher that runs other people's extensions.
-const facts = [
-  {
-    label: 'Needs',
-    value: 'macOS 26 or later',
-    detail: 'Floe is signed and notarised, and updates itself.',
-  },
-  {
-    label: 'Needs',
-    value: 'Accessibility',
-    detail:
-      'The one permission Floe requires. Calendar, Reminders, Contacts and Screen Recording are optional.',
-  },
-  {
-    label: 'Know first',
-    value: 'Floe is early',
-    detail: 'Extensions are not sandboxed, so install only the ones you trust.',
-  },
-];
 
 /** How to get Floe: one download, set out as Thaw's install box is (install-tabs.tsx). */
 export function FloeInstall() {
@@ -52,7 +33,7 @@ export function FloeInstall() {
             <Download aria-hidden className="size-4" />
           </a>
         </div>
-        <InstallFacts facts={facts} />
+        <InstallFacts facts={floeInstallFacts} />
         <p className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1 border-t px-4 py-2.5 text-sm">
           <Link href="/floe#try" className="tap font-medium link">
             Try it in your browser first

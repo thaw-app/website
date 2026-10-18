@@ -22,8 +22,10 @@ import { homeFaq, thawFaq } from '@/lib/thaw-faq';
 const badgeFont = Newsreader({ subsets: ['latin'], weight: ['500'], preload: false });
 
 export const metadata: Metadata = {
+  // What Thaw is, beside its name, in the tab and in a search result.
+  title: { absolute: `${products.thaw.name}: the open source menu bar manager for macOS` },
   // One address for the page, whichever domain it was reached on.
-  alternates: pageAlternates('/'),
+  alternates: pageAlternates('/', '/index.md'),
 };
 
 /**

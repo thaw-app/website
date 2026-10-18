@@ -76,7 +76,7 @@ export function Mark({ name }: { name: string }) {
       src={mark.src}
       alt=""
       width={24}
-      className={`h-[1.125em] w-auto ${
+      className={`h-[1.125em] w-auto shrink-0 object-contain ${
         mark.glyph ? 'invert dark:invert-0' : mark.flat ? 'brightness-0 dark:invert' : ''
       }`}
     />

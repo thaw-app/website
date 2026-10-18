@@ -6,7 +6,7 @@ import { sitePages } from '@/lib/site-pages';
 
 export const metadata: Metadata = {
   // One address for the page, whichever domain it was reached on.
-  alternates: pageAlternates('/roadmap'),
+  alternates: pageAlternates('/roadmap', '/roadmap.md'),
   openGraph: { images: '/og/site/roadmap/image.png' },
   title: 'Roadmap',
   description:
