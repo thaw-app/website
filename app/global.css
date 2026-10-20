@@ -106,7 +106,8 @@ kbd,
  * light page the order runs the other way so the bold characters stay bold.
  */
 :root {
-  /* A country with people in it, on the community page's map: Thaw's orange. */
+  /* A country with people in it, on a community page's map: Thaw's orange, and Floe's blue
+     on Floe's. */
   --world-lit: #c96817;
   --verified-gold: #a87400;
   --verified-green: #1a7f37;
@@ -129,6 +130,7 @@ kbd,
 #nd-notebook-layout:has([data-product="floe"]) {
   --product-tone: #2563c9;
   --product-ink: #2563c9;
+  --world-lit: #2563c9;
   --release-1: #3d7df0;
   --release-2: #0b4fd8;
   --release-3: #072f86;
@@ -138,6 +140,7 @@ kbd,
 .dark #nd-notebook-layout:has([data-product="floe"]) {
   --product-tone: #4f93ff;
   --product-ink: #4f93ff;
+  --world-lit: #4f93ff;
   --release-1: #1560e8;
   --release-2: #4f93ff;
   --release-3: #c4e0ff;

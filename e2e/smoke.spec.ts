@@ -50,6 +50,7 @@ test('the pages a visitor moves between all answer', async ({ page }) => {
     '/',
     '/floe',
     '/floe/roadmap',
+    '/floe/community',
     '/community',
     '/verified',
     '/roadmap',
@@ -221,13 +222,17 @@ test('Floe’s page opens the demo on the launcher', async ({ page, isMobile }) 
 
 test('Floe’s pages are under Floe’s own header', async ({ page, isMobile }) => {
   test.skip(isMobile, 'the header’s links are in a menu on a phone');
-  for (const path of ['/floe', '/floe/roadmap', '/changelog/floe']) {
+  for (const path of ['/floe', '/floe/roadmap', '/floe/community', '/changelog/floe']) {
     await page.goto(path);
     const header = page.locator('header').first();
     await expect(header.getByRole('link', { name: 'Floe, home' }), path).toBeVisible();
     await expect(header.getByRole('link', { name: 'Roadmap' }), path).toHaveAttribute(
       'href',
       '/floe/roadmap',
+    );
+    await expect(header.getByRole('link', { name: 'Community' }), path).toHaveAttribute(
+      'href',
+      '/floe/community',
     );
   }
   // Each roadmap leads to the other's, as each changelog does.
@@ -296,7 +301,13 @@ test('the footer’s band keeps growing with a wide window', async ({ page, isMo
 
 test('the tab shows Floe’s icon on Floe’s pages and Thaw’s on the rest', async ({ page }) => {
   const icon = page.locator('link[rel="icon"]');
-  for (const path of ['/floe', '/floe/roadmap', '/changelog/floe', '/docs/floe']) {
+  for (const path of [
+    '/floe',
+    '/floe/roadmap',
+    '/floe/community',
+    '/changelog/floe',
+    '/docs/floe',
+  ]) {
     await page.goto(path);
     await expect(icon).toHaveAttribute('href', /\/icons\/floe-96\.png/);
   }
@@ -333,6 +344,7 @@ test('AI tools get each page as Markdown, a Markdown not-found, and a skill', as
     '/roadmap',
     '/privacy',
     '/community',
+    '/floe/community',
     '/verified',
     '/built-with',
     '/changelog/2.1.0',

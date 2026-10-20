@@ -23,6 +23,12 @@ export const sitePages = {
     shared: 'What comes next, what comes later, and what has shipped.',
     product: 'floe' as const,
   },
+  floeCommunity: {
+    label: 'Community',
+    title: 'Floe is new, and open to anyone who wants to help.',
+    shared: 'Floe in numbers, where its people are, and who has contributed.',
+    product: 'floe' as const,
+  },
   community: {
     label: 'Community',
     title: 'Thaw is built by the people who use it.',

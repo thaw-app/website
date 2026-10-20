@@ -1,0 +1,188 @@
+{
+  "stars": 134,
+  "discord": 371,
+  "contributors": 4,
+  "readOn": {
+    "stars": "2026-10-20",
+    "discord": "2026-10-20",
+    "contributors": "2026-10-20",
+    "scorecard": "2026-10-20",
+    "coverage": "2026-10-20",
+    "field": "2026-10-20"
+  },
+  "people": [
+    {
+      "login": "diazdesandi",
+      "avatar": "https://avatars.githubusercontent.com/u/17421494?v=4",
+      "commits": 186
+    },
+    {
+      "login": "lylythechosenone",
+      "avatar": "https://avatars.githubusercontent.com/u/19551513?v=4",
+      "commits": 2
+    },
+    {
+      "login": "unsecretised",
+      "avatar": "https://avatars.githubusercontent.com/u/132474703?v=4",
+      "commits": 2
+    },
+    {
+      "login": "OwenCope",
+      "avatar": "https://avatars.githubusercontent.com/u/135015709?v=4",
+      "commits": 1
+    }
+  ],
+  "team": [
+    {
+      "login": "diazdesandi",
+      "name": "René",
+      "avatar": "https://avatars.githubusercontent.com/u/17421494?v=4"
+    }
+  ],
+  "assurance": {
+    "scorecard": 7.2,
+    "coverage": 83.8,
+    "field": {
+      "projects": 13119,
+      "gold": 110,
+      "baseline3": 92
+    }
+  },
+  "translators": [],
+  "world": {
+    "checked": "2026-10-20",
+    "stargazers": {
+      "people": 134,
+      "placed": 60,
+      "list": [
+        {
+          "code": "US",
+          "name": "United States",
+          "people": 14
+        },
+        {
+          "code": "DE",
+          "name": "Germany",
+          "people": 10
+        },
+        {
+          "code": "IN",
+          "name": "India",
+          "people": 7
+        },
+        {
+          "code": "CA",
+          "name": "Canada",
+          "people": 6
+        },
+        {
+          "code": "GB",
+          "name": "United Kingdom",
+          "people": 4
+        },
+        {
+          "code": "FR",
+          "name": "France",
+          "people": 2
+        },
+        {
+          "code": "IT",
+          "name": "Italy",
+          "people": 2
+        },
+        {
+          "code": "NL",
+          "name": "Netherlands",
+          "people": 2
+        },
+        {
+          "code": "ES",
+          "name": "Spain",
+          "people": 2
+        },
+        {
+          "code": "TH",
+          "name": "Thailand",
+          "people": 2
+        },
+        {
+          "code": "AR",
+          "name": "Argentina",
+          "people": 1
+        },
+        {
+          "code": "ID",
+          "name": "Indonesia",
+          "people": 1
+        },
+        {
+          "code": "JP",
+          "name": "Japan",
+          "people": 1
+        },
+        {
+          "code": "MX",
+          "name": "Mexico",
+          "people": 1
+        },
+        {
+          "code": "NO",
+          "name": "Norway",
+          "people": 1
+        },
+        {
+          "code": "PL",
+          "name": "Poland",
+          "people": 1
+        },
+        {
+          "code": "PT",
+          "name": "Portugal",
+          "people": 1
+        },
+        {
+          "code": "CH",
+          "name": "Switzerland",
+          "people": 1
+        },
+        {
+          "code": "TW",
+          "name": "Taiwan",
+          "people": 1
+        }
+      ]
+    },
+    "issues": {
+      "people": 4,
+      "placed": 1,
+      "list": [
+        {
+          "code": "MX",
+          "name": "Mexico",
+          "people": 1
+        }
+      ]
+    },
+    "pulls": {
+      "people": 26,
+      "placed": 19,
+      "list": [
+        {
+          "code": "MX",
+          "name": "Mexico",
+          "people": 16
+        },
+        {
+          "code": "TW",
+          "name": "Taiwan",
+          "people": 2
+        },
+        {
+          "code": "US",
+          "name": "United States",
+          "people": 1
+        }
+      ]
+    }
+  }
+}

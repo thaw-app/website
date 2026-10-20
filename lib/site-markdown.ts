@@ -9,6 +9,8 @@ import {
   numbers,
   translatorCount,
 } from '@/lib/community-page';
+import { floeContributors, floeCounted, floeNumbers, floeWays } from '@/lib/floe-community';
+import floeCommunity from '@/lib/floe-community.json';
 import {
   floeAlso,
   floeAskAi,
@@ -213,6 +215,31 @@ function communityPage() {
   );
 }
 
+function floeCommunityPage() {
+  return page(
+    'Floe community',
+    'Floe is free and open source, under AGPL-3.0. It began in October 2026, and these are the people who have worked on it so far.',
+    '## In numbers',
+    [
+      ...floeNumbers.map(
+        (number) => `- ${number.label}: ${number.value.toLocaleString('en')} (${number.unit})`,
+      ),
+      '',
+      `${floeCounted.day ? `Counted on ${floeCounted.day}. ` : ''}${floeCounted.older.map((entry) => `${entry.name} are from ${entry.day}. `).join('')}Downloads and Homebrew installs are added once Floe has a release to count them from.`,
+    ],
+    '## The team',
+    floeCommunity.team.map(
+      (member) => `- ${link(member.name ?? member.login, `https://github.com/${member.login}`)}`,
+    ),
+    `## Contributors (${floeContributors.length})`,
+    floeContributors
+      .map((person) => link(person.login, `https://github.com/${person.login}`))
+      .join(', '),
+    '## Take part',
+    floeWays.map((way) => `- ${link(way.title, way.href)}: ${way.detail}`),
+  );
+}
+
 function verifiedPage() {
   const now = verifiedFrom(community.assurance);
   return page(
@@ -269,6 +296,7 @@ const pages: Record<string, () => string | Promise<string>> = {
   '/floe/roadmap': () => roadmap('floe-roadmap.mdx', 'Floe roadmap', sitePages.floeRoadmap.shared),
   '/privacy': privacy,
   '/community': communityPage,
+  '/floe/community': floeCommunityPage,
   '/verified': verifiedPage,
   '/built-with': builtWith,
   [changelogUrl('thaw')]: () => changelog('thaw'),

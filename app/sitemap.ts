@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
 import community from '@/lib/community.json';
+import floeCommunity from '@/lib/floe-community.json';
 import { datedReleases } from '@/lib/releases';
 import { type ProductSlug, products, siteUrl } from '@/lib/shared';
 import { source } from '@/lib/source';
@@ -19,6 +20,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ['/', read],
     ['/floe', newest.floe],
     ['/floe/roadmap', newest.floe],
+    ['/floe/community', Object.values(floeCommunity.readOn).sort().at(-1)],
     ['/community', read],
     ['/verified', read],
     ['/faq', undefined],

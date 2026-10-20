@@ -6,7 +6,7 @@ one domain. Built with [Fumadocs](https://fumadocs.dev) on Next.js.
 | Path | What it is |
 |---|---|
 | `/` | Home page: install, features, what has been verified, and Thaw rebuilt in the browser to try |
-| `/community` | The project in numbers, where its people are, the team, contributors and translators |
+| `/community` | The project in numbers, where its people are, the team, contributors and translators. Floe's is `/floe/community` |
 | `/verified` | What each security badge on the home page means, and who vouches for it |
 | `/built-with` | The stack, the services, the licences and every package, with thanks |
 | `/floe` | Floe's page: the same parts as the home page, built from Floe's README, with Floe's launcher open in the demo |
@@ -86,6 +86,7 @@ build or blanks a number.
 | File | What | From |
 |---|---|---|
 | `lib/community.json` | Stars, downloads, contributors, translators, the Verified values | GitHub, Homebrew, Discord, OpenSSF, SonarQube Cloud, `CREDITS.md` |
+| `lib/floe-community.json` | The same for Floe, for `/floe/community` | The same sources, for `thaw-app/Floe` |
 | `lib/community.json` (`world`) | Stars, issues and pull requests by country | Every stargazer's and author's GitHub profile location |
 | `lib/roadmap-issues.json` | Whether each issue the roadmap links is open | GitHub |
 | `lib/roadmap-requests.json` | The open feature requests, most thumbs-up first | GitHub |

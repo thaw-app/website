@@ -110,7 +110,7 @@ const feet: Record<ProductSlug, Foot> = {
       {
         title: 'Community',
         links: [
-          { text: 'Who builds Thaw', href: '/community' },
+          { text: 'Who builds Floe', href: '/floe/community' },
           { text: 'Contributing', href: `${floeDocs}/contribute` },
           { text: 'Discord', href: links.discord },
           { text: 'GitHub', href: repoUrl('floe') },
