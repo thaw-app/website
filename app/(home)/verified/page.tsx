@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { verified } from '@/components/assurance';
 import { Lead, PageHeader } from '@/components/page-header';
 import { PageShell } from '@/components/page-shell';
+import { ResolvingText } from '@/components/resolving-text';
 import community from '@/lib/community.json';
 import { pageAlternates } from '@/lib/releases';
 import { longDate } from '@/lib/shared';
@@ -53,7 +54,7 @@ export default function VerifiedPage() {
                 <span className="text-sm text-fd-muted-foreground">{entry.term}</span>
                 {now && (
                   <span className="font-display text-3xl leading-tight font-semibold tracking-tight">
-                    {now.value}
+                    <ResolvingText>{now.value}</ResolvingText>
                   </span>
                 )}
               </dt>

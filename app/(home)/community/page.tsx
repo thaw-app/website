@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Contributors } from '@/components/contributors';
 import { Lead, PageHeader } from '@/components/page-header';
 import { PageShell } from '@/components/page-shell';
+import { ResolvingText } from '@/components/resolving-text';
 import { Section } from '@/components/section-label';
 import { WorldMap } from '@/components/world-map';
 import community from '@/lib/community.json';
@@ -38,7 +39,7 @@ export default function CommunityPage() {
               <dt className="text-sm text-fd-muted-foreground">{number.label}</dt>
               {/* The first number, the stars, is the one in the accent. */}
               <dd className="font-display text-4xl font-semibold tracking-tight group-first:text-(--product-tone) xl:text-5xl">
-                {compact.format(number.value)}
+                <ResolvingText>{compact.format(number.value)}</ResolvingText>
               </dd>
               <dd className="text-sm text-fd-muted-foreground">{number.unit}</dd>
             </div>

@@ -1,5 +1,6 @@
 import { Heading } from 'fumadocs-ui/components/heading';
 import Link from 'next/link';
+import { ResolvingText } from '@/components/resolving-text';
 import community from '@/lib/community.json';
 import { compact, longDate } from '@/lib/shared';
 import { readDays, verifiedFrom } from '@/lib/verified';
@@ -71,7 +72,7 @@ export function Assurance() {
               >
                 <span className="text-sm text-fd-muted-foreground">{entry.label}</span>
                 <span className="font-display text-3xl leading-tight font-semibold tracking-tight">
-                  {entry.value}
+                  <ResolvingText>{entry.value}</ResolvingText>
                 </span>
                 {/* How far up its scale the value is, in the colour its own badge has. */}
                 <span aria-hidden className="my-1.5 flex h-1 gap-1">
