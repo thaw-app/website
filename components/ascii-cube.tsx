@@ -8,6 +8,8 @@ import { cubeMask } from './ascii-cube-mask';
 const ramp = ' .·:-=+*#%@';
 /** How long the cube keeps moving after it was last given a reason to, in milliseconds. */
 const restAfter = 6000;
+/** How long a ripple from a click on a drifting icon lasts, in milliseconds. */
+const rippleFor = 1600;
 
 /** "#rrggbb" as three numbers. */
 function channels(hex: string) {
@@ -21,17 +23,22 @@ function channels(hex: string) {
  * near the pointer brighten. Every character is one of the logo's own colours.
  * It moves for a few seconds and then rests, so it does not pull at the eye for good. With reduced motion it is a single still frame.
  * Given another icon's grid it draws that one, in the colours its class sets (global.css).
+ * A drifting icon, Floe's, bobs as a floe does on water instead of melting, and a click
+ * sends a ripple out across it.
  */
 export function AsciiCube({
   className = '',
   mask = cubeMask,
   label = 'Thaw’s icon, an ice cube, drawn in text characters',
+  drift = false,
 }: {
   /** The class that sets another icon's colours, such as `ascii-floe`. */
   className?: string;
   mask?: readonly string[];
   /** What the drawing is, for someone who cannot see it. */
   label?: string;
+  /** Bob on water and ripple from a click, instead of melting in a band of light. */
+  drift?: boolean;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -46,6 +53,7 @@ export function AsciiCube({
     let frame = 0;
     let visible = true;
     let pointer: { x: number; y: number } | null = null;
+    let ripples: { x: number; y: number; at: number }[] = [];
     let cell = { w: 0, h: 0 };
 
     function resize() {
@@ -76,6 +84,9 @@ export function AsciiCube({
       context.font = `${filled ? 700 : 400} ${cell.h * 0.82}px ui-monospace, SFMono-Regular, Menlo, monospace`;
       context.clearRect(0, 0, canvas.width, canvas.height);
       context.textBaseline = 'top';
+      // A floe rises and falls a little on the water, all of a piece.
+      const bob = drift ? Math.sin(seconds * 0.9) * cell.h * 0.08 : 0;
+      ripples = ripples.filter((ripple) => time - ripple.at < rippleFor);
 
       for (let row = 0; row < rows; row++) {
         for (let column = 0; column < columns; column++) {
@@ -84,8 +95,12 @@ export function AsciiCube({
 
           // How strongly the cube's lines show here, lifted so the fainter lower edges read.
           const line = (Number(mark) / 9) ** 0.55;
-          // The band of light, moving down and across.
-          const light = 0.5 + 0.5 * Math.sin(column * 0.16 + row * 0.34 - seconds * 1.1);
+          // The band of light, moving down and across, or for a floe the light on water,
+          // in long waves that roll along it.
+          const light = drift
+            ? 0.5 +
+              0.5 * Math.sin(column * 0.22 - seconds * 1.3 + Math.sin(row * 0.3 + seconds * 0.5))
+            : 0.5 + 0.5 * Math.sin(column * 0.16 + row * 0.34 - seconds * 1.1);
           // A slow shimmer in the body of the icon, different in every cell.
           const shimmer = 0.5 + 0.5 * Math.sin(column * 1.7 + row * 2.3 + seconds * 0.7);
           let level = line > 0.08 ? line * (0.5 + 0.5 * light) : 0.07 + 0.07 * shimmer * light;
@@ -95,6 +110,21 @@ export function AsciiCube({
             const dy = (row + 0.5) * cell.h - pointer.y;
             reach = 0.5 * Math.max(0, 1 - Math.hypot(dx, dy) / (cell.w * 9));
           }
+          // Each ripple is a ring that widens from where the click was and fades as it goes.
+          // Where it passes, the characters brighten and lift.
+          let lift = 0;
+          for (const ripple of ripples) {
+            const age = (time - ripple.at) / rippleFor;
+            const distance = Math.hypot(
+              (column + 0.5) * cell.w - ripple.x,
+              (row + 0.5) * cell.h - ripple.y,
+            );
+            const ring = Math.max(0, 1 - Math.abs(distance - age * cell.w * 26) / (cell.w * 2.5));
+            lift += ring * (1 - age);
+          }
+          // Rings that overlap, from clicks in quick succession, lift no higher than one does.
+          lift = Math.min(1, lift);
+          reach = Math.min(0.8, reach + lift * 0.5);
 
           if (filled) {
             // On a light page the icon is drawn as the app's own light icon: the tile filled
@@ -115,7 +145,7 @@ export function AsciiCube({
           context.fillText(
             ramp[Math.round(level * (ramp.length - 1))],
             column * cell.w,
-            row * cell.h,
+            row * cell.h + bob - lift * cell.h * 0.25,
           );
         }
       }
@@ -157,6 +187,16 @@ export function AsciiCube({
       if (still) draw(0);
       else wake();
     }
+    function onClick(event: MouseEvent) {
+      if (!canvas || !drift || still) return;
+      const box = canvas.getBoundingClientRect();
+      ripples.push({
+        x: event.clientX - box.left,
+        y: event.clientY - box.top,
+        at: performance.now(),
+      });
+      wake();
+    }
     function onPointerLeave() {
       pointer = null;
       if (still) draw(0);
@@ -180,6 +220,7 @@ export function AsciiCube({
     seen.observe(canvas);
     canvas.addEventListener('pointermove', onPointerMove);
     canvas.addEventListener('pointerleave', onPointerLeave);
+    canvas.addEventListener('click', onClick);
 
     resize();
     if (still) draw(0);
@@ -195,8 +236,9 @@ export function AsciiCube({
       seen.disconnect();
       canvas.removeEventListener('pointermove', onPointerMove);
       canvas.removeEventListener('pointerleave', onPointerLeave);
+      canvas.removeEventListener('click', onClick);
     };
-  }, [mask]);
+  }, [mask, drift]);
 
   return (
     <canvas

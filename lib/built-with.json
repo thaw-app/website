@@ -135,7 +135,7 @@
       "url": "https://www.npmjs.com/package/@fumadocs/base-ui",
       "license": "MIT",
       "users": {
-        "Site": "16.16.2"
+        "Site": "16.17.4"
       }
     },
     {
@@ -151,7 +151,7 @@
       "url": "https://www.npmjs.com/package/@playwright/test",
       "license": "Apache-2.0",
       "users": {
-        "Site": "1.64.0"
+        "Site": "1.64.1"
       }
     },
     {
@@ -175,7 +175,7 @@
       "url": "https://www.npmjs.com/package/@types/node",
       "license": "MIT",
       "users": {
-        "Site": "26.6.4"
+        "Site": "26.6.5"
       }
     },
     {
@@ -199,7 +199,7 @@
       "url": "https://www.npmjs.com/package/fumadocs-core",
       "license": "MIT",
       "users": {
-        "Site": "16.16.2"
+        "Site": "16.17.4"
       }
     },
     {
@@ -207,7 +207,7 @@
       "url": "https://www.npmjs.com/package/fumadocs-mdx",
       "license": "MIT",
       "users": {
-        "Site": "15.4.6"
+        "Site": "15.4.7"
       }
     },
     {
@@ -215,15 +215,7 @@
       "url": "https://www.npmjs.com/package/lucide-react",
       "license": "ISC",
       "users": {
-        "Site": "1.53.0"
-      }
-    },
-    {
-      "name": "mermaid",
-      "url": "https://www.npmjs.com/package/mermaid",
-      "license": "MIT",
-      "users": {
-        "Site": "12.1.0"
+        "Site": "1.57.0"
       }
     },
     {
@@ -231,7 +223,7 @@
       "url": "https://www.npmjs.com/package/next",
       "license": "MIT",
       "users": {
-        "Site": "16.4.0"
+        "Site": "16.4.2"
       }
     },
     {
@@ -243,11 +235,19 @@
       }
     },
     {
+      "name": "pele",
+      "url": "https://www.npmjs.com/package/pele",
+      "license": "MIT",
+      "users": {
+        "Site": "1.7.0"
+      }
+    },
+    {
       "name": "postcss",
       "url": "https://www.npmjs.com/package/postcss",
       "license": "MIT",
       "users": {
-        "Site": "8.5.29"
+        "Site": "8.5.30"
       }
     },
     {
@@ -255,7 +255,7 @@
       "url": "https://www.npmjs.com/package/react",
       "license": "MIT",
       "users": {
-        "Site": "19.3.0",
+        "Site": "19.3.1",
         "Floe": "19.3.0"
       }
     },
@@ -264,7 +264,7 @@
       "url": "https://www.npmjs.com/package/react-dom",
       "license": "MIT",
       "users": {
-        "Site": "19.3.0"
+        "Site": "19.3.1"
       }
     },
     {
@@ -296,7 +296,7 @@
       "url": "https://www.npmjs.com/package/zod",
       "license": "MIT",
       "users": {
-        "Site": "4.6.5"
+        "Site": "4.6.7"
       }
     }
   ],

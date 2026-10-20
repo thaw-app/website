@@ -71,6 +71,7 @@ const config = {
         '/',
         '/floe',
         '/floe/roadmap',
+        '/floe/community',
         '/faq',
         '/roadmap',
         '/privacy',

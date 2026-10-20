@@ -5,23 +5,13 @@
     "votes": 2
   },
   {
-    "number": 1086,
-    "title": "Show menu bar only in selected fullscreen apps",
-    "votes": 0
-  },
-  {
-    "number": 1160,
-    "title": "Why we just can't hide it again after scroll? just like v1.x version does",
-    "votes": 0
-  },
-  {
     "number": 1301,
     "title": "Full Arabic Language and RTL Support Across the Entire App",
     "votes": 0
   },
   {
-    "number": 1083,
-    "title": "Promote a revealed item to Visible by Command-drag",
+    "number": 1347,
+    "title": "Option to keep Thaw out of the Dock while Settings is open",
     "votes": 0
   },
   {
@@ -30,8 +20,18 @@
     "votes": 0
   },
   {
-    "number": 1347,
-    "title": "Option to keep Thaw out of the Dock while Settings is open",
+    "number": 1083,
+    "title": "Promote a revealed item to Visible by Command-drag",
+    "votes": 0
+  },
+  {
+    "number": 1086,
+    "title": "Show menu bar only in selected fullscreen apps",
+    "votes": 0
+  },
+  {
+    "number": 1160,
+    "title": "Why we just can't hide it again after scroll? just like v1.x version does",
     "votes": 0
   }
 ]

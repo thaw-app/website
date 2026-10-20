@@ -174,7 +174,7 @@ function settle(fresh, before = {}, beforeDays = {}, today) {
 }
 
 async function communityNumbers(product, published, people, root) {
-  const file = libFile('community.json');
+  const file = libFile(product.community.file);
   const before = existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) : {};
   const token = githubToken();
   const github = githubHeaders(token);
@@ -205,7 +205,7 @@ async function communityNumbers(product, published, people, root) {
     downloadsOf(product.repo),
     updatesRepo ? downloadsOf(updatesRepo) : 0,
     read(`https://discord.com/api/v9/invites/${discordInvite}?with_counts=true`),
-    read(`https://formulae.brew.sh/api/cask/${cask}.json`),
+    cask ? read(`https://formulae.brew.sh/api/cask/${cask}.json`) : null,
   ]);
   // Only a full count replaces the last one: half of it would read as a drop.
   const downloads =

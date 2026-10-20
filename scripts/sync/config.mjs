@@ -43,6 +43,7 @@ const products = [
     // updatesRepo holds the files the app's own updater fetches, which count as downloads too.
     // team is who maintains the project, in the order they are shown.
     community: {
+      file: 'community.json',
       discordInvite: project.discordInvite,
       cask: 'thaw',
       updatesRepo: 'thaw-app/updates',
@@ -155,6 +156,16 @@ const products = [
   {
     slug: 'floe',
     ...project.products.floe,
+    // Floe's repo began on this day, so every commit in it counts.
+    contributorsSince: '2026-10-03',
+    notPeople: ['claude', 'cursoragent', 'lathe-agent-oa'],
+    // The numbers on Floe's community page (/floe/community). It has no Homebrew cask and no
+    // OpenSSF entry yet, so those are not asked for. It shares Thaw's Discord.
+    community: {
+      file: 'floe-community.json',
+      discordInvite: project.discordInvite,
+      team: ['diazdesandi'],
+    },
     // Floe's README is laid out as Thaw's is, and its page leaves out what the home page
     // does, for the same reasons. Its roadmap is a page of its own, written in
     // content/site/floe-roadmap.mdx.

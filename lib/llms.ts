@@ -30,6 +30,11 @@ const sitePages: Record<ProductSlug, Link[]> = {
       '/floe/roadmap',
       'What comes next for Floe, what comes later, what is not planned, and what has shipped.',
     ],
+    [
+      'Floe community',
+      '/floe/community',
+      'Floe in numbers, where to find the people behind it, and who has contributed.',
+    ],
     ['Floe changelog', changelogUrl('floe'), 'Every Floe release and what it changed.'],
     ['Floe release feed', feedUrl('floe'), 'Floe’s releases as an Atom feed.'],
   ],
