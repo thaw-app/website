@@ -4,6 +4,7 @@ import { Check, Copy, Download } from 'lucide-react';
 import Link from 'next/link';
 import { type KeyboardEvent, useId, useRef, useState } from 'react';
 import { InstallFacts } from '@/components/install-facts';
+import { SweepText } from '@/components/sweep-text';
 import { installFacts as factsFor, installWays as ways } from '@/lib/install';
 import { repoUrl } from '@/lib/shared';
 
@@ -100,7 +101,9 @@ export function InstallTabs() {
                   <span aria-hidden className="text-fd-muted-foreground select-none">
                     $
                   </span>
-                  <code className="truncate">{way.command}</code>
+                  <code className="truncate">
+                    <SweepText>{way.command}</SweepText>
+                  </code>
                 </button>
                 <button
                   type="button"

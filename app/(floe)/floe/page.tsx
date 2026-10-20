@@ -52,12 +52,14 @@ export default function FloePage() {
       <main id="content" data-tone="floe" className="flex flex-1 flex-col">
         <JsonLd data={structuredData()} />
         <ProductLanding
-          // Floe's icon in characters and in its own blue, where Thaw's page has its cube.
+          // Floe's icon in characters and in its own blue, where Thaw's page has its cube. It
+          // drifts where the cube melts.
           mark={
             <AsciiCube
               mask={floeMask}
               label="Floe’s icon, a floe of ice, drawn in text characters"
               className="ascii-floe"
+              drift
             />
           }
           title={sitePages.floe.title}
