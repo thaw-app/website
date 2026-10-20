@@ -1418,3 +1418,32 @@ h1.font-display {
 [data-theme-toggle] svg {
   fill: none;
 }
+
+/* A diagram in the docs (components/mermaid.tsx), in the site's own ground, type and lines:
+   square corners, neutral boxes, and the product's colour for what Pele marks out. The colours
+   are variables, so a change of theme recolours it without drawing it again. */
+.diagram .pele {
+  --pele-bg: var(--color-fd-background);
+  --pele-fg: var(--color-fd-foreground);
+  --pele-muted: var(--color-fd-muted-foreground);
+  --pele-line: var(--color-fd-muted-foreground);
+  --pele-surface: color-mix(in oklab, var(--color-fd-foreground) 4%, var(--color-fd-background));
+  --pele-surface-alt: color-mix(
+    in oklab,
+    var(--color-fd-foreground) 8%,
+    var(--color-fd-background)
+  );
+  --pele-border: var(--color-fd-border);
+  --pele-accent: var(--product-tone);
+  --pele-font: var(--font-sans);
+  --pele-font-mono: var(--font-mono);
+  --pele-radius: 0;
+}
+
+/* Shrunk to a phone's width a diagram's words are too small to read, so there it keeps a
+   width of its own and its frame scrolls. */
+@container (width < 40rem) {
+  .diagram .pele {
+    min-width: 40rem;
+  }
+}
