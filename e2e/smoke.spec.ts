@@ -279,14 +279,25 @@ test('the conure is on the page that is not there, and not in its footer too', a
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(
     'There is no page at this address.',
   );
-  // 24 pixels by 20, each drawn three across.
+  // 24 pixels by 22, the top two for a hat, each drawn three across.
   const bird = page.locator('.stray-conure canvas');
   await expect.poll(async () => (await bird.boundingBox())?.width).toBe(72);
-  expect((await bird.boundingBox())?.height).toBe(60);
+  expect((await bird.boundingBox())?.height).toBe(66);
   // The footer's art arrives when the foot of the page is near, and brings no second bird.
   await page.locator('.footer-art').scrollIntoViewIfNeeded();
   await expect(page.locator('.footer-art canvas.footer-wordmark')).toBeVisible();
   await expect(page.locator('.footer-conure')).toHaveCount(0);
+});
+
+test('the conure can be given a hat', async ({ page }) => {
+  await page.goto('/no-such-page?conure-hat=sheriff');
+  // Standing, the bird's crown is on the fifth row, so anything above that is the hat.
+  const hat = () =>
+    page.locator('.stray-conure canvas').evaluate((canvas: HTMLCanvasElement) => {
+      const pixels = canvas.getContext('2d')?.getImageData(0, 0, canvas.width, 4).data ?? [];
+      return pixels.some((value, index) => index % 4 === 3 && value > 0);
+    });
+  await expect.poll(hat).toBe(true);
 });
 
 test('the footer’s band keeps growing with a wide window', async ({ page, isMobile }) => {

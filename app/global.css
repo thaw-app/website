@@ -778,14 +778,14 @@ html > body[data-scroll-locked] {
   height: calc(24vw + 5rem);
 }
 
-/* The conure on the footer's wordmark: 24 pixels by 20, drawn large with hard edges.
+/* The conure on the footer's wordmark: 24 pixels by 22, the top two for a hat, drawn large with hard edges.
    The wordmark says where the letters' tops are and how big one of its pixels should be. */
 .footer-conure {
   width: calc(24 * var(--pixel, 4px));
-  height: calc(20 * var(--pixel, 4px));
+  height: calc(22 * var(--pixel, 4px));
   image-rendering: pixelated;
-  /* Down to the tops of the letters, less the bird's own height to its feet, 13 pixels down. */
-  margin-top: calc(var(--perch-y, 6rem) - 13 * var(--pixel, 4px));
+  /* Down to the tops of the letters, less the bird's own height to its feet, 15 pixels down. */
+  margin-top: calc(var(--perch-y, 6rem) - 15 * var(--pixel, 4px));
   /* Where it sits when nothing moves: in the middle, on the ampersand. */
   translate: calc(var(--perch-x, 50vw) - 12 * var(--pixel, 4px)) 0;
   will-change: translate;
@@ -811,7 +811,7 @@ html > body[data-scroll-locked] {
   left: calc(-4 * var(--pixel));
   width: calc(24 * var(--pixel));
   max-width: none;
-  height: calc(20 * var(--pixel));
+  height: calc(22 * var(--pixel));
   image-rendering: pixelated;
 }
 

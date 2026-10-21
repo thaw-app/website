@@ -340,9 +340,9 @@ export function FooterConure() {
         // Measured only while a pointer is over the footer, so nothing is read otherwise.
         if (pointer && !behind) {
           const box = bird.getBoundingClientRect();
-          const head = { x: box.left + box.width * 0.6, y: box.top + pixel * 3 };
+          const head = { x: box.left + box.width * 0.6, y: box.top + pixel * 5 };
           if (Math.hypot(pointer.x - head.x, pointer.y - head.y) < body * 2.2) {
-            const above = pointer.y < box.top - pixel;
+            const above = pointer.y < box.top + pixel;
             pose = above ? 'bobUp' : pointer.x < head.x - pixel * 3 ? 'looking' : 'perched';
           }
         }

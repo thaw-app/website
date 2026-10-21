@@ -437,23 +437,117 @@ const palettes = {
   },
 };
 
-// The picture's size in its own pixels.
+// On some visits it wears a hat, one picked when the page loads: a sheriff's with a star
+// on its chest, an outlaw's with a bandana over its throat, or a bolero with a red bow at
+// the throat. Each hat is three rows, its brim on the crown,
+// and the letters are its own colours: h the crown, n the band, s the brim.
+type Hat = 'sheriff' | 'outlaw' | 'bolero';
+const hats: Record<Hat, string[]> = {
+  sheriff: ['..hhh..', 'h.nnn.h', '.sssss.'],
+  outlaw: ['..hhh..', 'h.nnn.h', '.sssss.'],
+  bolero: ['....hhh....', '...hhhhh...', 'sssssssssss'],
+};
+// Y the sheriff's star, R the red of a bandana or a bow and r its knot. The outlaw's
+// black hat is charcoal on a dark page, so it does not vanish into it.
+const wear: Record<Hat, Record<'dark' | 'light', Record<string, string>>> = {
+  sheriff: {
+    dark: { h: '#c8955a', s: '#9c6c3a', n: '#5a3a1f', Y: '#f2c230' },
+    light: { h: '#c8955a', s: '#9c6c3a', n: '#5a3a1f', Y: '#f2c230' },
+  },
+  outlaw: {
+    dark: { h: '#3d3836', s: '#2a2624', n: '#8a7a6e', R: '#c8323a', r: '#9a2430' },
+    light: { h: '#2a2624', s: '#1a1716', n: '#8a7a6e', R: '#c8323a', r: '#9a2430' },
+  },
+  bolero: {
+    dark: { h: '#c8955a', s: '#a87840', R: '#c8323a' },
+    light: { h: '#c8955a', s: '#a87840', R: '#c8323a' },
+  },
+};
+// Head down, or upside down, the hat would sit over its face, so it is not drawn.
+const bareheaded = new Set(['pecking', 'tugging', 'hanging']);
+
+// Two visits in three it wears nothing. `?conure-hat=sheriff` and the like puts one on.
+function pickHat(): Hat | null {
+  if (typeof window === 'undefined') return null;
+  const asked = new URLSearchParams(window.location.search).get('conure-hat');
+  if (asked && asked in hats) return asked as Hat;
+  if (Math.random() < 2 / 3) return null;
+  const all = Object.keys(hats) as Hat[];
+  return all[Math.floor(Math.random() * all.length)];
+}
+export const hat = pickHat();
+
+// Room above the poses for a hat, in rows.
+const headroom = 2;
+// The picture's size in its own pixels: the poses, and the room above them.
 export const columns = 24;
-export const rows = 20;
+export const rows = 20 + headroom;
+
+// Each pose as it is drawn, hat and all, worked out the first time it is needed.
+const dressed = new Map<string, string[][]>();
+function dress(pose: string) {
+  let grid = dressed.get(pose);
+  if (grid) return grid;
+  grid = [...Array(headroom)].map(() => [...'.'.repeat(columns)]);
+  grid.push(...poses[pose].map((line) => [...line]));
+  if (hat && !bareheaded.has(pose)) put(grid, hat);
+  dressed.set(pose, grid);
+  return grid;
+}
+
+function put(grid: string[][], on: Hat) {
+  const find = (mark: string) =>
+    grid.flatMap((line, row) =>
+      line.flatMap((each, column) => (each === mark ? [{ column, row }] : [])),
+    );
+  const throat = find('T');
+  if (on === 'sheriff') {
+    // The star on its chest, beside the top of the yellow belly.
+    const belly = find('L')[0];
+    if (belly) grid[belly.row + 1][belly.column - 1] = 'Y';
+  } else if (on === 'outlaw') {
+    // The bandana over the whole throat, with its point hanging below the middle.
+    for (const { column, row } of throat) grid[row][column] = 'R';
+    const low = Math.max(...throat.map(({ row }) => row));
+    const along = throat.filter(({ row }) => row === low).map(({ column }) => column);
+    const middle = Math.round(along.reduce((sum, each) => sum + each, 0) / along.length);
+    if (throat.length && grid[low + 1][middle] !== '.') grid[low + 1][middle] = 'r';
+  } else if (throat.length) {
+    // The bow at the bottom of the throat, two pixels wide.
+    const { column, row } = throat.reduce((last, each) =>
+      each.row > last.row || (each.row === last.row && each.column < last.column) ? each : last,
+    );
+    grid[row][column] = 'R';
+    if (grid[row][column + 1] !== '.') grid[row][column + 1] = 'R';
+  }
+  // The hat goes on the crown, or on the orange patch over the beak where it faces you.
+  const crown = find('C');
+  const top = crown.length ? crown : find('P');
+  if (!top.length) return;
+  const row = top[0].row;
+  const along = top.filter((each) => each.row === row).map(({ column }) => column);
+  const middle = Math.round(along.reduce((sum, each) => sum + each, 0) / along.length);
+  hats[on].forEach((line, step) => {
+    [...line].forEach((mark, offset) => {
+      const y = row - hats[on].length + 1 + step;
+      const x = middle - Math.floor(line.length / 2) + offset;
+      if (mark !== '.' && y >= 0 && x >= 0 && x < columns) grid[y][x] = mark;
+    });
+  });
+}
 
 /**
- * Draws one pose, a pixel per cell. The canvas is 24 pixels by 20 and is scaled up by CSS
- * with hard edges, so the bird stays crisp at any size.
+ * Draws one pose, a pixel per cell, with its hat if it has one. The canvas is 24 pixels by
+ * 22 and is scaled up by CSS with hard edges, so the bird stays crisp at any size.
  */
 export function drawPose(context: CanvasRenderingContext2D, pose: string) {
-  const palette = document.documentElement.classList.contains('dark')
-    ? palettes.dark
-    : palettes.light;
+  const theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+  const palette: Record<string, string> = { ...palettes[theme], ...(hat ? wear[hat][theme] : {}) };
   context.clearRect(0, 0, columns, rows);
-  poses[pose].forEach((line, row) => {
-    [...line].forEach((mark, column) => {
+  dress(pose).forEach((line, row) => {
+    line.forEach((mark, column) => {
       if (mark === '.') return;
-      context.fillStyle = palette[mark as keyof typeof palette];
+      context.fillStyle = palette[mark];
       context.fillRect(column, row, 1, 1);
     });
   });
