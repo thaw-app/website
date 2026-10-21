@@ -300,6 +300,35 @@ test('the conure can be given a hat', async ({ page }) => {
   await expect.poll(hat).toBe(true);
 });
 
+test('three clicks on a conure in a hat open the shooting gallery', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/?conure-hat=bolero');
+  await page.locator('.footer-art').scrollIntoViewIfNeeded();
+  // With reduced motion the bird sits still on the ampersand, so it can be clicked, once
+  // the wordmark has said where the ampersand is.
+  const bird = page.locator('canvas.footer-conure');
+  await expect(bird).toBeVisible();
+  await expect
+    .poll(() =>
+      page.locator('.footer-art').evaluate((art) => art.style.getPropertyValue('--perch-x')),
+    )
+    .not.toBe('');
+  const box = await bird.boundingBox();
+  if (!box) throw new Error('no bird');
+  for (let click = 0; click < 3; click++) {
+    await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+  }
+  const target = page.locator('.footer-shootout-target').first();
+  await expect(target).toBeVisible();
+  await target.dispatchEvent('pointerdown');
+  await expect(page.locator('.footer-shootout-board')).toContainText('1 hit');
+  // The arrows bring up the sights to aim with.
+  await page.keyboard.press('ArrowRight');
+  await expect(page.locator('.footer-shootout-sights')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.footer-shootout')).toHaveCount(0);
+});
+
 test('the footer’s band keeps growing with a wide window', async ({ page, isMobile }) => {
   test.skip(isMobile, 'a phone is never this wide');
   // A limit on it once squeezed the words on a wide window and cut their tops off.

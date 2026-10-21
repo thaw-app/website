@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { onThemeChange } from '@/lib/on-theme-change';
-import { columns, drawPose, rows, touches } from './conure-poses';
+import { columns, drawPose, hat, rows, touches } from './conure-poses';
 
 // Where the bird can be: off either side of the picture, on the h of "thaw", on the
 // ampersand, on the l of "floe", and on the floor between the ampersand and "floe".
@@ -179,22 +179,57 @@ export function FooterConure() {
     }
 
     show('perched');
-    const unthemed = onThemeChange(() => show(shown, true));
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      return unthemed;
+    const themed = onThemeChange(() => show(shown, true));
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Where the bird was last put. A bird that is touched takes off from where it is:
+    // `fled` is when, and from where.
+    let at = { x: 0, y: 0 };
+    let fled: { when: number; x: number; y: number } | null = null;
+
+    // The bird itself takes no clicks, so the pictures behind it stay reachable; the
+    // footer listens for it. Touched, it flies off; but in a hat it is game, and stands
+    // its ground: three clicks on it inside a second and a half open the shooting gallery
+    // (see footer-shootout), which draws its own conure. Meanwhile this one waits, out of
+    // sight, on the ampersand, and flies off when the game is over.
+    let clicks: number[] = [];
+    let playing = false;
+    function onPointerDown(event: PointerEvent) {
+      if (!bird || !stage || playing || !touches(event, bird)) return;
+      if (!hat) {
+        if (!still && !fled) fled = { when: performance.now(), ...at };
+        return;
+      }
+      clicks = [...clicks.filter((when) => event.timeStamp - when < 1500), event.timeStamp];
+      if (clicks.length < 3) return;
+      clicks = [];
+      stage.dispatchEvent(new CustomEvent('conure:shootout'));
     }
+    function onStart() {
+      playing = true;
+    }
+    function onEnd() {
+      playing = false;
+      if (!still) fled = { when: performance.now(), ...at };
+    }
+    stage.addEventListener('pointerdown', onPointerDown);
+    stage.addEventListener('conure:shootout', onStart);
+    stage.addEventListener('conure:shootout-end', onEnd);
+    const stop = () => {
+      themed();
+      stage.removeEventListener('pointerdown', onPointerDown);
+      stage.removeEventListener('conure:shootout', onStart);
+      stage.removeEventListener('conure:shootout-end', onEnd);
+    };
+    if (still) return stop;
 
     // The visit is timed from when the footer comes into view, not from when the page
     // loaded: otherwise the first thing seen is the bird part-way through, already hopped
     // off the ampersand or half out of the picture.
     let started = 0;
 
-    // Where the visitor's pointer is in the window while it is over the footer, and where
-    // the bird was last put. A bird that is touched takes off from where it
-    // is: `fled` is when, and from where.
+    // Where the visitor's pointer is in the window while it is over the footer.
     let pointer: { x: number; y: number } | null = null;
-    let at = { x: 0, y: 0 };
-    let fled: { when: number; x: number; y: number } | null = null;
     // What the routine last had it doing, how many bites it has taken of the ampersand
     // this visit, and whether any are waiting to be mended.
     let routinePose = '';
@@ -234,6 +269,14 @@ export function FooterConure() {
         if (name === 'left' || name === 'right') return spot;
         return { x: spot.x + (routines[name].at(-1)?.[2] ?? 0) * pixel, y: spot.y };
       };
+
+      if (playing) {
+        delete stage.dataset.conureBehind;
+        at = place('sign');
+        show('perched');
+        bird.style.translate = `${at.x}px ${at.y}px`;
+        return;
+      }
 
       if (fled) {
         delete stage.dataset.conureBehind;
@@ -391,21 +434,14 @@ export function FooterConure() {
       bird.style.translate = `${x}px ${y}px`;
     }
 
-    // The bird itself takes no clicks, so the pictures behind it stay reachable; the
-    // footer listens for it.
     function onPointerMove(event: PointerEvent) {
       pointer = { x: event.clientX, y: event.clientY };
     }
     function onPointerLeave() {
       pointer = null;
     }
-    function onPointerDown(event: PointerEvent) {
-      if (!bird || fled) return;
-      if (touches(event, bird)) fled = { when: performance.now(), ...at };
-    }
     stage.addEventListener('pointermove', onPointerMove);
     stage.addEventListener('pointerleave', onPointerLeave);
-    stage.addEventListener('pointerdown', onPointerDown);
 
     const seen = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting && !visible) started = performance.now();
@@ -416,10 +452,9 @@ export function FooterConure() {
     return () => {
       cancelAnimationFrame(frame);
       seen.disconnect();
-      unthemed();
+      stop();
       stage.removeEventListener('pointermove', onPointerMove);
       stage.removeEventListener('pointerleave', onPointerLeave);
-      stage.removeEventListener('pointerdown', onPointerDown);
     };
   }, []);
 
