@@ -1,8 +1,9 @@
 'use client';
 
-import { type PointerEvent, useId, useRef, useState } from 'react';
+import { type PointerEvent, useCallback, useId, useRef, useState } from 'react';
 import { Choice } from '@/components/choice';
 import { ResolvingText } from '@/components/resolving-text';
+import { WorldGlobe } from '@/components/world-globe';
 import { longDate } from '@/lib/shared';
 import world from '@/lib/world-map.json';
 
@@ -26,13 +27,17 @@ const land = path(Object.values(dots).flat());
 type World = typeof import('@/lib/community.json')['world'];
 
 /**
- * Where a product's stars, pull requests and issues come from: the world as a grid
- * of dots, with each country lit by its share. The counts are made when the site is built,
- * from the locations on GitHub profiles, and cover only the people who give one.
+ * Where a product's stars, pull requests and issues come from: a globe with a marker on
+ * each country, sized by its share, or, without WebGL, the world as a grid of dots lit the
+ * same way. The counts are made when the site is built, from the locations on GitHub
+ * profiles, and cover only the people who give one.
  */
 export function WorldMap({ counts }: { counts: World | null | undefined }) {
   const [view, setView] = useState<(typeof views)[number]['id']>('stargazers');
   const lensRef = useRef<SVGCircleElement>(null);
+  // The globe, unless the browser has no WebGL for it: then the flat map.
+  const [flat, setFlat] = useState(false);
+  const fail = useCallback(() => setFlat(true), []);
   // An id that can stand in url(#…): React's own has characters that cannot.
   const id = `map${useId().replace(/[^\w-]/g, '')}`;
   const chosen = views.find((candidate) => candidate.id === view) ?? views[0];
@@ -58,6 +63,10 @@ export function WorldMap({ counts }: { counts: World | null | undefined }) {
     lens.setAttribute('cx', String(point.x));
     lens.setAttribute('cy', String(point.y));
   };
+  const described = `A world with ${countries.length} countries lit: ${countries
+    .slice(0, 5)
+    .map((country) => country.name)
+    .join(', ')} and others.`;
   const leave = () => lensRef.current?.setAttribute('cx', '-100');
   const litDots = countries.flatMap((country) =>
     dots[country.code]
@@ -83,57 +92,63 @@ export function WorldMap({ counts }: { counts: World | null | undefined }) {
       />
 
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_15rem]">
-        <svg
-          viewBox={`0 0 ${world.columns} ${world.rows}`}
-          role="img"
-          aria-label={`A world map with ${countries.length} countries lit: ${countries
-            .slice(0, 5)
-            .map((country) => country.name)
-            .join(', ')} and others.`}
-          className="w-full"
-          fill="none"
-          strokeWidth={0.55}
-          strokeLinecap="round"
-          onPointerMove={follow}
-          onPointerLeave={leave}
-        >
-          <defs>
-            <radialGradient id={`${id}-glow`}>
-              <stop offset="0" stopColor="white" />
-              <stop offset="1" stopColor="white" stopOpacity="0" />
-            </radialGradient>
-            <mask id={`${id}-lens`}>
-              <circle
-                ref={lensRef}
-                cx={-100}
-                cy={0}
-                r={world.columns * 0.07}
-                fill={`url(#${id}-glow)`}
-              />
-            </mask>
-          </defs>
-          {/* Land with no one counted in it: faint, but a shade stronger on a light page, where
-              grey dots on grey all but go. */}
-          <path d={land} className="stroke-fd-foreground/25 dark:stroke-fd-foreground/15" />
-          {litDots.map(({ country, d, opacity }) => (
-            <path
-              key={country.code}
-              d={d}
-              className="stroke-(--world-lit)"
-              strokeWidth={0.7}
-              opacity={opacity}
-            >
-              <title>{`${country.name}: ${share(country.people)}`}</title>
-            </path>
-          ))}
-          {/* The same dots again at full strength, seen only through the lens. */}
-          <g aria-hidden mask={`url(#${id}-lens)`} className="pointer-events-none">
-            <path d={land} className="stroke-fd-foreground/60" />
-            {litDots.map(({ country, d }) => (
-              <path key={country.code} d={d} className="stroke-(--world-lit)" strokeWidth={0.85} />
+        {flat ? (
+          <svg
+            viewBox={`0 0 ${world.columns} ${world.rows}`}
+            role="img"
+            aria-label={described}
+            className="w-full"
+            fill="none"
+            strokeWidth={0.55}
+            strokeLinecap="round"
+            onPointerMove={follow}
+            onPointerLeave={leave}
+          >
+            <defs>
+              <radialGradient id={`${id}-glow`}>
+                <stop offset="0" stopColor="white" />
+                <stop offset="1" stopColor="white" stopOpacity="0" />
+              </radialGradient>
+              <mask id={`${id}-lens`}>
+                <circle
+                  ref={lensRef}
+                  cx={-100}
+                  cy={0}
+                  r={world.columns * 0.07}
+                  fill={`url(#${id}-glow)`}
+                />
+              </mask>
+            </defs>
+            {/* Land with no one counted in it: faint, but a shade stronger on a light page, where
+                grey dots on grey all but go. */}
+            <path d={land} className="stroke-fd-foreground/25 dark:stroke-fd-foreground/15" />
+            {litDots.map(({ country, d, opacity }) => (
+              <path
+                key={country.code}
+                d={d}
+                className="stroke-(--world-lit)"
+                strokeWidth={0.7}
+                opacity={opacity}
+              >
+                <title>{`${country.name}: ${share(country.people)}`}</title>
+              </path>
             ))}
-          </g>
-        </svg>
+            {/* The same dots again at full strength, seen only through the lens. */}
+            <g aria-hidden mask={`url(#${id}-lens)`} className="pointer-events-none">
+              <path d={land} className="stroke-fd-foreground/60" />
+              {litDots.map(({ country, d }) => (
+                <path
+                  key={country.code}
+                  d={d}
+                  className="stroke-(--world-lit)"
+                  strokeWidth={0.85}
+                />
+              ))}
+            </g>
+          </svg>
+        ) : (
+          <WorldGlobe countries={countries} label={described} onFail={fail} />
+        )}
 
         <div className="flex flex-col gap-3">
           <p className="text-fd-muted-foreground">

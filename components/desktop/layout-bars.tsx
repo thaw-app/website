@@ -16,7 +16,7 @@ import { barItems, type MenuBarAction, type MenuBarModel, type SectionId } from 
 import { Menu } from './thaw-ui';
 
 /** Where each section's bar sits in the Layout pane, in points from its top. */
-export const layoutBars = { top: 119.5, pitch: 85.5, height: 40 };
+export const layoutBars = { top: 115, pitch: 86, height: 48 };
 
 const names: Record<SectionId, string> = {
   visible: 'Visible',
@@ -191,25 +191,11 @@ export function LayoutBars({
         const top = layoutBars.top + layoutBars.pitch * row;
         return (
           <div key={section}>
-            {/* The pane's own data labels the first two bars; the third appears only when switched on. */}
-            {section === 'alwaysHidden' && (
-              <h3
-                className="thaw-el thaw-h"
-                style={{
-                  left: 24,
-                  top: top - 23,
-                  fontSize: 11,
-                  fontWeight: 600,
-                  lineHeight: '13px',
-                }}
-              >
-                {names[section]}
-              </h3>
-            )}
+            {/* The pane's own data labels each bar, the third one with it (thaw-pane.tsx). */}
             {bar(section, 'thaw-el thaw-layout-bar', {
               left: 20,
               top,
-              width: 668,
+              width: 658,
               height: layoutBars.height,
             })}
           </div>

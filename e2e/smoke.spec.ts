@@ -455,3 +455,70 @@ test('the search API is described, and says what went wrong in JSON', async ({ r
     'urn:air:localhost:api:search',
   );
 });
+
+test('the community page shows where people are on a globe, and on the flat map without WebGL', async ({
+  page,
+}) => {
+  await page.goto('/community');
+  const globe = page.getByRole('img', { name: /^A world with \d+ countries lit/ });
+  await expect(globe).toBeVisible();
+  await expect(globe).toHaveJSProperty('tagName', 'CANVAS');
+  // The view switch still changes what it counts.
+  await page.getByRole('button', { name: 'Pull requests' }).click();
+  await expect(page.getByText('Share of the pull requests from people')).toBeVisible();
+
+  await page.addInitScript(() => {
+    HTMLCanvasElement.prototype.getContext = () => null;
+  });
+  await page.reload();
+  const map = page.getByRole('img', { name: /^A world with \d+ countries lit/ });
+  await expect(map).toHaveJSProperty('tagName', 'svg');
+});
+
+test('the demo’s Thaw window switches page tabs, picks pills, and toggles reveal ways', async ({
+  page,
+  isMobile,
+}) => {
+  test.skip(isMobile, 'a phone gets a picture of the demo');
+  await page.goto('/#try');
+  const window = page.locator('.thaw-window');
+  await window
+    .locator('.thaw-sidebar')
+    .getByRole('button', { name: 'Layout', exact: true })
+    .click();
+
+  // The page's tabs: one chosen, the arrows move along them, and the page follows.
+  const tabs = window.getByRole('tablist', { name: 'Layout sections' });
+  await expect(tabs.getByRole('tab', { name: 'Options' })).toHaveAttribute('aria-selected', 'true');
+  await tabs.getByRole('tab', { name: 'Options' }).focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(tabs.getByRole('tab', { name: 'Groups' })).toHaveAttribute('aria-selected', 'true');
+  await expect(window.getByText('No item groups.', { exact: false })).toBeVisible();
+  await tabs.getByRole('tab', { name: 'Options' }).click();
+
+  // A pill choice: one checked at a time.
+  const arrangement = window.getByRole('radiogroup', { name: 'Item arrangement' });
+  await arrangement.getByRole('radio', { name: 'Manual' }).click();
+  await expect(arrangement.getByRole('radio', { name: 'Manual' })).toHaveAttribute(
+    'aria-checked',
+    'true',
+  );
+  await expect(arrangement.getByRole('radio', { name: 'Automatic' })).toHaveAttribute(
+    'aria-checked',
+    'false',
+  );
+
+  // Click, Hover and Scroll are a native segmented control: each one toggles on its own.
+  await window
+    .locator('.thaw-sidebar')
+    .getByRole('button', { name: 'Visibility', exact: true })
+    .click();
+  const hover = window.getByRole('button', { name: 'Hover', exact: true });
+  await expect(hover).toHaveAttribute('aria-pressed', 'false');
+  await hover.click();
+  await expect(hover).toHaveAttribute('aria-pressed', 'true');
+  await expect(window.getByRole('button', { name: 'Click', exact: true })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  );
+});

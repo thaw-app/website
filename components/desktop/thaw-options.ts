@@ -7,11 +7,12 @@
 const displays = ['Built-in Display', 'External Display'];
 const automaticUpdates = ['Off', 'Check only', 'Check and download'];
 
-// Read from Thaw's source: each list is the enum or the picker rows the app shows.
+// Read from the app's own pop-ups (Thaw 3.0.0-beta.4), with the placeholders above for the
+// displays and profile of the Mac they were read on.
 const options: Record<string, Record<string, (string | null)[]>> = {
   layout: {
     'Item arrangement': ['Automatic', 'Manual'],
-    'Section divider style': ['None', 'Chevron'],
+    'Section divider style': ['None', 'Chevron', 'Line', 'Dot', 'Slash', 'Custom'],
   },
   visibility: {
     'Where the panel opens': ['Where you left it', 'Centered', 'At the pointer'],
@@ -19,7 +20,17 @@ const options: Record<string, Record<string, (string | null)[]>> = {
   appearance: {
     'Shape fill': ['None', 'Solid', 'Gradient', 'Glass', 'Adaptive', 'Adaptive Gradient'],
     Background: ['None', 'Solid', 'Gradient', 'Glass', 'Adaptive'],
-    'Glass Style': ['Match System', 'Regular', 'Clear', 'Liquid Glass', 'Dynamic Glass'],
+    'Glass Style': [
+      'Match System',
+      'Regular',
+      'Clear',
+      'Liquid Glass',
+      'Dynamic Glass',
+      'Invert (Experimental)',
+      'Edge (Experimental)',
+      'Sheer (Experimental)',
+      'Dim (Experimental)',
+    ],
   },
   'thaw-bar': {
     // In the app this lists whichever displays are connected.
@@ -28,17 +39,20 @@ const options: Record<string, Record<string, (string | null)[]>> = {
     Arrangement: ['Horizontal', 'Vertical', 'Grid'],
   },
   displays: {
-    'When applying spacing': [
-      'Apply spacing immediately (restarts menu bar apps)',
-      'Wait until next restart (no apps restarted)',
+    'When spacing changes': [
+      'Ask before restarting menu bar apps',
+      'Restart menu bar apps right away',
+      'Wait until the apps restart',
     ],
+  },
+  profiles: {
+    'On this display': ['None', ...displays],
+  },
+  automation: {
+    Profile: ['Desk'],
   },
   privacy: {
     Display: displays,
-    'Automatic updates': automaticUpdates,
-  },
-  about: {
-    'Update channel': ['Beta', 'Nightly'],
     'Automatic updates': automaticUpdates,
   },
 };

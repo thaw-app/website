@@ -15,6 +15,44 @@ This page is for the developers of those apps, and came out of [a question in Di
 4. Show each item that should hide on its own from a helper app with its own bundle identifier.
 5. Test from `/Applications`, then check the item in Thaw’s Menu Bar Layout.
 
+## Hand it to your coding agent
+
+Paste this into Claude Code, Codex, Cursor or another coding agent, in your app’s project. It sums up this page and sends the agent here for the details.
+
+```text
+Make this app's menu bar items work with Thaw and other menu bar managers on
+macOS 27. Read the guide first: https://getthaw.app/docs/thaw/app-developers.md
+
+Thaw knows an item by the app's bundle identifier and the item's name, which it
+reads from the autosaveName and the accessibility title, identifier, description
+and value. If either changes, the item loses its place.
+
+1. Find every NSStatusItem the app makes.
+2. Give each one a fixed autosaveName and accessibility identifier, such as
+   "com.example.app.cpu", and an accessibility label, before its first
+   isVisible. One name per item, never reused. A second item of the same kind
+   gets ".2", a third ".3".
+3. Make each item once, keep it for as long as the app runs, and hide it with
+   isVisible. Don't remove and remake items, and don't use .removalAllowed.
+4. Keep changing text, such as a temperature or a count, out of the button
+   title. Set the title to "", draw the text into the button image with
+   imagePosition = .imageOnly, and pass the reading to setAccessibilityValue.
+5. Don't set the title of the status item's window.
+6. Don't write to AppKit's visibility or position defaults or to Control
+   Center's preferences, and don't reorder items from code.
+7. Make the app an agent with LSUIElement in Info.plist, not by setting the
+   .accessory activation policy before the run loop starts.
+8. Let only one copy run: a second launch hands over to the first and quits.
+9. If an item should hide on its own, apart from the app's other items, tell me,
+   and propose a helper app with its own bundle identifier as the guide
+   describes. Don't build it without asking.
+
+When you're done, list each item with its autosaveName and what you changed.
+Then tell me how to check it: install the app in /Applications, put each item
+in a section in Thaw's Menu Bar Layout, quit and reopen the app, and see that
+each item is listed once, under its own name, in its section.
+```
+
 ## How Thaw tells items apart
 
 Thaw knows an item by two things:

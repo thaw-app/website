@@ -134,11 +134,13 @@ export type ThawSwitches = Record<string, boolean>;
 export const defaultSwitches: ThawSwitches = {
   login: true,
   simple: false,
-  descriptions: false,
+  descriptions: true,
   icon: true,
   menus: true,
   'right-click': true,
-  live: true,
+  // Simple Mode's own two: the sections at the top of its page, and update checks.
+  preview: false,
+  updates: true,
 };
 
 /**

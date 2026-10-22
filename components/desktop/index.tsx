@@ -27,7 +27,13 @@ import {
   defaultSwitches,
 } from './model';
 import { StatusMenu, type StatusMenuRow } from './status-menu';
-import { labelBefore, type PaneItem, type PaneValues, paneDefinitions } from './thaw-pane';
+import {
+  itemsFor,
+  labelBefore,
+  type PaneItem,
+  type PaneValues,
+  paneDefinitions,
+} from './thaw-pane';
 import { ThawWindow } from './thaw-window';
 import { usePresence } from './use-presence';
 import { Window } from './window';
@@ -45,9 +51,15 @@ const initialPaneValues: Record<string, PaneValues> = (() => {
     'thaw-bar',
     (item, index, items) => item.t === 'switch' && labelBefore(items, index) === 'Use Thaw Bar',
   );
+  // Always Hidden was on in the capture, and the menu bar starts without it.
+  const alwaysHidden = at(
+    'layout',
+    (item, index, items) => item.t === 'switch' && labelBefore(items, index) === 'Always Hidden',
+  );
   return {
     visibility: click >= 0 ? { [click]: true } : {},
     'thaw-bar': thawBar >= 0 ? { [thawBar]: initialMenuBar.thawBar } : {},
+    layout: alwaysHidden >= 0 ? { [alwaysHidden]: initialMenuBar.alwaysHidden } : {},
   };
 })();
 
@@ -207,9 +219,12 @@ export function Desktop({ start = 'thaw' }: { start?: ProductSlug }) {
   ) {
     setPaneValues((current) => ({ ...current, [pane]: { ...current[pane], [index]: value } }));
 
-    // A switch has no name of its own; it is known by the label of its row.
-    const items = paneDefinitions.find((definition) => definition.id === pane)?.items ?? [];
-    const label = item.label || item.text || labelBefore(items, index);
+    // A switch has no name of its own; it is known by the label of its row in its tab.
+    const { items, index: at } = itemsFor(
+      paneDefinitions.find((definition) => definition.id === pane),
+      index,
+    );
+    const label = item.label || item.text || labelBefore(items, at);
     const set = (change: Parameters<typeof dispatchMenuBar>[0] & { type: 'set' }) =>
       dispatchMenuBar(change);
 
@@ -230,13 +245,16 @@ export function Desktop({ start = 'thaw' }: { start?: ProductSlug }) {
     if (pane !== 'appearance') return;
 
     // The Appearance pane restyles the menu bar above the window as it is edited.
-    if (item.t === 'shape' && value === true) {
-      setAppearance((current) => ({ ...current, shape: item.shape as Appearance['shape'] }));
-    } else if (item.t === 'segment' && value === true) {
+    const shapes = ['none', 'full', 'split', 'notch'];
+    const picked = item.t === 'choice' && typeof value === 'number' ? item.options?.[value] : null;
+    if (picked && shapes.includes(picked.text.toLowerCase())) {
       setAppearance((current) => ({
         ...current,
-        ends: item.text === 'Square' ? 'square' : 'round',
+        shape: picked.text.toLowerCase() as Appearance['shape'],
       }));
+    } else if (item.t === 'slider' && item.text === 'Corners' && typeof value === 'number') {
+      // Corners slides from square to round; the menu bar drawn here has the two ends.
+      setAppearance((current) => ({ ...current, ends: value < 0.5 ? 'square' : 'round' }));
     } else if (item.t === 'popup' && label.startsWith('Shape fill') && typeof value === 'string') {
       // Glass and the adaptive fills take their colour from what is behind the bar,
       // which here is the plain blurred bar.
