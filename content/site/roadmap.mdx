@@ -1,40 +1,29 @@
 {/* The roadmap, drawn by app/(home)/roadmap/page.tsx under its title. */}
 
-Thaw 3.0 for macOS 27 is in development, and Thaw 2.1 for macOS 26 is out. Thaw is getting smaller: a reworked Simple Mode first, then the larger features as modules you add only if you want them. This is the plan as it stands, not a promise, and your reports decide the order. It was last brought up to date on 17 October 2026, after the [discussion in #1353](https://github.com/thaw-app/Thaw/issues/1353).
+Thaw 3.0 for macOS 27 is in beta, with a new design, and Thaw 2.1 for macOS 26 is out. Work on Thaw 2.2 has started, to bring back macOS 15. Thaw is getting smaller: a simpler Simple Mode, then the larger features as modules you add only if you want them. This is the plan as it stands, not a promise, and your reports decide the order. It was last brought up to date on 22 October 2026, after the [discussion in #1353](https://github.com/thaw-app/Thaw/issues/1353).
 
 <Roadmap>
 
-<RoadmapList title="Now" count={2} state="now" here note="The release being finished.">
-<RoadmapGroup name="macOS 27" count={2}>
+<RoadmapList title="Now" count={5} state="now" here note="What is being built, for the next releases of Thaw 3 and Thaw 2.">
+<RoadmapGroup name="macOS 27" count={4}>
 
-- **Thaw 3.0.0.** In beta. It is a rebuilt menu bar core for macOS 27, and the interface is being trimmed and tidied over the next betas.
-- **Moving several items at once.** Command-click or Shift-click items in Layout, then drag them or move them all to another section in one go. It is built and comes in the next Thaw 3 build.
+- **Thaw 3.0.0.** In beta. It is a rebuilt menu bar core for macOS 27, and 3.0.0-beta.4 is being finished.
+- **A new design.** Settings is being made calmer and more like macOS’s own apps. In beta.4, short choices are pills, buttons are capsules, and long pages such as Layout, Appearance, Shortcuts and Troubleshooting show one tab at a time. The sidebar puts the everyday pages first.
+- **A simpler Simple Mode.** A lightweight Thaw that hides menu bar items and little else. In beta.4 it fits on one page: a preview of your sections, then launch at login, item arrangement, when items hide again, Always Hidden, the shortcut and updates. Using it without the Accessibility permission is an experiment in beta.3.
+- **Modules.** Scripts, triggers and automation become optional downloads, so you install only the parts of Thaw you use. In beta.4 the sidebar gathers Profiles, Automation and Experiments under a Modules heading, ahead of the move.
 
 </RoadmapGroup>
-</RoadmapList>
-
-<RoadmapList title="Coming next" count={1} state="next" note="The next release of Thaw 2, after 2.1.0.">
 <RoadmapGroup name="macOS 15" count={1}>
 
-- **Thaw 2.2.0.** It brings back compatibility with macOS 15.
+- **Thaw 2.2.0.** In development. It brings back compatibility with macOS 15.
 
 </RoadmapGroup>
 </RoadmapList>
 
-<RoadmapList title="Up next" count={9} state="next" note="The reworked Simple Mode and Modules come first, and the rest follows them.">
-<RoadmapGroup name="Permissions" count={1}>
-
-- **A reworked Simple Mode.** A lightweight Thaw that hides menu bar items and nothing else, and works without the Accessibility permission. It is in the works.
-
-</RoadmapGroup>
-<RoadmapGroup name="Installing" count={1}>
-
-- **Modules.** Scripts, triggers and automation become optional downloads. You install only the parts of Thaw you use, and add others when you want them.
-
-</RoadmapGroup>
+<RoadmapList title="Up next" count={7} state="next" note="These follow Modules.">
 <RoadmapGroup name="Settings" count={1}>
 
-- **Fewer switches.** Every setting is being gone through: some become default behaviour and some go away, and panes are merged. Experiments either graduate or get removed. It began in 3.0.0-alpha.4, which removed the Advanced pane, and 3.0.0-alpha.9 was mostly fixes and Settings cleanup.
+- **Fewer switches.** Every setting is being gone through: some become default behaviour and some go away, and panes are merged. Experiments either graduate or get removed. It began in 3.0.0-alpha.4, which removed the Advanced pane, and 3.0.0-beta.3 removed Thaw Bar Only and two Troubleshooting buttons.
 
 </RoadmapGroup>
 <RoadmapGroup name="Layout" count={2}>
@@ -43,7 +32,7 @@ Thaw 3.0 for macOS 27 is in development, and Thaw 2.1 for macOS 26 is out. Thaw 
 - **Undo for drags.** Command-Z will undo mouse moves in Layout, the way it already undoes keyboard moves.
 
 </RoadmapGroup>
-<RoadmapGroup name="From 2.1, after Modules" count={4}>
+<RoadmapGroup name="From 2.1, as modules" count={4}>
 
 - **Scripts.** Scripts that make their own menu bar items, tested by macOS 26 users on 2.1.0, come to 3.0 as a module you can add. The Scripts pane is already there as a preview.
 - **The full trigger engine.** In 2.1 an item can move on battery level, the frontmost app, a network, a Focus and more. 3.0 has part of it: 3.0.0-beta.2 added showing items while an app runs. The rest comes as a module.
@@ -79,7 +68,7 @@ Thaw 3.0 for macOS 27 is in development, and Thaw 2.1 for macOS 26 is out. Thaw 
 </RoadmapGroup>
 <RoadmapGroup name="Installing" count={1}>
 
-- **Nix support.** A flake, so Thaw can be installed and pinned from a Nix configuration. <Marks of="nix" />
+- **Nix and dotfiles.** A flake, so Thaw can be installed and pinned from a Nix configuration, and a page listing where Thaw keeps its settings, so they can live in a dotfiles repo with nix-darwin, chezmoi or similar. <Issue n={1363} /> <Marks of="nix" />
 
 </RoadmapGroup>
 <RoadmapGroup name="Across your Macs" count={1}>
@@ -111,7 +100,20 @@ Thaw 3.0 for macOS 27 is in development, and Thaw 2.1 for macOS 26 is out. Thaw 
 
 <RoadmapRequests />
 
-<RoadmapList title="Shipped" count={83} state="done" note="Everything that has shipped, by release, newest first. The changelog has the detail.">
+<RoadmapList title="Shipped" count={92} state="done" note="Everything that has shipped, by release, newest first. The changelog has the detail.">
+<RoadmapGroup name="3.0.0-beta.3" count={9}>
+
+- Move several items at once in Layout
+- Layout shows where a drag will land
+- Choose how items are hidden, in one place
+- Choose which Apple items to replace
+- Show every item on wide displays
+- Thaw’s Time Machine icon shows backups
+- Restart the menu bar from Settings
+- Move items with a `thaw://` link
+- Use Thaw without Accessibility, as an experiment
+
+</RoadmapGroup>
 <RoadmapGroup name="3.0.0-beta.2" count={5}>
 
 - Triggers can show items while an app runs
