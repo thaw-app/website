@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   type CSSProperties,
+  type KeyboardEvent,
   type PointerEvent,
   type ReactNode,
   useCallback,
@@ -13,7 +14,7 @@ import {
   useState,
 } from 'react';
 import { docsRoute, links, products, repoUrl } from '@/lib/shared';
-import { checkedAt, checkTiming, type ShapeKind } from './model';
+import { checkedAt, checkTiming } from './model';
 import { optionsFor } from './thaw-options';
 import definitions from './thaw-panes.json';
 import { group, Menu, PopUp, push, Switch } from './thaw-ui';
@@ -22,6 +23,14 @@ import { group, Menu, PopUp, push, Switch } from './thaw-ui';
  * One element of a settings pane, as read from the real window by
  * reference/build-panes.cjs. Positions are points from the pane's top left.
  */
+export interface ChoiceOption {
+  text: string;
+  x: number;
+  w: number;
+  /** The symbol before a page tab's name: a white glyph cut from the capture, and its size. */
+  icon?: { src: string; w: number; h: number };
+}
+
 export interface PaneItem {
   t: string;
   x: number;
@@ -37,7 +46,6 @@ export interface PaneItem {
   max?: number;
   placeholder?: string;
   src?: string;
-  shape?: string;
   up?: boolean;
   /** 1 is body text, 2 supporting text, 3 fainter still. */
   tone?: number;
@@ -49,10 +57,23 @@ export interface PaneItem {
   align?: string;
   mono?: boolean;
   bold?: boolean;
-  /** A screen with a camera housing, as a MacBook's own has. */
-  notched?: boolean;
   /** Corner radius, for an image that has one. */
   round?: number;
+  /** A row of choices: the page's tabs, or a short choice drawn as pills. */
+  kind?: 'tab' | 'pill';
+  options?: ChoiceOption[];
+  /** Which of the options is chosen. */
+  chosen?: number;
+  /** The row of tabs that switches the page. */
+  page?: boolean;
+  /** A button drawn smaller than the rest, such as Tell Us on Discord. */
+  small?: boolean;
+}
+
+export interface PaneTab {
+  name: string;
+  height: number;
+  items: PaneItem[];
 }
 
 export interface PaneDefinition {
@@ -61,20 +82,33 @@ export interface PaneDefinition {
   summary: string;
   height: number;
   items: PaneItem[];
+  /** A page with tabs has each tab's items; `items` is the first tab's. */
+  tabs?: PaneTab[];
 }
 
 export const paneDefinitions = definitions as PaneDefinition[];
 
-/** What the visitor has changed in a pane: element index to its new value. */
+/**
+ * What the visitor has changed in a pane: element to its new value. An element is known by
+ * its tab and its place in that tab's items, as `tab * tabKey + index`.
+ */
 export type PaneValues = Record<number, boolean | number | string>;
+
+export const tabKey = 1000;
+
+/** The items of the tab a key belongs to, and the element's place among them. */
+export function itemsFor(pane: PaneDefinition | undefined, key: number) {
+  const tab = Math.floor(key / tabKey);
+  return { items: pane?.tabs?.[tab]?.items ?? pane?.items ?? [], index: key % tabKey };
+}
 
 const images = '/desktop/thaw/img';
 
 /** The font size a line of the given height is set in, in the app's type scale. */
-function fontSize(height: number) {
+function fontSize(height: number, heading = false) {
   const single: Record<number, number> = { 13: 10, 14: 11, 15: 12, 16: 13, 17: 14, 18: 15, 20: 17 };
   if (height <= 21) return single[Math.round(height)] ?? Math.round(height * 0.8);
-  if (height > 40 && height < 60) return 46; // the app's name on About
+  if (heading && height > 40 && height < 60) return 46; // the app's name on About
   if (height % 14 === 0) return 11;
   if (height % 13 === 0) return 10;
   return 13;
@@ -91,8 +125,8 @@ function place(item: PaneItem, extra?: CSSProperties): CSSProperties {
   return { position: 'absolute', ...frame(item, extra) };
 }
 
-/** A push button at the size the pane's are set in. */
-const button = `${push} text-[13px] whitespace-nowrap`;
+/** A push button at the size the pane's are set in: a capsule, as Thaw 3.0's buttons are. */
+const button = `${push} thaw-capsule text-[13px] whitespace-nowrap`;
 
 /** The element's own colours, handed to CSS to pick between by appearance. */
 function tint(item: PaneItem): CSSProperties {
@@ -181,8 +215,11 @@ interface PaneProps {
   pane: PaneDefinition;
   values: PaneValues;
   onChange: (index: number, value: boolean | number | string, item: PaneItem) => void;
-  /** Pushes everything at or below `after` down by `by` points, to make room. */
-  shift?: { after: number; by: number };
+  /**
+   * Moves everything at or below `after` by `by` points: down to make room, or up to close a
+   * gap, taking away the `gone` points of it that held what was closed.
+   */
+  shift?: { after: number; by: number; gone?: number };
   /** Called for a control that has nothing behind it here, with its name. */
   onInert: (name: string) => void;
   /** Says a line of its own in the same place. */
@@ -192,8 +229,26 @@ interface PaneProps {
 }
 
 /** Draws a pane from its definition, with every control working. */
-export function Pane({ pane, values, onChange, onInert, onNotice, shift, children }: PaneProps) {
+export function Pane({
+  pane: page,
+  values: pageValues,
+  onChange: onPageChange,
+  onInert,
+  onNotice,
+  shift,
+  children,
+}: PaneProps) {
   const router = useRouter();
+  // A page with tabs shows one at a time; each keeps what was changed in it.
+  const [tab, setTab] = useState(0);
+  const shown = page.tabs?.[tab];
+  const pane = shown ? { ...page, height: shown.height, items: shown.items } : page;
+  const values: PaneValues = {};
+  for (const [key, value] of Object.entries(pageValues)) {
+    if (Math.floor(Number(key) / tabKey) === tab) values[Number(key) % tabKey] = value;
+  }
+  const onChange = (index: number, value: boolean | number | string, item: PaneItem) =>
+    onPageChange(tab * tabKey + index, value, item);
   // About: the copy button's tick, the check for updates, and the "more" menu.
   const about = pane.id === 'about';
   const [copied, setCopied] = useState(false);
@@ -207,16 +262,12 @@ export function Pane({ pane, values, onChange, onInert, onNotice, shift, childre
   };
 
   // The first two lines of what the app copies; its third names the Mac's macOS, which a
-  // web page does not know. Each value is the text on the row its label names.
+  // web page does not know. The page shows them as one line: version (build) · commit.
   async function copyVersion() {
-    const shown = (label: string) => {
-      const named = pane.items.find((item) => item.t === 'text' && item.text === label);
-      return pane.items.find((item) => item.mono && item.y === named?.y)?.text ?? '';
-    };
+    const line = pane.items.find((item) => item.mono)?.text ?? '';
+    const [, version, build, commit] = line.match(/^(\S+) \((\d+)\) · (\S+)$/) ?? [];
     try {
-      await navigator.clipboard.writeText(
-        `Thaw ${shown('Version')} (${shown('Build')})\nCommit: ${shown('Commit')}`,
-      );
+      await navigator.clipboard.writeText(`Thaw ${version} (${build})\nCommit: ${commit}`);
       setCopied(true);
       later(() => setCopied(false), 1200);
     } catch {
@@ -241,8 +292,15 @@ export function Pane({ pane, values, onChange, onInert, onNotice, shift, childre
 
   // The disclosures that are open, by their place in the pane.
   const [opened, setOpened] = useState<number[]>([]);
+  // A shift up takes away the band it closes, as Layout's third bar goes with Always Hidden.
   let items = shift
-    ? pane.items.map((item) => (item.y >= shift.after ? { ...item, y: item.y + shift.by } : item))
+    ? pane.items.map((item) =>
+        item.y < shift.after
+          ? item
+          : item.y < shift.after + (shift.gone ?? 0)
+            ? { ...item, t: 'gone' }
+            : { ...item, y: item.y + shift.by },
+      )
     : pane.items;
   // An open disclosure has a row under it: everything below moves down by that much, and
   // the box it sits in grows to hold it, taking its dividers down too.
@@ -279,7 +337,7 @@ export function Pane({ pane, values, onChange, onInert, onNotice, shift, childre
   }
 
   return (
-    <div className="thaw-scroll thaw-pane-in" key={pane.id}>
+    <div className="thaw-scroll thaw-pane-in" key={page.id}>
       <div className="thaw-scroll-body" style={{ height: pane.height + grown }}>
         {children}
         {items.map((item, index) => {
@@ -299,12 +357,8 @@ export function Pane({ pane, values, onChange, onInert, onNotice, shift, childre
                   ))}
                 </div>
               );
-            case 'bar':
-              return (
-                <div key={key} className="thaw-bar thaw-own-fill" style={frame(item, tint(item))} />
-              );
             case 'heading': {
-              const size = fontSize(item.h);
+              const size = fontSize(item.h, true);
               return (
                 <h3
                   key={key}
@@ -418,24 +472,95 @@ export function Pane({ pane, values, onChange, onInert, onNotice, shift, childre
                   className="thaw-el thaw-display"
                   style={frame(item)}
                 >
-                  {item.notched && <i />}
                   <span>{item.text}</span>
                 </button>
               );
-            case 'shape':
-              return (
-                <button
+            case 'choice': {
+              const options = item.options ?? [];
+              const chosen = item.page
+                ? tab
+                : typeof values[index] === 'number'
+                  ? (values[index] as number)
+                  : (item.chosen ?? 0);
+              const pick = (at: number) => (item.page ? setTab(at) : onChange(index, at, item));
+              // The arrows move along the row, as in the app's own segmented controls.
+              const arrows = (event: KeyboardEvent<HTMLDivElement>) => {
+                const by = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
+                if (!by) return;
+                event.preventDefault();
+                const next = (chosen + by + options.length) % options.length;
+                pick(next);
+                event.currentTarget.querySelectorAll('button')[next]?.focus();
+              };
+              const face = (option: ChoiceOption) =>
+                option.icon ? (
+                  <span className="thaw-tab-face">
+                    {/* biome-ignore lint/performance/noImgElement: a symbol cut from the capture at its exact size */}
+                    <img
+                      src={`${images}/${option.icon.src}.png`}
+                      alt=""
+                      width={option.icon.w}
+                      height={option.icon.h}
+                    />
+                    <span className="thaw-tab-name">{option.text}</span>
+                  </span>
+                ) : (
+                  option.text
+                );
+              const className = `thaw-el thaw-choice thaw-choice-${item.kind} ${item.page ? 'thaw-choice-page' : ''}`;
+              return item.page ? (
+                <div
                   key={key}
-                  type="button"
-                  aria-pressed={on || (values[index] === undefined && item.shape === 'split')}
-                  onClick={() => choose(index, item)}
-                  className="thaw-el thaw-shape"
+                  role="tablist"
+                  aria-label={`${pane.name} sections`}
+                  tabIndex={-1}
+                  onKeyDown={arrows}
+                  className={className}
                   style={frame(item)}
                 >
-                  <ShapeDrawing shape={item.shape as ShapeKind} />
-                  <span>{item.text}</span>
-                </button>
+                  {options.map((option, at) => (
+                    <button
+                      key={option.text}
+                      type="button"
+                      role="tab"
+                      aria-selected={at === chosen}
+                      tabIndex={at === chosen ? 0 : -1}
+                      onClick={() => pick(at)}
+                      className={`thaw-choice-option ${at === chosen ? 'thaw-chosen' : ''}`}
+                      style={{ left: option.x, width: option.w }}
+                    >
+                      {face(option)}
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <div
+                  key={key}
+                  role="radiogroup"
+                  aria-label={item.label || labelBefore(items, index)}
+                  tabIndex={-1}
+                  onKeyDown={arrows}
+                  className={className}
+                  style={frame(item)}
+                >
+                  {options.map((option, at) => (
+                    // biome-ignore lint/a11y/useSemanticElements: a pill of a segmented control, drawn as the app draws it
+                    <button
+                      key={option.text}
+                      type="button"
+                      role="radio"
+                      aria-checked={at === chosen}
+                      tabIndex={at === chosen ? 0 : -1}
+                      onClick={() => pick(at)}
+                      className={`thaw-choice-option ${at === chosen ? 'thaw-chosen' : ''}`}
+                      style={{ left: option.x, width: option.w }}
+                    >
+                      {face(option)}
+                    </button>
+                  ))}
+                </div>
               );
+            }
             case 'popup':
             case 'menu': {
               const name = item.label?.split(', ')[0] || labelBefore(items, index);
@@ -473,7 +598,7 @@ export function Pane({ pane, values, onChange, onInert, onNotice, shift, childre
                   type="button"
                   disabled={item.off || (checks && check === 'checking')}
                   onClick={() => (checks ? checkNow() : onInert(item.text ?? ''))}
-                  className={button}
+                  className={`${button} ${item.small ? 'thaw-capsule-small' : ''}`}
                   style={place(item)}
                 >
                   {item.text}
@@ -734,17 +859,6 @@ export function labelBefore(items: PaneItem[], index: number) {
   return label?.text ?? '';
 }
 
-/** The picture of the menu bar on each shape choice, as Thaw draws them. */
-function ShapeDrawing({ shape }: { shape: ShapeKind }) {
-  return (
-    <i className={`thaw-shape-drawing thaw-shape-${shape}`}>
-      <b />
-      {(shape === 'split' || shape === 'notch') && <b />}
-      {shape === 'notch' && <u />}
-    </i>
-  );
-}
-
 /** Thaw's slider: a bar that fills from the left, with its value written on it. */
 function Slider({
   item,
@@ -771,9 +885,13 @@ function Slider({
   // The label is the value with its unit, such as "13 seconds". A slider named
   // for a side, such as Left, shows that name at one end and its points at the other.
   const named = !/\d/.test(item.text ?? '');
-  const label = named
-    ? `${item.text} ${value} pt`
-    : (item.text ?? '').replace(/^-?[\d.,]+/, String(value));
+  // Corners runs from square to round, and names the two ends instead of a value.
+  const ends = item.text === 'Corners' ? ['Square', 'Round'] : null;
+  const label = ends
+    ? `Corners: ${Math.round(((value - min) / (max - min || 1)) * 100)}% round`
+    : named
+      ? `${item.text} ${value} pt`
+      : (item.text ?? '').replace(/^-?[\d.,]+/, String(value));
   // The real control is drawn 24 points tall, whatever height it reports.
   const box = { ...item, y: item.y + item.h / 2 - 12, h: 24 };
   return (
@@ -803,7 +921,12 @@ function Slider({
       style={frame(box)}
     >
       <i style={{ width: `${((value - min) / (max - min || 1)) * 100}%` }} />
-      {named ? (
+      {ends ? (
+        <>
+          <span>{ends[0]}</span>
+          <span>{ends[1]}</span>
+        </>
+      ) : named ? (
         <>
           <span>{item.text}</span>
           <span>{value} pt</span>

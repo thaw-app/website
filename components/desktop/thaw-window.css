@@ -5,10 +5,13 @@
  */
 .thaw-window {
   /* Light Mode, as sampled from the capture. */
-  --sidebar: #ededed;
+  --sidebar: #f1f1f0;
   --content: #ffffff;
   --accent: #ffbf00;
-  --group: #f7f7f7;
+  /* What is chosen is see-through gold, with the text left its own colour (beta.4). */
+  --chosen: #f6e5c4;
+  --chosen-rim: #fbd996;
+  --group: #f9f9f9;
   --separator: #ebebeb;
   --capsule: #f9f9f9;
   --circle: #f0f0f0;
@@ -69,9 +72,11 @@
 
 /* Dark Mode follows the site's own theme switch. */
 .dark .thaw-window {
-  --sidebar: #272728;
-  --content: #212122;
-  --group: #282829;
+  --chosen: #857248;
+  --chosen-rim: #ae8834;
+  --sidebar: #2b2f2f;
+  --content: #222424;
+  --group: #2c2d2d;
   --separator: #323233;
   --capsule: #3e3e3f;
   --circle: #444445;
@@ -102,9 +107,9 @@
 
 /* A pane shown as a capture of the real one, one image per appearance. */
 .thaw-window img.thaw-pane {
-  left: 210px;
+  left: 220px;
   top: 52px;
-  width: 708px;
+  width: 698px;
   height: 600px;
   filter: none;
 }
@@ -121,7 +126,7 @@
 .thaw-sidebar {
   position: absolute;
   inset: 0 auto 0 0;
-  width: 210px;
+  width: 220px;
   background: var(--sidebar);
 }
 
@@ -144,20 +149,6 @@
 .thaw-glass span {
   position: absolute;
   top: 11px;
-}
-
-.thaw-heading {
-  position: absolute;
-  left: 240px;
-  font-size: 13px;
-  font-weight: 600;
-  transform: translateY(-50%);
-}
-
-.thaw-group {
-  position: absolute;
-  left: 230px;
-  width: 668px;
 }
 
 .thaw-row {
@@ -193,15 +184,6 @@
   --outline: #fff;
 }
 
-.thaw-popup {
-  position: relative;
-  margin-right: 4px;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: var(--popup);
-}
-
 .thaw-beta {
   margin-left: 7px;
   margin-right: auto;
@@ -214,25 +196,18 @@
   font-weight: 700;
 }
 
-/* The rebuilt pane's wrapper: it covers the window but lets clicks through. */
-.thaw-live,
+/* The toolbar title's wrapper: it covers the window but lets clicks through. */
 .thaw-fade {
   position: absolute;
   inset: 0;
   pointer-events: none;
 }
 
-.thaw-live > * > * {
-  pointer-events: auto;
-}
-
 @media (prefers-reduced-motion: no-preference) {
   /* Switching appearance eases the surfaces over; the captured panes swap. */
   .thaw-window,
   .thaw-sidebar,
-  .thaw-group,
-  .thaw-glass,
-  .thaw-popup {
+  .thaw-glass {
     transition:
       background-color 0.3s,
       color 0.3s,
@@ -265,9 +240,9 @@
 
 .thaw-scroll {
   position: absolute;
-  left: 210px;
+  left: 220px;
   top: 52px;
-  width: 708px;
+  width: 698px;
   height: 600px;
   overflow: hidden auto;
   scrollbar-width: thin;
@@ -320,12 +295,6 @@
   color: var(--own-dark);
 }
 
-.thaw-bar {
-  position: absolute;
-  border-radius: 12px;
-  background: var(--group);
-}
-
 .thaw-own-fill {
   background: var(--own-light);
 }
@@ -367,21 +336,54 @@
   filter: brightness(0.88);
 }
 
+/*
+ * A native segmented control, such as Click, Hover and Scroll: a grey capsule with a
+ * hairline between segments, and each chosen segment raised in white, as macOS draws it.
+ */
 .thaw-segments {
-  border-radius: 6px;
-  background: var(--popup);
+  border-radius: 999px;
+  background: #e9e9e9;
+}
+
+.dark .thaw-segments {
+  background: #404141;
 }
 
 .thaw-segment {
-  border-radius: 5px;
+  border-radius: 999px;
   font-size: 13px;
   color: var(--text);
 }
 
+.thaw-segment + .thaw-segment::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background: rgb(0 0 0 / 0.12);
+}
+
+.dark .thaw-segment + .thaw-segment::before {
+  background: rgb(255 255 255 / 0.14);
+}
+
 .thaw-segment[aria-pressed="true"] {
-  background: var(--accent);
-  color: #000;
-  box-shadow: 0 0.5px 1.5px rgb(0 0 0 / 0.25);
+  background: #fff;
+  box-shadow:
+    0 0 0 0.5px rgb(0 0 0 / 0.06),
+    0 1px 2px rgb(0 0 0 / 0.16);
+}
+
+.dark .thaw-segment[aria-pressed="true"] {
+  background: #6b6c6c;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.3);
+}
+
+.thaw-segment[aria-pressed="true"]::before,
+.thaw-segment[aria-pressed="true"] + .thaw-segment::before {
+  display: none;
 }
 
 .thaw-step::before {
@@ -517,68 +519,6 @@
   }
 }
 
-/* The four menu bar shapes on the Appearance pane. */
-/* biome-ignore lint/style/noDescendingSpecificity: the slider's spans above are other elements */
-.thaw-shape > span {
-  position: absolute;
-  inset: auto 0 0;
-  color: var(--dim);
-  font-size: 10px;
-  text-align: center;
-}
-
-.thaw-shape[aria-pressed="true"] span {
-  color: var(--text);
-  font-weight: 700;
-}
-
-.thaw-shape-drawing {
-  position: absolute;
-  left: 4px;
-  right: 4px;
-  top: 5px;
-  height: 14px;
-  display: flex;
-  gap: 4px;
-  border-radius: 4px;
-}
-
-.thaw-shape-drawing b {
-  flex: 1;
-  border-radius: 7px;
-  background: color-mix(in oklab, var(--text) 55%, transparent);
-}
-
-.thaw-shape-none b {
-  border-radius: 2px;
-}
-
-.thaw-shape-full,
-.thaw-shape-split,
-.thaw-shape-notch {
-  padding: 2px;
-  box-shadow: 0 0 0 1px color-mix(in oklab, var(--text) 45%, transparent);
-}
-
-.thaw-shape-drawing u {
-  position: absolute;
-  left: calc(50% - 5px);
-  top: 0;
-  width: 10px;
-  height: 9px;
-  border-radius: 0 0 2px 2px;
-  background: color-mix(in oklab, var(--text) 55%, transparent);
-}
-
-.thaw-shape[aria-pressed="true"] .thaw-shape-drawing b,
-.thaw-shape[aria-pressed="true"] .thaw-shape-drawing u {
-  background: var(--accent);
-}
-
-.thaw-shape[aria-pressed="true"] .thaw-shape-drawing {
-  box-shadow: 0 0 0 1.5px var(--accent);
-}
-
 .thaw-el:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
@@ -648,17 +588,6 @@
   line-height: 1.2;
 }
 
-/* The camera housing at the top of a MacBook's own screen. */
-.thaw-display i {
-  position: absolute;
-  left: calc(50% - 13px);
-  top: 0;
-  width: 26px;
-  height: 7px;
-  border-radius: 0 0 4px 4px;
-  background: #000;
-}
-
 .thaw-display[aria-pressed="true"] {
   background: color-mix(in oklab, var(--accent) 28%, var(--group));
   box-shadow: 0 0 0 1.5px var(--accent) inset;
@@ -702,15 +631,9 @@ button.thaw-glass:active {
 }
 
 .thaw-history:focus-visible,
-button.thaw-glass:focus-visible,
-button.thaw-popup:focus-visible {
+button.thaw-glass:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
-}
-
-button.thaw-popup {
-  padding: 0;
-  border: 0;
 }
 
 button.thaw-link {
@@ -723,7 +646,7 @@ button.thaw-link {
 /* A pane keeps the width it was captured at, wherever its scroll area ends. */
 .thaw-scroll-body {
   position: relative;
-  width: 708px;
+  width: 698px;
   margin: 0 auto;
 }
 
@@ -734,25 +657,21 @@ button.thaw-link {
 
 /*
  * Hidden, the sidebar slides out under the window's left edge. The toolbar's
- * leading items move up beside the lights, while the profile, More and Search
+ * leading items move up beside the lights, while More and Search
  * stay at the right. The pane cannot reflow, so it takes the middle of the
- * wider room: half the sidebar's 210 points to the left of where it was.
+ * wider room: half the sidebar's 220 points to the left of where it was.
  */
 .thaw-window[data-sidebar="hidden"] {
-  --lead: -76px;
+  --lead: -86px;
 }
 
 .thaw-window[data-sidebar="hidden"] .thaw-sidebar {
-  translate: -210px;
+  translate: -220px;
 }
 
 .thaw-window[data-sidebar="hidden"] .thaw-scroll {
   left: 0;
   width: 918px;
-}
-
-.thaw-window[data-sidebar="hidden"] .thaw-live {
-  translate: -105px;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -764,10 +683,6 @@ button.thaw-link {
       background-color 0.3s,
       color 0.3s,
       box-shadow 0.3s;
-  }
-
-  .thaw-live {
-    transition: translate 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
   .thaw-scroll {
@@ -813,7 +728,7 @@ a.thaw-iconbutton {
 
 /* ---- Simple Mode: the window as one page, with no sidebar (thaw-simple.tsx) ---- */
 
-/* The app's own size for it: the 748 point reading column and a 28 point gutter each side. */
+/* The app's own size for it: a 704 point column with 50 points each side. */
 .thaw-window[data-mode="simple"] {
   width: 804px;
   height: 640px;
@@ -826,6 +741,29 @@ a.thaw-iconbutton {
   top: 19.5px;
   font-weight: 700;
   pointer-events: none;
+}
+
+/* Simple Mode's toolbar button back to every page: a capsule with its name on it. */
+.thaw-all-settings {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  color: var(--text);
+  font-size: 13px;
+}
+
+/* The hint over the settings: its symbol, then the line about ⌘-dragging. */
+.thaw-simple-hint {
+  position: relative;
+  margin: 0;
+  padding: 8px 18px 10px 32px;
+  line-height: 16px;
+}
+
+.thaw-window .thaw-simple-hint img {
+  left: 8px;
+  top: 9px;
 }
 
 .thaw-simple {
@@ -885,4 +823,118 @@ a.thaw-iconbutton {
 
 .thaw-fold-sort:hover {
   background: rgb(255 255 255 / 0.14);
+}
+
+/* ---- Thaw 3.0's controls: pills, page tabs and capsule buttons (thaw-pane.tsx) ---- */
+
+/*
+ * Thaw's pills (ThawCapsuleSegments): a glass capsule holding a few segments 3 points in
+ * from its edge and 2 apart. Each segment is as wide as its label, 24 points tall; the
+ * chosen one is semibold on a flat see-through gold with a 1 point gold edge, the rest are
+ * regular in the secondary colour (ThawGlass.swift, .selection).
+ */
+.thaw-choice {
+  border-radius: 999px;
+  background: #f1f1f1;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.9),
+    inset 0 0 0 0.5px rgb(0 0 0 / 0.08),
+    0 1px 2px rgb(0 0 0 / 0.06);
+}
+
+.dark .thaw-choice {
+  background: #5f6060;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.12),
+    inset 0 0 0 0.5px rgb(255 255 255 / 0.1),
+    0 1px 2px rgb(0 0 0 / 0.25);
+}
+
+.thaw-choice-option {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  /* The secondary colour as it reads on the glass: lighter than on the pane. */
+  color: rgb(0 0 0 / 0.34);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.dark .thaw-choice-option {
+  color: rgb(255 255 255 / 0.37);
+}
+
+/* Tabs share the strip evenly, 4 points in from its edge (ThawTabStrip.swift). */
+.thaw-choice-tab .thaw-choice-option {
+  top: 4px;
+  bottom: 4px;
+}
+
+.thaw-choice .thaw-chosen {
+  background: var(--chosen);
+  box-shadow: inset 0 0 0 1px var(--chosen-rim);
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* A page tab's symbol and name, side by side, 4 points apart (ThawCapsuleSegments.swift). */
+.thaw-tab-face {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: calc(100% - 16px);
+}
+
+/* A name too long for its tab ends in an ellipsis, as Shortcuts' do. */
+.thaw-tab-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.thaw-window .thaw-tab-face img {
+  position: static;
+  opacity: 0.4;
+}
+
+.thaw-chosen .thaw-tab-face img {
+  opacity: 0.85;
+}
+
+.thaw-choice-option:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* Buttons are capsules, as the glass buttons in macOS's own apps are. */
+.thaw-window .thaw-capsule {
+  border-radius: 999px;
+  padding-inline: 12px;
+}
+
+.thaw-window .thaw-capsule-small {
+  font-size: 11px;
+}
+
+/* The sidebar: small uppercase headings over Modules and Manage, and a gold chosen row. */
+.thaw-sidebar-heading {
+  position: absolute;
+  left: 20px;
+  margin: 0;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 14px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+.thaw-window .thaw-sidebar-row[aria-current="page"] {
+  background: var(--chosen);
+  box-shadow: 0 0 0 0.5px var(--chosen-rim) inset;
+  color: var(--text);
+  font-weight: 400;
 }
