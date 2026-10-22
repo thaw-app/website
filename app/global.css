@@ -421,6 +421,12 @@ html > body[data-scroll-locked] {
   }
 }
 
+/* A blank line in a code block keeps its height. Fumadocs gives one to `.line:empty`, but
+   Shiki puts an empty span inside each blank line, so it is not empty and folds away. */
+.shiki .line:has(> span:only-child:empty) {
+  height: 1lh;
+}
+
 /* The README on the home page: its folded feature list and its table of languages. A line
    that opens (components/hover-lines.tsx) is not one of its folds, and styles itself. */
 .readme details:not(.line) {
