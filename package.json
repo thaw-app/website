@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@paper-design/shaders-react": "^0.0.81",
+    "cobe": "2.0.1",
     "fumadocs-core": "16.17.4",
     "fumadocs-mdx": "15.4.7",
     "fumadocs-ui": "npm:@fumadocs/base-ui@16.17.4",

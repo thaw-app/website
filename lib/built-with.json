@@ -195,6 +195,14 @@
       }
     },
     {
+      "name": "cobe",
+      "url": "https://www.npmjs.com/package/cobe",
+      "license": "MIT",
+      "users": {
+        "Site": "2.0.1"
+      }
+    },
+    {
       "name": "fumadocs-core",
       "url": "https://www.npmjs.com/package/fumadocs-core",
       "license": "MIT",

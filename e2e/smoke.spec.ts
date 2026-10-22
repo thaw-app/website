@@ -455,3 +455,22 @@ test('the search API is described, and says what went wrong in JSON', async ({ r
     'urn:air:localhost:api:search',
   );
 });
+
+test('the community page shows where people are on a globe, and on the flat map without WebGL', async ({
+  page,
+}) => {
+  await page.goto('/community');
+  const globe = page.getByRole('img', { name: /^A world with \d+ countries lit/ });
+  await expect(globe).toBeVisible();
+  await expect(globe).toHaveJSProperty('tagName', 'CANVAS');
+  // The view switch still changes what it counts.
+  await page.getByRole('button', { name: 'Pull requests' }).click();
+  await expect(page.getByText('Share of the pull requests from people')).toBeVisible();
+
+  await page.addInitScript(() => {
+    HTMLCanvasElement.prototype.getContext = () => null;
+  });
+  await page.reload();
+  const map = page.getByRole('img', { name: /^A world with \d+ countries lit/ });
+  await expect(map).toHaveJSProperty('tagName', 'svg');
+});
