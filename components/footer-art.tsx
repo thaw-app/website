@@ -9,6 +9,11 @@ const FooterConure = dynamic(
   () => import('./footer-conure').then((module) => module.FooterConure),
   { ssr: false },
 );
+// The game a conure in a hat opens, fetched only if someone opens it.
+const FooterShootout = dynamic(
+  () => import('./footer-shootout').then((module) => module.FooterShootout),
+  { ssr: false },
+);
 const FooterWordmark = dynamic(
   () => import('./footer-wordmark').then((module) => module.FooterWordmark),
   { ssr: false },
@@ -22,6 +27,7 @@ const FooterWordmark = dynamic(
 export function FooterArt({ conure = true }: { conure?: boolean }) {
   const stage = useRef<HTMLDivElement>(null);
   const [near, setNear] = useState(false);
+  const [playing, setPlaying] = useState(false);
 
   useEffect(() => {
     const element = stage.current;
@@ -36,15 +42,30 @@ export function FooterArt({ conure = true }: { conure?: boolean }) {
       { rootMargin: '150% 0px' },
     );
     seen.observe(element);
-    return () => seen.disconnect();
+    const open = () => setPlaying(true);
+    element.addEventListener('conure:shootout', open);
+    return () => {
+      seen.disconnect();
+      element.removeEventListener('conure:shootout', open);
+    };
   }, []);
 
+  function stop() {
+    setPlaying(false);
+    stage.current?.dispatchEvent(new CustomEvent('conure:shootout-end'));
+  }
+
   return (
-    <div ref={stage} className="footer-art relative w-full overflow-hidden">
+    <div
+      ref={stage}
+      data-shootout={playing || undefined}
+      className="footer-art relative w-full overflow-hidden"
+    >
       {near && (
         <>
           {conure && <FooterConure />}
           <FooterWordmark />
+          {playing && <FooterShootout onDone={stop} />}
         </>
       )}
     </div>

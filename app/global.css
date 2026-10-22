@@ -778,14 +778,14 @@ html > body[data-scroll-locked] {
   height: calc(24vw + 5rem);
 }
 
-/* The conure on the footer's wordmark: 24 pixels by 20, drawn large with hard edges.
+/* The conure on the footer's wordmark: 24 pixels by 22, the top two for a hat, drawn large with hard edges.
    The wordmark says where the letters' tops are and how big one of its pixels should be. */
 .footer-conure {
   width: calc(24 * var(--pixel, 4px));
-  height: calc(20 * var(--pixel, 4px));
+  height: calc(22 * var(--pixel, 4px));
   image-rendering: pixelated;
-  /* Down to the tops of the letters, less the bird's own height to its feet, 13 pixels down. */
-  margin-top: calc(var(--perch-y, 6rem) - 13 * var(--pixel, 4px));
+  /* Down to the tops of the letters, less the bird's own height to its feet, 15 pixels down. */
+  margin-top: calc(var(--perch-y, 6rem) - 15 * var(--pixel, 4px));
   /* Where it sits when nothing moves: in the middle, on the ampersand. */
   translate: calc(var(--perch-x, 50vw) - 12 * var(--pixel, 4px)) 0;
   will-change: translate;
@@ -811,8 +811,168 @@ html > body[data-scroll-locked] {
   left: calc(-4 * var(--pixel));
   width: calc(24 * var(--pixel));
   max-width: none;
-  height: calc(20 * var(--pixel));
+  height: calc(22 * var(--pixel));
   image-rendering: pixelated;
+}
+
+/* The shooting gallery a conure in a hat opens over the footer. The wordmark goes dim
+   behind a veil, and the game has a floor of dirt: the conure stands on it at the left,
+   and the icons come up out of it at the right, so the strip they stand in ends there. */
+.footer-shootout {
+  /* The game is drawn the size of the wordmark's bird. */
+  --dot: max(2px, var(--pixel, 4px));
+  --floor: calc(12 * var(--dot));
+  --target: calc(12 * var(--dot));
+  background: color-mix(in oklab, var(--color-fd-background) 78%, transparent);
+  backdrop-filter: blur(3px);
+}
+
+.footer-art[data-shootout] .footer-conure {
+  visibility: hidden;
+}
+
+.footer-shootout-floor {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: var(--floor);
+  background-size: calc(16 * var(--dot)) calc(8 * var(--dot));
+  image-rendering: pixelated;
+}
+
+/* The scenery, drawn in the game's pixels: far off a sun and a mesa, then saguaros, all
+   standing on the dirt, and the crates and barrels in front of the icons. */
+.footer-shootout-prop {
+  position: absolute;
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+.footer-shootout-sun {
+  right: 12%;
+  bottom: calc(var(--floor) + 22 * var(--dot));
+  opacity: 0.85;
+}
+
+.footer-shootout-mesa {
+  left: 52%;
+  bottom: var(--floor);
+  scale: 2;
+  transform-origin: 50% 100%;
+  opacity: 0.55;
+}
+
+.footer-shootout-saguaro {
+  bottom: var(--floor);
+  translate: -50% 0;
+}
+
+.footer-shootout-cover {
+  bottom: var(--floor);
+  translate: -50% 0;
+  z-index: 1;
+}
+
+/* Its feet, 15 of its pixels down, on the top of the dirt. */
+.footer-shootout-bird {
+  position: absolute;
+  left: 4%;
+  bottom: calc(var(--floor) - 7 * var(--dot));
+  width: calc(24 * var(--dot));
+  height: calc(22 * var(--dot));
+  image-rendering: pixelated;
+}
+
+.footer-shootout-board {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--color-fd-border);
+  background: var(--color-fd-background);
+}
+
+.footer-shootout-fence {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  /* Up to just under the tops of the crates and barrels, which they come up from behind. */
+  bottom: calc(var(--floor) + 9 * var(--dot));
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.footer-shootout-target {
+  position: absolute;
+  bottom: 0;
+  width: var(--target);
+  aspect-ratio: 1;
+  translate: -50% 0;
+  transform-origin: 50% 100%;
+  pointer-events: auto;
+  animation: shootout-up 0.15s ease-out;
+  transition:
+    rotate 0.3s ease-in,
+    translate 0.3s ease-in;
+}
+
+/* A finger needs more to aim at than a pointer does. */
+@media (pointer: coarse) {
+  .footer-shootout {
+    --target: max(44px, calc(12 * var(--dot)));
+  }
+}
+
+/* The sights, over the middle of the place the keyboard has aimed at. */
+.footer-shootout-sights {
+  position: absolute;
+  bottom: calc(var(--floor) + 9 * var(--dot) + var(--target) / 2);
+  width: calc(7 * var(--dot));
+  aspect-ratio: 1;
+  translate: -50% 50%;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(#e2552b, #e2552b) 50% 0 / var(--dot) calc(2 * var(--dot)) no-repeat,
+    linear-gradient(#e2552b, #e2552b) 50% 100% / var(--dot) calc(2 * var(--dot)) no-repeat,
+    linear-gradient(#e2552b, #e2552b) 0 50% / calc(2 * var(--dot)) var(--dot) no-repeat,
+    linear-gradient(#e2552b, #e2552b) 100% 50% / calc(2 * var(--dot)) var(--dot) no-repeat;
+}
+
+.footer-shootout-target img {
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+
+/* Hit, it tips over backwards and drops into the dirt. */
+.footer-shootout-target[data-hit] {
+  rotate: 80deg;
+  translate: -50% 100%;
+}
+
+@keyframes shootout-up {
+  from {
+    translate: -50% 100%;
+  }
+}
+
+.footer-shootout-over {
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  translate: -50% 0;
+  padding: 1rem 1.5rem;
+  border: 1px solid var(--color-fd-border);
+  background: var(--color-fd-background);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footer-shootout-target {
+    animation: none;
+    transition: none;
+  }
 }
 
 /* The ampersand's copy that goes in front of the conure, and only while it is behind. */

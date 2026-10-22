@@ -74,7 +74,7 @@ export function StrayConure() {
       if (!bird || event.pointerType !== 'mouse') return;
       const box = bird.getBoundingClientRect();
       const pixel = box.width / columns;
-      const head = { x: box.left + pixel * 13.5, y: box.top + pixel * 4 };
+      const head = { x: box.left + pixel * 13.5, y: box.top + pixel * 6 };
       const away = Math.hypot(event.clientX - head.x, event.clientY - head.y);
       const next =
         away > box.width * 3

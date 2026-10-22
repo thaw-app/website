@@ -3,6 +3,20 @@
 
 import { posix } from 'node:path';
 
+/** Text without its first folded section, taken whole with any folds inside it. */
+function withoutFold(text) {
+  const start = text.indexOf('<details>');
+  if (start < 0) return text;
+  const tags = /<\/?details>/g;
+  tags.lastIndex = start;
+  let depth = 0;
+  for (let tag = tags.exec(text); tag; tag = tags.exec(text)) {
+    depth += tag[0] === '<details>' ? 1 : -1;
+    if (depth === 0) return text.slice(0, start) + text.slice(tags.lastIndex).replace(/^\s*/, '');
+  }
+  return text;
+}
+
 /**
  * A README as the home page shows it: from its first section on, without the
  * header, the badges and the screenshots, which the page has its own of.
@@ -35,9 +49,7 @@ function readmeBody(markdown, product) {
     // features differently (lib/thaw-features.ts) and name the ones in the README's folded
     // full list, which is therefore left out.
     if (parts.features && /^## Features\b/.test(section)) {
-      return section
-        .replace(/(?:^- .*\n)+/m, `${parts.features}\n`)
-        .replace(/<details>[\s\S]*?<\/details>\s*/, '');
+      return withoutFold(section.replace(/(?:^- .*\n)+/m, `${parts.features}\n`));
     }
     return section;
   });
