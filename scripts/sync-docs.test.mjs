@@ -280,6 +280,29 @@ test("a README is shown install first, with the site's own parts only where it h
   );
 });
 
+test('the folded full feature list is left out whole, with any fold inside it', () => {
+  const readme = [
+    '## Features',
+    '- One',
+    '<details>',
+    '<summary>Full list</summary>',
+    '- Two',
+    '<details>',
+    '<summary>A table</summary>',
+    'Rows.',
+    '</details>',
+    '- Three',
+    '</details>',
+    '',
+    '## Install',
+    'Download it.',
+    '',
+  ].join('\n');
+  expect(readmeBody(readme, { readmeParts: { features: '<FeatureList />' } })).toBe(
+    '## Install\nDownload it.\n## Features\n<FeatureList />\n',
+  );
+});
+
 test('a link to another synced file goes to its docs page, and one to the README to the product page', () => {
   const slugs = new Map([
     ['docs/PERMISSIONS.md', 'permissions'],
