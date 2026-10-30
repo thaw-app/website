@@ -48,6 +48,9 @@ export function AsciiCube({
     if (!canvas || !context) return;
     const rows = mask.length;
     const columns = mask[0].length;
+    // The light and the pointer's reach were set on a grid of 30 rows, and keep their size on
+    // a finer one.
+    const fine = 30 / rows;
 
     const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let frame = 0;
@@ -99,8 +102,11 @@ export function AsciiCube({
           // in long waves that roll along it.
           const light = drift
             ? 0.5 +
-              0.5 * Math.sin(column * 0.22 - seconds * 1.3 + Math.sin(row * 0.3 + seconds * 0.5))
-            : 0.5 + 0.5 * Math.sin(column * 0.16 + row * 0.34 - seconds * 1.1);
+              0.5 *
+                Math.sin(
+                  column * 0.22 * fine - seconds * 1.3 + Math.sin(row * 0.3 * fine + seconds * 0.5),
+                )
+            : 0.5 + 0.5 * Math.sin((column * 0.16 + row * 0.34) * fine - seconds * 1.1);
           // A slow shimmer in the body of the icon, different in every cell.
           const shimmer = 0.5 + 0.5 * Math.sin(column * 1.7 + row * 2.3 + seconds * 0.7);
           let level = line > 0.08 ? line * (0.5 + 0.5 * light) : 0.07 + 0.07 * shimmer * light;
@@ -108,7 +114,7 @@ export function AsciiCube({
           if (pointer) {
             const dx = (column + 0.5) * cell.w - pointer.x;
             const dy = (row + 0.5) * cell.h - pointer.y;
-            reach = 0.5 * Math.max(0, 1 - Math.hypot(dx, dy) / (cell.w * 9));
+            reach = 0.5 * Math.max(0, 1 - Math.hypot(dx, dy) / ((cell.w * 9) / fine));
           }
           // Each ripple is a ring that widens from where the click was and fades as it goes.
           // Where it passes, the characters brighten and lift.
@@ -119,7 +125,10 @@ export function AsciiCube({
               (column + 0.5) * cell.w - ripple.x,
               (row + 0.5) * cell.h - ripple.y,
             );
-            const ring = Math.max(0, 1 - Math.abs(distance - age * cell.w * 26) / (cell.w * 2.5));
+            const ring = Math.max(
+              0,
+              1 - Math.abs(distance - (age * cell.w * 26) / fine) / ((cell.w * 2.5) / fine),
+            );
             lift += ring * (1 - age);
           }
           // Rings that overlap, from clicks in quick succession, lift no higher than one does.
