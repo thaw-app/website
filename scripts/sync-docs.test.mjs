@@ -303,6 +303,46 @@ test('the folded full feature list is left out whole, with any fold inside it', 
   );
 });
 
+test('the site keeps its feature list and leaves out the install badges, whatever the README has', () => {
+  const readme = [
+    '## Install',
+    '',
+    '<p>',
+    '  <picture><source srcset="a.svg" /><img alt="Versions" src="b.svg" /></picture>',
+    '</p>',
+    '',
+    '```sh',
+    'brew install thaw',
+    '```',
+    '',
+    'Or download it.',
+    '',
+    '## Contributing',
+    'Read the guide.',
+    '',
+  ].join('\n');
+  const parts = { install: '<InstallTabs />', features: '<FeatureList />', last: '<Assurance />' };
+  expect(readmeBody(readme, { readmeParts: parts })).toBe(
+    [
+      '## Install',
+      '',
+      '<InstallTabs />',
+      '',
+      'Or download it.',
+      '',
+      '## Features',
+      '',
+      '<FeatureList />',
+      '',
+      '## Contributing',
+      'Read the guide.',
+      '',
+      '<Assurance />',
+      '',
+    ].join('\n'),
+  );
+});
+
 test('a link to another synced file goes to its docs page, and one to the README to the product page', () => {
   const slugs = new Map([
     ['docs/PERMISSIONS.md', 'permissions'],
