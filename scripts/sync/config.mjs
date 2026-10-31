@@ -57,11 +57,12 @@ const products = [
     // What the home page draws itself in the README's place: the install commands, the
     // feature list, and at its end how the project is run.
     readmeParts: { install: '<InstallTabs />', features: '<FeatureList />', last: '<Assurance />' },
-    // README sections the home page leaves out: it links to the docs itself, and the
-    // contributors are on the community page and the licence in the footer.
+    // README sections the home page leaves out: it links to the docs itself, the contributors
+    // are on the community page, and contributing and the licence are in the footer.
     readmeLeavesOut: [
       'Project documentation',
       'Contributors',
+      'Contributing',
       'License',
       // The home page has one job, getting Thaw installed; these two are in the docs and on
       // the community page.
@@ -172,6 +173,7 @@ const products = [
     readmeLeavesOut: [
       'Project documentation',
       'Contributors',
+      'Contributing',
       'License',
       'Integrations',
       'Transparency',

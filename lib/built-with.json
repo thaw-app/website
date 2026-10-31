@@ -1,14 +1,6 @@
 {
   "swift": [
     {
-      "name": "AXSwift6",
-      "url": "https://github.com/thaw-app/AXSwift6",
-      "license": "MIT",
-      "users": {
-        "Thaw": "0.5.2"
-      }
-    },
-    {
       "name": "CompactSlider",
       "url": "https://github.com/buh/CompactSlider",
       "license": "MIT",
@@ -26,11 +18,11 @@
       }
     },
     {
-      "name": "LaunchAtLogin-Modern",
-      "url": "https://github.com/sindresorhus/LaunchAtLogin-Modern",
-      "license": "MIT",
+      "name": "prk-bin",
+      "url": "https://github.com/thaw-app/prk-bin",
+      "license": null,
       "users": {
-        "Thaw": "1.1.0"
+        "Thaw": "1.2.11"
       }
     },
     {
@@ -64,7 +56,7 @@
       "url": "https://github.com/apple/swift-async-algorithms",
       "license": "Apache-2.0",
       "users": {
-        "Thaw": "1.1.5",
+        "Thaw": "1.1.7",
         "Floe": "1.1.3"
       }
     },
@@ -81,7 +73,7 @@
       "url": "https://github.com/apple/swift-collections",
       "license": "Apache-2.0",
       "users": {
-        "Thaw": "1.6.0",
+        "Thaw": "1.7.2",
         "Floe": "1.6.0"
       }
     },
@@ -107,7 +99,7 @@
       "url": "https://github.com/swiftlang/swift-subprocess",
       "license": "Apache-2.0",
       "users": {
-        "Thaw": "1.0.0",
+        "Thaw": "1.0.1",
         "Floe": "1.0.0"
       }
     },
@@ -116,7 +108,7 @@
       "url": "https://github.com/apple/swift-system",
       "license": "Apache-2.0",
       "users": {
-        "Thaw": "1.8.1",
+        "Thaw": "1.7.4",
         "Floe": "1.8.1"
       }
     }

@@ -7,6 +7,13 @@ import { siteUrl } from '@/lib/shared';
 
 const host = new URL(siteUrl).hostname.replace(/^www\./, '');
 
+// What someone would ask for each skill: a catalog's search is built from these.
+const askedFor: Record<string, string[]> = {
+  'install-thaw': ['install Thaw on a Mac', 'which Thaw for my macOS version'],
+  'troubleshoot-thaw': ['Thaw is not working', 'menu bar items are missing or moving'],
+  'thaw-url-scheme': ['control Thaw with thaw:// links', 'automate the menu bar with Thaw'],
+};
+
 export function aiCatalog() {
   return {
     specVersion: '1.0',
@@ -18,13 +25,15 @@ export function aiCatalog() {
         description: 'Search the docs and release notes of Thaw and Floe. Read-only, no key.',
         type: 'application/vnd.oai.openapi+json',
         url: `${siteUrl}/openapi.json`,
+        representativeQueries: ['search the Thaw docs', 'Thaw and Floe release notes'],
       },
       ...skillCatalog().map((skill) => ({
         identifier: `urn:air:${host}:skill:${skill.name}`,
         displayName: skill.title,
         description: skill.description,
-        type: 'text/markdown',
+        type: 'text/markdown; profile="urn:air:agent-skills"',
         url: `${siteUrl}/.well-known/agent-skills/${skill.name}/SKILL.md`,
+        representativeQueries: askedFor[skill.name],
       })),
     ],
   };
