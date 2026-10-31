@@ -92,7 +92,9 @@ export function VersionReleases({ product, version }: { product: string; version
 
 /**
  * Releases per day since the first one, a column per week, as GitHub draws a person's
- * contributions: the width of the page, with the months over it and the days beside it.
+ * contributions: the width of the page, with the months over it and the days beside it. A
+ * product with only a few weeks of releases keeps its squares small, and leaves the rest of
+ * the width empty.
  * The stronger the square, the more releases went out that day.
  */
 function ReleaseCalendar({ pages }: { pages: ReleasePage[] }) {
@@ -120,7 +122,12 @@ function ReleaseCalendar({ pages }: { pages: ReleasePage[] }) {
   // The cube's oranges (global.css). The faintest is still 3:1 against the page, so a single
   // release shows.
   const shade = ['', 'bg-(--release-1)', 'bg-(--release-2)', 'bg-(--release-3)'];
-  const columns = { gridTemplateColumns: `repeat(${weeks}, minmax(0, 1fr))` };
+  const widest = '1.75rem';
+  const columns = { gridTemplateColumns: `repeat(${weeks}, minmax(0, ${widest}))` };
+  // Wide enough for the key under it, however few the weeks.
+  const frame = {
+    gridTemplateColumns: `auto minmax(0, max(16rem, calc(${weeks} * ${widest})))`,
+  };
   // A month is named over the week its first day falls in.
   const months = cells.flatMap(({ date }, index) =>
     date.endsWith('-01') || index === 0
@@ -140,7 +147,10 @@ function ReleaseCalendar({ pages }: { pages: ReleasePage[] }) {
   const square = 'relative aspect-square bg-fd-foreground/[0.07]';
 
   return (
-    <div className="not-prose mb-10 grid grid-cols-[auto_minmax(0,1fr)] gap-x-2 gap-y-1.5 text-xs text-fd-muted-foreground">
+    <div
+      className="not-prose mb-10 grid gap-x-2 gap-y-1.5 text-xs text-fd-muted-foreground"
+      style={frame}
+    >
       <div aria-hidden className="col-start-2 grid" style={columns}>
         {months.map((month) => (
           <span key={month.week} style={{ gridColumnStart: month.week }}>
