@@ -21,17 +21,19 @@ export const countsFrom = (
 
 /**
  * How a project is run, small enough to read in passing: what has been independently
- * verified about its releases, and how many people use and build it. /verified explains
- * each one.
+ * verified about its releases, and how many people use and build it. Its Verified page
+ * explains each one.
  */
 export function VerifiedBlock({
   values,
   numbers,
   communityHref,
+  meaningsHref,
 }: {
   values: Verified[];
   numbers: ReturnType<typeof countsFrom>;
   communityHref: string;
+  meaningsHref: string;
 }) {
   const stepped = values.length === 5;
   return (
@@ -92,7 +94,7 @@ export function VerifiedBlock({
           ))}
         </p>
         <p className="mt-2 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-          <Link href="/verified" className="tap link">
+          <Link href={meaningsHref} className="tap link">
             What does this mean?
           </Link>
           <Link href={communityHref} className="tap link">
@@ -106,6 +108,11 @@ export function VerifiedBlock({
 
 export function Assurance() {
   return (
-    <VerifiedBlock values={verified} numbers={countsFrom(community)} communityHref="/community" />
+    <VerifiedBlock
+      values={verified}
+      numbers={countsFrom(community)}
+      communityHref="/community"
+      meaningsHref="/verified"
+    />
   );
 }

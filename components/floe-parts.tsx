@@ -80,6 +80,7 @@ export function FloeAssurance() {
       values={verifiedFrom(community.assurance, 'floe')}
       numbers={countsFrom(community)}
       communityHref="/floe/community"
+      meaningsHref="/floe/verified"
     />
   );
 }

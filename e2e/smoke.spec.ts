@@ -99,6 +99,32 @@ test('Floe’s page shows its own Verified values', async ({ page, request }) =>
     'href',
     '/floe/community',
   );
+  await expect(section.getByRole('link', { name: 'What does this mean?' })).toHaveAttribute(
+    'href',
+    '/floe/verified',
+  );
+});
+
+test('the Verified page has one page for each product, and the way to the other', async ({
+  page,
+}) => {
+  await page.goto('/verified');
+  const whose = page.getByRole('navigation', { name: 'Whose checks' });
+  await expect(whose.getByRole('link', { name: 'Thaw' })).toHaveAttribute('aria-current', 'page');
+  await expect(page.locator('dl > div').filter({ hasText: 'Test coverage' })).toContainText(
+    'Thaw’s code',
+  );
+  await whose.getByRole('link', { name: 'Floe' }).click();
+  await expect(page).toHaveURL(/\/floe\/verified$/);
+  await expect(whose.getByRole('link', { name: 'Floe' })).toHaveAttribute('aria-current', 'page');
+  const rows = page.locator('dl > div');
+  await expect(rows.filter({ hasText: 'Test coverage' })).toContainText('Floe’s code');
+  await expect(rows.filter({ hasText: 'OpenSSF Best Practices' }).locator('dt')).toContainText(
+    floeCommunity.assurance.bestPractices.replace(/^./, (first) => first.toUpperCase()),
+  );
+  await expect(
+    page.locator('header').first().getByRole('link', { name: 'Floe, home' }),
+  ).toBeVisible();
 });
 
 test('the pages a visitor moves between all answer', async ({ page }) => {
@@ -107,6 +133,7 @@ test('the pages a visitor moves between all answer', async ({ page }) => {
     '/floe',
     '/floe/roadmap',
     '/floe/community',
+    '/floe/verified',
     '/community',
     '/verified',
     '/roadmap',
@@ -419,6 +446,7 @@ test('AI tools get each page as Markdown, a Markdown not-found, and a skill', as
     '/privacy',
     '/community',
     '/floe/community',
+    '/floe/verified',
     '/verified',
     '/built-with',
     '/changelog/2.1.0',

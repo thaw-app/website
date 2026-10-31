@@ -1,7 +1,5 @@
 import { docsRoute, type ProductSlug, products } from '@/lib/shared';
 
-const repo = products.thaw.repo;
-
 /** A product's entry on OpenSSF's Best Practices list, which holds its badge and Baseline level. */
 const bestPracticesUrl = (slug: ProductSlug) =>
   `https://www.bestpractices.dev/projects/${products[slug].bestPractices}`;
@@ -10,13 +8,15 @@ const bestPracticesUrl = (slug: ProductSlug) =>
 // for the value, since a score a machine gives and a checklist a project fills in differ.
 // `id` is what ties one to its value: a value that could not be read is left out of the
 // list of values, so the two lists cannot be matched by position.
-export const meanings: {
+export const meaningsFor = (
+  slug: ProductSlug,
+): {
   id: VerifiedId;
   term: string;
   meaning: string;
   checkedBy: string;
   href: string;
-}[] = [
+}[] => [
   {
     id: 'slsa',
     term: 'SLSA build level',
@@ -31,7 +31,7 @@ export const meanings: {
     meaning:
       'A checklist from the Open Source Security Foundation for how a project is run, such as how changes get reviewed and how security reports are handled. It has three badges, Passing, Silver and Gold.',
     checkedBy: 'The project answers each item and publishes its evidence.',
-    href: bestPracticesUrl('thaw'),
+    href: bestPracticesUrl(slug),
   },
   {
     id: 'baseline',
@@ -47,14 +47,14 @@ export const meanings: {
     meaning:
       'A tool that inspects the repository itself and scores it out of 10 on things such as whether changes are reviewed, dependencies are pinned and releases are signed.',
     checkedBy: 'Run by OpenSSF every week. The project cannot edit the score.',
-    href: `https://scorecard.dev/viewer/?uri=github.com/${repo}`,
+    href: `https://scorecard.dev/viewer/?uri=github.com/${products[slug].repo}`,
   },
   {
     id: 'coverage',
     term: 'Test coverage',
-    meaning: 'The share of Thaw’s code that its automated tests run.',
+    meaning: `The share of ${products[slug].name}’s code that its automated tests run.`,
     checkedBy: 'SonarQube Cloud measures it on every change.',
-    href: `https://sonarcloud.io/component_measures?id=${repo.replace('/', '_')}&metric=coverage`,
+    href: `https://sonarcloud.io/component_measures?id=${products[slug].repo.replace('/', '_')}&metric=coverage`,
   },
 ];
 
@@ -88,14 +88,23 @@ export interface Assurance {
 const gold = 'var(--verified-gold)';
 const green = 'var(--verified-green)';
 
+// How the page names a product when it counts it among the few.
+const described: Record<ProductSlug, string> = {
+  thaw: 'Thaw, a free menu bar app,',
+  floe: 'Floe, a free launcher,',
+};
+
 /**
- * Where those marks put Thaw among other projects, or nothing if the numbers could not be
- * read. It only counts Thaw among the few when Thaw holds both marks.
+ * Where those marks put a product among other projects, or nothing if the numbers could not
+ * be read. It only counts the product among the few when it holds both marks.
  */
-export function standing({ field, bestPractices, baseline }: Assurance): string {
+export function standing(
+  { field, bestPractices, baseline }: Assurance,
+  slug: ProductSlug = 'thaw',
+): string {
   if (!field) return '';
   const among = bestPractices === 'gold' && baseline === 3;
-  return `Of the ${new Intl.NumberFormat('en').format(field.projects)} projects on OpenSSF’s Best Practices list, ${field.gold} hold Gold and ${field.baseline3} meet every Baseline control at Level 3.${among ? ' Thaw, a free menu bar app, is in both groups.' : ''}`;
+  return `Of the ${new Intl.NumberFormat('en').format(field.projects)} projects on OpenSSF’s Best Practices list, ${field.gold} hold Gold and ${field.baseline3} meet every Baseline control at Level 3.${among ? ` ${described[slug]} is in both groups.` : ''}`;
 }
 
 const badges = ['passing', 'silver', 'gold'];

@@ -59,6 +59,12 @@ export const sitePages = {
     title: 'Privacy only works if the security around it does.',
     shared: 'What SLSA, the OpenSSF badges and the Scorecard are, and where Thaw stands.',
   },
+  floeVerified: {
+    label: 'Verified',
+    title: 'Privacy only works if the security around it does.',
+    shared: 'What SLSA, the OpenSSF badges and the Scorecard are, and where Floe stands.',
+    product: 'floe' as const,
+  },
 };
 
 export type SitePage = keyof typeof sitePages;
