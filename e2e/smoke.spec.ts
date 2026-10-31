@@ -54,6 +54,7 @@ test('the pages a visitor moves between all answer', async ({ page }) => {
     '/community',
     '/verified',
     '/roadmap',
+    '/roadmap/thawui',
     '/built-with',
     '/faq',
     '/docs/thaw',
@@ -239,12 +240,18 @@ test('Floe’s pages are under Floe’s own header', async ({ page, isMobile }) 
   await page.goto('/floe/roadmap');
   await page
     .getByRole('navigation', { name: 'Whose roadmap' })
-    .getByRole('link', { name: 'Thaw' })
+    .getByRole('link', { name: 'Thaw', exact: true })
     .click();
   await expect(page).toHaveURL(/\/roadmap$/);
   await expect(
     page.getByRole('navigation', { name: 'Whose roadmap' }).getByRole('link', { name: 'Floe' }),
   ).toHaveAttribute('href', '/floe/roadmap');
+  await page
+    .getByRole('navigation', { name: 'Whose roadmap' })
+    .getByRole('link', { name: 'ThawUI' })
+    .click();
+  await expect(page).toHaveURL(/\/roadmap\/thawui$/);
+  await expect(page.getByRole('link', { name: 'ThawUI' })).toHaveAttribute('aria-current', 'page');
   // The name in the header leads to its product's own page, and the last of the header's
   // links to the other product's.
   await page.goto('/changelog');

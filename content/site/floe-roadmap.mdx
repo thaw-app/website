@@ -1,11 +1,11 @@
-{/* Floe's roadmap, drawn by app/(floe)/floe/roadmap/page.tsx under its title. The plan is
-    the one in Floe's README; what shipped is from its changelog. */}
+{/* Floe's roadmap, drawn by app/(floe)/floe/roadmap/page.tsx under its title. The plan
+    moved here from Floe's README; what shipped is from its changelog. */}
 
-Floe is early: 0.1.0 is its first release. This is the plan as it stands, not a promise, and the order can change. [What Floe does not do yet](/docs/floe/limitations) lists the gaps as they are today.
+Floe is early: its latest release is 0.2.1. This is the plan as it stands, not a promise, and the order can change. [What Floe does not do yet](/docs/floe/limitations) lists the gaps as they are today, and [ThawUI’s roadmap](/roadmap/thawui) has the design Floe shares with Thaw.
 
 <Roadmap>
 
-<RoadmapList title="Up next" count={5} state="now" here note="What comes next, in this order.">
+<RoadmapList title="Up next" count={3} state="now" here note="What comes next, in this order.">
 <RoadmapGroup name="Documentation" count={1}>
 
 - **A guide for extension authors.** How to run a local extension in Floe, what works and what does not.
@@ -14,17 +14,7 @@ Floe is early: 0.1.0 is its first release. This is the plan as it stands, not a 
 <RoadmapGroup name="Extensions" count={2}>
 
 - **Floe’s own sign-in service.** Extensions sign in through Raycast’s service today, which is temporary. Floe’s own takes its place.
-- **More of the extension API.** The grid layout, `launchCommand` and deeplinks.
-
-</RoadmapGroup>
-<RoadmapGroup name="Search" count={1}>
-
-- **Search the front app’s menus.** Built on the menu scanner in [CMD-Z](https://github.com/stonerl/CMD-Z) and shared with Thaw.
-
-</RoadmapGroup>
-<RoadmapGroup name="Across your Macs" count={1}>
-
-- **Settings sync switched on.** Releases signed for iCloud, then the same sync in Thaw. <Marks of="icloud" />
+- **Deeplinks from outside Floe.** A `raycast://extensions/…` link opened in a browser or another app goes to Raycast today. Opened by an extension, it already runs in Floe.
 
 </RoadmapGroup>
 </RoadmapList>
@@ -37,7 +27,7 @@ Floe is early: 0.1.0 is its first release. This is the plan as it stands, not a 
 </RoadmapGroup>
 <RoadmapGroup name="Search" count={1}>
 
-- **Search your notes.**
+- **Search inside your notes.** Browse Notes finds a note by its name today.
 
 </RoadmapGroup>
 <RoadmapGroup name="Built in" count={1}>
@@ -55,8 +45,19 @@ Floe is early: 0.1.0 is its first release. This is the plan as it stands, not a 
 </RoadmapGroup>
 </RoadmapList>
 
-<RoadmapList title="Shipped" count={22} state="done" note="Everything that has shipped, by release, newest first. The changelog has the detail.">
-<RoadmapGroup name="0.1.0" count={22}>
+<RoadmapList title="Shipped" count={41} state="done" note="Everything that has shipped, by release, newest first. The changelog has the detail.">
+<RoadmapGroup name="0.2.1" count={1}>
+
+- Each AI service keeps its own API key
+
+</RoadmapGroup>
+<RoadmapGroup name="0.2.0" count={2}>
+
+- Floe runs on Intel Macs, extensions included
+- Choose the screen the launcher opens on
+
+</RoadmapGroup>
+<RoadmapGroup name="0.1.0" count={38}>
 
 - One hotkey opens a search over applications, commands, quicklinks and System Settings
 - Raycast extensions, unmodified, with an Extension Store page
@@ -66,6 +67,7 @@ Floe is early: 0.1.0 is its first release. This is the plan as it stands, not a 
 - Reminders, calendar events and timers
 - Snippets, quicklinks, emoji and a calculator with unit conversion
 - File search and menu bar item search
+- Search the commands in the front app’s menus
 - A window switcher
 - Bookmarks from Chrome, Brave, Edge, Arc, Vivaldi, Dia and Helium
 - The files you used lately in an app
@@ -80,6 +82,21 @@ Floe is early: 0.1.0 is its first release. This is the plan as it stands, not a 
 - Ask AI, answered by a tool or model you choose
 - Thaw 3’s actions in the search
 - Settings export and import
+- Settings and passwords sync through iCloud, if you switch it on
+- Scopes that narrow a search to one place
+- Open browser tabs in the search
+- A Fallbacks page for what is offered under every search
+- `Floe --pick` lends the search panel to a script
+- Contacts, and mail and message drafts
+- Daily notes, with `todo` and `log`
+- A Floating Note that stays above other apps
+- Media controls and Focus
+- Quit a process, and see what is on a port
+- SSH hosts in the search
+- A dictionary, from the ones on your Mac
+- Apple Shortcuts in the search, and Floe’s actions in Shortcuts
+- Each extension’s page shows what it reached
+- Glass, a tint, a border, a shadow and a beam for the launcher
 
 </RoadmapGroup>
 </RoadmapList>
@@ -87,3 +104,5 @@ Floe is early: 0.1.0 is its first release. This is the plan as it stands, not a 
 </Roadmap>
 
 To ask for something, [open an issue](https://github.com/thaw-app/Floe/issues). Every request is considered during the early releases.
+
+<RoadmapUpdated on="30 October 2026" />
