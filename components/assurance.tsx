@@ -2,26 +2,15 @@ import { Heading } from 'fumadocs-ui/components/heading';
 import Link from 'next/link';
 import { ResolvingText } from '@/components/resolving-text';
 import community from '@/lib/community.json';
-import { compact, longDate } from '@/lib/shared';
-import { readDays, verifiedFrom } from '@/lib/verified';
+import { compact } from '@/lib/shared';
+import { verifiedFrom } from '@/lib/verified';
 
-const plain = new Intl.NumberFormat('en');
 const { assurance } = community;
 
 // What outside bodies have verified about how Thaw is built and released.
 export const verified = verifiedFrom(assurance);
 
-// The sentence that counts Thaw among the Gold and Level 3 projects is only true of one.
-const amongTheFew = assurance.bestPractices === 'gold' && assurance.baseline === 3;
-
 const stepped = verified.length === 5;
-
-const read = readDays(community.readOn, {
-  bestPractices: 'the Best Practices badge',
-  baseline: 'the Baseline level',
-  scorecard: 'the Scorecard',
-  coverage: 'test coverage',
-});
 
 const numbers = [
   { value: community.stars, label: 'GitHub stars' },
@@ -31,8 +20,9 @@ const numbers = [
 ].filter((entry) => typeof entry.value === 'number');
 
 /**
- * How the project is run, in two rows: what has been independently verified
- * about its releases, and how many people use and build it.
+ * How the project is run, small enough to read in passing: what has been independently
+ * verified about its releases, and how many people use and build it. /verified explains
+ * each one.
  */
 export function Assurance() {
   return (
@@ -41,41 +31,27 @@ export function Assurance() {
         Verified
       </Heading>
       <div className="not-prose my-6">
-        {/* Why any of this is on the page, in the words the maintainer gave when asked what
-            Thaw's permissions are for. */}
-        <p className="mb-3 font-display text-2xl leading-tight font-semibold tracking-tight text-balance sm:text-3xl">
-          Privacy only works if the security around it does.
-        </p>
-        <p className="mb-6 text-fd-muted-foreground text-pretty">
-          Thaw asks for permissions that reach across your Mac, so we look at the whole release
-          process and not only at what the app does.
-          {assurance.field && (
-            <>
-              {' '}
-              Of the {plain.format(assurance.field.projects)} projects on OpenSSF’s Best Practices
-              list, {assurance.field.gold} hold Gold and {assurance.field.baseline3} meet every
-              Baseline control at Level 3.
-              {amongTheFew && ' Thaw, a free menu bar app, is in both groups.'}
-            </>
-          )}
-        </p>
-        {/* Five cells sit as two over three; any other count falls back to even columns. */}
-        <ul className={`crossed ${stepped ? 'sm:grid-cols-6' : 'sm:grid-cols-2 xl:grid-cols-4'}`}>
+        {/* One row of five; on a phone they sit as two over three. Any other count falls back
+            to even columns. */}
+        <ul
+          className={`crossed ${stepped ? 'grid-cols-6 sm:grid-cols-5' : 'grid-cols-2 sm:grid-cols-4'}`}
+        >
           {verified.map((entry, index) => (
             <li
               key={entry.id}
-              className={`${stepped ? (index < 2 ? 'sm:col-span-3' : 'sm:col-span-2') : ''}`}
+              className={stepped ? `${index < 2 ? 'col-span-3' : 'col-span-2'} sm:col-span-1` : ''}
             >
               <Link
                 href={entry.href}
-                className="flex h-full flex-col gap-1 p-5 transition-colors hover:bg-fd-accent"
+                title={entry.detail}
+                className="flex h-full flex-col gap-1 p-3 transition-colors hover:bg-fd-accent"
               >
-                <span className="text-sm text-fd-muted-foreground">{entry.label}</span>
-                <span className="font-display text-3xl leading-tight font-semibold tracking-tight">
+                <span className="text-xs text-fd-muted-foreground text-pretty">{entry.label}</span>
+                <span className="mt-auto font-display text-lg leading-tight font-semibold tracking-tight">
                   <ResolvingText>{entry.value}</ResolvingText>
                 </span>
                 {/* How far up its scale the value is, in the colour its own badge has. */}
-                <span aria-hidden className="my-1.5 flex h-1 gap-1">
+                <span aria-hidden className="mt-1 flex h-1 gap-1">
                   {entry.steps ? (
                     Array.from({ length: entry.steps }, (_, step) => (
                       <span
@@ -94,37 +70,23 @@ export function Assurance() {
                     </span>
                   )}
                 </span>
-                {/* What the value means, in a line. */}
-                <span className="text-sm text-fd-muted-foreground text-pretty">{entry.detail}</span>
               </Link>
             </li>
           ))}
         </ul>
-        <p className="mt-3 text-sm text-fd-muted-foreground text-pretty">
-          {read.day && `Read from OpenSSF and SonarQube Cloud on ${longDate(read.day)}. `}
-          {/* One whose source could not be reached since is an older reading, and says so. */}
-          {read.older.map(
-            (entry) => `The value for ${entry.name} is from ${longDate(entry.day)}. `,
-          )}
-          The SLSA level is the one Thaw’s release pipeline is built to.
-        </p>
-        <Link
-          href="/verified"
-          className="tap press mt-3 flex items-center justify-between gap-x-6 gap-y-1 border px-5 py-3 font-medium transition-colors hover:bg-fd-accent max-sm:flex-col max-sm:items-start"
-        >
-          What does this mean?
-          <span aria-hidden className="text-fd-muted-foreground">
-            Each one explained
-          </span>
-        </Link>
-        <p className="mt-5 flex flex-wrap gap-x-8 gap-y-2 text-fd-muted-foreground">
+        <p className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-fd-muted-foreground">
           {numbers.map((entry) => (
             <span key={entry.label}>
               <span className="font-medium text-fd-foreground">{compact.format(entry.value)}</span>{' '}
               {entry.label}
             </span>
           ))}
-          <Link href="/community" className="tap text-fd-foreground link">
+        </p>
+        <p className="mt-2 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+          <Link href="/verified" className="tap link">
+            What does this mean?
+          </Link>
+          <Link href="/community" className="tap link">
             Community
           </Link>
         </p>

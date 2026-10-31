@@ -10,7 +10,6 @@ import { createRelativeLink } from 'fumadocs-ui/mdx';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getMDXComponents } from '@/components/mdx';
-import { PageFade } from '@/components/page-fade';
 import { pageAlternates, pageTitle } from '@/lib/releases';
 import {
   docsRoute,
@@ -35,7 +34,7 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
   const product = productOf(page.slugs);
 
   return (
-    <PageFade>
+    <>
       {/* A column of reading width, at the left of the space it has: lines of about ninety
           characters at most, and room beside them. */}
       <DocsPage
@@ -81,7 +80,7 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
           />
         </DocsBody>
       </DocsPage>
-    </PageFade>
+    </>
   );
 }
 

@@ -40,6 +40,8 @@ function readmeBody(markdown, product) {
       return (
         section
           .replace(/```sh\n[\s\S]*?```\n/, `${parts.install}\n`)
+          // The badges saying which Thaw runs where: the tabs above the commands say it.
+          .replace(/^<p>\s*<picture>[\s\S]*?<\/p>\n\n?/m, '')
           .replace(/^Or grab the `\.dmg`[^\n]*\n\n?/m, '')
           // What it needs and asks for is said under the tabs, per macOS (install-tabs.tsx).
           .replace(/^Needs macOS[^\n]*\n\n?/m, '')
@@ -49,13 +51,24 @@ function readmeBody(markdown, product) {
     // features differently (lib/thaw-features.ts) and name the ones in the README's folded
     // full list, which is therefore left out.
     if (parts.features && /^## Features\b/.test(section)) {
-      return withoutFold(section.replace(/(?:^- .*\n)+/m, `${parts.features}\n`));
+      const list = /(?:^[-*+] .*\n)+/m;
+      // Without a list to stand in for, it goes straight under the heading.
+      return withoutFold(
+        list.test(section)
+          ? section.replace(list, `${parts.features}\n`)
+          : section.replace(/^.*\n/, (heading) => `${heading}\n${parts.features}\n`),
+      );
     }
     return section;
   });
   // Installing comes first on the page, ahead of the feature list.
   const install = sections.findIndex((section) => /^## Install\b/.test(section));
   if (install > 0) sections.unshift(...sections.splice(install, 1));
+  // The feature list is the site's to show, so it follows Install whether or not the README
+  // has the section.
+  if (parts.features && !sections.some((section) => /^## Features\b/.test(section))) {
+    sections.splice(install < 0 ? 0 : 1, 0, `## Features\n\n${parts.features}\n\n`);
+  }
   // And last, how the project is run: its numbers and what outside bodies have verified.
   if (parts.last) sections.push(`\n${parts.last}\n`);
   const leftOut = product.readmeLeavesOut ?? [];

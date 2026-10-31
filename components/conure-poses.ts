@@ -472,10 +472,20 @@ function pickHat(): Hat | null {
   const asked = new URLSearchParams(window.location.search).get('conure-hat');
   if (asked && asked in hats) return asked as Hat;
   if (Math.random() < 2 / 3) return null;
+  return anyHat();
+}
+function anyHat() {
   const all = Object.keys(hats) as Hat[];
   return all[Math.floor(Math.random() * all.length)];
 }
-export const hat = pickHat();
+let hat = pickHat();
+
+/** Puts a hat on a bird that has none, for whoever has got its attention. Drawn from the next pose on. */
+export function wearHat() {
+  if (hat) return;
+  hat = anyHat();
+  dressed.clear();
+}
 
 // Room above the poses for a hat, in rows.
 const headroom = 2;

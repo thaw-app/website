@@ -13,8 +13,7 @@ const dev = process.env.NODE_ENV === 'development';
 // security policy). What this still refuses is any script, style, frame or connection from
 // somewhere else, which is what an injected tag would need.
 //
-// Pictures may come from any https address: the docs embed them from GitHub and other
-// hosts, and contributors' pictures are GitHub's.
+// Pictures may come from any https address: the docs embed them from GitHub and other hosts.
 const contentSecurityPolicy = [
   "default-src 'self'",
   // React's debugging in development needs eval; a built site does not.
@@ -60,6 +59,14 @@ const securityHeaders = [
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
+  images: {
+    // Contributors' pictures, made the size they are drawn at and kept for a week.
+    remotePatterns: [
+      { protocol: 'https', hostname: 'avatars.githubusercontent.com' },
+      { protocol: 'https', hostname: 'github.com' },
+    ],
+    minimumCacheTTL: 604800,
+  },
   async headers() {
     return [
       { source: '/:path*', headers: securityHeaders },
@@ -74,6 +81,7 @@ const config = {
         '/floe/community',
         '/faq',
         '/roadmap',
+        '/roadmap/thawui',
         '/privacy',
         '/community',
         '/verified',

@@ -22,7 +22,7 @@ export const thawFaq: {
   {
     question: 'Which macOS do I need?',
     answer:
-      'macOS 14 or later. You get Thaw 3, in beta, on macOS 27, Thaw 2 on macOS 26, and Thaw 1 on macOS 14 or 15.',
+      'macOS 14 or later. You get Thaw 3, in beta, on macOS 27, Thaw 2 on macOS 26, Thaw 2.2, in beta, on macOS 15, and Thaw 1 on macOS 14.',
     more: { label: 'Find your version', href: `${docsRoute}/thaw/versions` },
   },
   {
@@ -75,7 +75,7 @@ export const thawFaq: {
     steps: [
       'Turn off Launch at Login in Settings, under General.',
       'Quit Thaw from the menu on its icon.',
-      'Drag Thaw from Applications to the Trash. With Homebrew, run brew uninstall thaw.',
+      'Drag Thaw from Applications to the Trash. With Homebrew, run brew uninstall thaw, or brew uninstall thaw@beta for the beta.',
     ],
     more: { label: 'Reset or uninstall', href: `${docsRoute}/thaw/reset-and-uninstall#uninstall` },
   },

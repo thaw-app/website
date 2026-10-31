@@ -20,6 +20,14 @@ export const installWays = [
     about: 'Thaw 3, rebuilt for macOS 27. In beta.',
   },
   {
+    id: 'macos-15',
+    label: 'macOS 15',
+    // No cask yet: thaw@beta is Thaw 3, which needs macOS 27. So this is the release itself,
+    // until Thaw 2.2 reaches Homebrew.
+    note: 'Thaw 2.2, which brings back macOS 15, is in beta and not on Homebrew yet. Get the disk image from its release and drag Thaw to Applications.',
+    href: `${repoUrl('thaw')}/releases/tag/2.2.0-beta.1`,
+  },
+  {
     id: 'download',
     label: 'Without Homebrew',
     note: 'Get the disk image for your macOS from the releases and drag Thaw to Applications.',
@@ -50,6 +58,7 @@ const screenRecording = {
 export const installFacts = {
   'macos-26': [accessibility, screenRecording],
   'macos-27': [accessibility, layoutAccess, screenRecording],
+  'macos-15': [accessibility, screenRecording],
   // Either release may be the one downloaded, so the one that is not always asked says when.
   download: [accessibility, { ...layoutAccess, label: 'Needs, on macOS 27' }, screenRecording],
 };

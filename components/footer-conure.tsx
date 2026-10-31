@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { onThemeChange } from '@/lib/on-theme-change';
-import { columns, drawPose, hat, rows, touches } from './conure-poses';
+import { ConureWave, greetConure, tip } from './conure-greeting';
+import { columns, drawPose, rows, touches } from './conure-poses';
 
 // Where the bird can be: off either side of the picture, on the h of "thaw", on the
 // ampersand, on the l of "floe", and on the floor between the ampersand and "floe".
@@ -156,16 +157,21 @@ const wingbeat = ['wingsUp', 'wingsMid', 'wingsDown', 'wingsMid'];
  * A conure that visits the wordmark at the foot of the page: it flies in from the
  * left, lands on "thaw", flies across to the ampersand, drops to the floor to eat,
  * goes up onto "floe", then flies off to the right. With reduced motion it simply
- * sits on the ampersand.
+ * sits on the ampersand. Touched, or waved at from the keyboard, it stops for whoever did
+ * it, and a little more of that opens the shooting gallery (see conure-greeting).
  */
 export function FooterConure() {
   const birdRef = useRef<HTMLCanvasElement>(null);
+  const waveRef = useRef<HTMLButtonElement>(null);
+  // How far the exchange with the bird has got, for the keyboard's button to say so.
+  const [greeting, setGreeting] = useState({ greeted: 0, known: false });
 
   useEffect(() => {
     const bird = birdRef.current;
+    const wave = waveRef.current;
     const context = bird?.getContext('2d');
     const stage = bird?.parentElement;
-    if (!bird || !context || !stage) return;
+    if (!bird || !wave || !context || !stage) return;
 
     let frame = 0;
     let visible = false;
@@ -188,38 +194,65 @@ export function FooterConure() {
     let fled: { when: number; x: number; y: number } | null = null;
 
     // The bird itself takes no clicks, so the pictures behind it stay reachable; the
-    // footer listens for it. Touched, it flies off; but in a hat it is game, and stands
-    // its ground: three clicks on it inside a second and a half open the shooting gallery
-    // (see footer-shootout), which draws its own conure. Meanwhile this one waits, out of
-    // sight, on the ampersand, and flies off when the game is over.
-    let clicks: number[] = [];
+    // footer listens for it. Once it has someone's attention it stays where it is, so a
+    // finger has no need to chase it. Meanwhile `stay` says how: the pose to hold, or none
+    // to hover where it was caught in the air, and when it last tipped its hat. The
+    // gallery draws its own conure, and this one waits, out of sight, on the ampersand,
+    // and flies off when the game is over.
+    let stay: { pose: string | null; tipped: number } | null = null;
+    // A bird called over from the keyboard, on its way to the ampersand from here.
+    let called: { when: number; x: number; y: number } | null = null;
     let playing = false;
+    function holding() {
+      if (shown.startsWith('wings')) return null;
+      return shown.startsWith('peek') ? 'peekFacing' : 'facing';
+    }
+    const greeting = greetConure(wave, {
+      told: (greeted, known) => setGreeting({ greeted, known }),
+      look() {
+        stay ??= { pose: holding(), tipped: 0 };
+        if (stay.pose) show(stay.pose);
+      },
+      tip() {
+        stay ??= { pose: holding(), tipped: 0 };
+        stay.tipped = performance.now();
+        // The pose it is in already, drawn again with the hat.
+        show(stay.pose ?? shown, true);
+      },
+      // The keyboard's way to it: wherever the bird is, it comes to the ampersand and looks
+      // up, and stays for as long as the focus does.
+      called() {
+        fled = null;
+        stay = { pose: 'facing', tipped: 0 };
+        if (still) show('facing');
+        else called = { when: performance.now(), ...at };
+      },
+      forget() {
+        if (!stay) return;
+        stay = null;
+        if (still) show('perched');
+        else fled = { when: performance.now(), ...at };
+      },
+      opened() {
+        stay = null;
+        called = null;
+        playing = true;
+      },
+      closed() {
+        playing = false;
+        if (!still) fled = { when: performance.now(), ...at };
+      },
+    });
     function onPointerDown(event: PointerEvent) {
-      if (!bird || !stage || playing || !touches(event, bird)) return;
-      if (!hat) {
-        if (!still && !fled) fled = { when: performance.now(), ...at };
-        return;
-      }
-      clicks = [...clicks.filter((when) => event.timeStamp - when < 1500), event.timeStamp];
-      if (clicks.length < 3) return;
-      clicks = [];
-      stage.dispatchEvent(new CustomEvent('conure:shootout'));
-    }
-    function onStart() {
-      playing = true;
-    }
-    function onEnd() {
-      playing = false;
-      if (!still) fled = { when: performance.now(), ...at };
+      // Down behind a letter there is no bird to touch, only the box it would be in.
+      if (!bird || playing || fled || shown === 'hidden' || !touches(event, bird)) return;
+      greeting.greet();
     }
     stage.addEventListener('pointerdown', onPointerDown);
-    stage.addEventListener('conure:shootout', onStart);
-    stage.addEventListener('conure:shootout-end', onEnd);
     const stop = () => {
       themed();
+      greeting.stop();
       stage.removeEventListener('pointerdown', onPointerDown);
-      stage.removeEventListener('conure:shootout', onStart);
-      stage.removeEventListener('conure:shootout-end', onEnd);
     };
     if (still) return stop;
 
@@ -275,6 +308,34 @@ export function FooterConure() {
         at = place('sign');
         show('perched');
         bird.style.translate = `${at.x}px ${at.y}px`;
+        return;
+      }
+
+      if (called) {
+        delete stage.dataset.conureBehind;
+        const to = place('sign');
+        // From out of the picture it comes in from the left, the way it always does.
+        const from = called.x < width ? called : place('left');
+        const part = Math.min(1, (now - called.when) / 1000 / 0.8);
+        if (part < 1) {
+          const eased = part * part * (3 - 2 * part);
+          show(wingbeat[Math.floor(now / 80) % wingbeat.length]);
+          bird.style.translate = `${from.x + (to.x - from.x) * eased}px ${
+            from.y + (to.y - from.y) * eased + tucked * pixel * (1 - part)
+          }px`;
+          return;
+        }
+        at = to;
+        called = null;
+        bird.style.translate = `${at.x}px ${at.y}px`;
+      }
+
+      if (stay) {
+        // A frame's own time can be a hair earlier than the touch that started this.
+        const beat = Math.max(0, Math.floor((now - stay.tipped) / 150));
+        if (!stay.pose) show(wingbeat[Math.floor(now / 80) % wingbeat.length]);
+        else if (stay.tipped && stay.pose === 'facing' && beat < tip.length) show(tip[beat][0]);
+        else show(stay.pose);
         return;
       }
 
@@ -459,12 +520,15 @@ export function FooterConure() {
   }, []);
 
   return (
-    <canvas
-      ref={birdRef}
-      width={columns}
-      height={rows}
-      aria-hidden
-      className="footer-conure pointer-events-none absolute top-0 left-0"
-    />
+    <>
+      <canvas
+        ref={birdRef}
+        width={columns}
+        height={rows}
+        aria-hidden
+        className="footer-conure pointer-events-none absolute top-0 left-0"
+      />
+      <ConureWave ref={waveRef} greeted={greeting.greeted} known={greeting.known} />
+    </>
   );
 }

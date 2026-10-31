@@ -28,7 +28,6 @@ launcher, as a second product. One domain: a home page, and docs for both.
 ## Signature
 
 Two things carry the identity, and the rest stays quiet around them.
-
 - **Type as picture.** The cube drawn in characters on the home page, and at
   the foot of every page "thaw & floe" drawn the same way, each name in its
   product's colour, where a conure comes by. It is the owner's own bird, drawn from photographs,

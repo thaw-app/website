@@ -3,7 +3,6 @@ import { AsciiCube } from '@/components/ascii-cube';
 import { floeMask } from '@/components/ascii-cube-mask';
 import { JsonLd } from '@/components/json-ld';
 import { getMDXComponents } from '@/components/mdx';
-import { PageFade } from '@/components/page-fade';
 import { ProductLanding, TryIt } from '@/components/product-landing';
 import { latestStable, pageAlternates } from '@/lib/releases';
 import { products, repoUrl, siteUrl } from '@/lib/shared';
@@ -48,42 +47,40 @@ export default function FloePage() {
   const Readme = readme.data.body;
 
   return (
-    <PageFade>
-      <main id="content" data-tone="floe" className="flex flex-1 flex-col">
-        <JsonLd data={structuredData()} />
-        <ProductLanding
-          // Floe's icon in characters and in its own blue, where Thaw's page has its cube. It
-          // drifts where the cube melts.
-          mark={
-            <AsciiCube
-              mask={floeMask}
-              label="Floe’s icon, a floe of ice, drawn in text characters"
-              className="ascii-floe"
-              drift
-            />
-          }
-          title={sitePages.floe.title}
-          lead="One hotkey, one search: your apps, commands, quicklinks and System Settings, and Raycast extensions, unmodified."
-          terms={[
-            'Free under AGPL-3.0, with no analytics and no account.',
-            'Floe is early, and made by the people who make Thaw.',
-          ]}
-        >
-          {/* How to get it and what it does: built from Floe's README, synced from its
+    <main id="content" data-tone="floe" className="flex flex-1 flex-col">
+      <JsonLd data={structuredData()} />
+      <ProductLanding
+        // Floe's icon in characters and in its own blue, where Thaw's page has its cube. It
+        // drifts where the cube melts.
+        mark={
+          <AsciiCube
+            mask={floeMask}
+            label="Floe’s icon, a floe of ice, drawn in text characters"
+            className="ascii-floe"
+            drift
+          />
+        }
+        title={sitePages.floe.title}
+        lead="One hotkey, one search: your apps, commands, quicklinks and System Settings, and Raycast extensions, unmodified."
+        terms={[
+          'Free under AGPL-3.0, with no analytics and no account.',
+          'Floe is early, and made by the people who make Thaw.',
+        ]}
+      >
+        {/* How to get it and what it does: built from Floe's README, synced from its
             repository like the docs are. */}
-          <Readme components={getMDXComponents()} />
-        </ProductLanding>
+        <Readme components={getMDXComponents()} />
+      </ProductLanding>
 
-        <TryIt
-          product="floe"
-          things={[
-            'Type “settings” and press Return',
-            'Search the web with a quicklink',
-            'Press Control-Option-Space to close and reopen it',
-          ]}
-          phone="This is Floe, rebuilt in the browser. It is too small to use on a phone: open this page on a Mac to type into it."
-        />
-      </main>
-    </PageFade>
+      <TryIt
+        product="floe"
+        things={[
+          'Type “settings” and press Return',
+          'Search the web with a quicklink',
+          'Press Control-Option-Space to close and reopen it',
+        ]}
+        phone="This is Floe, rebuilt in the browser. It is too small to use on a phone: open this page on a Mac to type into it."
+      />
+    </main>
   );
 }

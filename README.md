@@ -3,17 +3,17 @@
 The website for Thaw and Floe: a home page and the documentation for both, on
 one domain. Built with [Fumadocs](https://fumadocs.dev) on Next.js.
 
-| Path | What it is |
-|---|---|
-| `/` | Home page: install, features, what has been verified, and Thaw rebuilt in the browser to try |
-| `/community` | The project in numbers, where its people are, the team, contributors and translators. Floe's is `/floe/community` |
-| `/verified` | What each security badge on the home page means, and who vouches for it |
-| `/built-with` | The stack, the services, the licences and every package, with thanks |
-| `/floe` | Floe's page: the same parts as the home page, built from Floe's README, with Floe's launcher open in the demo |
-| `/roadmap` | What is being worked on, what is next and what has shipped; written in `content/site/roadmap.mdx`. Floe's is `/floe/roadmap`, written in `content/site/floe-roadmap.mdx` |
-| `/changelog` | Every release of Thaw, with what each lists as new and fixed; a release is at `/changelog/<tag>`, and Floe's are under `/changelog/floe` |
-| `/docs/thaw` | Thaw documentation |
-| `/docs/floe` | Floe documentation |
+| Path          | What it is                                                                                                                                                               |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `/`           | Home page: install, features, what has been verified, and Thaw rebuilt in the browser to try                                                                             |
+| `/community`  | The project in numbers, where its people are, the team, contributors and translators. Floe's is `/floe/community`                                                        |
+| `/verified`   | What each security badge on the home page means, and who vouches for it                                                                                                  |
+| `/built-with` | The stack, the services, the licences and every package, with thanks                                                                                                     |
+| `/floe`       | Floe's page: the same parts as the home page, built from Floe's README, with Floe's launcher open in the demo                                                            |
+| `/roadmap`    | What is being worked on, what is next and what has shipped; written in `content/site/roadmap.mdx`. Floe's is `/floe/roadmap`, written in `content/site/floe-roadmap.mdx` |
+| `/changelog`  | Every release of Thaw, with what each lists as new and fixed; a release is at `/changelog/<tag>`, and Floe's are under `/changelog/floe`                                 |
+| `/docs/thaw`  | Thaw documentation                                                                                                                                                       |
+| `/docs/floe`  | Floe documentation                                                                                                                                                       |
 
 ## Where the content lives
 
@@ -21,10 +21,10 @@ The docs are written in the app repos, next to the code they describe.
 `scripts/sync-docs.mjs` copies them into `content/docs/<product>` before every
 build, so those `.md` files are not committed here.
 
-| Product | Repo | Files synced |
-|---|---|---|
-| Thaw | `thaw-app/Thaw` | `docs/*.md`, `CHANGELOG.md`, `FREQUENT_ISSUES.md` |
-| Floe | `thaw-app/Floe` | `docs/*.md`, `CHANGELOG.md`, `README.md` |
+| Product | Repo            | Files synced                                      |
+| ------- | --------------- | ------------------------------------------------- |
+| Thaw    | `thaw-app/Thaw` | `docs/*.md`, `CHANGELOG.md`, `FREQUENT_ISSUES.md` |
+| Floe    | `thaw-app/Floe` | `docs/*.md`, `CHANGELOG.md`, `README.md`          |
 
 **To change a synced page, open a pull request in the app repo.** The site
 picks it up on its next build.
@@ -40,7 +40,6 @@ Some pages are the same on both sides: how to contribute, the Code of
 Conduct, translations, how these docs work and the security policy. Each
 product's docs carry a copy, so the sidebar and the picker stay where the
 reader is.
-
 - The policies come from `thaw-app/.github`, like any other synced page.
 - The rest are written here, in `content/shared`. Edit them there; the sync
   copies them into `content/docs/<product>`, which git ignores.
@@ -83,14 +82,14 @@ is typed in by hand. Each is saved under `lib/` and committed, and one that
 cannot be read keeps its last value, so a source being down never breaks a
 build or blanks a number.
 
-| File | What | From |
-|---|---|---|
-| `lib/community.json` | Stars, downloads, contributors, translators, the Verified values | GitHub, Homebrew, Discord, OpenSSF, SonarQube Cloud, `CREDITS.md` |
-| `lib/floe-community.json` | The same for Floe, for `/floe/community` | The same sources, for `thaw-app/Floe` |
-| `lib/community.json` (`world`) | Stars, issues and pull requests by country | Every stargazer's and author's GitHub profile location |
-| `lib/roadmap-issues.json` | Whether each issue the roadmap links is open | GitHub |
-| `lib/roadmap-requests.json` | The open feature requests, most thumbs-up first | GitHub |
-| `lib/built-with.json` | Every package and its licence | The three projects' manifests, GitHub, npm, crates.io |
+| File                           | What                                                             | From                                                              |
+| ------------------------------ | ---------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `lib/community.json`           | Stars, downloads, contributors, translators, the Verified values | GitHub, Homebrew, Discord, OpenSSF, SonarQube Cloud, `CREDITS.md` |
+| `lib/floe-community.json`      | The same for Floe, for `/floe/community`                         | The same sources, for `thaw-app/Floe`                             |
+| `lib/community.json` (`world`) | Stars, issues and pull requests by country                       | Every stargazer's and author's GitHub profile location            |
+| `lib/roadmap-issues.json`      | Whether each issue the roadmap links is open                     | GitHub                                                            |
+| `lib/roadmap-requests.json`    | The open feature requests, most thumbs-up first                  | GitHub                                                            |
+| `lib/built-with.json`          | Every package and its licence                                    | The three projects' manifests, GitHub, npm, crates.io             |
 
 These are optional, and the pages are not. `bun run sync` does both, pages first, and
 is what a build runs. `bun run sync:content` fetches the pages alone, and is what
@@ -112,7 +111,6 @@ country's name, a US state, or a town on its list. Add a town there when a
 common one is going uncounted.
 
 Four files are made by hand-run scripts and committed, not built each time:
-
 - `assets/desktop-still.png` and `assets/desktop-still-floe.png`, the pictures of the
   demo a phone is shown in its place on the home page and on Floe's, by
   `node scripts/capture-demo.mjs` against a running site. Take them again when the
@@ -170,7 +168,6 @@ refused it. A new outside source goes in that one list, with why.
 ## What loads later
 
 Three things are kept off a page's first load, since most visits never need them at once:
-
 - The search box and its code, fetched when it is first opened or a search button is
   pointed at (`components/providers.tsx`).
 - The moving wordmark and the conure at the foot of the page, fetched when the footer is

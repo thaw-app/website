@@ -30,6 +30,7 @@ const apps = {
 
 // Licences GitHub cannot name from the file, read from each repository's own LICENSE.
 const licenses = {
+  'thaw-app/prk-bin': 'PlatformRuntimeKit License 1.0',
   'sparkle-project/Sparkle': 'MIT, with others for bundled code',
   'swiftlang/swift-cmark': 'BSD-2-Clause',
 };

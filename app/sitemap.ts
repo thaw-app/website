@@ -26,6 +26,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ['/faq', undefined],
     ['/built-with', undefined],
     ['/roadmap', newest.thaw],
+    ['/roadmap/thawui', newest.thaw],
     ['/privacy', undefined],
   ];
   const docs = source.getPages().filter((page) => page.slugs.at(-1) !== 'readme');

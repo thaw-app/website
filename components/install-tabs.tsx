@@ -50,8 +50,8 @@ export function InstallTabs() {
         <div
           role="tablist"
           aria-label="Ways to install Thaw"
-          // On a phone the three names are a few pixels wider than the box, so the gap closes up.
-          className="flex gap-3.5 border-b px-4 sm:gap-5"
+          // On a phone the names are wider than the box, so the last goes to a second row.
+          className="flex flex-wrap gap-x-3.5 border-b px-4 sm:gap-x-5"
         >
           {ways.map(({ id, label }, index) => (
             <button

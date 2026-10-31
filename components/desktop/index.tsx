@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
   type CSSProperties,
@@ -11,6 +12,8 @@ import {
   useRef,
   useState,
 } from 'react';
+import darkWallpaper from '@/assets/wallpaper-dark.jpg';
+import lightWallpaper from '@/assets/wallpaper-light.jpg';
 import type { ProductSlug } from '@/lib/shared';
 import { Dock } from './dock';
 import { hotkeyMatches } from './floe-controls';
@@ -343,8 +346,26 @@ export function Desktop({ start = 'thaw' }: { start?: ProductSlug }) {
       inert={compact}
       onKeyDown={onKeyDown}
       // The shape of a 14-inch MacBook Pro's screen: 1512 by 982 points.
-      className="desktop-wallpaper relative flex aspect-[1512/982] w-full flex-col overflow-hidden rounded-3xl border text-white"
+      className="desktop-wallpaper relative isolate flex aspect-[1512/982] w-full flex-col overflow-hidden rounded-3xl border text-white"
     >
+      {/* One photograph for each appearance (credited on Built with). The one not showing
+          is lazy, so it is not fetched unless the appearance changes. */}
+      <Image
+        src={lightWallpaper}
+        alt=""
+        fill
+        sizes="(min-width: 1592px) 1512px, 100vw"
+        placeholder="blur"
+        className="-z-10 object-cover dark:hidden"
+      />
+      <Image
+        src={darkWallpaper}
+        alt=""
+        fill
+        sizes="(min-width: 1592px) 1512px, 100vw"
+        placeholder="blur"
+        className="-z-10 hidden object-cover dark:block"
+      />
       <MenuBar
         model={menuBar}
         dispatch={dispatchMenuBar}

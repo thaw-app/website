@@ -178,6 +178,15 @@ export function RoadmapList({
   );
 }
 
+/** The day the roadmap was last gone through, small and at the end of the page. */
+export function RoadmapUpdated({ on }: { on: string }) {
+  return (
+    <p className="not-prose mt-10 text-sm text-fd-muted-foreground">
+      Last brought up to date on {on}.
+    </p>
+  );
+}
+
 /** The items of one area, or of one release, with how many there are. */
 export function RoadmapGroup({
   name,

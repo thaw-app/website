@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 interface Person {
   login: string;
   avatar: string;
@@ -19,15 +21,7 @@ export function Contributors({ people }: { people: Person[] }) {
             title={person.login}
             className="group tap flex items-center gap-2.5 py-1.5 text-sm"
           >
-            {/* biome-ignore lint/performance/noImgElement: a remote avatar, not worth an image pipeline */}
-            <img
-              src={`${person.avatar}&s=48`}
-              alt=""
-              width={24}
-              height={24}
-              loading="lazy"
-              className="size-6 flex-none"
-            />
+            <Image src={person.avatar} alt="" width={24} height={24} className="size-6 flex-none" />
             <span className="truncate underline-offset-4 group-hover:underline">
               {person.login}
             </span>

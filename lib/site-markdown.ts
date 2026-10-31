@@ -3,13 +3,20 @@ import { join } from 'node:path';
 import { made, ours, packages, runsOn, thanks } from '@/lib/built-with';
 import community from '@/lib/community.json';
 import {
+  contributorNumbers,
   contributors,
   counted,
   ways as joinIn,
   numbers,
   translatorCount,
 } from '@/lib/community-page';
-import { floeContributors, floeCounted, floeNumbers, floeWays } from '@/lib/floe-community';
+import {
+  floeContributorNumbers,
+  floeContributors,
+  floeCounted,
+  floeNumbers,
+  floeWays,
+} from '@/lib/floe-community';
 import floeCommunity from '@/lib/floe-community.json';
 import {
   floeAlso,
@@ -35,7 +42,7 @@ import { sitePages } from '@/lib/site-pages';
 import { docsLlms, source } from '@/lib/source';
 import { thawFaq } from '@/lib/thaw-faq';
 import { thawAlso, thawFeatures, thawWorksWith } from '@/lib/thaw-features';
-import { meanings, verifiedFrom } from '@/lib/verified';
+import { meanings, standing, verifiedFrom } from '@/lib/verified';
 
 // The site's own pages as Markdown, for AI tools: what each page says, read from the same
 // data the page is drawn from, so the two cannot come to say different things. A page
@@ -147,6 +154,7 @@ function roadmap(file: string, title: string, summary: string) {
     .replace(/<\/Roadmap(List|Group)>/g, '')
     .replace(/<Issue n=\{(\d+)\} \/>/g, `([#$1](${issues}/$1))`)
     .replace(/\s*<Marks of="[^"]*" \/>/g, '')
+    .replace(/<RoadmapUpdated on="([^"]+)" \/>/g, 'Last brought up to date on $1.')
     .replace(
       /<RoadmapRequests \/>/g,
       [
@@ -203,9 +211,15 @@ function communityPage() {
       (member) => `- ${link(member.name ?? member.login, `https://github.com/${member.login}`)}`,
     ),
     `## Contributors (${contributors.length})`,
-    contributors
-      .map((person) => link(person.login, `https://github.com/${person.login}`))
-      .join(', '),
+    [
+      ...contributorNumbers.map(
+        (number) => `- ${number.label}: ${number.value.toLocaleString('en')} (${number.unit})`,
+      ),
+      '',
+      contributors
+        .map((person) => link(person.login, `https://github.com/${person.login}`))
+        .join(', '),
+    ],
     `## Translators (${translatorCount} people across ${community.translators.length} languages)`,
     community.translators.map(
       (group) => `- ${group.language}: ${group.people.map((person) => person.name).join(', ')}`,
@@ -225,16 +239,22 @@ function floeCommunityPage() {
         (number) => `- ${number.label}: ${number.value.toLocaleString('en')} (${number.unit})`,
       ),
       '',
-      `${floeCounted.day ? `Counted on ${floeCounted.day}. ` : ''}${floeCounted.older.map((entry) => `${entry.name} are from ${entry.day}. `).join('')}Downloads and Homebrew installs are added once Floe has a release to count them from.`,
+      `${floeCounted.day ? `Counted on ${floeCounted.day}. ` : ''}${floeCounted.older.map((entry) => `${entry.name} are from ${entry.day}. `).join('')}Homebrew installs are added once Floe has a cask.`,
     ],
     '## The team',
     floeCommunity.team.map(
       (member) => `- ${link(member.name ?? member.login, `https://github.com/${member.login}`)}`,
     ),
     `## Contributors (${floeContributors.length})`,
-    floeContributors
-      .map((person) => link(person.login, `https://github.com/${person.login}`))
-      .join(', '),
+    [
+      ...floeContributorNumbers.map(
+        (number) => `- ${number.label}: ${number.value.toLocaleString('en')} (${number.unit})`,
+      ),
+      '',
+      floeContributors
+        .map((person) => link(person.login, `https://github.com/${person.login}`))
+        .join(', '),
+    ],
     '## Take part',
     floeWays.map((way) => `- ${link(way.title, way.href)}: ${way.detail}`),
   );
@@ -244,7 +264,7 @@ function verifiedPage() {
   const now = verifiedFrom(community.assurance);
   return page(
     'What Verified means',
-    `${sitePages.verified.title} These are the outside checks on how Thaw is built and released: what each one is, where Thaw stands, and who vouches for it.`,
+    `${sitePages.verified.title} These are the outside checks on how Thaw is built and released: what each one is, where Thaw stands, and who vouches for it. ${standing(community.assurance)}`,
     ...meanings.map((entry) => {
       const value = now.find((item) => item.id === entry.id)?.value;
       return [
@@ -293,6 +313,8 @@ const pages: Record<string, () => string | Promise<string>> = {
       'Thaw roadmap',
       'What the Thaw team is working on now, what comes next, what macOS is holding back, and what has shipped.',
     ),
+  '/roadmap/thawui': () =>
+    roadmap('thawui-roadmap.mdx', 'ThawUI roadmap', sitePages.thawuiRoadmap.shared),
   '/floe/roadmap': () => roadmap('floe-roadmap.mdx', 'Floe roadmap', sitePages.floeRoadmap.shared),
   '/privacy': privacy,
   '/community': communityPage,

@@ -22,31 +22,44 @@ export const counted = readDays(community.readOn, {
   downloads: 'Downloads',
   homebrewYear: 'Homebrew installs',
   contributors: 'Contributors',
-  releases: 'Releases',
+  issuesFixed: 'Issues fixed',
   discord: 'Discord members',
 });
 
-// Every number is fetched when the site is built; one that could not be is left out. Six,
-// each said once on the page: the countries are counted beside the map under them, and the
-// Discord's members where the page says how to join it.
-export const numbers = [
+// Every number is fetched when the site is built; one that could not be is left out. Each
+// is said once on the page, with what it counts: the countries beside the map, the
+// Discord's members where the page says how to join it, and these first three at the top.
+const counts = (list: { label: string; value?: number; unit: string }[]) =>
+  list.filter(
+    (number): number is { label: string; value: number; unit: string } =>
+      typeof number.value === 'number',
+  );
+
+export const numbers = counts([
   { label: 'GitHub stars', value: community.stars, unit: 'on thaw\u2011app/Thaw' },
   // Every fetch of the app or of an update to it: one person on ten releases is ten.
   { label: 'Downloads', value: community.downloads, unit: 'of the app and its updates' },
   { label: 'Homebrew installs', value: community.homebrewYear, unit: 'in the last year' },
+]);
+
+export const contributorNumbers = counts([
   {
     label: 'Contributors',
     value: contributors.length + community.team.length,
     unit: 'with commits since January 2026',
   },
+  { label: 'Issues fixed', value: community.issuesFixed, unit: 'closed as done on GitHub' },
+]);
+
+export const translatorNumbers = counts([
   // English, which Thaw is written in, and every language it has been translated into.
   {
     label: 'Languages',
     value: community.translators.length + 1,
     unit: 'English and its translations',
   },
-  { label: 'Releases', value: community.releases, unit: 'published on GitHub' },
-].filter((number) => typeof number.value === 'number');
+  { label: 'Translators', value: translatorCount, unit: 'on Crowdin' },
+]);
 
 // The ways in, each to the place it happens. One row, since the footer has the same doors.
 export const ways = [

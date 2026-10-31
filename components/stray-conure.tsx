@@ -1,7 +1,9 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { onThemeChange } from '@/lib/on-theme-change';
+import { ConureWave, greetConure, tip } from './conure-greeting';
 import { columns, drawPose, rows, touches } from './conure-poses';
 
 // What it does when left alone, a pose and how many seconds it holds it: it stands, looks
@@ -16,7 +18,9 @@ const idle: [pose: string, seconds: number][] = [
   ['perched', 3.2],
   ['bobUp', 0.7],
 ];
-// And when it is touched: it turns to face whoever did it and bobs its head.
+// And when it is first touched: it turns to face whoever did it and bobs its head. Touched
+// again it tips its hat, and a third time opens the shooting gallery, over the section it
+// is in (see stray-stage and conure-greeting).
 const bob: [pose: string, seconds: number][] = [
   ['facing', 0.4],
   ['faceUp', 0.16],
@@ -27,14 +31,23 @@ const bob: [pose: string, seconds: number][] = [
   ['faceDown', 0.16],
   ['facing', 0.5],
 ];
+const tipped: [pose: string, seconds: number][] = [...tip, ['facing', 3]];
 
 /**
  * The footer's conure, strayed: on the page for an address that is no page it stands at
  * the end of the headline. It looks at a pointer that comes near and bobs its head when
- * touched. With reduced motion it simply stands there.
+ * touched, and a little more of that opens the shooting gallery. With reduced motion it
+ * stands there, and turns to look.
  */
 export function StrayConure() {
   const birdRef = useRef<HTMLCanvasElement>(null);
+  const [wave, setWave] = useState<HTMLButtonElement | null>(null);
+  // The bird stands in the headline, where a button has no place: it goes where the page
+  // has made room for it, once there is a page to look in.
+  const [slot, setSlot] = useState<HTMLElement | null>(null);
+  const [greeting, setGreeting] = useState({ greeted: 0, known: false });
+
+  useEffect(() => setSlot(document.getElementById('stray-conure-wave')), []);
 
   useEffect(() => {
     const bird = birdRef.current;
@@ -46,14 +59,12 @@ export function StrayConure() {
     let timer = 0;
     // Where a pointer close by has it looking, which the routine gives way to.
     let watching: string | null = null;
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const show = () =>
       drawPose(context, routine === idle && watching ? watching : routine[step][0]);
     show();
     const unthemed = onThemeChange(show);
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      return unthemed;
-    }
 
     function hold() {
       show();
@@ -66,6 +77,39 @@ export function StrayConure() {
         hold();
       }, routine[step][1] * 1000);
     }
+    // Something to do instead of what it was doing. With reduced motion, only how it ends.
+    function act(next: typeof idle) {
+      window.clearTimeout(timer);
+      routine = still && next !== idle ? next.slice(-1) : next;
+      step = 0;
+      if (still) show();
+      else hold();
+    }
+
+    const greeter =
+      wave &&
+      greetConure(wave, {
+        told: (greeted, known) => setGreeting({ greeted, known }),
+        look: () => act(bob),
+        tip: () => act(tipped),
+        called: () => act([['facing', 3600]]),
+        forget: () => act(idle),
+        opened() {},
+        // There again when the game has gone, and it takes a bow.
+        closed: () => act(tipped),
+      });
+    // The bird itself takes no clicks, so the words beside it can still be selected.
+    function onPointerDown(event: PointerEvent) {
+      if (bird && touches(event, bird)) greeter?.greet();
+    }
+    window.addEventListener('pointerdown', onPointerDown);
+    const stop = () => {
+      window.clearTimeout(timer);
+      unthemed();
+      greeter?.stop();
+      window.removeEventListener('pointerdown', onPointerDown);
+    };
+    if (still) return stop;
     hold();
 
     // Back over its shoulder if the pointer is behind it, neck up if it is overhead,
@@ -90,28 +134,21 @@ export function StrayConure() {
       watching = next;
       show();
     }
-    // The bird itself takes no clicks, so the words beside it can still be selected.
-    function onPointerDown(event: PointerEvent) {
-      if (!bird || routine === bob) return;
-      if (!touches(event, bird)) return;
-      window.clearTimeout(timer);
-      routine = bob;
-      step = 0;
-      hold();
-    }
     window.addEventListener('pointermove', onPointerMove);
-    window.addEventListener('pointerdown', onPointerDown);
     return () => {
-      window.clearTimeout(timer);
-      unthemed();
+      stop();
       window.removeEventListener('pointermove', onPointerMove);
-      window.removeEventListener('pointerdown', onPointerDown);
     };
-  }, []);
+  }, [wave]);
 
   return (
     <span aria-hidden className="stray-conure">
       <canvas ref={birdRef} width={columns} height={rows} className="pointer-events-none" />
+      {slot &&
+        createPortal(
+          <ConureWave ref={setWave} greeted={greeting.greeted} known={greeting.known} />,
+          slot,
+        )}
     </span>
   );
 }

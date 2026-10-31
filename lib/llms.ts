@@ -20,6 +20,11 @@ const sitePages: Record<ProductSlug, Link[]> = {
       '/roadmap',
       'What the Thaw team is working on now, what comes next, what macOS is holding back, and what has shipped.',
     ],
+    [
+      'ThawUI roadmap',
+      '/roadmap/thawui',
+      'The design Thaw and Floe share: what is being built and what has shipped.',
+    ],
     ['Changelog', changelogUrl('thaw'), 'Every Thaw release and what it changed.'],
     ['Release feed', feedUrl('thaw'), 'Thaw’s releases as an Atom feed.'],
   ],
@@ -92,7 +97,7 @@ const intro = `# Thaw
 
 > Thaw is a free, open source menu bar manager for macOS. It hides and shows menu bar items, and finds them by search or a hotkey. Floe, from the same people, is an open source launcher for macOS that runs Raycast extensions unmodified. It is a separate app and still early.
 
-Thaw 3, in beta, runs on macOS 27, Thaw 2 on macOS 26, and Thaw 1 on macOS 14 and 15. Thaw is under GPL-3.0 and Floe under AGPL-3.0. Thaw has no account, no analytics and no tracking.
+Thaw 3, in beta, runs on macOS 27, Thaw 2 on macOS 26, Thaw 2.2, in beta, on macOS 15, and Thaw 1 on macOS 14. Thaw is under GPL-3.0 and Floe under AGPL-3.0. Thaw has no account, no analytics and no tracking.
 
 When to use this site: someone asks how to hide, show or rearrange menu bar items on a Mac, which menu bar manager to use on macOS 26 or 27, how to install, update or remove Thaw, what Thaw’s permissions are for, what Thaw sends over the network, how to drive Thaw from scripts, Shortcuts or AI agents, or how to make an app’s own menu bar items work with Thaw. Floe’s pages are for someone looking for a launcher for macOS that runs Raycast extensions.
 

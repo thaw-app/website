@@ -9,7 +9,14 @@ import { FloeAssurance, FloeFeatures, FloeInstall } from './floe-parts';
 import { InstallTabs } from './install-tabs';
 import { Mermaid } from './mermaid';
 import { Marks } from './product-marks';
-import { Issue, Roadmap, RoadmapGroup, RoadmapList, RoadmapRequests } from './roadmap';
+import {
+  Issue,
+  Roadmap,
+  RoadmapGroup,
+  RoadmapList,
+  RoadmapRequests,
+  RoadmapUpdated,
+} from './roadmap';
 
 /**
  * The synced docs embed images from GitHub and other hosts. Those go out as
@@ -79,6 +86,7 @@ export function getMDXComponents(components?: MDXComponents) {
     RoadmapGroup,
     RoadmapList,
     RoadmapRequests,
+    RoadmapUpdated,
     img: DocsImage,
     ...components,
   } satisfies MDXComponents;

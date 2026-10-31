@@ -27,9 +27,10 @@ export const defaultAppearance: Appearance = {
 
 /** Tint colours on offer. `to` is the far end when the tint is a gradient. */
 export const tints = [
-  { name: 'Orange', from: '#ee8a2b', to: '#d6457f' },
+  // Too light for the bar's white items to read, over either wallpaper.
+  { name: 'Orange', from: '#ee8a2b', to: '#d6457f', darkItems: true },
   { name: 'Blue', from: '#1560e8', to: '#22b8cf' },
-  { name: 'Green', from: '#2f9e6b', to: '#1560e8' },
+  { name: 'Green', from: '#2f9e6b', to: '#1560e8', darkItems: true },
   { name: 'Pink', from: '#d6457f', to: '#7a3fb0' },
   { name: 'Graphite', from: '#3a3f4b', to: '#0f1220' },
 ];

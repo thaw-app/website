@@ -146,11 +146,6 @@ kbd,
   --release-3: #c4e0ff;
 }
 
-/* The news over the docs is Thaw's, so it is not over Floe's docs (app/docs/layout.tsx). */
-body:has(#nd-notebook-layout [data-product="floe"]) .docs-banner {
-  display: none;
-}
-
 .dark {
   --world-lit: #fa9a2a;
   --verified-gold: #f0b429;
@@ -219,10 +214,45 @@ html > body[data-scroll-locked] {
   --removed-body-scroll-bar-size: 0px !important;
 }
 
-/* The mock desktop's wallpaper: a plain dark one, a shade off the page's black so the
-   screen reads as a screen, with a little light at the top where the menu bar sits. */
+/* The mock desktop's ground until its photograph is there (components/desktop/index.tsx):
+   about the colour of each one. */
 .desktop-wallpaper {
-  background: radial-gradient(120% 70% at 50% 0%, #26262a 0%, transparent 70%), #121214;
+  background: #7fa9a4;
+}
+
+.dark .desktop-wallpaper {
+  background: #121214;
+}
+
+/* The menu bar's glass over each photograph. The items are white pictures, so on light glass
+   they are turned dark, as macOS turns them over a light wallpaper. */
+.menu-glass {
+  --bar-item-hover: rgb(0 0 0 / 0.1);
+  --bar-item-held: rgb(0 0 0 / 0.16);
+  --bar-item-filter: invert(1);
+  background: linear-gradient(rgb(255 255 255 / 0.74), rgb(244 244 246 / 0.66));
+  color: #111113;
+}
+
+.dark .menu-glass {
+  --bar-item-hover: rgb(255 255 255 / 0.18);
+  --bar-item-held: rgb(255 255 255 / 0.28);
+  --bar-item-filter: none;
+  background: linear-gradient(rgb(8 8 10 / 0.82), rgb(30 30 34 / 0.78));
+  color: #fff;
+}
+
+/* A tint too light for white items takes the same dark ones. */
+.menu-dark-items {
+  --bar-item-hover: rgb(0 0 0 / 0.1);
+  --bar-item-held: rgb(0 0 0 / 0.16);
+  --bar-item-filter: invert(1);
+  color: #111113;
+}
+
+.menu-glass img,
+.menu-dark-items img {
+  filter: var(--bar-item-filter);
 }
 
 /* A Dock icon. --mag is set by the Dock as the pointer moves along it. */
@@ -331,11 +361,11 @@ html > body[data-scroll-locked] {
 }
 
 .bar-item:hover {
-  background: rgb(255 255 255 / 0.18);
+  background: var(--bar-item-hover, rgb(255 255 255 / 0.18));
 }
 
 .bar-item-dragging {
-  background: rgb(255 255 255 / 0.28);
+  background: var(--bar-item-held, rgb(255 255 255 / 0.28));
   cursor: grabbing;
   opacity: 0.7;
 }
@@ -821,57 +851,126 @@ html > body[data-scroll-locked] {
   image-rendering: pixelated;
 }
 
-/* The shooting gallery a conure in a hat opens over the footer. The wordmark goes dim
-   behind a veil, and the game has a floor of dirt: the conure stands on it at the left,
-   and the icons come up out of it at the right, so the strip they stand in ends there. */
+/* The keyboard's way to the conure: out of sight until it has the focus, then a small note,
+   which takes up no room where the page has made some for it. */
+.conure-wave {
+  position: absolute;
+  top: 0.5rem;
+  left: 0;
+  z-index: 4;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--color-fd-border);
+  background: var(--color-fd-background);
+  color: var(--color-fd-foreground);
+  white-space: nowrap;
+}
+
+.conure-wave:not(:focus) {
+  clip-path: inset(50%);
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* In the corner of the footer. */
+.footer-art .conure-wave {
+  top: auto;
+  bottom: 0.5rem;
+  left: 0.5rem;
+}
+
+/* The shooting gallery the conure opens over the footer. A desert fades in over the wordmark,
+   which comes back when the game closes. Everything is drawn in one size of pixel, a whole
+   number of the screen's: the conure stands at the left, and the icons come up from behind
+   crates and barrels at the right, each drawn to fit that pixel. */
 .footer-shootout {
   /* The game is drawn the size of the wordmark's bird. */
-  --dot: max(2px, var(--pixel, 4px));
+  --dot: max(2px, round(var(--pixel, 4px), 1px));
   --floor: calc(12 * var(--dot));
-  --target: calc(12 * var(--dot));
-  background: color-mix(in oklab, var(--color-fd-background) 78%, transparent);
-  backdrop-filter: blur(3px);
+  --target: calc(14 * var(--dot));
+  /* Up to just under the tops of the crates and barrels. */
+  --cover: calc(11 * var(--dot));
+  overflow: hidden;
+  animation: shootout-in 0.25s ease-out;
+}
+
+/* The game takes the focus to have the keys, and shows where it is aiming with its sights.
+   The ring the page gives anything focused would only frame it. */
+.footer-shootout:focus-visible {
+  outline: none;
+}
+
+/* On the page for an address that is no page, it opens over the section the conure is in,
+   which is given the height the game wants. */
+.stray-stage[data-shootout] {
+  min-height: 20rem;
+}
+
+@keyframes shootout-in {
+  from {
+    opacity: 0;
+  }
 }
 
 .footer-art[data-shootout] .footer-conure {
   visibility: hidden;
 }
 
-.footer-shootout-floor {
+/* The desert itself, kept to the bottom of the stage so the ground always lines up. */
+.footer-shootout-scene {
   position: absolute;
-  inset-inline: 0;
+  left: 0;
   bottom: 0;
-  height: var(--floor);
-  background-size: calc(16 * var(--dot)) calc(8 * var(--dot));
+  max-width: none;
   image-rendering: pixelated;
 }
 
-/* The scenery, drawn in the game's pixels: far off a sun and a mesa, then saguaros, all
-   standing on the dirt, and the crates and barrels in front of the icons. */
+/* The one thing that moves in it: a tumbleweed through the open middle as the bird gets
+   ready, once, and gone before the clock starts. */
+.footer-shootout-tumbleweed-path {
+  position: absolute;
+  left: 0;
+  bottom: calc(var(--floor) - var(--dot));
+  width: 100%;
+  animation: shootout-roll 5s steps(90) 0.4s both;
+  pointer-events: none;
+}
+
+.footer-shootout-tumbleweed {
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+  animation:
+    shootout-tumble 0.5s steps(4) infinite,
+    shootout-hop 0.75s steps(4) infinite alternate;
+}
+
+@keyframes shootout-roll {
+  from {
+    translate: -10% 0;
+  }
+  to {
+    translate: 105% 0;
+  }
+}
+
+@keyframes shootout-tumble {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@keyframes shootout-hop {
+  to {
+    translate: 0 calc(-4 * var(--dot));
+  }
+}
+
 .footer-shootout-prop {
   position: absolute;
   background-size: 100% 100%;
   image-rendering: pixelated;
   pointer-events: none;
-}
-
-.footer-shootout-sun {
-  right: 12%;
-  bottom: calc(var(--floor) + 22 * var(--dot));
-  opacity: 0.85;
-}
-
-.footer-shootout-mesa {
-  left: 52%;
-  bottom: var(--floor);
-  scale: 2;
-  transform-origin: 50% 100%;
-  opacity: 0.55;
-}
-
-.footer-shootout-saguaro {
-  bottom: var(--floor);
-  translate: -50% 0;
 }
 
 .footer-shootout-cover {
@@ -880,11 +979,11 @@ html > body[data-scroll-locked] {
   z-index: 1;
 }
 
-/* Its feet, 15 of its pixels down, on the top of the dirt. */
+/* Its feet, 15 of its pixels down, on its patch of dirt, three pixels above the rest. */
 .footer-shootout-bird {
   position: absolute;
-  left: 4%;
-  bottom: calc(var(--floor) - 7 * var(--dot));
+  left: round(7%, var(--dot));
+  bottom: calc(var(--floor) - 4 * var(--dot));
   width: calc(24 * var(--dot));
   height: calc(22 * var(--dot));
   image-rendering: pixelated;
@@ -894,6 +993,7 @@ html > body[data-scroll-locked] {
   position: absolute;
   top: 1rem;
   left: 1rem;
+  z-index: 2;
   padding: 0.25rem 0.75rem;
   border: 1px solid var(--color-fd-border);
   background: var(--color-fd-background);
@@ -904,7 +1004,7 @@ html > body[data-scroll-locked] {
   inset-inline: 0;
   top: 0;
   /* Up to just under the tops of the crates and barrels, which they come up from behind. */
-  bottom: calc(var(--floor) + 9 * var(--dot));
+  bottom: calc(var(--floor) + var(--cover));
   overflow: hidden;
   pointer-events: none;
 }
@@ -926,14 +1026,111 @@ html > body[data-scroll-locked] {
 /* A finger needs more to aim at than a pointer does. */
 @media (pointer: coarse) {
   .footer-shootout {
-    --target: max(44px, calc(12 * var(--dot)));
+    --dot: max(4px, round(var(--pixel, 4px), 1px));
+  }
+
+  .footer-shootout-button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* A phone gets a game of its own size rather than the wordmark's: a taller stage while it
+   runs, and everything in it drawn larger, for the three places it has in place of five. */
+@media (max-width: 639px) {
+  .footer-art[data-shootout] {
+    height: max(calc(24vw + 5rem), 22rem);
+  }
+
+  .stray-stage[data-shootout] {
+    min-height: 22rem;
+  }
+
+  .footer-shootout {
+    --dot: 4px;
+  }
+
+  .footer-shootout-bird {
+    left: calc(3 * var(--dot));
+  }
+
+  .footer-shootout-board {
+    inset-inline: 0.5rem;
+    top: 0.5rem;
+    justify-content: space-between;
+  }
+
+  .footer-shootout-button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+.footer-shootout-button {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* The revolver's six chambers, on the board: brass while loaded, empty once fired. */
+.footer-shootout-cylinder {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.footer-shootout-cylinder > span {
+  width: 6px;
+  height: 12px;
+  border: 1px solid #a87c1e;
+  background: #d9a441;
+}
+
+.footer-shootout-cylinder > span[data-spent] {
+  background: transparent;
+  opacity: 0.45;
+}
+
+/* Over the bird's head, for the moment it beats the best so far. */
+.footer-shootout-cheer {
+  position: absolute;
+  left: 1rem;
+  bottom: calc(var(--floor) + 18 * var(--dot));
+  z-index: 2;
+  font-weight: 700;
+}
+
+/* What a shot leaves in the air, in the game's pixels, over everything but the panels. */
+.footer-shootout-air {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  image-rendering: pixelated;
+}
+
+/* The point for a hit, floating up from where the icon was. */
+.footer-shootout-point {
+  position: absolute;
+  bottom: var(--target);
+  translate: -50% 0;
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+  animation: shootout-point 0.5s ease-out forwards;
+}
+
+@keyframes shootout-point {
+  to {
+    translate: -50% calc(-4 * var(--dot));
+    opacity: 0;
   }
 }
 
 /* The sights, over the middle of the place the keyboard has aimed at. */
 .footer-shootout-sights {
   position: absolute;
-  bottom: calc(var(--floor) + 9 * var(--dot) + var(--target) / 2);
+  bottom: calc(var(--floor) + var(--cover) + var(--target) / 2);
   width: calc(7 * var(--dot));
   aspect-ratio: 1;
   translate: -50% 50%;
@@ -964,20 +1161,38 @@ html > body[data-scroll-locked] {
   }
 }
 
-.footer-shootout-over {
+.footer-shootout-panel {
   position: absolute;
   top: 1rem;
   left: 50%;
   translate: -50% 0;
+  z-index: 2;
+  width: max-content;
+  max-width: calc(100% - 2rem);
   padding: 1rem 1.5rem;
   border: 1px solid var(--color-fd-border);
   background: var(--color-fd-background);
+  text-align: center;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .footer-shootout-target {
     animation: none;
     transition: none;
+  }
+
+  .footer-shootout {
+    animation: none;
+  }
+
+  .footer-shootout-point {
+    animation-name: shootout-point-still;
+  }
+}
+
+@keyframes shootout-point-still {
+  to {
+    opacity: 1;
   }
 }
 
@@ -1042,73 +1257,9 @@ html > body[data-scroll-locked] {
   }
 }
 
-/*
- * From one page to the next (components/page-fade.tsx): the page that is left fades out
- * quickly and the one arrived at fades in after it, a fifth of a second in all. Short
- * enough that a click still feels answered at once, and enough that a page is seen to
- * change and not to blink. The header takes no part: it is the same header on both pages,
- * and stays where it is, over the pages as they change.
- */
-::view-transition-old(.page) {
-  animation: 70ms ease-in both page-fade reverse;
-}
-
-::view-transition-new(.page) {
-  animation: 140ms ease-out 60ms both page-fade;
-}
-
 @keyframes page-fade {
   from {
     opacity: 0;
-  }
-}
-
-/* What stays put between two pages (the header, the footer and everything else that is not
-   a page's own) is not faded from itself to itself. */
-::view-transition-group(root) {
-  animation: none;
-}
-
-::view-transition-old(root) {
-  display: none;
-}
-
-::view-transition-new(root) {
-  animation: none;
-}
-
-/* The header is named only while two pages are changing over. Named all the time, it would
-   lose the blur of the page behind it: a named element is cut off from what is under it. */
-:root:active-view-transition :is(#nd-nav, #nd-subnav) {
-  view-transition-name: site-header;
-}
-
-::view-transition-group(site-header) {
-  z-index: 100;
-  animation: none;
-}
-
-::view-transition-old(site-header) {
-  display: none;
-}
-
-::view-transition-new(site-header) {
-  animation: none;
-}
-
-/* A click made while two pages are changing over still lands on the page. */
-::view-transition {
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(*),
-  ::view-transition-new(*),
-  ::view-transition-group(*) {
-    /* biome-ignore lint/complexity/noImportantStyles: over every animation above, whatever names it */
-    animation-duration: 0s !important;
-    /* biome-ignore lint/complexity/noImportantStyles: as above */
-    animation-delay: 0s !important;
   }
 }
 
@@ -1356,7 +1507,7 @@ h1.font-display {
    draws its search box and its theme switch as pills. Thaw's dot stays round, being a dot. */
 /* With three choices the switch is a box of buttons and not one button, so the box is named too. */
 :is(#nd-nav, #nd-subnav, #nd-sidebar-mobile)
-:is(button, button > svg, kbd, div:has(> button[aria-label="System"])) {
+  :is(button, button > svg, kbd, div:has(> button[aria-label="System"])) {
   border-radius: 0;
 }
 

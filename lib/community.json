@@ -1,22 +1,24 @@
 {
-  "stars": 12217,
-  "downloads": 420408,
-  "homebrewYear": 29324,
-  "discord": 375,
-  "contributors": 60,
-  "releases": 80,
+  "stars": 12422,
+  "downloads": 452103,
+  "homebrewYear": 30063,
+  "discord": 384,
+  "contributors": 62,
+  "releases": 83,
+  "issuesFixed": 551,
   "readOn": {
-    "stars": "2026-10-22",
-    "downloads": "2026-10-22",
-    "homebrewYear": "2026-10-22",
-    "discord": "2026-10-22",
-    "contributors": "2026-10-22",
-    "releases": "2026-10-22",
-    "bestPractices": "2026-10-22",
-    "baseline": "2026-10-22",
-    "scorecard": "2026-10-22",
-    "coverage": "2026-10-22",
-    "field": "2026-10-22"
+    "stars": "2026-10-30",
+    "downloads": "2026-10-30",
+    "homebrewYear": "2026-10-30",
+    "discord": "2026-10-30",
+    "contributors": "2026-10-30",
+    "releases": "2026-10-30",
+    "issuesFixed": "2026-10-30",
+    "bestPractices": "2026-10-30",
+    "baseline": "2026-10-30",
+    "scorecard": "2026-10-30",
+    "coverage": "2026-10-30",
+    "field": "2026-10-30"
   },
   "people": [
     {
@@ -27,7 +29,7 @@
     {
       "login": "diazdesandi",
       "avatar": "https://avatars.githubusercontent.com/u/17421494?v=4",
-      "commits": 395
+      "commits": 441
     },
     {
       "login": "7a6163",
@@ -38,6 +40,11 @@
       "login": "nightah",
       "avatar": "https://avatars.githubusercontent.com/u/3339418?v=4",
       "commits": 67
+    },
+    {
+      "login": "camguillory",
+      "avatar": "https://avatars.githubusercontent.com/u/45099363?v=4",
+      "commits": 62
     },
     {
       "login": "alvst",
@@ -63,11 +70,6 @@
       "login": "UYTR5",
       "avatar": "https://avatars.githubusercontent.com/u/107218024?v=4",
       "commits": 10
-    },
-    {
-      "login": "camguillory",
-      "avatar": "https://avatars.githubusercontent.com/u/45099363?v=4",
-      "commits": 9
     },
     {
       "login": "Mutzki13",
@@ -118,6 +120,11 @@
       "login": "josericardo-fo",
       "avatar": "https://avatars.githubusercontent.com/u/79599290?v=4",
       "commits": 4
+    },
+    {
+      "login": "Belligerently",
+      "avatar": "https://avatars.githubusercontent.com/u/167713978?v=4",
+      "commits": 3
     },
     {
       "login": "t4sh",
@@ -185,6 +192,11 @@
       "commits": 1
     },
     {
+      "login": "cnicc",
+      "avatar": "https://avatars.githubusercontent.com/u/130982462?v=4",
+      "commits": 1
+    },
+    {
       "login": "commanderk33n",
       "avatar": "https://avatars.githubusercontent.com/u/6609667?v=4",
       "commits": 1
@@ -197,11 +209,6 @@
     {
       "login": "davidnichols-ops",
       "avatar": "https://avatars.githubusercontent.com/u/290871893?v=4",
-      "commits": 1
-    },
-    {
-      "login": "django23",
-      "avatar": "https://avatars.githubusercontent.com/u/827397?v=4",
       "commits": 1
     },
     {
@@ -245,13 +252,13 @@
       "commits": 1
     },
     {
-      "login": "MarcoTerzulli",
-      "avatar": "https://avatars.githubusercontent.com/u/48279455?v=4",
+      "login": "malash",
+      "avatar": "https://avatars.githubusercontent.com/u/1812118?v=4",
       "commits": 1
     },
     {
-      "login": "mi3suuu",
-      "avatar": "https://avatars.githubusercontent.com/u/284501735?v=4",
+      "login": "MarcoTerzulli",
+      "avatar": "https://avatars.githubusercontent.com/u/48279455?v=4",
       "commits": 1
     },
     {
@@ -272,6 +279,11 @@
     {
       "login": "p-linnane",
       "avatar": "https://avatars.githubusercontent.com/u/105994585?v=4",
+      "commits": 1
+    },
+    {
+      "login": "SakuraWang6",
+      "avatar": "https://avatars.githubusercontent.com/u/131519206?v=4",
       "commits": 1
     },
     {
@@ -351,11 +363,11 @@
     "bestPractices": "gold",
     "baseline": 3,
     "scorecard": 9.1,
-    "coverage": 92.3,
+    "coverage": 91.4,
     "field": {
-      "projects": 13187,
-      "gold": 111,
-      "baseline3": 92
+      "projects": 13467,
+      "gold": 112,
+      "baseline3": 100
     }
   },
   "translators": [
@@ -762,70 +774,70 @@
     }
   ],
   "world": {
-    "checked": "2026-10-22",
+    "checked": "2026-10-30",
     "stargazers": {
-      "people": 12217,
-      "placed": 5104,
+      "people": 12422,
+      "placed": 5186,
       "list": [
         {
           "code": "CN",
           "name": "China",
-          "people": 1078
+          "people": 1080
         },
         {
           "code": "US",
           "name": "United States",
-          "people": 921
+          "people": 938
         },
         {
           "code": "DE",
           "name": "Germany",
-          "people": 430
+          "people": 437
         },
         {
           "code": "FR",
           "name": "France",
-          "people": 211
+          "people": 215
         },
         {
           "code": "TW",
           "name": "Taiwan",
-          "people": 204
+          "people": 209
         },
         {
           "code": "JP",
           "name": "Japan",
-          "people": 190
+          "people": 197
         },
         {
           "code": "GB",
           "name": "United Kingdom",
-          "people": 189
+          "people": 191
         },
         {
           "code": "CA",
           "name": "Canada",
-          "people": 140
-        },
-        {
-          "code": "KR",
-          "name": "South Korea",
-          "people": 129
+          "people": 141
         },
         {
           "code": "AU",
           "name": "Australia",
-          "people": 128
+          "people": 131
+        },
+        {
+          "code": "KR",
+          "name": "South Korea",
+          "people": 131
         },
         {
           "code": "CH",
           "name": "Switzerland",
-          "people": 89
+          "people": 91
         },
         {
           "code": "IN",
           "name": "India",
-          "people": 88
+          "people": 87
         },
         {
           "code": "NL",
@@ -833,39 +845,44 @@
           "people": 86
         },
         {
-          "code": "ES",
-          "name": "Spain",
-          "people": 81
-        },
-        {
           "code": "BR",
           "name": "Brazil",
-          "people": 79
+          "people": 82
+        },
+        {
+          "code": "ES",
+          "name": "Spain",
+          "people": 82
         },
         {
           "code": "PL",
           "name": "Poland",
-          "people": 78
+          "people": 80
         },
         {
           "code": "SG",
           "name": "Singapore",
-          "people": 63
+          "people": 65
         },
         {
           "code": "IT",
           "name": "Italy",
-          "people": 56
+          "people": 60
         },
         {
           "code": "RU",
           "name": "Russia",
-          "people": 56
+          "people": 55
         },
         {
           "code": "HK",
           "name": "Hong Kong SAR China",
-          "people": 50
+          "people": 52
+        },
+        {
+          "code": "VN",
+          "name": "Vietnam",
+          "people": 46
         },
         {
           "code": "UA",
@@ -873,9 +890,14 @@
           "people": 45
         },
         {
-          "code": "VN",
-          "name": "Vietnam",
-          "people": 43
+          "code": "TH",
+          "name": "Thailand",
+          "people": 37
+        },
+        {
+          "code": "TR",
+          "name": "Türkiye",
+          "people": 37
         },
         {
           "code": "SE",
@@ -883,19 +905,9 @@
           "people": 36
         },
         {
-          "code": "TH",
-          "name": "Thailand",
-          "people": 36
-        },
-        {
-          "code": "TR",
-          "name": "Türkiye",
-          "people": 35
-        },
-        {
           "code": "AT",
           "name": "Austria",
-          "people": 34
+          "people": 35
         },
         {
           "code": "BE",
@@ -903,14 +915,14 @@
           "people": 31
         },
         {
+          "code": "DK",
+          "name": "Denmark",
+          "people": 31
+        },
+        {
           "code": "CZ",
           "name": "Czechia",
           "people": 29
-        },
-        {
-          "code": "DK",
-          "name": "Denmark",
-          "people": 28
         },
         {
           "code": "ID",
@@ -925,11 +937,11 @@
         {
           "code": "MX",
           "name": "Mexico",
-          "people": 22
+          "people": 21
         },
         {
-          "code": "AE",
-          "name": "United Arab Emirates",
+          "code": "NZ",
+          "name": "New Zealand",
           "people": 21
         },
         {
@@ -938,14 +950,19 @@
           "people": 20
         },
         {
-          "code": "NZ",
-          "name": "New Zealand",
+          "code": "AE",
+          "name": "United Arab Emirates",
           "people": 20
         },
         {
           "code": "PT",
           "name": "Portugal",
-          "people": 18
+          "people": 19
+        },
+        {
+          "code": "IE",
+          "name": "Ireland",
+          "people": 15
         },
         {
           "code": "RO",
@@ -958,19 +975,14 @@
           "people": 14
         },
         {
-          "code": "IE",
-          "name": "Ireland",
+          "code": "HU",
+          "name": "Hungary",
           "people": 14
         },
         {
           "code": "ZA",
           "name": "South Africa",
           "people": 14
-        },
-        {
-          "code": "HU",
-          "name": "Hungary",
-          "people": 13
         },
         {
           "code": "RS",
@@ -998,6 +1010,11 @@
           "people": 10
         },
         {
+          "code": "EG",
+          "name": "Egypt",
+          "people": 10
+        },
+        {
           "code": "GR",
           "name": "Greece",
           "people": 10
@@ -1010,11 +1027,6 @@
         {
           "code": "CL",
           "name": "Chile",
-          "people": 9
-        },
-        {
-          "code": "EG",
-          "name": "Egypt",
           "people": 9
         },
         {
@@ -1043,6 +1055,11 @@
           "people": 6
         },
         {
+          "code": "CR",
+          "name": "Costa Rica",
+          "people": 5
+        },
+        {
           "code": "HR",
           "name": "Croatia",
           "people": 5
@@ -1068,9 +1085,9 @@
           "people": 4
         },
         {
-          "code": "CR",
-          "name": "Costa Rica",
-          "people": 3
+          "code": "PE",
+          "name": "Peru",
+          "people": 4
         },
         {
           "code": "FJ",
@@ -1090,11 +1107,6 @@
         {
           "code": "NG",
           "name": "Nigeria",
-          "people": 3
-        },
-        {
-          "code": "PE",
-          "name": "Peru",
           "people": 3
         },
         {
@@ -1150,6 +1162,11 @@
         {
           "code": "AL",
           "name": "Albania",
+          "people": 1
+        },
+        {
+          "code": "AQ",
+          "name": "Antarctica",
           "people": 1
         },
         {
@@ -1273,6 +1290,11 @@
           "people": 1
         },
         {
+          "code": "UG",
+          "name": "Uganda",
+          "people": 1
+        },
+        {
           "code": "UZ",
           "name": "Uzbekistan",
           "people": 1
@@ -1285,8 +1307,8 @@
       ]
     },
     "issues": {
-      "people": 654,
-      "placed": 228,
+      "people": 680,
+      "placed": 239,
       "list": [
         {
           "code": "US",
@@ -1301,11 +1323,16 @@
         {
           "code": "CN",
           "name": "China",
-          "people": 19
+          "people": 18
         },
         {
           "code": "GB",
           "name": "United Kingdom",
+          "people": 16
+        },
+        {
+          "code": "CA",
+          "name": "Canada",
           "people": 15
         },
         {
@@ -1314,9 +1341,9 @@
           "people": 14
         },
         {
-          "code": "CA",
-          "name": "Canada",
-          "people": 12
+          "code": "PT",
+          "name": "Portugal",
+          "people": 9
         },
         {
           "code": "FR",
@@ -1329,8 +1356,8 @@
           "people": 7
         },
         {
-          "code": "PT",
-          "name": "Portugal",
+          "code": "CH",
+          "name": "Switzerland",
           "people": 7
         },
         {
@@ -1339,8 +1366,8 @@
           "people": 6
         },
         {
-          "code": "CH",
-          "name": "Switzerland",
+          "code": "TW",
+          "name": "Taiwan",
           "people": 6
         },
         {
@@ -1349,9 +1376,9 @@
           "people": 5
         },
         {
-          "code": "TW",
-          "name": "Taiwan",
-          "people": 5
+          "code": "AT",
+          "name": "Austria",
+          "people": 4
         },
         {
           "code": "SG",
@@ -1359,8 +1386,8 @@
           "people": 4
         },
         {
-          "code": "AT",
-          "name": "Austria",
+          "code": "BE",
+          "name": "Belgium",
           "people": 2
         },
         {
@@ -1371,6 +1398,11 @@
         {
           "code": "IE",
           "name": "Ireland",
+          "people": 2
+        },
+        {
+          "code": "JP",
+          "name": "Japan",
           "people": 2
         },
         {
@@ -1394,11 +1426,6 @@
           "people": 2
         },
         {
-          "code": "BE",
-          "name": "Belgium",
-          "people": 1
-        },
-        {
           "code": "BR",
           "name": "Brazil",
           "people": 1
@@ -1416,11 +1443,6 @@
         {
           "code": "IN",
           "name": "India",
-          "people": 1
-        },
-        {
-          "code": "JP",
-          "name": "Japan",
           "people": 1
         },
         {
@@ -1446,8 +1468,8 @@
       ]
     },
     "pulls": {
-      "people": 657,
-      "placed": 462,
+      "people": 683,
+      "placed": 482,
       "list": [
         {
           "code": "DE",
@@ -1457,12 +1479,12 @@
         {
           "code": "MX",
           "name": "Mexico",
-          "people": 115
+          "people": 123
         },
         {
           "code": "FR",
           "name": "France",
-          "people": 61
+          "people": 70
         },
         {
           "code": "TW",
@@ -1477,7 +1499,7 @@
         {
           "code": "CN",
           "name": "China",
-          "people": 16
+          "people": 15
         },
         {
           "code": "PL",
@@ -1498,6 +1520,11 @@
           "code": "KR",
           "name": "South Korea",
           "people": 5
+        },
+        {
+          "code": "CA",
+          "name": "Canada",
+          "people": 4
         },
         {
           "code": "JP",

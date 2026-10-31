@@ -1,15 +1,23 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { Contributors } from '@/components/contributors';
+import { NumberCells } from '@/components/number-cells';
 import { Lead, PageHeader } from '@/components/page-header';
 import { PageShell } from '@/components/page-shell';
-import { ResolvingText } from '@/components/resolving-text';
 import { Section } from '@/components/section-label';
 import { WorldMap } from '@/components/world-map';
 import community from '@/lib/community.json';
-import { contributors, counted, numbers, translatorCount, ways } from '@/lib/community-page';
+import {
+  contributorNumbers,
+  contributors,
+  counted,
+  numbers,
+  translatorNumbers,
+  ways,
+} from '@/lib/community-page';
 import { pageAlternates } from '@/lib/releases';
-import { compact, longDate, repoUrl } from '@/lib/shared';
+import { docsRoute, longDate, repoUrl } from '@/lib/shared';
 import { sitePages } from '@/lib/site-pages';
 
 export const metadata: Metadata = {
@@ -33,18 +41,7 @@ export default function CommunityPage() {
       </PageHeader>
 
       <Section label="In numbers">
-        <dl className="crossed grid-cols-2 lg:grid-cols-3">
-          {numbers.map((number) => (
-            <div key={number.label} className="group flex flex-col gap-1 p-4 sm:p-6">
-              <dt className="text-sm text-fd-muted-foreground">{number.label}</dt>
-              {/* The first number, the stars, is the one in the accent. */}
-              <dd className="font-display text-4xl font-semibold tracking-tight group-first:text-(--product-tone) xl:text-5xl">
-                <ResolvingText>{compact.format(number.value)}</ResolvingText>
-              </dd>
-              <dd className="text-sm text-fd-muted-foreground">{number.unit}</dd>
-            </div>
-          ))}
-        </dl>
+        <NumberCells numbers={numbers} accent className="grid-cols-1 sm:grid-cols-3" />
         <p className="max-w-3xl text-sm text-fd-muted-foreground text-pretty">
           {counted.day && `Counted on ${longDate(counted.day)}. `}
           {counted.older.map((entry) => `${entry.name} are from ${longDate(entry.day)}. `)}
@@ -71,17 +68,7 @@ export default function CommunityPage() {
                   href={`https://github.com/${member.login}`}
                   className="group flex flex-col gap-4"
                 >
-                  {/* biome-ignore lint/performance/noImgElement: a remote avatar, not worth an image pipeline */}
-                  <img
-                    // GitHub's own address gives the full picture unless told a size: twice the
-                    // 96px it is drawn at, for sharp screens.
-                    src={`${member.avatar}${member.avatar.includes('?') ? '&' : '?'}s=192`}
-                    alt=""
-                    width={96}
-                    height={96}
-                    loading="lazy"
-                    className="size-24"
-                  />
+                  <Image src={member.avatar} alt="" width={96} height={96} className="size-24" />
                   <span className="flex flex-col gap-0.5">
                     <span className="font-display text-lg leading-tight font-semibold tracking-tight underline-offset-4 group-hover:underline">
                       {'name' in member && member.name ? member.name : member.login}
@@ -97,6 +84,7 @@ export default function CommunityPage() {
 
       {community.people.length > 0 && (
         <Section label="Contributors">
+          <NumberCells numbers={contributorNumbers} />
           <Contributors people={contributors} />
           <p className="max-w-3xl text-sm text-fd-muted-foreground text-pretty">
             Everyone else with a commit since Thaw began in January 2026. Translators are listed
@@ -107,14 +95,17 @@ export default function CommunityPage() {
 
       {community.translators.length > 0 && (
         <Section label="Translators">
-          <dl className="border-t">
+          <NumberCells numbers={translatorNumbers} />
+          <dl className="grid border-t md:grid-cols-2 md:gap-x-10">
             {community.translators.map((group) => (
-              <div
-                key={group.language}
-                className="grid gap-x-8 gap-y-1 border-b py-4 sm:grid-cols-[14rem_minmax(0,1fr)]"
-              >
-                <dt className="font-medium">{group.language}</dt>
-                <dd className="flex flex-wrap gap-x-4 gap-y-1 text-fd-muted-foreground">
+              <div key={group.language} className="flex flex-col gap-1 border-b py-4">
+                <dt className="flex items-baseline justify-between gap-4 font-medium">
+                  {group.language}
+                  <span className="text-sm font-normal text-fd-muted-foreground tabular-nums">
+                    {group.people.length}
+                  </span>
+                </dt>
+                <dd className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-fd-muted-foreground">
                   {group.people.map((person) =>
                     'username' in person && person.username ? (
                       <a
@@ -136,11 +127,15 @@ export default function CommunityPage() {
             ))}
           </dl>
           <p className="max-w-3xl text-sm text-fd-muted-foreground text-pretty">
-            {translatorCount} people across {community.translators.length} languages, from Thaw’s{' '}
+            From Thaw’s{' '}
             <a href={`${repo}/blob/development/CREDITS.md`} className="tap link">
               credits
             </a>
-            . Listed alphabetically within each language. Each name opens its Crowdin profile.
+            . Each name opens its Crowdin profile. Is your language missing or unfinished?{' '}
+            <Link href={`${docsRoute}/thaw/contribute/translations`} className="tap link">
+              Translate it on Crowdin
+            </Link>
+            , with no pull request.
           </p>
         </Section>
       )}

@@ -37,7 +37,7 @@ const skills: Skill[] = [
 2. Pick the matching way to install:
 
 ${commands}
-- macOS 14 or 15: Thaw 1. The versions page below says where to get it.
+- macOS 14: Thaw 1. The versions page below says where to get it.
 
 3. Open Thaw. It asks for Accessibility, which it needs to move menu bar items. On macOS 27 it also asks for Menu Bar Layout Access. Screen Recording is optional.
 4. Updates come by themselves. The update channel is in Thaw’s Settings, under About.
@@ -57,7 +57,7 @@ Someone who has never opened Terminal can use the disk image from the releases p
     title: 'Troubleshooting Thaw',
     guide: `Thaw is a free, open source menu bar manager for macOS (${siteUrl}). When it misbehaves:
 
-1. Find out which Thaw and which macOS. Thaw’s version is in its Settings, under About. Thaw 3 runs on macOS 27 and Thaw 2 on macOS 26, and their problems are listed separately below.
+1. Find out which Thaw and which macOS. Thaw’s version is in its Settings, under About. Thaw 3 runs on macOS 27 and Thaw 2 on macOS 26 and, from 2.2, macOS 15, and their problems are listed separately below.
 2. Look for the problem in the frequent issues below. Some are limits of macOS 27 that Thaw can’t get round yet, and need no report.
 3. Try the fix the docs give. A reset or a Terminal command, such as \`tccutil\` or removing a cache, changes the person’s setup: say what it does and ask before running it.
 4. If nothing here fits, help them open an issue at ${repoUrl('thaw')}/issues with their Thaw and macOS versions, what they did, and what they saw.`,

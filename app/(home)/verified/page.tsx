@@ -8,7 +8,7 @@ import community from '@/lib/community.json';
 import { pageAlternates } from '@/lib/releases';
 import { longDate } from '@/lib/shared';
 import { sitePages } from '@/lib/site-pages';
-import { meanings, readDays } from '@/lib/verified';
+import { meanings, readDays, standing } from '@/lib/verified';
 
 export const metadata: Metadata = {
   // One address for the page, whichever domain it was reached on.
@@ -24,11 +24,12 @@ const read = readDays(community.readOn, {
   baseline: 'The Baseline level',
   scorecard: 'The Scorecard',
   coverage: 'Test coverage',
+  field: 'The count of projects on OpenSSF’s list',
 });
 
 /**
  * The page behind "What does this mean?" on the home page: each thing in the
- * Verified block, what it is, where Thaw stands on it today, and who says so.
+ * Verified row, what it is, where Thaw stands on it today, and who says so.
  */
 export default function VerifiedPage() {
   return (
@@ -37,7 +38,8 @@ export default function VerifiedPage() {
         <Lead>
           Thaw asks for permissions that reach across your Mac. These are the outside checks on how
           it is built and released: what each one is, and who vouches for it. A score a machine
-          gives is not the same as a checklist a project fills in, so each says which it is.
+          gives is not the same as a checklist a project fills in, so each says which it is.{' '}
+          {standing(community.assurance)}
         </Lead>
       </PageHeader>
 
@@ -77,6 +79,7 @@ export default function VerifiedPage() {
       <p className="text-sm text-fd-muted-foreground">
         {read.day && `Values read on ${longDate(read.day)}. `}
         {read.older.map((entry) => `${entry.name} is from ${longDate(entry.day)}. `)}
+        The SLSA level is the one Thaw’s release pipeline is built to.{' '}
         <Link href="/docs/thaw/verifying-releases" className="tap link">
           How to verify a release yourself
         </Link>

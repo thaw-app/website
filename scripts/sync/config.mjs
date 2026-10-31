@@ -52,18 +52,17 @@ const products = [
       bestPractices: project.bestPractices,
     },
     // Pages this site writes itself, so the repo's file of the same name is not synced in.
-    // The roadmap is content/site/roadmap.mdx, drawn at /roadmap; it says more than
-    // docs/ROADMAP.md does, for now.
-    // app-developers is content/docs/thaw/app-developers.mdx, written here first.
-    writtenHere: ['roadmap', 'app-developers'],
+    // The roadmap is content/site/roadmap.mdx, drawn at /roadmap.
+    writtenHere: ['roadmap'],
     // What the home page draws itself in the README's place: the install commands, the
     // feature list, and at its end how the project is run.
     readmeParts: { install: '<InstallTabs />', features: '<FeatureList />', last: '<Assurance />' },
-    // README sections the home page leaves out: it links to the docs itself, and the
-    // contributors are on the community page and the licence in the footer.
+    // README sections the home page leaves out: it links to the docs itself, the contributors
+    // are on the community page, and contributing and the licence are in the footer.
     readmeLeavesOut: [
       'Project documentation',
       'Contributors',
+      'Contributing',
       'License',
       // The home page has one job, getting Thaw installed; these two are in the docs and on
       // the community page.
@@ -125,6 +124,8 @@ const products = [
         'What each Thaw release is signed with, and how to check a download yourself.',
       'assurance-case':
         'The case that Thaw meets its security requirements: its threat model, trust boundaries and the risks that remain.',
+      'app-developers':
+        'For developers of apps with menu bar items. How Thaw tells your items apart on macOS 27, how to keep them where people put them, and how to let each one be hidden on its own.',
     },
     icons: {
       'frequent-issues': 'LifeBuoy',
@@ -172,6 +173,7 @@ const products = [
     readmeLeavesOut: [
       'Project documentation',
       'Contributors',
+      'Contributing',
       'License',
       'Integrations',
       'Transparency',

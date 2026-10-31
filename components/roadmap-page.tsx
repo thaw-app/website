@@ -7,10 +7,14 @@ import { PageHeader } from '@/components/page-header';
 import { PageShell } from '@/components/page-shell';
 import { ProductChoice } from '@/components/product-choice';
 import { Roadmap } from '@/components/roadmap';
-import type { ProductSlug } from '@/lib/shared';
+import { type ProductSlug, products } from '@/lib/shared';
 
-// Where each product's roadmap is.
-const roadmaps: Record<ProductSlug, string> = { thaw: '/roadmap', floe: '/floe/roadmap' };
+// Where each roadmap is: one for each product, and one for the design they share.
+const roadmaps = [
+  { name: products.thaw.name, href: '/roadmap' },
+  { name: products.floe.name, href: '/floe/roadmap' },
+  { name: 'ThawUI', href: '/roadmap/thawui' },
+];
 
 /** The paragraph the roadmap opens with, set as this site sets a page's opening lines. */
 function Opening(props: ComponentProps<'p'>) {
@@ -30,31 +34,32 @@ function Section(props: ComponentProps<'h2'>) {
 }
 
 /**
- * A product's roadmap: its headline, then the lists as written in content/site. Thaw's and
- * Floe's are this page with different lists, and Floe's is drawn in its own accent.
+ * A roadmap: its headline, then the lists as written in content/site. Thaw's, Floe's and
+ * ThawUI's are this page with different lists, and Floe's is drawn in its own accent.
  */
 export function RoadmapView({
   label,
   title,
   Lists,
   product = 'thaw',
+  whose = products[product].name,
 }: {
   label: string;
   title: string;
   Lists: MDXContent;
   product?: ProductSlug;
+  /** The name of this roadmap among the choices. */
+  whose?: string;
 }) {
   // The choice of product sits under the opening lines and over the lists, which is where
   // the lists' own row of counts begins.
+  // biome-ignore lint/correctness/noComponentHookFactories: a server component, drawn once per page, so nothing here can remount
   const Chosen = (props: ComponentProps<typeof Roadmap>) => (
     <>
       <ProductChoice
         label="Whose roadmap"
-        choices={(Object.keys(roadmaps) as ProductSlug[]).map((name) => ({
-          product: name,
-          href: roadmaps[name],
-        }))}
-        current={product}
+        choices={roadmaps}
+        current={whose}
         className="not-prose mt-6"
       />
       <Roadmap {...props} />

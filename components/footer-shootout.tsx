@@ -1,8 +1,17 @@
 'use client';
 
-import { type KeyboardEvent, useEffect, useRef, useState } from 'react';
+import { type KeyboardEvent, type PointerEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { onThemeChange } from '@/lib/on-theme-change';
 import { columns, drawPose, rows } from './conure-poses';
+import {
+  coverColours,
+  covers,
+  paintScene,
+  picture,
+  tumbleweed,
+  tumbleweedColours,
+} from './shootout-scene';
+import { shootoutSound } from './shootout-sound';
 
 // The two apps' icons, a pixel at a time: Thaw's pale cube on orange, its top face lit
 // and its two sides in shade, and Floe's chunk of ice on blue with a crack across it.
@@ -53,145 +62,29 @@ const colours: Record<string, string> = {
 };
 type App = keyof typeof icons;
 
-// A picture drawn once from rows of letters, each letter a colour and a dot nothing.
-function picture(lines: string[], palette: Record<string, string>) {
-  const canvas = document.createElement('canvas');
-  canvas.width = Math.max(...lines.map((line) => line.length));
-  canvas.height = lines.length;
-  const context = canvas.getContext('2d');
-  lines.forEach((line, row) => {
-    [...line].forEach((mark, column) => {
-      if (!context || mark === '.') return;
-      context.fillStyle = palette[mark];
-      context.fillRect(column, row, 1, 1);
-    });
-  });
-  return canvas.toDataURL();
-}
-
-// The range: a mesa and a low sun far off, saguaros nearer, and in front of each place a
-// crate or a barrel for the icons to come up from behind. G is a saguaro's green and g the
-// ridges down it; m the mesa and n its shadowed side; s the sun and S its middle; k dark
-// wood and w light, l where a barrel catches the light, and h its iron hoops.
-const scenery = {
-  saguaro: [
-    '....GG....',
-    '...GGGG...',
-    '...GgGG...',
-    'G..GgGG...',
-    'G..GgGG..G',
-    'G..GgGG..G',
-    'GG.GgGG..G',
-    '.GGGgGG.GG',
-    '...GgGGGG.',
-    '...GgGG...',
-    '...GgGG...',
-    '...GgGG...',
-    '...GgGG...',
-    '...GgGG...',
-    '...GgGG...',
-  ],
-  mesa: [
-    '........mmmmmmmmmmmmn..........................',
-    '.......mmmmmmmmmmmmmnn.........................',
-    '......mmmmmmmmmmmmmmnnn..........mmmmmmn.......',
-    '.....mmmmmmmmmmmmmmmnnnn........mmmmmmmnn......',
-    '....mmmmmmmmmmmmmmmmnnnnn......mmmmmmmmnnn.....',
-    '...mmmmmmmmmmmmmmmmmnnnnnnmmmmmmmmmmmmmnnnn....',
-    '..mmmmmmmmmmmmmmmmmmnnnnnnnmmmmmmmmmmmmnnnnn...',
-    '.mmmmmmmmmmmmmmmmmmmnnnnnnnnmmmmmmmmmmmnnnnnn..',
-    'mmmmmmmmmmmmmmmmmmmmnnnnnnnnnmmmmmmmmmmnnnnnnn.',
-  ],
-  sun: [
-    '...sss...',
-    '.sssssss.',
-    '.ssSSSss.',
-    'ssSSSSSss',
-    'ssSSSSSss',
-    'ssSSSSSss',
-    '.ssSSSss.',
-    '.sssssss.',
-    '...sss...',
-  ],
-  crate: [
-    'kkkkkkkkkkkk',
-    'kwwwwwwwwwwk',
-    'kwkwwwwwwkwk',
-    'kwwkwwwwkwwk',
-    'kwwwkwwkwwwk',
-    'kwwwwkkwwwwk',
-    'kwwwkwwkwwwk',
-    'kwwkwwwwkwwk',
-    'kwkwwwwwwkwk',
-    'kkkkkkkkkkkk',
-  ],
-  barrel: [
-    '..kkkkkk..',
-    '.kwwwwwwk.',
-    'hhhhhhhhhh',
-    'kwlwwwwwwk',
-    'kwlwwwwwwk',
-    'kwlwwwwwwk',
-    'kwlwwwwwwk',
-    'hhhhhhhhhh',
-    '.kwwwwwwk.',
-    '..kkkkkk..',
-  ],
-};
-const sceneryColours = {
-  G: '#3f7d3a',
-  g: '#5f9e4e',
-  m: '#b8794a',
-  n: '#9a6038',
-  s: '#f0a040',
-  S: '#f7c56a',
-  k: '#5e3d22',
-  w: '#a8743f',
-  l: '#c48a52',
-  h: '#6b6f76',
-};
-// Where the saguaros stand, as shares of the stage's width, and how tall each is drawn.
-const saguaros = [
-  { at: 0.2, size: 1 },
-  { at: 0.33, size: 0.7 },
-  { at: 0.97, size: 1.2 },
-];
-
-// The ground: a strip of dirt drawn once, in browns with a stone here and there, and
-// repeated along the floor.
-function dirt() {
-  const canvas = document.createElement('canvas');
-  canvas.width = 16;
-  canvas.height = 8;
-  const context = canvas.getContext('2d');
-  const browns = ['#7a5230', '#7a5230', '#6b4728', '#5e3d22', '#8a5e38'];
-  // The same dirt each time: a fixed run of numbers, not Math.random.
-  let seed = 7;
-  const next = () => {
-    seed = (seed * 16807) % 2147483647;
-    return seed / 2147483647;
-  };
-  for (let row = 0; row < 8; row++) {
-    for (let column = 0; column < 16; column++) {
-      if (!context) break;
-      context.fillStyle =
-        row === 0 ? '#946840' : next() < 0.06 ? '#a88a6a' : browns[Math.floor(next() * 5)];
-      context.fillRect(column, row, 1, 1);
-    }
-  }
-  return canvas.toDataURL();
-}
-
 // The conure's revolver, in its own pixels on the standing pose: the barrel pointing
 // right at chest height, the hammer above it and the grip below. When it fires the gun
-// kicks up a pixel and a flash comes out of the muzzle.
-function shooter(context: CanvasRenderingContext2D, firing: boolean) {
-  drawPose(context, 'perched');
+// kicks up a pixel and a flash comes out of the muzzle. Reloading, it holds the gun up with
+// the cylinder swung out.
+function shooter(
+  context: CanvasRenderingContext2D,
+  firing: boolean,
+  pose = 'perched',
+  reloading = false,
+) {
+  drawPose(context, pose);
   const kick = firing ? 1 : 0;
   const put = (column: number, row: number, colour: string) => {
     context.fillStyle = colour;
     context.fillRect(column, row + 2 - kick, 1, 1);
   };
+  if (reloading) {
+    for (let row = 2; row <= 6; row++) put(17, row, '#8f949c');
+    put(18, 5, '#d9a441');
+    put(17, 7, '#6b4423');
+    put(16, 8, '#6b4423');
+    return;
+  }
   for (let column = 15; column <= 19; column++) put(column, 7, '#8f949c');
   put(15, 6, '#4a4e55');
   put(15, 8, '#6b4423');
@@ -205,129 +98,366 @@ function shooter(context: CanvasRenderingContext2D, firing: boolean) {
 }
 
 // Where the icons come up out of the dirt, as shares of the stage's width: the right of
-// it, across from the conure on the left.
-const slots = [0.46, 0.57, 0.68, 0.79, 0.9];
+// it, across from the conure on the left. A phone has room for three places a finger can
+// tell apart, spread across more of the width.
+const lanes = {
+  wide: [0.46, 0.57, 0.68, 0.79, 0.9],
+  narrow: [0.45, 0.66, 0.87],
+};
+function lanesNow() {
+  return window.matchMedia('(max-width: 639px)').matches ? lanes.narrow : lanes.wide;
+}
 // A round lasts this many seconds. An icon stays up for `up` seconds and a new one comes
 // every `every`, both getting shorter as the round goes on.
 const round = 30;
 const up = { from: 1.3, to: 0.75 };
 const every = { from: 0.9, to: 0.45 };
 const best = 'conure-shootout-best';
+// Six shots to the cylinder, then this many seconds to fill it again. Waiting for a clear
+// target is what the cylinder asks of you, and so is this: every fifth hit in a row, with
+// no shot wasted between them, counts double.
+const cylinder = 6;
+const reloading = 0.8;
+const run = 5;
+const sound = 'conure-shootout-sound';
+
+function bestSoFar() {
+  try {
+    return Number(localStorage.getItem(best)) || 0;
+  } catch {
+    return 0;
+  }
+}
 
 // A picture's place on the page: its own pixels, each the game's pixel across.
-function size(url: string, lines: string[], scale = 1) {
+function size(url: string, lines: string[]) {
   return {
     backgroundImage: `url(${url})`,
-    width: `calc(${lines[0].length * scale} * var(--dot))`,
-    height: `calc(${lines.length * scale} * var(--dot))`,
+    width: `calc(${lines[0].length} * var(--dot))`,
+    height: `calc(${lines.length} * var(--dot))`,
   };
 }
 
-type Target = { id: number; slot: number; app: App; until: number; hit?: boolean };
+// A place across the stage, kept on the game's pixels so nothing lands between two.
+const across = (share: number) => `round(${share * 100}%, var(--dot))`;
+
+// What the bird does when it is not shooting, a pose and how many milliseconds it holds
+// it: looks up before a round, and after one puts the gun away and tips its hat. A new
+// best gets the head-bob it does on "floe".
+const acts = {
+  ready: [['facing', 0]],
+  done: [
+    ['perched', 400],
+    ['facing', 300],
+    ['faceDown', 150],
+    ['facing', 150],
+    ['faceDown', 150],
+    ['facing', 0],
+  ],
+  record: [
+    ['perched', 300],
+    ['facing', 300],
+    ['faceUp', 160],
+    ['faceDown', 160],
+    ['faceUp', 160],
+    ['faceDown', 160],
+    ['faceUp', 160],
+    ['faceDown', 160],
+    ['facing', 0],
+  ],
+} satisfies Record<string, [pose: string, lasts: number][]>;
+
+// What a shot leaves in the air, in the game's pixels: the line it flew along, for a
+// moment, and whatever it knocked off. Bits of icon for a hit, dirt for a miss, and brass
+// for the last shot in the cylinder, whose empties fall at the bird's feet.
+const trace = 70;
+const shards = { Thaw: ['#e8922e', '#fde6a6', '#f5bd5c'], Floe: ['#2a7fd4', '#eef8ff', '#5cc6ef'] };
+const clods = ['#7a5230', '#a88a6a', '#5e3d22'];
+const brass = ['#d9a441', '#f2c230'];
+type Shard = { x: number; y: number; across: number; down: number; colour: string };
+
+type Target = {
+  id: number;
+  slot: number;
+  app: App;
+  until: number;
+  hit?: boolean;
+  // What it scored, and how many hits in a row it made.
+  worth?: number;
+  streak?: number;
+};
+type Phase = 'ready' | 'playing' | 'paused' | 'over';
+
+// The round as it is now, kept out of React so a frame can read it. `time` is seconds of
+// play, which is not the same as seconds since it started: a pause stops it. `reload` is
+// when the cylinder will be full, if it is empty, and `mood` how the bird is taking it.
+function freshRound() {
+  return {
+    targets: [] as Target[],
+    score: 0,
+    time: 0,
+    next: 0,
+    id: 0,
+    shots: cylinder,
+    reload: 0,
+    streak: 0,
+    longest: 0,
+    hits: 0,
+    fired: 0,
+    mood: 'perched',
+    // The best to beat, and whether this round has beaten it yet.
+    toBeat: bestSoFar(),
+    beaten: false,
+  };
+}
+
+// The bird between shots.
+function atRest(context: CanvasRenderingContext2D, state: ReturnType<typeof freshRound>) {
+  shooter(context, false, state.reload ? 'perched' : state.mood, state.reload > 0);
+}
+
+const currentTheme = () =>
+  document.documentElement.classList.contains('dark') ? ('dark' as const) : ('light' as const);
 
 /**
- * A shooting gallery over the footer, for whoever clicks a conure in a hat three times:
- * the wordmark goes dim behind a desert, the conure stands on a floor of dirt at the left
- * with a revolver, and for thirty seconds Thaw and Floe icons come up from behind crates
- * and barrels at the right. Each one hit is a point: clicked or tapped, or with the
- * keyboard, where the arrows aim, Space fires and a number fires at its place. Escape
- * stops it.
+ * A shooting gallery over the footer, or over wherever a page's conure is, for whoever gets as far as it with the conure: a
+ * desert (see shootout-scene) takes the place of the wordmark, the conure stands on a patch
+ * of dirt at the left with a revolver, and for thirty seconds Thaw and Floe icons come up from behind crates and
+ * barrels at the right. Each one hit is a point: clicked or tapped, or with the keyboard,
+ * where the arrows aim, Space fires and a number fires at its place. The revolver holds
+ * six and fills itself when it is empty, a miss breaks a run of hits, and every fifth in
+ * a run counts double. It waits to be started, and stops the clock when it is out of
+ * sight. Escape closes it.
  */
-export function FooterShootout({ onDone }: { onDone: () => void }) {
+export function FooterShootout({
+  onDone,
+  leaving,
+  onOpen,
+}: {
+  onDone: () => void;
+  /** Where closing it goes back to, for the button to say. */
+  leaving: 'footer' | 'page';
+  /** Called once it has noted where the focus was, so what it covers can be put out of reach. */
+  onOpen?: () => void;
+}) {
+  const [phase, setPhase] = useState<Phase>('ready');
   const [targets, setTargets] = useState<Target[]>([]);
   const [score, setScore] = useState(0);
   const [left, setLeft] = useState(round);
-  const [over, setOver] = useState<{ score: number; best: number } | null>(null);
-  const [game, setGame] = useState(0);
+  const [over, setOver] = useState<{
+    score: number;
+    best: number;
+    record: boolean;
+    hits: number;
+    fired: number;
+    longest: number;
+  } | null>(null);
+  const [shots, setShots] = useState(cylinder);
+  const [emptied, setEmptied] = useState(false);
+  const [cheering, setCheering] = useState(false);
+  const [noisy, setNoisy] = useState(() => {
+    try {
+      return localStorage.getItem(sound) === 'on';
+    } catch {
+      return false;
+    }
+  });
+  const [slots, setSlots] = useState(lanesNow);
+  const [touch] = useState(() => window.matchMedia('(pointer: coarse)').matches);
+  const [record] = useState(bestSoFar);
   // Where the sights are, once the keyboard has been used to aim.
   const [aim, setAim] = useState<number | null>(null);
   const [pictures] = useState(() => ({
     Thaw: picture(icons.Thaw, colours),
     Floe: picture(icons.Floe, colours),
   }));
-  const [props] = useState(() => ({
-    saguaro: picture(scenery.saguaro, sceneryColours),
-    mesa: picture(scenery.mesa, sceneryColours),
-    sun: picture(scenery.sun, sceneryColours),
-    crate: picture(scenery.crate, sceneryColours),
-    barrel: picture(scenery.barrel, sceneryColours),
-  }));
-  const [ground] = useState(dirt);
+  const [theme, setTheme] = useState(currentTheme);
+  const sprites = useMemo(
+    () => ({
+      crate: picture(covers.crate, coverColours[theme]),
+      barrel: picture(covers.barrel, coverColours[theme]),
+      tumbleweed: picture(tumbleweed, tumbleweedColours[theme]),
+    }),
+    [theme],
+  );
+  const [still] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   const field = useRef<HTMLDivElement>(null);
-  const again = useRef<HTMLButtonElement>(null);
+  const opened = useRef(onOpen);
+  const fence = useRef<HTMLDivElement>(null);
+  const backdrop = useRef<HTMLCanvasElement>(null);
+  const primary = useRef<HTMLButtonElement>(null);
   const bird = useRef<HTMLCanvasElement>(null);
+  const air = useRef<HTMLCanvasElement>(null);
   const fired = useRef(0);
-  // What the round's clock reads, kept out of React so a frame can read it as it is now.
-  const live = useRef({ targets: [] as Target[], score: 0, started: 0 });
+  // What the bird is showing, to draw again if the page changes theme.
+  const drawn = useRef<() => void>(() => {});
+  const cheer = useRef(0);
+  const live = useRef(freshRound());
+  const [noises] = useState(shootoutSound);
+  const flying = useRef({
+    line: null as number[] | null,
+    until: 0,
+    shards: [] as Shard[],
+    frame: 0,
+  });
 
-  // The keys go to the game, so it takes the focus when it opens, and gives it back to
-  // whatever had it when it closes.
+  // Whatever had the focus when the game opened gets it back when it closes. On a phone
+  // the stage grows to fit the game, so what has been opened is brought fully into view.
   useEffect(() => {
     const before = document.activeElement as HTMLElement | null;
-    field.current?.focus();
+    field.current?.scrollIntoView({ block: 'nearest' });
+    opened.current?.();
     return () => before?.focus?.();
   }, []);
 
-  // The conure, drawn again when the page changes theme and for the flash of each shot.
+  // The keys go to the game while it runs, and otherwise to the button it is waiting on.
+  // Not scrolled to: a round paused by scrolling away stays where it was left.
+  useEffect(() => {
+    (phase === 'playing' ? field : primary).current?.focus({ preventScroll: true });
+  }, [phase]);
+
+  // The conure, drawn again when the page changes theme.
+  useEffect(
+    () =>
+      onThemeChange(() => {
+        drawn.current();
+        setTheme(currentTheme());
+      }),
+    [],
+  );
+
+  // The desert, painted again whenever the stage changes size or the page its theme. In
+  // whole pixels of the game's: what is left over at the top of the stage is cropped.
+  useEffect(() => {
+    const canvas = backdrop.current;
+    const area = field.current;
+    const body = bird.current;
+    if (!canvas || !area || !body) return;
+    const paint = () => {
+      const dot = body.getBoundingClientRect().width / columns;
+      if (!dot) return;
+      const width = Math.ceil(area.clientWidth / dot);
+      const height = Math.ceil(area.clientHeight / dot);
+      canvas.style.width = `${width * dot}px`;
+      canvas.style.height = `${height * dot}px`;
+      paintScene(canvas, {
+        theme,
+        width,
+        height,
+        floor: 12,
+        lanes: slots,
+        bird: Math.round(body.offsetLeft / dot),
+        narrow: slots === lanes.narrow,
+      });
+    };
+    paint();
+    const resized = new ResizeObserver(paint);
+    resized.observe(area);
+    return () => resized.disconnect();
+  }, [slots, theme]);
+
   useEffect(() => {
     const context = bird.current?.getContext('2d');
     if (!context) return;
-    shooter(context, false);
-    const themed = onThemeChange(() => shooter(context, false));
+    window.clearTimeout(fired.current);
+    if (phase === 'playing' || phase === 'paused') {
+      drawn.current = () => atRest(context, live.current);
+      drawn.current();
+      return;
+    }
+    const act = phase === 'ready' ? acts.ready : over?.record ? acts.record : acts.done;
+    let timer = 0;
+    const perform = (beat: number) => {
+      const [pose, lasts] = act[beat];
+      drawn.current = () => drawPose(context, pose);
+      drawn.current();
+      if (beat + 1 < act.length) timer = window.setTimeout(() => perform(beat + 1), lasts);
+    };
+    perform(still ? act.length - 1 : 0);
+    return () => window.clearTimeout(timer);
+  }, [phase, over, still]);
+
+  // Out of sight the clock stops, whether the tab has been left or the page scrolled away.
+  useEffect(() => {
+    const pause = () => setPhase((now) => (now === 'playing' ? 'paused' : now));
+    const onVisibility = () => {
+      if (document.hidden) pause();
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+    const seen = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.intersectionRatio < 0.5) pause();
+      },
+      { threshold: 0.5 },
+    );
+    if (field.current) seen.observe(field.current);
     return () => {
-      themed();
-      window.clearTimeout(fired.current);
+      document.removeEventListener('visibilitychange', onVisibility);
+      seen.disconnect();
     };
   }, []);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: `game` starts a new round
   useEffect(() => {
-    const started = performance.now();
-    live.current = { targets: [], score: 0, started };
-    // Again, pressed, goes away with the result: the keys come back to the game.
-    field.current?.focus();
-    setTargets([]);
-    setScore(0);
-    setLeft(round);
-    setOver(null);
-    let next = 0;
-    let id = 0;
+    if (phase !== 'playing') return;
+    let last = performance.now();
     let frame = 0;
 
     function tick(now: number) {
-      const time = (now - started) / 1000;
-      const part = Math.min(1, time / round);
       const state = live.current;
+      // Never more than a moment at once, in case a frame comes late.
+      state.time += Math.min(0.25, Math.max(0, now - last) / 1000);
+      last = now;
+      const time = state.time;
+      const part = Math.min(1, time / round);
+      if (state.reload) {
+        if (time >= state.reload) {
+          state.reload = 0;
+          state.shots = cylinder;
+          setEmptied(false);
+          drawn.current();
+        }
+        // Filling up a chamber at a time.
+        const filled = (1 - (state.reload - time) / reloading) * cylinder;
+        setShots(state.reload ? Math.floor(filled) : cylinder);
+      }
       if (time >= round) {
-        let record = state.score;
+        const before = bestSoFar();
+        const most = Math.max(state.score, before);
         try {
-          record = Math.max(record, Number(localStorage.getItem(best)) || 0);
-          localStorage.setItem(best, String(record));
+          localStorage.setItem(best, String(most));
         } catch {}
         state.targets = [];
         setTargets([]);
         setLeft(0);
-        setOver({ score: state.score, best: record });
+        setOver({
+          score: state.score,
+          best: most,
+          record: state.score > before,
+          hits: state.hits,
+          fired: state.fired,
+          longest: state.longest,
+        });
+        setPhase('over');
         return;
       }
       frame = requestAnimationFrame(tick);
       let changed = false;
       const kept = state.targets.filter((target) => target.until > time);
       if (kept.length !== state.targets.length) changed = true;
-      if (time >= next) {
+      if (time >= state.next) {
         const free = slots
           .map((_, slot) => slot)
           .filter((slot) => !kept.some((each) => each.slot === slot));
         if (free.length) {
           kept.push({
-            id: id++,
+            id: state.id++,
             slot: free[Math.floor(Math.random() * free.length)],
             app: Math.random() < 0.5 ? 'Thaw' : 'Floe',
             until: time + up.from + (up.to - up.from) * part,
           });
           changed = true;
         }
-        next = time + every.from + (every.to - every.from) * part;
+        state.next = time + every.from + (every.to - every.from) * part;
       }
       if (changed) {
         state.targets = kept;
@@ -337,35 +467,204 @@ export function FooterShootout({ onDone }: { onDone: () => void }) {
     }
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [game]);
+  }, [phase, slots]);
 
-  // Every shot fires, hit or miss; one that finds an icon knocks it over.
-  function shoot(slot: number) {
-    const context = bird.current?.getContext('2d');
-    if (context) {
-      shooter(context, true);
+  useEffect(
+    () => () => {
+      cancelAnimationFrame(flying.current.frame);
+      window.clearTimeout(cheer.current);
       window.clearTimeout(fired.current);
-      fired.current = window.setTimeout(() => shooter(context, false), 90);
+      noises.close();
+    },
+    [noises],
+  );
+
+  function begin() {
+    live.current = freshRound();
+    if (noisy) noises.wake();
+    setShots(cylinder);
+    setEmptied(false);
+    setCheering(false);
+    setSlots(lanesNow());
+    setTargets([]);
+    setScore(0);
+    setLeft(round);
+    setOver(null);
+    setPhase('playing');
+  }
+
+  // Draws what a shot left in the air, frame by frame until there is nothing left of it.
+  function fly(now: number, last: number) {
+    const canvas = air.current;
+    const context = canvas?.getContext('2d');
+    const shot = flying.current;
+    if (!canvas || !context) return;
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    if (shot.line && now < shot.until) {
+      const [fromX, fromY, toX, toY] = shot.line;
+      const steps = Math.max(Math.abs(toX - fromX), Math.abs(toY - fromY));
+      context.fillStyle = '#ffd34d';
+      for (let step = 0; step <= steps; step += 1) {
+        const part = step / (steps || 1);
+        context.fillRect(
+          Math.round(fromX + (toX - fromX) * part),
+          Math.round(fromY + (toY - fromY) * part),
+          1,
+          1,
+        );
+      }
     }
+    const lapse = Math.min(0.05, (now - last) / 1000);
+    shot.shards = shot.shards.filter((shard) => shard.y < canvas.height);
+    for (const shard of shot.shards) {
+      shard.down += 90 * lapse;
+      shard.x += shard.across * lapse;
+      shard.y += shard.down * lapse;
+      context.fillStyle = shard.colour;
+      context.fillRect(Math.round(shard.x), Math.round(shard.y), 1, 1);
+    }
+    if (shot.shards.length || now < shot.until) {
+      shot.frame = requestAnimationFrame((next) => fly(next, now));
+    } else shot.frame = 0;
+  }
+
+  // A shot, at a place or at a point on the field. With the cylinder empty there is only
+  // the click of it. Otherwise every shot fires, hit or miss; one that finds an icon
+  // knocks it over, and one that does not breaks the run.
+  function shoot(slot: number | null, point?: { x: number; y: number }) {
     const state = live.current;
-    const target = state.targets.find((each) => each.slot === slot && !each.hit);
-    if (!target) return;
-    // Knocked over, it stays a moment to be seen falling, and counts once.
-    const time = (performance.now() - state.started) / 1000;
-    state.targets = state.targets.map((each) =>
-      each === target ? { ...each, hit: true, until: Math.min(each.until, time + 0.3) } : each,
-    );
-    state.score++;
-    setScore(state.score);
-    setTargets(state.targets);
+    if (state.reload) {
+      if (noisy) noises.empty();
+      return;
+    }
+    state.fired++;
+    state.shots--;
+    setShots(state.shots);
+    if (!state.shots) {
+      state.reload = state.time + reloading;
+      setEmptied(true);
+      if (noisy) noises.reload();
+    }
+    const target =
+      slot === null ? undefined : state.targets.find((each) => each.slot === slot && !each.hit);
+    if (slot !== null) show(slot, target);
+    else if (point) show(null, undefined, point);
+    if (noisy) noises.shot();
+    if (target) {
+      state.hits++;
+      state.streak++;
+      state.longest = Math.max(state.longest, state.streak);
+      const worth = state.streak % run ? 1 : 2;
+      // Knocked over, it stays a moment to be seen falling, with its point over it, and
+      // counts once.
+      state.targets = state.targets.map((each) =>
+        each === target
+          ? { ...each, hit: true, until: state.time + 0.5, worth, streak: state.streak }
+          : each,
+      );
+      state.score += worth;
+      setScore(state.score);
+      setTargets(state.targets);
+      const beating = state.toBeat > 0 && state.score > state.toBeat && !state.beaten;
+      if (beating) {
+        state.beaten = true;
+        setCheering(true);
+        window.clearTimeout(cheer.current);
+        cheer.current = window.setTimeout(() => setCheering(false), 1400);
+      }
+      if (noisy) {
+        if (beating) noises.best();
+        else if (worth > 1) noises.run();
+        else noises.hit();
+      }
+      state.mood = worth > 1 || beating ? 'bobUp' : 'perched';
+    } else {
+      state.streak = 0;
+      state.mood = 'looking';
+    }
+    if (still) state.mood = 'perched';
+    const context = bird.current?.getContext('2d');
+    if (!context) return;
+    shooter(context, true);
+    window.clearTimeout(fired.current);
+    fired.current = window.setTimeout(() => {
+      atRest(context, state);
+      fired.current = window.setTimeout(() => {
+        state.mood = 'perched';
+        atRest(context, state);
+      }, 300);
+    }, 90);
+  }
+
+  // The line from the muzzle to where the shot went, and what flew up there.
+  function show(slot: number | null, target?: Target, point?: { x: number; y: number }) {
+    const canvas = air.current;
+    const area = field.current?.getBoundingClientRect();
+    const body = bird.current?.getBoundingClientRect();
+    const floor = fence.current?.getBoundingClientRect();
+    if (!canvas || !area || !body || !floor) return;
+    const dot = body.width / columns;
+    const wide = Math.round(area.width / dot);
+    const high = Math.round(area.height / dot);
+    if (canvas.width !== wide || canvas.height !== high) {
+      canvas.width = wide;
+      canvas.height = high;
+      canvas.style.width = `${wide * dot}px`;
+      canvas.style.height = `${high * dot}px`;
+    }
+    const toX = (slot === null ? (point?.x ?? 0) : slots[slot] * area.width) / dot;
+    const toY = (slot === null ? (point?.y ?? 0) : floor.bottom - area.top - 7 * dot) / dot;
+    const now = performance.now();
+    const shot = flying.current;
+    shot.line = [
+      (body.left - area.left) / dot + 21,
+      (body.top - area.top) / dot + 9,
+      Math.round(toX),
+      Math.round(toY),
+    ];
+    shot.until = now + trace;
+    if (!still) {
+      const bits = target ? shards[target.app] : clods;
+      for (let count = 0; count < (target ? 10 : 4); count++) {
+        shot.shards.push({
+          x: toX,
+          y: toY,
+          across: (Math.random() - 0.5) * 50,
+          down: -20 - Math.random() * 30,
+          colour: bits[count % bits.length],
+        });
+      }
+      if (live.current.reload) {
+        for (let count = 0; count < cylinder; count++) {
+          shot.shards.push({
+            x: (body.left - area.left) / dot + 15,
+            y: (body.top - area.top) / dot + 10,
+            across: -5 - Math.random() * 25,
+            down: -15 - Math.random() * 20,
+            colour: brass[count % brass.length],
+          });
+        }
+      }
+    }
+    if (!shot.frame) shot.frame = requestAnimationFrame((next) => fly(next, now));
   }
 
   // From the keyboard, while the focus is in the game: the arrows move the sights along
-  // the five places, Space or Enter fires, and a number fires straight at its place. On
-  // Stop, Again or Done, Space and Enter press the button as usual.
+  // the places, Space or Enter fires, and a number fires straight at its place. On a
+  // button, Space and Enter press it as usual.
   function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     if (event.key === 'Escape') return onDone();
-    if (over) return;
+    const onField = event.target === field.current;
+    const pressed = event.key === ' ' || event.key === 'Enter';
+    if (phase === 'ready' || phase === 'paused') {
+      if (pressed && onField) {
+        event.preventDefault();
+        if (phase === 'ready') begin();
+        else setPhase('playing');
+      }
+      return;
+    }
+    if (phase !== 'playing') return;
     const slot = Number(event.key) - 1;
     if (slot >= 0 && slot < slots.length) {
       setAim(slot);
@@ -374,17 +673,33 @@ export function FooterShootout({ onDone }: { onDone: () => void }) {
     const step = { ArrowLeft: -1, a: -1, ArrowRight: 1, d: 1 }[event.key];
     if (step) {
       event.preventDefault();
-      setAim((aimed) => Math.min(slots.length - 1, Math.max(0, (aimed ?? 2) + step)));
-    } else if ((event.key === ' ' || event.key === 'Enter') && event.target === field.current) {
+      const middle = Math.floor(slots.length / 2);
+      setAim((aimed) => Math.min(slots.length - 1, Math.max(0, (aimed ?? middle) + step)));
+    } else if (pressed && onField) {
       event.preventDefault();
       if (aim !== null) shoot(aim);
-      else setAim(2);
+      else setAim(Math.floor(slots.length / 2));
     }
   }
 
-  useEffect(() => {
-    if (over) again.current?.focus();
-  }, [over]);
+  // A click or a tap on nothing is a shot too, at where it landed.
+  function onPointerDown(event: PointerEvent<HTMLDivElement>) {
+    if (phase !== 'playing' || !(event.target instanceof Element)) return;
+    if (event.target.closest('button, .footer-shootout-board')) return;
+    const area = event.currentTarget.getBoundingClientRect();
+    shoot(null, { x: event.clientX - area.left, y: event.clientY - area.top });
+  }
+
+  const points = (count: number) => `${count} ${count === 1 ? 'point' : 'points'}`;
+
+  function turnSound() {
+    const on = !noisy;
+    setNoisy(on);
+    if (on) noises.hit();
+    try {
+      localStorage.setItem(sound, on ? 'on' : 'off');
+    } catch {}
+  }
 
   return (
     <div
@@ -394,24 +709,18 @@ export function FooterShootout({ onDone }: { onDone: () => void }) {
       aria-describedby="shootout-how"
       tabIndex={-1}
       onKeyDown={onKeyDown}
+      onPointerDown={onPointerDown}
       className="footer-shootout absolute inset-0 z-[3] outline-none"
     >
-      <div
-        className="footer-shootout-prop footer-shootout-sun"
-        style={size(props.sun, scenery.sun)}
-      />
-      <div
-        className="footer-shootout-prop footer-shootout-mesa"
-        style={size(props.mesa, scenery.mesa)}
-      />
-      {saguaros.map(({ at, size: scale }) => (
-        <div
-          key={at}
-          className="footer-shootout-prop footer-shootout-saguaro"
-          style={{ ...size(props.saguaro, scenery.saguaro, scale), left: `${at * 100}%` }}
-        />
-      ))}
-      <div className="footer-shootout-floor" style={{ backgroundImage: `url(${ground})` }} />
+      <canvas ref={backdrop} aria-hidden className="footer-shootout-scene" />
+      {phase === 'ready' && !still && (
+        <div className="footer-shootout-tumbleweed-path">
+          <div
+            className="footer-shootout-tumbleweed"
+            style={size(sprites.tumbleweed, tumbleweed)}
+          />
+        </div>
+      )}
       <canvas
         ref={bird}
         width={columns}
@@ -419,30 +728,44 @@ export function FooterShootout({ onDone }: { onDone: () => void }) {
         aria-hidden
         className="footer-shootout-bird"
       />
-      <div className="footer-shootout-board flex items-center gap-4 font-mono text-sm">
-        <span>
-          {score} {score === 1 ? 'hit' : 'hits'}
-        </span>
-        <span aria-hidden>0:{String(left).padStart(2, '0')}</span>
-        <span aria-hidden className="max-sm:hidden opacity-70">
-          ← → aim, Space fires
-        </span>
-        <button type="button" onClick={onDone} className="underline underline-offset-4">
-          Stop
-        </button>
-      </div>
+      {phase === 'playing' && (
+        <div className="footer-shootout-board flex items-center gap-4 font-mono text-sm">
+          <span>{points(score)}</span>
+          <span aria-hidden>0:{String(left).padStart(2, '0')}</span>
+          <span
+            role="img"
+            aria-label={emptied ? 'Reloading' : `${shots} shots left`}
+            className="footer-shootout-cylinder"
+          >
+            {[...Array(cylinder).keys()].map((chamber) => (
+              <span key={chamber} data-spent={chamber >= shots || undefined} />
+            ))}
+          </span>
+          <span aria-hidden className="max-sm:hidden opacity-70">
+            ← → aim, Space fires
+          </span>
+          <button type="button" onClick={onDone} className="footer-shootout-button">
+            Stop
+          </button>
+        </div>
+      )}
       <p id="shootout-how" className="sr-only">
-        Thaw and Floe icons come up from behind crates and barrels in five places for thirty
-        seconds. Aim with the left and right arrows and fire with Space, or press a place’s number
-        from 1 to 5. Escape stops.
+        Thaw and Floe icons come up from behind crates and barrels in {slots.length} places for
+        thirty seconds. Aim with the left and right arrows and fire with Space, or press a place’s
+        number from 1 to {slots.length}. The revolver holds six shots and reloads itself when it is
+        empty. A miss breaks your run, and every fifth hit in a row counts double. Escape closes the
+        game.
       </p>
       <p className="sr-only" aria-live="polite">
-        {over && `Time. ${over.score} ${over.score === 1 ? 'hit' : 'hits'}, best ${over.best}.`}
+        {phase === 'paused' && `Paused with ${points(score)}.`}
+        {phase === 'playing' && emptied && 'Reloading.'}
+        {over &&
+          `Time. ${points(over.score)}, ${over.record ? 'a new best' : `best ${over.best}`}.`}
       </p>
-      {aim !== null && !over && (
-        <div className="footer-shootout-sights" style={{ left: `${slots[aim] * 100}%` }} />
+      {aim !== null && phase === 'playing' && (
+        <div className="footer-shootout-sights" style={{ left: across(slots[aim]) }} />
       )}
-      <div className="footer-shootout-fence">
+      <div ref={fence} className="footer-shootout-fence">
         {targets.map((target) => (
           <button
             key={target.id}
@@ -450,18 +773,33 @@ export function FooterShootout({ onDone }: { onDone: () => void }) {
             aria-label={`${target.app} icon, number ${target.slot + 1}`}
             data-hit={target.hit || undefined}
             className="footer-shootout-target"
-            style={{ left: `${slots[target.slot] * 100}%` }}
+            style={{ left: across(slots[target.slot]) }}
             // Out of the Tab order and never focused, so the keyboard stays on the game.
             tabIndex={-1}
             onPointerDown={(event) => {
               event.preventDefault();
-              shoot(target.slot);
+              if (phase === 'playing') shoot(target.slot);
             }}
           >
             {/* biome-ignore lint/performance/noImgElement: a fourteen-pixel picture drawn on the page, with nothing for next/image to do */}
             <img src={pictures[target.app]} alt="" />
           </button>
         ))}
+        {targets
+          .filter((target) => target.hit)
+          .map((target) => (
+            <span
+              key={target.id}
+              aria-hidden
+              className="footer-shootout-point font-mono text-sm"
+              style={{ left: across(slots[target.slot]) }}
+            >
+              +{target.worth}
+              {(target.streak ?? 0) >= 3 && (
+                <span className="block text-xs font-normal">{target.streak} in a row</span>
+              )}
+            </span>
+          ))}
       </div>
       {slots.map((at, slot) => {
         const kind = slot % 2 ? 'barrel' : 'crate';
@@ -469,26 +807,60 @@ export function FooterShootout({ onDone }: { onDone: () => void }) {
           <div
             key={at}
             className="footer-shootout-prop footer-shootout-cover"
-            style={{ ...size(props[kind], scenery[kind]), left: `${at * 100}%` }}
+            style={{ ...size(sprites[kind], covers[kind]), left: across(at) }}
           />
         );
       })}
-      {over && (
-        <div className="footer-shootout-over flex flex-col items-center gap-3 font-mono text-sm">
-          <p>
-            {over.score} {over.score === 1 ? 'hit' : 'hits'}. Best {over.best}.
-          </p>
-          <div className="flex gap-4">
+      <canvas ref={air} aria-hidden className="footer-shootout-air" />
+      {cheering && phase === 'playing' && (
+        <p aria-hidden className="footer-shootout-cheer font-mono text-sm">
+          New best!
+        </p>
+      )}
+      {phase !== 'playing' && (
+        <div className="footer-shootout-panel flex flex-col items-center gap-3 font-mono text-sm">
+          {phase === 'ready' && (
+            <>
+              <p>Thirty seconds. Hit every icon that comes up.</p>
+              <p className="opacity-70">
+                Six shots, then a reload. A miss breaks your run, and every fifth hit in a row
+                counts double.
+              </p>
+              <p className="opacity-70">
+                {touch ? 'Tap the icons.' : 'Click them, or aim with ← → and fire with Space.'}
+                {record > 0 && ` Best ${record}.`}
+              </p>
+            </>
+          )}
+          {phase === 'paused' && (
+            <p>
+              Paused. {points(score)}, {left} seconds left.
+            </p>
+          )}
+          {over && (
+            <>
+              <p>
+                {points(over.score)} · {over.record ? 'New best!' : `Best ${over.best}`}
+              </p>
+              <p className="opacity-70">
+                {over.hits} of {over.fired} shots hit. Longest run {over.longest}.
+              </p>
+            </>
+          )}
+          <div className="flex flex-wrap justify-center gap-x-4">
             <button
-              ref={again}
+              ref={primary}
               type="button"
-              onClick={() => setGame((each) => each + 1)}
-              className="underline underline-offset-4"
+              onClick={phase === 'paused' ? () => setPhase('playing') : begin}
+              className="footer-shootout-button"
             >
-              Again
+              {phase === 'ready' ? 'Start' : phase === 'paused' ? 'Carry on' : 'Play again'}
             </button>
-            <button type="button" onClick={onDone} className="underline underline-offset-4">
-              Done
+            <button type="button" onClick={onDone} className="footer-shootout-button">
+              Back to {leaving}
+            </button>
+            <button type="button" onClick={turnSound} className="footer-shootout-button">
+              Sound: {noisy ? 'on' : 'off'}
             </button>
           </div>
         </div>

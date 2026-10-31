@@ -65,8 +65,11 @@ export function ChangelogView({ path }: { path?: string[] }) {
             {others.length > 1 && (
               <ProductChoice
                 label="Whose changelog"
-                choices={others.map((name) => ({ product: name, href: changelogUrl(name) }))}
-                current={slug}
+                choices={others.map((name) => ({
+                  name: products[name].name,
+                  href: changelogUrl(name),
+                }))}
+                current={products[slug].name}
               />
             )}
             <a href={feedUrl(slug)} className="tap link text-sm">
