@@ -19,7 +19,7 @@ export const sitePages = {
   floeRoadmap: {
     // The words Thaw's roadmap has: the header over the page says whose it is.
     label: 'Roadmap',
-    title: 'What we’re building.',
+    title: 'What’s next for the year ahead.',
     shared: 'What comes next, what comes later, and what has shipped.',
     product: 'floe' as const,
   },
@@ -41,12 +41,12 @@ export const sitePages = {
   },
   thawuiRoadmap: {
     label: 'Roadmap',
-    title: 'What we’re building.',
+    title: 'What’s next for the year ahead.',
     shared: 'The design Thaw and Floe share: what is being built and what has shipped.',
   },
   roadmap: {
     label: 'Roadmap',
-    title: 'What we’re building.',
+    title: 'What’s next for the year ahead.',
     shared: 'What is being worked on now, what comes next, and what has shipped.',
   },
   faq: {
