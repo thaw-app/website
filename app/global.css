@@ -242,7 +242,16 @@ html > body[data-scroll-locked] {
   color: #fff;
 }
 
-.menu-glass img {
+/* A tint too light for white items takes the same dark ones. */
+.menu-dark-items {
+  --bar-item-hover: rgb(0 0 0 / 0.1);
+  --bar-item-held: rgb(0 0 0 / 0.16);
+  --bar-item-filter: invert(1);
+  color: #111113;
+}
+
+.menu-glass img,
+.menu-dark-items img {
   filter: var(--bar-item-filter);
 }
 

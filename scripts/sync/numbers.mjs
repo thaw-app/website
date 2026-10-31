@@ -263,7 +263,8 @@ async function communityNumbers(product, published, people, root) {
       // A list from .cache is the last one read, not today's.
       contributors: people.stale ? null : people.length || null,
       releases: published.stale ? null : published.length || null,
-      issuesFixed: fixed?.total_count,
+      // A search that timed out counts only part of them, so the last full count stands.
+      issuesFixed: fixed?.incomplete_results ? null : fixed?.total_count,
     },
     before,
     Object.fromEntries(

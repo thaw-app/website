@@ -20,7 +20,7 @@
     {
       "name": "prk-bin",
       "url": "https://github.com/thaw-app/prk-bin",
-      "license": null,
+      "license": "PlatformRuntimeKit License 1.0",
       "users": {
         "Thaw": "1.2.11"
       }

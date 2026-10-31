@@ -278,6 +278,12 @@ test("a README is shown install first, with the site's own parts only where it h
   expect(readmeBody(readme, { ...leaves, readmeParts: { install: '<Box />' } })).toBe(
     '## Install\n\n<Box />\n\n## Features\n- One\n',
   );
+  // The site's list gets in however the README writes its section.
+  const parts = { readmeParts: { features: '<FeatureList />' } };
+  expect(readmeBody('## Features\n* One\n* Two\n', parts)).toBe('## Features\n<FeatureList />\n');
+  expect(readmeBody('## Features\nIt has many.\n', parts)).toBe(
+    '## Features\n\n<FeatureList />\nIt has many.\n',
+  );
 });
 
 test('the folded full feature list is left out whole, with any fold inside it', () => {

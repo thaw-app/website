@@ -375,7 +375,11 @@ function Surface({
     <div
       style={style}
       className={`flex min-w-0 items-center border px-1 backdrop-blur-md transition-[background,border-radius,opacity] duration-300 motion-reduce:transition-none ${
-        appearance.tint === 'none' ? 'menu-glass' : ''
+        appearance.tint === 'none'
+          ? 'menu-glass'
+          : 'darkItems' in tint && tint.darkItems
+            ? 'menu-dark-items'
+            : ''
       } ${faded ? 'opacity-0' : ''} ${
         shaped ? 'h-7' : 'h-[30px]'
       } ${grow ? 'flex-1' : ''} ${appearance.border ? 'border-white/50' : 'border-transparent'} ${

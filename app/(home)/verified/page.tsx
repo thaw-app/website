@@ -24,6 +24,7 @@ const read = readDays(community.readOn, {
   baseline: 'The Baseline level',
   scorecard: 'The Scorecard',
   coverage: 'Test coverage',
+  field: 'The count of projects on OpenSSF’s list',
 });
 
 /**

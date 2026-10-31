@@ -51,7 +51,13 @@ function readmeBody(markdown, product) {
     // features differently (lib/thaw-features.ts) and name the ones in the README's folded
     // full list, which is therefore left out.
     if (parts.features && /^## Features\b/.test(section)) {
-      return withoutFold(section.replace(/(?:^- .*\n)+/m, `${parts.features}\n`));
+      const list = /(?:^[-*+] .*\n)+/m;
+      // Without a list to stand in for, it goes straight under the heading.
+      return withoutFold(
+        list.test(section)
+          ? section.replace(list, `${parts.features}\n`)
+          : section.replace(/^.*\n/, (heading) => `${heading}\n${parts.features}\n`),
+      );
     }
     return section;
   });
