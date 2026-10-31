@@ -87,7 +87,6 @@ export const links = {
   github: `https://github.com/${project.org}`,
   discord: `https://discord.gg/${project.discordInvite}`,
   /** The project's entry with OpenSSF, which holds its Best Practices badge and Baseline level. */
-  bestPractices: `https://www.bestpractices.dev/projects/${project.bestPractices}`,
 };
 
 /** A count as people say it: 11.8K, 365.4K. */

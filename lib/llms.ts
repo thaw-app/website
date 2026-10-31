@@ -40,6 +40,11 @@ const sitePages: Record<ProductSlug, Link[]> = {
       '/floe/community',
       'Floe in numbers, where to find the people behind it, and who has contributed.',
     ],
+    [
+      'What Verified means for Floe',
+      '/floe/verified',
+      'What SLSA, the OpenSSF badges, the Scorecard and test coverage are, who vouches for each, and where Floe stands.',
+    ],
     ['Floe changelog', changelogUrl('floe'), 'Every Floe release and what it changed.'],
     ['Floe release feed', feedUrl('floe'), 'Floe’s releases as an Atom feed.'],
   ],

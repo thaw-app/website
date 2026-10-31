@@ -85,7 +85,7 @@ build or blanks a number.
 | File                           | What                                                             | From                                                              |
 | ------------------------------ | ---------------------------------------------------------------- | ----------------------------------------------------------------- |
 | `lib/community.json`           | Stars, downloads, contributors, translators, the Verified values | GitHub, Homebrew, Discord, OpenSSF, SonarQube Cloud, `CREDITS.md` |
-| `lib/floe-community.json`      | The same for Floe, for `/floe/community`                         | The same sources, for `thaw-app/Floe`                             |
+| `lib/floe-community.json`      | The same for Floe, for `/floe` and `/floe/community`             | The same sources, for `thaw-app/Floe`                             |
 | `lib/community.json` (`world`) | Stars, issues and pull requests by country                       | Every stargazer's and author's GitHub profile location            |
 | `lib/roadmap-issues.json`      | Whether each issue the roadmap links is open                     | GitHub                                                            |
 | `lib/roadmap-requests.json`    | The open feature requests, most thumbs-up first                  | GitHub                                                            |
@@ -183,7 +183,7 @@ On a touch device the home page's cube redraws twelve times a second.
     bun run dev      # syncs the docs, then serves http://localhost:3000
 
 By default the sync fetches each repo's default branch from GitHub
-(`development` for Thaw, `main` for Floe). To
+(`development` for both). To
 preview docs you have not pushed, point it at a local checkout in `.env.local`:
 
     THAW_DOCS_DIR=/path/to/Thaw

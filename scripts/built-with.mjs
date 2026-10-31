@@ -24,7 +24,7 @@ const apps = {
     ref: process.env.FLOE_DOCS_REF || project.products.floe.ref,
     swift: 'Package.resolved',
     javascript: 'runtime/package.json',
-    rust: 'Vendor/FendCore/rust/Cargo.toml',
+    rust: 'Vendor/FloeRust/rust/Cargo.toml',
   },
 };
 

@@ -105,6 +105,8 @@ const feet: Record<ProductSlug, Foot> = {
           { text: 'What Floe does not do yet', href: `${floeDocs}/limitations` },
           { text: 'Developing Floe', href: `${floeDocs}/development` },
           { text: 'Security policy', href: `${floeDocs}/security` },
+          { text: 'Verifying releases', href: `${floeDocs}/verifying-releases` },
+          { text: 'What Verified means', href: '/floe/verified' },
         ],
       },
       {

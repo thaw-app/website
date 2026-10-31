@@ -42,7 +42,7 @@ import { sitePages } from '@/lib/site-pages';
 import { docsLlms, source } from '@/lib/source';
 import { thawFaq } from '@/lib/thaw-faq';
 import { thawAlso, thawFeatures, thawWorksWith } from '@/lib/thaw-features';
-import { meanings, standing, verifiedFrom } from '@/lib/verified';
+import { meaningsFor, standing, verifiedFrom } from '@/lib/verified';
 
 // The site's own pages as Markdown, for AI tools: what each page says, read from the same
 // data the page is drawn from, so the two cannot come to say different things. A page
@@ -120,6 +120,11 @@ function floe() {
     '## Ask AI with',
     floeAskAi.map((item) => `- ${link(item.name, item.href)}`),
     `Raycast is a trademark of Raycast Technologies Inc. Floe is not affiliated with Raycast. More in the ${link('Floe documentation', `${docsRoute}/floe`)} and on the ${link('Floe roadmap', '/floe/roadmap')}.`,
+    '## Verified',
+    verifiedFrom(floeCommunity.assurance, 'floe').map(
+      (entry) => `- ${link(entry.label, entry.href)}: ${entry.value}. ${entry.detail}`,
+    ),
+    `What each of these means: ${link('What Verified means', '/floe/verified')}.`,
   );
 }
 
@@ -260,12 +265,14 @@ function floeCommunityPage() {
   );
 }
 
-function verifiedPage() {
-  const now = verifiedFrom(community.assurance);
+function verifiedPage(slug: ProductSlug) {
+  const assurance = slug === 'floe' ? floeCommunity.assurance : community.assurance;
+  const { name } = products[slug];
+  const now = verifiedFrom(assurance, slug);
   return page(
-    'What Verified means',
-    `${sitePages.verified.title} These are the outside checks on how Thaw is built and released: what each one is, where Thaw stands, and who vouches for it. ${standing(community.assurance)}`,
-    ...meanings.map((entry) => {
+    `What Verified means for ${name}`,
+    `${sitePages.verified.title} These are the outside checks on how ${name} is built and released: what each one is, where ${name} stands, and who vouches for it. ${standing(assurance, slug)}`,
+    ...meaningsFor(slug).map((entry) => {
       const value = now.find((item) => item.id === entry.id)?.value;
       return [
         `## ${entry.term}${value ? `: ${value}` : ''}`,
@@ -275,7 +282,7 @@ function verifiedPage() {
         `Who says so: ${entry.checkedBy} ${link(new URL(entry.href).hostname.replace(/^www\./, ''), entry.href)}`,
       ].join('\n');
     }),
-    `How to check a release yourself: ${link('Verifying releases', `${docsRoute}/thaw/verifying-releases`)}.`,
+    `How to check a release yourself: ${link('Verifying releases', `${docsRoute}/${slug}/verifying-releases`)}.`,
   );
 }
 
@@ -319,7 +326,8 @@ const pages: Record<string, () => string | Promise<string>> = {
   '/privacy': privacy,
   '/community': communityPage,
   '/floe/community': floeCommunityPage,
-  '/verified': verifiedPage,
+  '/verified': () => verifiedPage('thaw'),
+  '/floe/verified': () => verifiedPage('floe'),
   '/built-with': builtWith,
   [changelogUrl('thaw')]: () => changelog('thaw'),
   [changelogUrl('floe')]: () => changelog('floe'),

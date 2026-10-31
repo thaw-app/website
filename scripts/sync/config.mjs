@@ -49,7 +49,7 @@ const products = [
       updatesRepo: 'thaw-app/updates',
       team: ['stonerl', 'diazdesandi', 'nightah', 'alvst', 'camguillory'],
       // The project's entry on bestpractices.dev, which holds its OpenSSF badge and Baseline level.
-      bestPractices: project.bestPractices,
+      bestPractices: project.products.thaw.bestPractices,
     },
     // Pages this site writes itself, so the repo's file of the same name is not synced in.
     // The roadmap is content/site/roadmap.mdx, drawn at /roadmap.
@@ -160,12 +160,13 @@ const products = [
     // Floe's repo began on this day, so every commit in it counts.
     contributorsSince: '2026-10-03',
     notPeople: ['claude', 'cursoragent', 'lathe-agent-oa'],
-    // The numbers on Floe's community page (/floe/community). It has no Homebrew cask and no
-    // OpenSSF entry yet, so those are not asked for. It shares Thaw's Discord.
+    // The numbers on Floe's community page (/floe/community). It has no Homebrew cask, so
+    // that is not asked for. It shares Thaw's Discord.
     community: {
       file: 'floe-community.json',
       discordInvite: project.discordInvite,
       team: ['diazdesandi'],
+      bestPractices: project.products.floe.bestPractices,
     },
     // Floe's README is laid out as Thaw's is, and its page leaves out what the home page
     // does, for the same reasons. Its roadmap is a page of its own, written in
@@ -185,12 +186,29 @@ const products = [
       features: '<FloeFeatures />',
       last: '<FloeAssurance />',
     },
-    titles: {},
+    titles: {
+      architecture: 'Architecture',
+      'verifying-releases': 'Verifying releases',
+      'assurance-case': 'Security assurance case',
+    },
     descriptions: {
       development:
         'How to build and run Floe from source, how it runs Raycast extensions, and how to add one.',
+      architecture: 'A map of Floe’s processes and code, and where each part lives.',
+      'coding-standards': 'How code in Floe is written.',
+      interfaces: 'What a released Floe accepts from other software, and what it reaches out to.',
+      'verifying-releases':
+        'What each Floe release is signed with, and how to check a download yourself.',
+      'assurance-case':
+        'The case that Floe meets its security requirements, and the risks that remain.',
     },
-    icons: { changelog: 'ScrollText', development: 'Hammer' },
+    icons: {
+      changelog: 'ScrollText',
+      development: 'Hammer',
+      architecture: 'Layers',
+      'verifying-releases': 'ShieldCheck',
+      'assurance-case': 'FileCheck',
+    },
     extraPages: {
       'CHANGELOG.md': 'changelog',
       // Shown at /floe, not in the docs sidebar.
