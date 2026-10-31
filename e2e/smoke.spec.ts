@@ -35,6 +35,18 @@ test('the install tabs work from the keyboard and give the right command', async
   await expect(stable).toBeFocused();
 });
 
+test('a changelog with only a few weeks of releases keeps its squares small', async ({ page }) => {
+  await page.goto('/changelog/floe');
+  const square = page
+    .getByRole('img', { name: /releases between/ })
+    .locator('> span')
+    .first();
+  const box = await square.boundingBox();
+  expect(box?.width).toBeLessThanOrEqual(28);
+  // And they stay at the left, beside the days.
+  expect(box?.x).toBeLessThan(150);
+});
+
 test('the home page says some features need Thaw 3 and where versions are', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByText('Some of these features are only in Thaw 3.')).toBeVisible();
