@@ -115,6 +115,7 @@ export const runsOn: Tool[] = [
     name: 'Strix',
     use: 'Checks pull requests for security problems.',
     href: 'https://strix.ai',
+    mark: 'strix',
   },
   {
     name: 'Crowdin',
