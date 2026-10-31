@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import { useEffect, useRef, useState } from 'react';
+import { useGallery } from './conure-greeting';
 
 // The moving wordmark brings a shader library and measures its own letters, and the conure
 // is six hundred lines of drawing. Neither is fetched until the foot of the page is near.
@@ -9,7 +10,7 @@ const FooterConure = dynamic(
   () => import('./footer-conure').then((module) => module.FooterConure),
   { ssr: false },
 );
-// The game a conure in a hat opens, fetched only if someone opens it.
+// The game the conure opens, fetched only if someone opens it.
 const FooterShootout = dynamic(
   () => import('./footer-shootout').then((module) => module.FooterShootout),
   { ssr: false },
@@ -27,7 +28,8 @@ const FooterWordmark = dynamic(
 export function FooterArt({ conure = true }: { conure?: boolean }) {
   const stage = useRef<HTMLDivElement>(null);
   const [near, setNear] = useState(false);
-  const [playing, setPlaying] = useState(false);
+  // Where there is no conure here, the page's own gallery is somewhere else.
+  const { playing, close } = useGallery(conure);
 
   useEffect(() => {
     const element = stage.current;
@@ -42,18 +44,8 @@ export function FooterArt({ conure = true }: { conure?: boolean }) {
       { rootMargin: '150% 0px' },
     );
     seen.observe(element);
-    const open = () => setPlaying(true);
-    element.addEventListener('conure:shootout', open);
-    return () => {
-      seen.disconnect();
-      element.removeEventListener('conure:shootout', open);
-    };
+    return () => seen.disconnect();
   }, []);
-
-  function stop() {
-    setPlaying(false);
-    stage.current?.dispatchEvent(new CustomEvent('conure:shootout-end'));
-  }
 
   return (
     <div
@@ -65,7 +57,7 @@ export function FooterArt({ conure = true }: { conure?: boolean }) {
         <>
           {conure && <FooterConure />}
           <FooterWordmark />
-          {playing && <FooterShootout onDone={stop} />}
+          {playing && <FooterShootout onDone={close} leaving="footer" />}
         </>
       )}
     </div>

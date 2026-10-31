@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { expect, test } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 
 test('the install tabs work from the keyboard and give the right command', async ({ page }) => {
   await page.goto('/');
@@ -313,35 +313,6 @@ test('the conure can be given a hat', async ({ page }) => {
   await expect.poll(hat).toBe(true);
 });
 
-test('three clicks on a conure in a hat open the shooting gallery', async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.goto('/?conure-hat=bolero');
-  await page.locator('.footer-art').scrollIntoViewIfNeeded();
-  // With reduced motion the bird sits still on the ampersand, so it can be clicked, once
-  // the wordmark has said where the ampersand is.
-  const bird = page.locator('canvas.footer-conure');
-  await expect(bird).toBeVisible();
-  await expect
-    .poll(() =>
-      page.locator('.footer-art').evaluate((art) => art.style.getPropertyValue('--perch-x')),
-    )
-    .not.toBe('');
-  const box = await bird.boundingBox();
-  if (!box) throw new Error('no bird');
-  for (let click = 0; click < 3; click++) {
-    await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
-  }
-  const target = page.locator('.footer-shootout-target').first();
-  await expect(target).toBeVisible();
-  await target.dispatchEvent('pointerdown');
-  await expect(page.locator('.footer-shootout-board')).toContainText('1 hit');
-  // The arrows bring up the sights to aim with.
-  await page.keyboard.press('ArrowRight');
-  await expect(page.locator('.footer-shootout-sights')).toBeVisible();
-  await page.keyboard.press('Escape');
-  await expect(page.locator('.footer-shootout')).toHaveCount(0);
-});
-
 test('the footer’s band keeps growing with a wide window', async ({ page, isMobile }) => {
   test.skip(isMobile, 'a phone is never this wide');
   // A limit on it once squeezed the words on a wide window and cut their tops off.
@@ -534,4 +505,138 @@ test('the demo’s Thaw window switches page tabs, picks pills, and toggles reve
     'aria-pressed',
     'true',
   );
+});
+
+test.describe('the shooting gallery in the footer', () => {
+  const gallery = (page: Page) => page.getByRole('dialog', { name: 'Shooting gallery' });
+
+  // With reduced motion the bird sits still on the ampersand, so it can be clicked, once
+  // the wordmark has said where the ampersand is.
+  async function atTheFoot(page: Page) {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/');
+    await page.locator('.footer-art').scrollIntoViewIfNeeded();
+    await expect(page.locator('.footer-conure')).toBeVisible();
+    await expect
+      .poll(() =>
+        page.locator('.footer-art').evaluate((art) => art.style.getPropertyValue('--perch-x')),
+      )
+      .not.toBe('');
+  }
+  async function touchTheBird(page: Page) {
+    const box = await page.locator('.footer-conure').boundingBox();
+    if (box) await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+  }
+
+  test('three touches open it, it waits for Start, and a hit scores', async ({ page }) => {
+    await atTheFoot(page);
+    await touchTheBird(page);
+    await touchTheBird(page);
+    await expect(gallery(page)).toHaveCount(0);
+    await touchTheBird(page);
+    const start = page.getByRole('button', { name: 'Start' });
+    await expect(start).toBeFocused();
+    await expect(page.locator('.footer-shootout-target')).toHaveCount(0);
+    await start.click();
+    const target = page.locator('.footer-shootout-target').first();
+    await target.waitFor();
+    await target.dispatchEvent('pointerdown');
+    await expect(page.locator('.footer-shootout-board')).toContainText('1 point');
+    // The arrows bring up the sights to aim with.
+    await page.keyboard.press('ArrowRight');
+    await expect(page.locator('.footer-shootout-sights')).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(gallery(page)).toHaveCount(0);
+  });
+
+  test('the keyboard can get there, and comes back to where it was', async ({ page }) => {
+    await atTheFoot(page);
+    await page.getByRole('button', { name: 'Wave at the conure' }).focus();
+    await page.keyboard.press('Enter');
+    await page.getByRole('button', { name: 'Wave again' }).press('Enter');
+    await page.getByRole('button', { name: 'Open the shooting gallery' }).press('Enter');
+    await page.getByRole('button', { name: 'Start' }).press('Enter');
+    await expect(gallery(page)).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('button', { name: 'Open the shooting gallery' })).toBeFocused();
+  });
+
+  test('six shots empty the revolver, and it fills itself again', async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem('conure-shootout-found', '1'));
+    await atTheFoot(page);
+    await touchTheBird(page);
+    await page.getByRole('button', { name: 'Start' }).press('Enter');
+    await expect(page.getByRole('img', { name: '6 shots left' })).toBeVisible();
+    for (let shot = 0; shot < 6; shot++) await page.keyboard.press('1');
+    await expect(page.getByRole('img', { name: 'Reloading' })).toBeVisible();
+    await expect(page.getByRole('img', { name: '6 shots left' })).toBeVisible();
+  });
+
+  test('the conure on the page that is not there opens it too', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/no-such-page');
+    const bird = page.locator('.stray-conure canvas');
+    await expect.poll(async () => (await bird.boundingBox())?.width).toBe(72);
+    const box = await bird.boundingBox();
+    if (!box) throw new Error('no bird');
+    for (let touch = 0; touch < 2; touch++) {
+      await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+    }
+    await expect(gallery(page)).toHaveCount(0);
+    await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
+    // Over the section it stands in, without going anywhere, and with the links out of reach.
+    const start = page.getByRole('button', { name: 'Start' });
+    await expect(start).toBeInViewport();
+    await expect(page.locator('.stray-stage .footer-shootout')).toHaveCount(1);
+    await expect(page.getByRole('link', { name: 'Frequent issues' }).first()).toBeVisible();
+    await expect(page.locator('.stray-stage a')).toHaveCount(4);
+    await expect(page.locator('.stray-stage [inert] a').first()).toBeAttached();
+    expect(await page.evaluate(() => window.scrollY)).toBe(0);
+    await page.getByRole('button', { name: 'Back to page' }).click();
+    await expect(gallery(page)).toHaveCount(0);
+    await expect(page.locator('.stray-stage [inert]')).toHaveCount(0);
+    await expect(bird).toBeInViewport();
+    // Still only one bird, and the headline has no button in it.
+    await expect(page.locator('.footer-conure')).toHaveCount(0);
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+      'There is no page at this address.',
+    );
+  });
+
+  test('the keyboard can get to it from the page that is not there', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/no-such-page');
+    await page.getByRole('button', { name: 'Wave at the conure' }).focus();
+    await page.keyboard.press('Enter');
+    await page.getByRole('button', { name: 'Wave again' }).press('Enter');
+    await page.getByRole('button', { name: 'Open the shooting gallery' }).press('Enter');
+    await expect(page.getByRole('button', { name: 'Start' })).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('button', { name: 'Open the shooting gallery' })).toBeFocused();
+  });
+
+  test('scrolling away stops the clock', async ({ page }) => {
+    // Someone who has been here before, for whom one touch is enough.
+    await page.addInitScript(() => localStorage.setItem('conure-shootout-found', '1'));
+    await atTheFoot(page);
+    await touchTheBird(page);
+    await page.getByRole('button', { name: 'Start' }).click();
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await expect(
+      page.getByRole('button', { name: 'Carry on', includeHidden: true }),
+    ).toBeAttached();
+  });
+
+  test('a phone gets three places and a Stop a finger can press', async ({ page }, info) => {
+    test.skip(info.project.name !== 'phone', 'phones only');
+    await atTheFoot(page);
+    await touchTheBird(page);
+    await touchTheBird(page);
+    await touchTheBird(page);
+    await page.getByRole('button', { name: 'Start' }).click();
+    await expect(page.locator('.footer-shootout-cover')).toHaveCount(3);
+    const stop = await page.getByRole('button', { name: 'Stop' }).boundingBox();
+    expect(stop?.height).toBeGreaterThanOrEqual(44);
+    expect(stop?.width).toBeGreaterThanOrEqual(44);
+  });
 });

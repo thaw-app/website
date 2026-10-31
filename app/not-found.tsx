@@ -5,6 +5,7 @@ import { PageShell } from '@/components/page-shell';
 import { SiteFooter } from '@/components/site-footer';
 import { SiteFrame } from '@/components/site-frame';
 import { StrayConure } from '@/components/stray-conure';
+import { StrayStage } from '@/components/stray-stage';
 import { docsRoute } from '@/lib/shared';
 
 export const metadata = { title: 'Not found' };
@@ -15,7 +16,7 @@ export default function NotFound() {
     <SiteFrame>
       <PageShell>
         {/* Frost on the ground behind the words, which melts where the pointer goes. */}
-        <div className="relative -mx-6 px-6">
+        <StrayStage>
           <Frost />
           <PageHeader
             label="404"
@@ -47,8 +48,10 @@ export default function NotFound() {
                 </Link>
               </li>
             </ul>
+            {/* The keyboard's way to the conure, which itself stands in the headline. */}
+            <div id="stray-conure-wave" className="relative h-0" />
           </PageHeader>
-        </div>
+        </StrayStage>
       </PageShell>
       <SiteFooter conure={false} />
     </SiteFrame>
