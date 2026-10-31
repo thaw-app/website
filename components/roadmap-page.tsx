@@ -53,6 +53,7 @@ export function RoadmapView({
 }) {
   // The choice of product sits under the opening lines and over the lists, which is where
   // the lists' own row of counts begins.
+  // biome-ignore lint/correctness/noComponentHookFactories: a server component, drawn once per page, so nothing here can remount
   const Chosen = (props: ComponentProps<typeof Roadmap>) => (
     <>
       <ProductChoice

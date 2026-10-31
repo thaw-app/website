@@ -201,6 +201,7 @@ async function syncProduct(product, other, contentOnly) {
       const title = curlQuotes(split.title);
       const body = curlQuotes(split.body);
       const description =
+        // biome-ignore lint/correctness/usePlaywrightValidDescribeCallback: our own describe, not Playwright's
         product.descriptions?.[slug] ?? shared.descriptions[slug] ?? describe(body);
       const frontmatter = [
         '---',

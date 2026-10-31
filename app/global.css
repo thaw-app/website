@@ -1498,7 +1498,7 @@ h1.font-display {
    draws its search box and its theme switch as pills. Thaw's dot stays round, being a dot. */
 /* With three choices the switch is a box of buttons and not one button, so the box is named too. */
 :is(#nd-nav, #nd-subnav, #nd-sidebar-mobile)
-:is(button, button > svg, kbd, div:has(> button[aria-label="System"])) {
+  :is(button, button > svg, kbd, div:has(> button[aria-label="System"])) {
   border-radius: 0;
 }
 
