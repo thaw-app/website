@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import { expect, type Page, test } from '@playwright/test';
+import floeCommunity from '../lib/floe-community.json';
 
 test('the install tabs work from the keyboard and give the right command', async ({ page }) => {
   await page.goto('/');
@@ -66,9 +67,27 @@ test('every Verified value sits under its own name', async ({ page }) => {
   if ((await coverage.locator('span').count()) > 1) await expect(coverage).toContainText('%');
 });
 
-test('Floe’s page shows its own Verified values', async ({ page }) => {
+test('Floe’s page shows its own Verified values', async ({ page, request }) => {
+  const { bestPractices, baseline, scorecard, coverage } = floeCommunity.assurance;
+  const values = {
+    'SLSA build': 'Level 3',
+    'OpenSSF Best Practices': bestPractices.charAt(0).toUpperCase() + bestPractices.slice(1),
+    'OpenSSF Baseline': `Level ${baseline}`,
+    'OpenSSF Scorecard': `${scorecard} / 10`,
+    'Test coverage': `${coverage}%`,
+  };
   await page.goto('/floe');
   const section = page.locator('h2#verified + div');
+  for (const [label, value] of Object.entries(values)) {
+    await expect(section.locator('li').filter({ hasText: label }), label).toContainText(value);
+  }
+  // Its Markdown says the same, with the same links.
+  const markdown = await (await request.get('/floe.md')).text();
+  for (const [label, value] of Object.entries(values)) {
+    expect(markdown, label).toContain(`${label}]`);
+    expect(markdown, label).toContain(`: ${value}.`);
+  }
+  expect(markdown).toContain('/docs/floe/verifying-releases');
   await expect(
     section.locator('a[href*="bestpractices.dev/projects/15396"]').first(),
   ).toBeVisible();

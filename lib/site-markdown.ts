@@ -120,6 +120,11 @@ function floe() {
     '## Ask AI with',
     floeAskAi.map((item) => `- ${link(item.name, item.href)}`),
     `Raycast is a trademark of Raycast Technologies Inc. Floe is not affiliated with Raycast. More in the ${link('Floe documentation', `${docsRoute}/floe`)} and on the ${link('Floe roadmap', '/floe/roadmap')}.`,
+    '## Verified',
+    verifiedFrom(floeCommunity.assurance, 'floe').map(
+      (entry) => `- ${link(entry.label, entry.href)}: ${entry.value}. ${entry.detail}`,
+    ),
+    `What each of these means: ${link('What Verified means', '/verified')}.`,
   );
 }
 
