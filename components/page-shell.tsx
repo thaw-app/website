@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import { PageFade } from './page-fade';
 
 /**
  * The frame of every page that is neither the home page nor the docs, which
@@ -15,14 +14,12 @@ export function PageShell({
   tone?: string;
 }) {
   return (
-    <PageFade>
-      <main
-        id="content"
-        data-tone={tone}
-        className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-14 px-6 py-12"
-      >
-        {children}
-      </main>
-    </PageFade>
+    <main
+      id="content"
+      data-tone={tone}
+      className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-14 px-6 py-12"
+    >
+      {children}
+    </main>
   );
 }

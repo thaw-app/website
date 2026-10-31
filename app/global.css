@@ -146,11 +146,6 @@ kbd,
   --release-3: #c4e0ff;
 }
 
-/* The news over the docs is Thaw's, so it is not over Floe's docs (app/docs/layout.tsx). */
-body:has(#nd-notebook-layout [data-product="floe"]) .docs-banner {
-  display: none;
-}
-
 .dark {
   --world-lit: #fa9a2a;
   --verified-gold: #f0b429;
@@ -1042,73 +1037,9 @@ html > body[data-scroll-locked] {
   }
 }
 
-/*
- * From one page to the next (components/page-fade.tsx): the page that is left fades out
- * quickly and the one arrived at fades in after it, a fifth of a second in all. Short
- * enough that a click still feels answered at once, and enough that a page is seen to
- * change and not to blink. The header takes no part: it is the same header on both pages,
- * and stays where it is, over the pages as they change.
- */
-::view-transition-old(.page) {
-  animation: 70ms ease-in both page-fade reverse;
-}
-
-::view-transition-new(.page) {
-  animation: 140ms ease-out 60ms both page-fade;
-}
-
 @keyframes page-fade {
   from {
     opacity: 0;
-  }
-}
-
-/* What stays put between two pages (the header, the footer and everything else that is not
-   a page's own) is not faded from itself to itself. */
-::view-transition-group(root) {
-  animation: none;
-}
-
-::view-transition-old(root) {
-  display: none;
-}
-
-::view-transition-new(root) {
-  animation: none;
-}
-
-/* The header is named only while two pages are changing over. Named all the time, it would
-   lose the blur of the page behind it: a named element is cut off from what is under it. */
-:root:active-view-transition :is(#nd-nav, #nd-subnav) {
-  view-transition-name: site-header;
-}
-
-::view-transition-group(site-header) {
-  z-index: 100;
-  animation: none;
-}
-
-::view-transition-old(site-header) {
-  display: none;
-}
-
-::view-transition-new(site-header) {
-  animation: none;
-}
-
-/* A click made while two pages are changing over still lands on the page. */
-::view-transition {
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(*),
-  ::view-transition-new(*),
-  ::view-transition-group(*) {
-    /* biome-ignore lint/complexity/noImportantStyles: over every animation above, whatever names it */
-    animation-duration: 0s !important;
-    /* biome-ignore lint/complexity/noImportantStyles: as above */
-    animation-delay: 0s !important;
   }
 }
 
