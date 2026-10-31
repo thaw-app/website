@@ -200,12 +200,17 @@ async function communityNumbers(product, published, people, root) {
       if (batch.length < 100) return total;
     }
   };
-  const [repo, fromReleases, fromUpdates, discord, brew] = await Promise.all([
+  const [repo, fromReleases, fromUpdates, discord, brew, fixed] = await Promise.all([
     read(`https://api.github.com/repos/${product.repo}`, github),
     downloadsOf(product.repo),
     updatesRepo ? downloadsOf(updatesRepo) : 0,
     read(`https://discord.com/api/v9/invites/${discordInvite}?with_counts=true`),
     cask ? read(`https://formulae.brew.sh/api/cask/${cask}.json`) : null,
+    // Closed as done, so an issue closed as a duplicate or as not planned is not counted.
+    read(
+      `https://api.github.com/search/issues?q=${encodeURIComponent(`repo:${product.repo} is:issue is:closed reason:completed`)}&per_page=1`,
+      github,
+    ),
   ]);
   // Only a full count replaces the last one: half of it would read as a drop.
   const downloads =
@@ -258,13 +263,19 @@ async function communityNumbers(product, published, people, root) {
       // A list from .cache is the last one read, not today's.
       contributors: people.stale ? null : people.length || null,
       releases: published.stale ? null : published.length || null,
+      issuesFixed: fixed?.total_count,
     },
     before,
     Object.fromEntries(
-      ['stars', 'downloads', 'homebrewYear', 'discord', 'contributors', 'releases'].map((key) => [
-        key,
-        dayOf(key),
-      ]),
+      [
+        'stars',
+        'downloads',
+        'homebrewYear',
+        'discord',
+        'contributors',
+        'releases',
+        'issuesFixed',
+      ].map((key) => [key, dayOf(key)]),
     ),
     today,
   );

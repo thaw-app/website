@@ -76,11 +76,23 @@ export interface Assurance {
   baseline?: number;
   scorecard?: number;
   coverage?: number;
+  /** How many projects on OpenSSF's Best Practices list hold the top marks. */
+  field?: { projects: number; gold: number; baseline3: number };
 }
 
 // The colours the bodies' own badges use: gold for the Gold badge, green for a pass.
 const gold = 'var(--verified-gold)';
 const green = 'var(--verified-green)';
+
+/**
+ * Where those marks put Thaw among other projects, or nothing if the numbers could not be
+ * read. It only counts Thaw among the few when Thaw holds both marks.
+ */
+export function standing({ field, bestPractices, baseline }: Assurance): string {
+  if (!field) return '';
+  const among = bestPractices === 'gold' && baseline === 3;
+  return `Of the ${new Intl.NumberFormat('en').format(field.projects)} projects on OpenSSF’s Best Practices list, ${field.gold} hold Gold and ${field.baseline3} meet every Baseline control at Level 3.${among ? ' Thaw, a free menu bar app, is in both groups.' : ''}`;
+}
 
 const badges = ['passing', 'silver', 'gold'];
 const places = ['lowest', 'second', 'highest'];

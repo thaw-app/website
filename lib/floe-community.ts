@@ -14,31 +14,37 @@ export const floeCounted = readDays(community.readOn, {
   downloads: 'Downloads',
   homebrewYear: 'Homebrew installs',
   contributors: 'Contributors',
-  releases: 'Releases',
+  issuesFixed: 'Issues fixed',
 });
 
-// The same numbers as Thaw's page, each shown once it can be counted: Floe has no release
-// on GitHub, no Homebrew cask and no translation yet, so for now it has two.
-const counts = community as Partial<Record<'downloads' | 'homebrewYear' | 'releases', number>>;
-export const floeNumbers = [
+// The same numbers as Thaw's page, each shown once it can be counted: Floe has no
+// Homebrew cask and no translation yet.
+const counts = community as Partial<Record<'downloads' | 'homebrewYear' | 'issuesFixed', number>>;
+const counted = (list: ({ label: string; value?: number; unit: string } | false)[]) =>
+  list.filter(
+    (number): number is { label: string; value: number; unit: string } =>
+      !!number && typeof number.value === 'number',
+  );
+
+export const floeNumbers = counted([
   { label: 'GitHub stars', value: community.stars, unit: 'on thaw‑app/Floe' },
   { label: 'Downloads', value: counts.downloads, unit: 'of the app and its updates' },
   { label: 'Homebrew installs', value: counts.homebrewYear, unit: 'in the last year' },
-  {
-    label: 'Contributors',
-    value: floeContributors.length + community.team.length,
-    unit: 'with commits since October 2026',
-  },
   community.translators.length > 0 && {
     label: 'Languages',
     value: community.translators.length + 1,
     unit: 'English and its translations',
   },
-  { label: 'Releases', value: counts.releases, unit: 'published on GitHub' },
-].filter(
-  (number): number is { label: string; value: number; unit: string } =>
-    !!number && typeof number.value === 'number',
-);
+]);
+
+export const floeContributorNumbers = counted([
+  {
+    label: 'Contributors',
+    value: floeContributors.length + community.team.length,
+    unit: 'with commits since October 2026',
+  },
+  { label: 'Issues fixed', value: counts.issuesFixed, unit: 'closed as done on GitHub' },
+]);
 
 export const floeWays = [
   {

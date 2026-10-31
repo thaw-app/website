@@ -39,6 +39,11 @@ export const sitePages = {
     title: 'Every release of Thaw.',
     shared: 'What is new and what was fixed in each release, newest first.',
   },
+  thawuiRoadmap: {
+    label: 'Roadmap',
+    title: 'What we’re building.',
+    shared: 'The design Thaw and Floe share: what is being built and what has shipped.',
+  },
   roadmap: {
     label: 'Roadmap',
     title: 'What we’re building.',

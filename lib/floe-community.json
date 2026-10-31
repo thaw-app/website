@@ -1,20 +1,26 @@
 {
-  "stars": 146,
-  "discord": 375,
+  "stars": 167,
+  "downloads": 297,
+  "discord": 384,
   "contributors": 4,
+  "releases": 4,
+  "issuesFixed": 6,
   "readOn": {
-    "stars": "2026-10-22",
-    "discord": "2026-10-22",
-    "contributors": "2026-10-22",
-    "scorecard": "2026-10-22",
-    "coverage": "2026-10-22",
-    "field": "2026-10-22"
+    "stars": "2026-10-30",
+    "downloads": "2026-10-30",
+    "discord": "2026-10-30",
+    "contributors": "2026-10-30",
+    "releases": "2026-10-30",
+    "issuesFixed": "2026-10-30",
+    "scorecard": "2026-10-30",
+    "coverage": "2026-10-30",
+    "field": "2026-10-30"
   },
   "people": [
     {
       "login": "diazdesandi",
       "avatar": "https://avatars.githubusercontent.com/u/17421494?v=4",
-      "commits": 189
+      "commits": 196
     },
     {
       "login": "lylythechosenone",
@@ -41,24 +47,24 @@
   ],
   "assurance": {
     "scorecard": 7.2,
-    "coverage": 83.4,
+    "coverage": 86,
     "field": {
-      "projects": 13187,
-      "gold": 111,
-      "baseline3": 92
+      "projects": 13467,
+      "gold": 112,
+      "baseline3": 100
     }
   },
   "translators": [],
   "world": {
-    "checked": "2026-10-22",
+    "checked": "2026-10-30",
     "stargazers": {
-      "people": 146,
-      "placed": 64,
+      "people": 167,
+      "placed": 71,
       "list": [
         {
           "code": "US",
           "name": "United States",
-          "people": 15
+          "people": 16
         },
         {
           "code": "DE",
@@ -73,7 +79,7 @@
         {
           "code": "CA",
           "name": "Canada",
-          "people": 6
+          "people": 7
         },
         {
           "code": "GB",
@@ -83,6 +89,16 @@
         {
           "code": "FR",
           "name": "France",
+          "people": 3
+        },
+        {
+          "code": "AU",
+          "name": "Australia",
+          "people": 2
+        },
+        {
+          "code": "CN",
+          "name": "China",
           "people": 2
         },
         {
@@ -108,11 +124,6 @@
         {
           "code": "AR",
           "name": "Argentina",
-          "people": 1
-        },
-        {
-          "code": "CN",
-          "name": "China",
           "people": 1
         },
         {
@@ -156,6 +167,11 @@
           "people": 1
         },
         {
+          "code": "UA",
+          "name": "Ukraine",
+          "people": 1
+        },
+        {
           "code": "AE",
           "name": "United Arab Emirates",
           "people": 1
@@ -163,24 +179,24 @@
       ]
     },
     "issues": {
-      "people": 4,
-      "placed": 1,
+      "people": 12,
+      "placed": 2,
       "list": [
         {
           "code": "MX",
           "name": "Mexico",
-          "people": 1
+          "people": 2
         }
       ]
     },
     "pulls": {
-      "people": 31,
-      "placed": 23,
+      "people": 39,
+      "placed": 29,
       "list": [
         {
           "code": "MX",
           "name": "Mexico",
-          "people": 20
+          "people": 26
         },
         {
           "code": "TW",

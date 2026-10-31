@@ -1,15 +1,22 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { Contributors } from '@/components/contributors';
+import { NumberCells } from '@/components/number-cells';
 import { Lead, PageHeader } from '@/components/page-header';
 import { PageShell } from '@/components/page-shell';
-import { ResolvingText } from '@/components/resolving-text';
 import { Section } from '@/components/section-label';
 import { WorldMap } from '@/components/world-map';
-import { floeContributors, floeCounted, floeNumbers, floeWays } from '@/lib/floe-community';
+import {
+  floeContributorNumbers,
+  floeContributors,
+  floeCounted,
+  floeNumbers,
+  floeWays,
+} from '@/lib/floe-community';
 import community from '@/lib/floe-community.json';
 import { pageAlternates } from '@/lib/releases';
-import { compact, longDate, repoUrl } from '@/lib/shared';
+import { longDate, repoUrl } from '@/lib/shared';
 import { sitePages } from '@/lib/site-pages';
 
 export const metadata: Metadata = {
@@ -35,21 +42,15 @@ export default function FloeCommunityPage() {
       </PageHeader>
 
       <Section label="In numbers">
-        <dl className="crossed grid-cols-2 lg:grid-cols-3">
-          {floeNumbers.map((number) => (
-            <div key={number.label} className="group flex flex-col gap-1 p-4 sm:p-6">
-              <dt className="text-sm text-fd-muted-foreground">{number.label}</dt>
-              <dd className="font-display text-4xl font-semibold tracking-tight group-first:text-(--product-tone) xl:text-5xl">
-                <ResolvingText>{compact.format(number.value)}</ResolvingText>
-              </dd>
-              <dd className="text-sm text-fd-muted-foreground">{number.unit}</dd>
-            </div>
-          ))}
-        </dl>
+        <NumberCells
+          numbers={floeNumbers}
+          accent
+          className={floeNumbers.length === 2 ? 'grid-cols-2' : 'grid-cols-1 sm:grid-cols-3'}
+        />
         <p className="max-w-3xl text-sm text-fd-muted-foreground text-pretty">
           {floeCounted.day && `Counted on ${longDate(floeCounted.day)}. `}
           {floeCounted.older.map((entry) => `${entry.name} are from ${longDate(entry.day)}. `)}
-          Downloads and Homebrew installs are added once Floe has a release to count them from.
+          Homebrew installs are added once Floe has a cask.
         </p>
       </Section>
 
@@ -68,15 +69,7 @@ export default function FloeCommunityPage() {
                   href={`https://github.com/${member.login}`}
                   className="group flex flex-col gap-4"
                 >
-                  {/* biome-ignore lint/performance/noImgElement: a remote avatar, not worth an image pipeline */}
-                  <img
-                    src={`${member.avatar}${member.avatar.includes('?') ? '&' : '?'}s=192`}
-                    alt=""
-                    width={96}
-                    height={96}
-                    loading="lazy"
-                    className="size-24"
-                  />
+                  <Image src={member.avatar} alt="" width={96} height={96} className="size-24" />
                   <span className="flex flex-col gap-0.5">
                     <span className="font-display text-lg leading-tight font-semibold tracking-tight underline-offset-4 group-hover:underline">
                       {member.name ?? member.login}
@@ -92,6 +85,7 @@ export default function FloeCommunityPage() {
 
       {floeContributors.length > 0 && (
         <Section label="Contributors">
+          <NumberCells numbers={floeContributorNumbers} />
           <Contributors people={floeContributors} />
           <p className="max-w-3xl text-sm text-fd-muted-foreground text-pretty">
             Everyone else with a commit since Floe began in October 2026.
