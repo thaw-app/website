@@ -20,6 +20,12 @@ test('the install tabs work from the keyboard and give the right command', async
     'brew install thaw@beta',
   );
 
+  // macOS 15 is offered, after the two a visitor is more likely to be on.
+  await page.keyboard.press('ArrowRight');
+  await expect(page.getByRole('tabpanel', { name: 'macOS 15' })).toContainText(
+    'brew install thaw@beta',
+  );
+
   await page.keyboard.press('End');
   await expect(tabs.getByRole('tab', { name: 'Without Homebrew' })).toBeFocused();
   await page.keyboard.press('ArrowRight');
