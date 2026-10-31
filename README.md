@@ -183,7 +183,7 @@ On a touch device the home page's cube redraws twelve times a second.
     bun run dev      # syncs the docs, then serves http://localhost:3000
 
 By default the sync fetches each repo's default branch from GitHub
-(`development` for Thaw, `main` for Floe). To
+(`development` for both). To
 preview docs you have not pushed, point it at a local checkout in `.env.local`:
 
     THAW_DOCS_DIR=/path/to/Thaw

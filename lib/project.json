@@ -11,7 +11,7 @@
     "floe": {
       "name": "Floe",
       "repo": "thaw-app/Floe",
-      "ref": "main",
+      "ref": "development",
       "tone": "#4f93ff",
       "bestPractices": 15396
     }

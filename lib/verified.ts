@@ -6,13 +6,6 @@ const repo = products.thaw.repo;
 const bestPracticesUrl = (slug: ProductSlug) =>
   `https://www.bestpractices.dev/projects/${products[slug].bestPractices}`;
 
-// Where someone checks a release's SLSA record. Floe's guide is on its development branch, and
-// the docs here follow main, so until that moves its attestations stand in.
-const provenance: Record<ProductSlug, string> = {
-  thaw: `${docsRoute}/thaw/verifying-releases`,
-  floe: `https://github.com/${products.floe.repo}/attestations`,
-};
-
 // What each of those is, for someone who has not met them. `checkedBy` says who vouches
 // for the value, since a score a machine gives and a checklist a project fills in differ.
 // `id` is what ties one to its value: a value that could not be read is left out of the
@@ -127,7 +120,7 @@ export function verifiedFrom(assurance: Assurance, slug: ProductSlug = 'thaw'): 
       steps: 3,
       reached: 3,
       tone: green,
-      href: provenance[slug],
+      href: `${docsRoute}/${slug}/verifying-releases`,
     },
     badge >= 0 &&
       typeof bestPractices === 'string' && {

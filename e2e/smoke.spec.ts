@@ -72,7 +72,9 @@ test('Floe’s page shows its own Verified values', async ({ page }) => {
   await expect(
     section.locator('a[href*="bestpractices.dev/projects/15396"]').first(),
   ).toBeVisible();
-  await expect(section.locator('a[href*="github.com/thaw-app/Floe"]').first()).toBeVisible();
+  await section.locator('a[href="/docs/floe/verifying-releases"]').click();
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Verifying');
+  await page.goBack();
   await expect(section.locator('a[href*="projects/13303"]')).toHaveCount(0);
   await expect(section.getByRole('link', { name: 'Community' })).toHaveAttribute(
     'href',

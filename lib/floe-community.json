@@ -1,8 +1,8 @@
 {
   "stars": 167,
-  "downloads": 310,
+  "downloads": 311,
   "discord": 385,
-  "contributors": 4,
+  "contributors": 5,
   "releases": 4,
   "issuesFixed": 6,
   "readOn": {
@@ -33,6 +33,11 @@
       "login": "unsecretised",
       "avatar": "https://avatars.githubusercontent.com/u/132474703?v=4",
       "commits": 2
+    },
+    {
+      "login": "MintCollector",
+      "avatar": "https://avatars.githubusercontent.com/u/158844909?v=4",
+      "commits": 1
     },
     {
       "login": "OwenCope",

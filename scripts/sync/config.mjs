@@ -186,12 +186,29 @@ const products = [
       features: '<FloeFeatures />',
       last: '<FloeAssurance />',
     },
-    titles: {},
+    titles: {
+      architecture: 'Architecture',
+      'verifying-releases': 'Verifying releases',
+      'assurance-case': 'Security assurance case',
+    },
     descriptions: {
       development:
         'How to build and run Floe from source, how it runs Raycast extensions, and how to add one.',
+      architecture: 'A map of Floe’s processes and code, and where each part lives.',
+      'coding-standards': 'How code in Floe is written.',
+      interfaces: 'What a released Floe accepts from other software, and what it reaches out to.',
+      'verifying-releases':
+        'What each Floe release is signed with, and how to check a download yourself.',
+      'assurance-case':
+        'The case that Floe meets its security requirements, and the risks that remain.',
     },
-    icons: { changelog: 'ScrollText', development: 'Hammer' },
+    icons: {
+      changelog: 'ScrollText',
+      development: 'Hammer',
+      architecture: 'Layers',
+      'verifying-releases': 'ShieldCheck',
+      'assurance-case': 'FileCheck',
+    },
     extraPages: {
       'CHANGELOG.md': 'changelog',
       // Shown at /floe, not in the docs sidebar.
