@@ -214,10 +214,36 @@ html > body[data-scroll-locked] {
   --removed-body-scroll-bar-size: 0px !important;
 }
 
-/* The mock desktop's wallpaper: a plain dark one, a shade off the page's black so the
-   screen reads as a screen, with a little light at the top where the menu bar sits. */
+/* The mock desktop's ground until its photograph is there (components/desktop/index.tsx):
+   about the colour of each one. */
 .desktop-wallpaper {
-  background: radial-gradient(120% 70% at 50% 0%, #26262a 0%, transparent 70%), #121214;
+  background: #7fa9a4;
+}
+
+.dark .desktop-wallpaper {
+  background: #121214;
+}
+
+/* The menu bar's glass over each photograph. The items are white pictures, so on light glass
+   they are turned dark, as macOS turns them over a light wallpaper. */
+.menu-glass {
+  --bar-item-hover: rgb(0 0 0 / 0.1);
+  --bar-item-held: rgb(0 0 0 / 0.16);
+  --bar-item-filter: invert(1);
+  background: linear-gradient(rgb(255 255 255 / 0.74), rgb(244 244 246 / 0.66));
+  color: #111113;
+}
+
+.dark .menu-glass {
+  --bar-item-hover: rgb(255 255 255 / 0.18);
+  --bar-item-held: rgb(255 255 255 / 0.28);
+  --bar-item-filter: none;
+  background: linear-gradient(rgb(8 8 10 / 0.82), rgb(30 30 34 / 0.78));
+  color: #fff;
+}
+
+.menu-glass img {
+  filter: var(--bar-item-filter);
 }
 
 /* A Dock icon. --mag is set by the Dock as the pointer moves along it. */
@@ -326,11 +352,11 @@ html > body[data-scroll-locked] {
 }
 
 .bar-item:hover {
-  background: rgb(255 255 255 / 0.18);
+  background: var(--bar-item-hover, rgb(255 255 255 / 0.18));
 }
 
 .bar-item-dragging {
-  background: rgb(255 255 255 / 0.28);
+  background: var(--bar-item-held, rgb(255 255 255 / 0.28));
   cursor: grabbing;
   opacity: 0.7;
 }

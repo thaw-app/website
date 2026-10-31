@@ -2,8 +2,8 @@
   "items": {
     "floe": {
       "name": "Floe",
-      "w": 12,
-      "h": 12
+      "w": 16,
+      "h": 16
     },
     "droppy": {
       "name": "Droppy",

@@ -179,7 +179,7 @@ export function MenuBar({
               aria-pressed={model.hiddenShown}
               aria-label={model.hiddenShown ? 'Hide menu bar items' : 'Show hidden menu bar items'}
               tabIndex={showIcon ? 0 : -1}
-              className={`bar-item overflow-hidden outline-none transition-[max-width,opacity] duration-300 focus-visible:ring-2 focus-visible:ring-white motion-reduce:transition-none ${
+              className={`bar-item overflow-hidden outline-none transition-[max-width,opacity] duration-300 focus-visible:ring-2 focus-visible:ring-current motion-reduce:transition-none ${
                 showIcon ? 'max-w-12 opacity-100' : 'pointer-events-none max-w-0 opacity-0'
               }`}
             >
@@ -324,7 +324,7 @@ function Item({
           // Under the item's own left edge, wherever in it the click landed.
           onFloeMenu({ clientX: event.currentTarget.getBoundingClientRect().left });
         }}
-        className={`bar-item outline-none focus-visible:ring-2 focus-visible:ring-white ${
+        className={`bar-item outline-none focus-visible:ring-2 focus-visible:ring-current ${
           dragging ? 'bar-item-dragging' : ''
         }`}
         title={barItems[id]?.name}
@@ -361,13 +361,13 @@ function Surface({
   const tint = tints[appearance.color];
   const shaped = appearance.shape !== 'none';
   const style: CSSProperties = {
+    // Without a tint it is glass, which follows the appearance (.menu-glass in global.css).
     background:
       appearance.tint === 'solid'
         ? `color-mix(in oklab, ${tint.from} 80%, transparent)`
         : appearance.tint === 'gradient'
           ? `linear-gradient(90deg, color-mix(in oklab, ${tint.from} 88%, transparent), color-mix(in oklab, ${tint.to} 88%, transparent))`
-          : // The near-black glass the real bar shows over a dark wallpaper.
-            'linear-gradient(rgb(8 8 10 / 0.82), rgb(30 30 34 / 0.78))',
+          : undefined,
     borderRadius: shaped ? (appearance.ends === 'round' ? 9999 : 6) : 0,
   };
 
@@ -375,8 +375,8 @@ function Surface({
     <div
       style={style}
       className={`flex min-w-0 items-center border px-1 backdrop-blur-md transition-[background,border-radius,opacity] duration-300 motion-reduce:transition-none ${
-        faded ? 'opacity-0' : ''
-      } ${
+        appearance.tint === 'none' ? 'menu-glass' : ''
+      } ${faded ? 'opacity-0' : ''} ${
         shaped ? 'h-7' : 'h-[30px]'
       } ${grow ? 'flex-1' : ''} ${appearance.border ? 'border-white/50' : 'border-transparent'} ${
         appearance.shadow ? 'shadow-lg shadow-black/50' : ''
@@ -401,7 +401,7 @@ export function ThawBar({ model }: { model: MenuBarModel }) {
   return (
     <div
       aria-hidden={!shown}
-      className={`absolute top-[34px] right-[9px] z-30 flex h-9 max-w-[calc(100%-1rem)] origin-top-right items-center overflow-hidden rounded-full border border-white/15 bg-black/45 px-2 text-[13px] shadow-xl backdrop-blur-xl transition-[opacity,transform] duration-300 ease-out motion-reduce:transition-none ${
+      className={`absolute top-[34px] right-[9px] z-30 flex h-9 max-w-[calc(100%-1rem)] origin-top-right items-center overflow-hidden rounded-full menu-glass border border-white/15 px-2 text-[13px] shadow-xl backdrop-blur-xl transition-[opacity,transform] duration-300 ease-out motion-reduce:transition-none ${
         shown ? 'scale-100 opacity-100' : 'pointer-events-none scale-95 opacity-0'
       }`}
     >

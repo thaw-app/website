@@ -24,7 +24,7 @@ export function BarItemView({ id }: { id: string }) {
 
   if (item.kind === 'marker') {
     return (
-      <span className="flex h-5 items-center rounded-full border border-white/60 px-2 text-[11px] font-semibold whitespace-nowrap">
+      <span className="flex h-5 items-center rounded-full border border-current/60 px-2 text-[11px] font-semibold whitespace-nowrap">
         {item.name}
       </span>
     );

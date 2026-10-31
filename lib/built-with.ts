@@ -112,6 +112,11 @@ export const runsOn: Tool[] = [
     mark: 'coderabbit',
   },
   {
+    name: 'Strix',
+    use: 'Checks pull requests for security problems.',
+    href: 'https://strix.ai',
+  },
+  {
     name: 'Crowdin',
     use: 'Where the translations are done.',
     href: links.crowdin,
@@ -173,6 +178,16 @@ export const thanks = [
     forWhat:
       'Floe’s login shell environment, its process runner, the tools that answer Ask AI, its hang watchdog and the folder watcher behind hot reload come from Droppy Code, each changed for Floe and used with his permission.',
     href: 'https://getdroppycode.app',
+  },
+  {
+    to: 'A sunset, by marsumilae',
+    forWhat: 'The demo’s wallpaper in dark mode, from Unsplash.',
+    href: 'https://unsplash.com/photos/hbuoPh-YmvE',
+  },
+  {
+    to: 'Shallow water, by Josh Withers',
+    forWhat: 'The demo’s wallpaper in light mode, from Unsplash.',
+    href: 'https://unsplash.com/photos/_xR8PdWofRY',
   },
   {
     to: 'The Nix snowflake, by Simon Frankau and Tim Cuthbertson',

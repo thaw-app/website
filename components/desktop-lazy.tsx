@@ -4,7 +4,9 @@ import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import thawStill from '@/assets/desktop-still.png';
+import thawStillDark from '@/assets/desktop-still-dark.png';
 import floeStill from '@/assets/desktop-still-floe.png';
+import floeStillDark from '@/assets/desktop-still-floe-dark.png';
 import type { ProductSlug } from '@/lib/shared';
 
 // The demo is the heaviest thing on the home page and sits two screens down it. Its code
@@ -18,8 +20,16 @@ const Desktop = dynamic(() => import('@/components/desktop').then((module) => mo
 
 // The picture a phone gets, of the desktop as it opens for each product.
 const stills = {
-  thaw: { src: thawStill, alt: 'Thaw’s settings window under a menu bar, with a Dock below' },
-  floe: { src: floeStill, alt: 'Floe’s launcher open under a menu bar, with a Dock below' },
+  thaw: {
+    src: thawStill,
+    dark: thawStillDark,
+    alt: 'Thaw’s settings window under a menu bar, with a Dock below',
+  },
+  floe: {
+    src: floeStill,
+    dark: floeStillDark,
+    alt: 'Floe’s launcher open under a menu bar, with a Dock below',
+  },
 };
 
 // The demo's own shape and ground, before it is there.
@@ -41,7 +51,13 @@ function Frame({ product }: { product: ProductSlug }) {
         src={stills[product].src}
         alt={stills[product].alt}
         sizes="100vw"
-        className="size-full object-cover sm:hidden"
+        className="size-full object-cover sm:hidden dark:hidden"
+      />
+      <Image
+        src={stills[product].dark}
+        alt={stills[product].alt}
+        sizes="100vw"
+        className="hidden size-full object-cover max-sm:dark:block"
       />
     </div>
   );

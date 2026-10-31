@@ -1,5 +1,5 @@
 // Takes the pictures of the running site that are kept in the repo: the demo as phones are
-// shown it on each product's page (assets/desktop-still.png and desktop-still-floe.png),
+// shown it on each product's page, in each appearance (assets/desktop-still*.png),
 // and the cube for shared links (assets/og/cube.png).
 // Run by hand when the demo changes, against a running site:
 //
@@ -15,25 +15,29 @@ const site = process.argv[2] ?? 'http://localhost:3000';
 const asset = (name) => join(import.meta.dirname, '..', 'assets', name);
 // Where the demo is, and the picture of it there.
 const stills = [
-  ['/#try', 'desktop-still.png'],
-  ['/floe#try', 'desktop-still-floe.png'],
+  ['/#try', 'desktop-still.png', 'light'],
+  ['/floe#try', 'desktop-still-floe.png', 'light'],
+  ['/#try', 'desktop-still-dark.png', 'dark'],
+  ['/floe#try', 'desktop-still-floe-dark.png', 'dark'],
 ];
 
 const browser = await chromium.launch();
 try {
   // The demo is drawn at up to 1512px, the width of the screen it copies, inside 40px of
   // page on each side. One pixel per point: a phone shows it at a quarter of that width.
-  const page = await browser.newPage({ viewport: { width: 1592, height: 1200 } });
-  page.setDefaultTimeout(30_000);
   // The link straight to the demo loads it without scrolling.
-  for (const [path, name] of stills) {
+  for (const [path, name, colorScheme] of stills) {
+    const page = await browser.newPage({ viewport: { width: 1592, height: 1200 }, colorScheme });
+    page.setDefaultTimeout(30_000);
     await page.goto(`${site}${path}`);
     const demo = page.locator('.desktop-wallpaper');
     // The frame is there from the start; the menu bar is there once the demo has loaded.
     await demo.locator('button').first().waitFor();
     // Its own pictures only: one further down the page is not loaded until it is scrolled to.
     await page.waitForFunction(() =>
-      [...document.querySelectorAll('.desktop-wallpaper img')].every((image) => image.complete),
+      [...document.querySelectorAll('.desktop-wallpaper img')]
+        .filter((image) => image.checkVisibility())
+        .every((image) => image.complete),
     );
     await demo.screenshot({ path: asset(name), animations: 'disabled' });
     console.log(`Wrote ${asset(name)}`);
