@@ -1,11 +1,22 @@
 {
   "org": "thaw-app",
   "products": {
-    "thaw": { "name": "Thaw", "repo": "thaw-app/Thaw", "ref": "development", "tone": "#fa9a2a" },
-    "floe": { "name": "Floe", "repo": "thaw-app/Floe", "ref": "main", "tone": "#4f93ff" }
+    "thaw": {
+      "name": "Thaw",
+      "repo": "thaw-app/Thaw",
+      "ref": "development",
+      "tone": "#fa9a2a",
+      "bestPractices": 13303
+    },
+    "floe": {
+      "name": "Floe",
+      "repo": "thaw-app/Floe",
+      "ref": "main",
+      "tone": "#4f93ff",
+      "bestPractices": 15396
+    }
   },
   "discordInvite": "KDfWjWDnR4",
-  "bestPractices": 13303,
   "links": {
     "crowdin": "https://crowdin.com/project/thaw",
     "sponsors": "https://github.com/sponsors/stonerl",

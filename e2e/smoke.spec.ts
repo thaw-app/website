@@ -66,6 +66,20 @@ test('every Verified value sits under its own name', async ({ page }) => {
   if ((await coverage.locator('span').count()) > 1) await expect(coverage).toContainText('%');
 });
 
+test('Floe’s page shows its own Verified values', async ({ page }) => {
+  await page.goto('/floe');
+  const section = page.locator('h2#verified + div');
+  await expect(
+    section.locator('a[href*="bestpractices.dev/projects/15396"]').first(),
+  ).toBeVisible();
+  await expect(section.locator('a[href*="github.com/thaw-app/Floe"]').first()).toBeVisible();
+  await expect(section.locator('a[href*="projects/13303"]')).toHaveCount(0);
+  await expect(section.getByRole('link', { name: 'Community' })).toHaveAttribute(
+    'href',
+    '/floe/community',
+  );
+});
+
 test('the pages a visitor moves between all answer', async ({ page }) => {
   for (const path of [
     '/',

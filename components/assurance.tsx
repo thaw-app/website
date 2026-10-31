@@ -3,28 +3,37 @@ import Link from 'next/link';
 import { ResolvingText } from '@/components/resolving-text';
 import community from '@/lib/community.json';
 import { compact } from '@/lib/shared';
-import { verifiedFrom } from '@/lib/verified';
-
-const { assurance } = community;
+import { type Verified, verifiedFrom } from '@/lib/verified';
 
 // What outside bodies have verified about how Thaw is built and released.
-export const verified = verifiedFrom(assurance);
+export const verified = verifiedFrom(community.assurance);
 
-const stepped = verified.length === 5;
-
-const numbers = [
-  { value: community.stars, label: 'GitHub stars' },
-  { value: community.downloads, label: 'downloads' },
-  { value: community.contributors, label: 'contributors' },
-  { value: community.releases, label: 'releases' },
-].filter((entry) => typeof entry.value === 'number');
+/** The counts from a product's community file that sit under its values. */
+export const countsFrom = (
+  counts: Record<'stars' | 'downloads' | 'contributors' | 'releases', number>,
+) =>
+  [
+    { value: counts.stars, label: 'GitHub stars' },
+    { value: counts.downloads, label: 'downloads' },
+    { value: counts.contributors, label: 'contributors' },
+    { value: counts.releases, label: 'releases' },
+  ].filter((entry) => typeof entry.value === 'number');
 
 /**
- * How the project is run, small enough to read in passing: what has been independently
+ * How a project is run, small enough to read in passing: what has been independently
  * verified about its releases, and how many people use and build it. /verified explains
  * each one.
  */
-export function Assurance() {
+export function VerifiedBlock({
+  values,
+  numbers,
+  communityHref,
+}: {
+  values: Verified[];
+  numbers: ReturnType<typeof countsFrom>;
+  communityHref: string;
+}) {
+  const stepped = values.length === 5;
   return (
     <>
       <Heading as="h2" id="verified">
@@ -36,7 +45,7 @@ export function Assurance() {
         <ul
           className={`crossed ${stepped ? 'grid-cols-6 sm:grid-cols-5' : 'grid-cols-2 sm:grid-cols-4'}`}
         >
-          {verified.map((entry, index) => (
+          {values.map((entry, index) => (
             <li
               key={entry.id}
               className={stepped ? `${index < 2 ? 'col-span-3' : 'col-span-2'} sm:col-span-1` : ''}
@@ -86,11 +95,17 @@ export function Assurance() {
           <Link href="/verified" className="tap link">
             What does this mean?
           </Link>
-          <Link href="/community" className="tap link">
+          <Link href={communityHref} className="tap link">
             Community
           </Link>
         </p>
       </div>
     </>
+  );
+}
+
+export function Assurance() {
+  return (
+    <VerifiedBlock values={verified} numbers={countsFrom(community)} communityHref="/community" />
   );
 }

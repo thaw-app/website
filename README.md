@@ -85,7 +85,7 @@ build or blanks a number.
 | File                           | What                                                             | From                                                              |
 | ------------------------------ | ---------------------------------------------------------------- | ----------------------------------------------------------------- |
 | `lib/community.json`           | Stars, downloads, contributors, translators, the Verified values | GitHub, Homebrew, Discord, OpenSSF, SonarQube Cloud, `CREDITS.md` |
-| `lib/floe-community.json`      | The same for Floe, for `/floe/community`                         | The same sources, for `thaw-app/Floe`                             |
+| `lib/floe-community.json`      | The same for Floe, for `/floe` and `/floe/community`             | The same sources, for `thaw-app/Floe`                             |
 | `lib/community.json` (`world`) | Stars, issues and pull requests by country                       | Every stargazer's and author's GitHub profile location            |
 | `lib/roadmap-issues.json`      | Whether each issue the roadmap links is open                     | GitHub                                                            |
 | `lib/roadmap-requests.json`    | The open feature requests, most thumbs-up first                  | GitHub                                                            |

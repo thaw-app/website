@@ -1,9 +1,10 @@
-import { Heading } from 'fumadocs-ui/components/heading';
 import { Download } from 'lucide-react';
 import Link from 'next/link';
+import { countsFrom, VerifiedBlock } from '@/components/assurance';
 import { FeatureCells, MarkRow, NameGroups, WorksWith } from '@/components/feature-list';
 import { InstallFacts } from '@/components/install-facts';
 import { SectionLabel } from '@/components/section-label';
+import community from '@/lib/floe-community.json';
 import {
   floeAlso,
   floeAskAi,
@@ -14,6 +15,7 @@ import {
 } from '@/lib/floe-features';
 import { latestStable } from '@/lib/releases';
 import { docsRoute } from '@/lib/shared';
+import { verifiedFrom } from '@/lib/verified';
 
 /** How to get Floe: one download, set out as Thaw's install box is (install-tabs.tsx). */
 export function FloeInstall() {
@@ -71,41 +73,13 @@ export function FloeFeatures() {
   );
 }
 
-/**
- * Where Thaw's page has its Verified values, Floe's says they are on the way: Floe is early
- * and has none of its own to show yet.
- */
+/** Floe's own Verified values, read by the same sync as Thaw's. */
 export function FloeAssurance() {
   return (
-    <>
-      <Heading as="h2" id="verified">
-        Verified
-      </Heading>
-      <div className="not-prose my-6">
-        <p className="mb-3 font-display text-2xl leading-tight font-semibold tracking-tight text-balance sm:text-3xl">
-          Part of the way.
-        </p>
-        <p className="mb-6 text-fd-muted-foreground text-pretty">
-          Floe is signed and notarised, each release comes with a record of how it was built, and
-          the project has an{' '}
-          <a
-            href="https://scorecard.dev/viewer/?uri=github.com/thaw-app/Floe"
-            className="tap text-fd-foreground link"
-          >
-            OpenSSF Scorecard
-          </a>
-          . Thaw’s other checks, such as its OpenSSF Best Practices badge, are still to come.
-        </p>
-        <Link
-          href="/#verified"
-          className="tap press flex items-center justify-between gap-x-6 gap-y-1 border px-5 py-3 font-medium transition-colors hover:bg-fd-accent max-sm:flex-col max-sm:items-start"
-        >
-          See where Thaw stands
-          <span aria-hidden className="text-fd-muted-foreground">
-            SLSA, OpenSSF and test coverage
-          </span>
-        </Link>
-      </div>
-    </>
+    <VerifiedBlock
+      values={verifiedFrom(community.assurance, 'floe')}
+      numbers={countsFrom(community)}
+      communityHref="/floe/community"
+    />
   );
 }

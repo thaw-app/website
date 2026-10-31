@@ -1,6 +1,17 @@
-import { docsRoute, links, products } from '@/lib/shared';
+import { docsRoute, type ProductSlug, products } from '@/lib/shared';
 
 const repo = products.thaw.repo;
+
+/** A product's entry on OpenSSF's Best Practices list, which holds its badge and Baseline level. */
+const bestPracticesUrl = (slug: ProductSlug) =>
+  `https://www.bestpractices.dev/projects/${products[slug].bestPractices}`;
+
+// Where someone checks a release's SLSA record. Floe's guide is on its development branch, and
+// the docs here follow main, so until that moves its attestations stand in.
+const provenance: Record<ProductSlug, string> = {
+  thaw: `${docsRoute}/thaw/verifying-releases`,
+  floe: `https://github.com/${products.floe.repo}/attestations`,
+};
 
 // What each of those is, for someone who has not met them. `checkedBy` says who vouches
 // for the value, since a score a machine gives and a checklist a project fills in differ.
@@ -27,7 +38,7 @@ export const meanings: {
     meaning:
       'A checklist from the Open Source Security Foundation for how a project is run, such as how changes get reviewed and how security reports are handled. It has three badges, Passing, Silver and Gold.',
     checkedBy: 'The project answers each item and publishes its evidence.',
-    href: links.bestPractices,
+    href: bestPracticesUrl('thaw'),
   },
   {
     id: 'baseline',
@@ -98,12 +109,13 @@ const badges = ['passing', 'silver', 'gold'];
 const places = ['lowest', 'second', 'highest'];
 
 /**
- * The Verified values as the pages show them. Each is read from its source when the site
+ * A product's Verified values as the pages show them. Each is read from its source when the site
  * is built, apart from the SLSA level, which the release pipeline documents; one that
  * could not be read is left out. What is said beside a value follows from the value, so a
  * badge that is not the highest is never called it.
  */
-export function verifiedFrom(assurance: Assurance): Verified[] {
+export function verifiedFrom(assurance: Assurance, slug: ProductSlug = 'thaw'): Verified[] {
+  const { name, repo } = products[slug];
   const { bestPractices, baseline, scorecard, coverage } = assurance;
   const badge = bestPractices ? badges.indexOf(bestPractices) : -1;
   const candidates: (Verified | false)[] = [
@@ -115,7 +127,7 @@ export function verifiedFrom(assurance: Assurance): Verified[] {
       steps: 3,
       reached: 3,
       tone: green,
-      href: `${docsRoute}/thaw/verifying-releases`,
+      href: provenance[slug],
     },
     badge >= 0 &&
       typeof bestPractices === 'string' && {
@@ -126,7 +138,7 @@ export function verifiedFrom(assurance: Assurance): Verified[] {
         steps: 3,
         reached: badge + 1,
         tone: bestPractices === 'gold' ? gold : green,
-        href: links.bestPractices,
+        href: bestPracticesUrl(slug),
       },
     typeof baseline === 'number' &&
       baseline >= 1 && {
@@ -139,7 +151,7 @@ export function verifiedFrom(assurance: Assurance): Verified[] {
         steps: 3,
         reached: baseline,
         tone: green,
-        href: links.bestPractices,
+        href: bestPracticesUrl(slug),
       },
     typeof scorecard === 'number' && {
       id: 'scorecard',
@@ -154,7 +166,7 @@ export function verifiedFrom(assurance: Assurance): Verified[] {
       id: 'coverage',
       value: `${coverage}%`,
       label: 'Test coverage',
-      detail: 'The share of Thaw’s code its tests run.',
+      detail: `The share of ${name}’s code its tests run.`,
       share: coverage / 100,
       tone: green,
       href: `https://sonarcloud.io/component_measures?id=${repo.replace('/', '_')}&metric=coverage`,
