@@ -148,7 +148,7 @@ function ReleaseCalendar({ pages }: { pages: ReleasePage[] }) {
 
   return (
     <div
-      className="not-prose mb-10 grid gap-x-2 gap-y-1.5 text-xs text-fd-muted-foreground"
+      className="not-prose mb-10 grid justify-start gap-x-2 gap-y-1.5 text-xs text-fd-muted-foreground"
       style={frame}
     >
       <div aria-hidden className="col-start-2 grid" style={columns}>
