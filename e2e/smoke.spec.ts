@@ -22,8 +22,11 @@ test('the install tabs work from the keyboard and give the right command', async
 
   // macOS 15 is offered, after the two a visitor is more likely to be on.
   await page.keyboard.press('ArrowRight');
-  await expect(page.getByRole('tabpanel', { name: 'macOS 15' })).toContainText(
-    'brew install thaw@beta',
+  const sequoia = page.getByRole('tabpanel', { name: 'macOS 15' });
+  await expect(sequoia).toContainText('not on Homebrew yet');
+  await expect(sequoia.getByRole('link', { name: 'Download Thaw from GitHub' })).toHaveAttribute(
+    'href',
+    /\/releases\/tag\/2\.2\.0-beta\.1$/,
   );
 
   await page.keyboard.press('End');

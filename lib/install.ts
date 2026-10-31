@@ -22,8 +22,10 @@ export const installWays = [
   {
     id: 'macos-15',
     label: 'macOS 15',
-    command: 'brew install thaw@beta',
-    about: 'Thaw 2.2, which brings back macOS 15. In beta.',
+    // No cask yet: thaw@beta is Thaw 3, which needs macOS 27. So this is the release itself,
+    // until Thaw 2.2 reaches Homebrew.
+    note: 'Thaw 2.2, which brings back macOS 15, is in beta and not on Homebrew yet. Get the disk image from its release and drag Thaw to Applications.',
+    href: `${repoUrl('thaw')}/releases/tag/2.2.0-beta.1`,
   },
   {
     id: 'download',

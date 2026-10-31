@@ -75,7 +75,7 @@ export const thawFaq: {
     steps: [
       'Turn off Launch at Login in Settings, under General.',
       'Quit Thaw from the menu on its icon.',
-      'Drag Thaw from Applications to the Trash. With Homebrew, run brew uninstall thaw.',
+      'Drag Thaw from Applications to the Trash. With Homebrew, run brew uninstall thaw, or brew uninstall thaw@beta for the beta.',
     ],
     more: { label: 'Reset or uninstall', href: `${docsRoute}/thaw/reset-and-uninstall#uninstall` },
   },
