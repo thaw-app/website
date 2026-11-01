@@ -104,7 +104,9 @@ export const MARKS = {
 /** As many flags as fit, with the three marks kept: Floe, Thaw and Droppy on a phone. */
 export function fitting(width: number, pitch: number) {
   const all = pattern('', 7);
-  const room = Math.floor(width / pitch);
+  // The banner's height follows the window with its scrollbar (vw), and `width` leaves that out,
+  // so a sheet that nearly fits still counts.
+  const room = Math.floor(width / pitch + 0.08);
   if (room >= 7) return all;
   if (room >= 5) return all.slice(1, 6);
   return [all[1], all[3], all[5]];

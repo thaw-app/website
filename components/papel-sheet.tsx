@@ -1036,24 +1036,32 @@ export function Paper({
   options,
   onFail,
   onReady,
+  onLost,
 }: {
   designs: (width: number, pitch: number) => SheetDesign[];
   options: HangOptions;
   onFail?: () => void;
   onReady?: () => void;
+  onLost?: () => void;
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const sheetsRef = useRef<HTMLCanvasElement>(null);
   const overlayRef = useRef<HTMLCanvasElement>(null);
   // Fixed for the life of the page, so it is only ever read once.
-  const settings = useRef({ designs, options, onFail, onReady });
+  const settings = useRef({ designs, options, onFail, onReady, onLost });
 
   useEffect(() => {
     const root = rootRef.current;
     const sheets = sheetsRef.current;
     const overlay = overlayRef.current;
     if (!root || !sheets || !overlay) return;
-    const { designs: choose, options: chosen, onFail: fail, onReady: ready } = settings.current;
+    const {
+      designs: choose,
+      options: chosen,
+      onFail: fail,
+      onReady: ready,
+      onLost: gave,
+    } = settings.current;
     let undo = () => {};
     let latest = 0;
 
@@ -1150,6 +1158,18 @@ export function Paper({
     });
     resized.observe(root);
 
+    // A phone can take the graphics away from a page in the background, and give them back later.
+    const lost = (e: Event) => {
+      e.preventDefault();
+      latest++;
+      undo();
+      undo = () => {};
+      gave?.();
+    };
+    const restored = () => hangAll();
+    sheets.addEventListener('webglcontextlost', lost);
+    sheets.addEventListener('webglcontextrestored', restored);
+
     return () => {
       gone = true;
       if (idle !== undefined) window.cancelIdleCallback(idle);
@@ -1157,6 +1177,8 @@ export function Paper({
       latest++;
       clearTimeout(waiting);
       resized.disconnect();
+      sheets.removeEventListener('webglcontextlost', lost);
+      sheets.removeEventListener('webglcontextrestored', restored);
       undo();
     };
   }, []);

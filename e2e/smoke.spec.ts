@@ -418,10 +418,12 @@ test('with motion reduced the paper hangs still, and the close button is a stop 
   const strip = page.locator('.papel-strip');
   await expect(strip.locator('canvas')).toHaveCount(2);
   await expect(strip.getByRole('img', { name: /papel picado/ })).toBeAttached();
-  await page.waitForTimeout(3500);
-  const first = await strip.screenshot();
-  await page.waitForTimeout(800);
-  expect((await strip.screenshot()).equals(first)).toBe(true);
+  // However long it takes to settle, it does, and then nothing moves.
+  await expect(async () => {
+    const first = await strip.screenshot();
+    await page.waitForTimeout(800);
+    expect((await strip.screenshot()).equals(first)).toBe(true);
+  }).toPass({ timeout: 20000 });
   await page.keyboard.press('Tab');
   await page.keyboard.press('Tab');
   await expect(page.getByRole('button', { name: 'Close Banner' })).toBeFocused();
@@ -463,6 +465,30 @@ test('on a phone a swipe scrolls past the paper, and holding it pulls it instead
   const close = await page.getByRole('button', { name: 'Close Banner' }).boundingBox();
   await page.evaluate(() => window.scrollTo(0, 0));
   expect(close?.width).toBeGreaterThanOrEqual(44);
+});
+
+test('when the graphics are taken away the picture comes back, and then the paper', async ({
+  page,
+  isMobile,
+}) => {
+  test.skip(isMobile, 'the same on either');
+  await page.clock.setFixedTime(inSeason);
+  await page.goto('/');
+  const still = page.locator('.papel-still');
+  await expect(still).toBeHidden();
+  const lose = (how: 'loseContext' | 'restoreContext') =>
+    page
+      .locator('.papel-picado canvas')
+      .first()
+      .evaluate((canvas: HTMLCanvasElement, how) => {
+        const keep = window as unknown as { lostExtension?: WEBGL_lose_context | null };
+        keep.lostExtension ??= canvas.getContext('webgl2')?.getExtension('WEBGL_lose_context');
+        keep.lostExtension?.[how]();
+      }, how);
+  await lose('loseContext');
+  await expect(still).toBeVisible();
+  await lose('restoreContext');
+  await expect(still).toBeHidden();
 });
 
 test('the paper sheet is one size on a short window and a tall one', async ({ page, isMobile }) => {

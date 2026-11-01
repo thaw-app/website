@@ -30,6 +30,7 @@ export function PapelPicado({ product }: { product: keyof typeof MARKS }) {
           designs={() => [mark]}
           options={{ sag: 12, below: 240, ratio: mark.ratio, grid: mark.grid }}
           onReady={() => setReady(true)}
+          onLost={() => setReady(false)}
         />
       )}
     </div>
