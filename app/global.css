@@ -1764,3 +1764,51 @@ h1.font-display {
     min-width: 40rem;
   }
 }
+
+/* The string of papel picado in the footer: as tall as its flags and the string they hang
+   from, so nothing moves when they arrive. Three flags fill a phone, five a tablet and seven
+   anything wider. */
+.papel-banner {
+  height: calc(25vw + 8px + min(3vw, 34px));
+}
+@media (min-width: 560px) {
+  .papel-banner {
+    height: calc(15vw + 8px + min(3vw, 34px));
+  }
+}
+@media (min-width: 900px) {
+  .papel-banner {
+    height: min(calc(10.7vw + 8px + min(3vw, 34px)), 340px);
+  }
+}
+
+/* The close button, over the short string's flags: a plain cross that reads on any colour, and
+   big enough for a finger on a phone. */
+.papel-strip button {
+  z-index: 41;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  color: #fff;
+  background: rgb(0 0 0 / 0.45);
+}
+.papel-strip button:hover {
+  color: #fff;
+  background: rgb(0 0 0 / 0.7);
+}
+.papel-strip button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 1px;
+}
+@media (pointer: coarse) {
+  .papel-strip button {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+}
+
+/* Papel picado, or what it stands in for: lib/season.ts sets the attribute before the first paint. */
+:root:not([data-papel]) .in-season,
+:root[data-papel] .off-season {
+  display: none;
+}

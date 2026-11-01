@@ -94,7 +94,7 @@ export const paneDefinitions = definitions as PaneDefinition[];
  */
 export type PaneValues = Record<number, boolean | number | string>;
 
-export const tabKey = 1000;
+const tabKey = 1000;
 
 /** The items of the tab a key belongs to, and the element's place among them. */
 export function itemsFor(pane: PaneDefinition | undefined, key: number) {

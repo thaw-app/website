@@ -4,8 +4,16 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { ComponentProps } from 'react';
+import floePapelIcon from '@/assets/floe-papel-icon.png';
+import thawPapelIcon from '@/assets/thaw-papel-icon.png';
 import { pagesOf } from '@/lib/header-pages';
 import { changelogUrl, docsRoute, type ProductSlug, products } from '@/lib/shared';
+
+// The papel picado versions of each product's icon, in the header.
+const icons: Record<ProductSlug, typeof thawPapelIcon> = {
+  thaw: thawPapelIcon,
+  floe: floePapelIcon,
+};
 
 // Each product's own page.
 const pages: Record<ProductSlug, string> = { thaw: '/', floe: '/floe' };
@@ -32,7 +40,8 @@ export function ProductName({ className }: ComponentProps<'a'>) {
       aria-label={`${products[current].name}, home`}
       className={`tap -mx-2 px-2 py-1.5 ${className ?? ''}`}
     >
-      <Image src={products[current].icon} alt="" width={24} className="size-6" />
+      <Image src={icons[current]} alt="" width={24} className="in-season size-6" />
+      <Image src={products[current].icon} alt="" width={24} className="off-season size-6" />
       <span className="font-display text-base font-semibold tracking-tight">
         {products[current].name}
       </span>

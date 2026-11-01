@@ -1,8 +1,8 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useEffect, useRef, useState } from 'react';
 import { useGallery } from './conure-greeting';
+import { useNear } from './use-near';
 
 // The moving wordmark brings a shader library and measures its own letters, and the conure
 // is six hundred lines of drawing. Neither is fetched until the foot of the page is near.
@@ -26,26 +26,9 @@ const FooterWordmark = dynamic(
  * height), so nothing moves when it arrives.
  */
 export function FooterArt({ conure = true }: { conure?: boolean }) {
-  const stage = useRef<HTMLDivElement>(null);
-  const [near, setNear] = useState(false);
+  const { stage, near } = useNear<HTMLDivElement>();
   // Where there is no conure here, the page's own gallery is somewhere else.
   const { playing, close } = useGallery(conure);
-
-  useEffect(() => {
-    const element = stage.current;
-    if (!element) return;
-    // A screen and a half ahead, so it is there before a reader scrolling down is.
-    const seen = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        setNear(true);
-        seen.disconnect();
-      },
-      { rootMargin: '150% 0px' },
-    );
-    seen.observe(element);
-    return () => seen.disconnect();
-  }, []);
 
   return (
     <div

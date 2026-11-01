@@ -6,7 +6,7 @@ import { compact } from '@/lib/shared';
 import { type Verified, verifiedFrom } from '@/lib/verified';
 
 // What outside bodies have verified about how Thaw is built and released.
-export const verified = verifiedFrom(community.assurance);
+const verified = verifiedFrom(community.assurance);
 
 /** The counts from a product's community file that sit under its values. */
 export const countsFrom = (
