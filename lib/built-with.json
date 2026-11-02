@@ -111,6 +111,14 @@
         "Thaw": "1.7.4",
         "Floe": "1.8.1"
       }
+    },
+    {
+      "name": "ThawUI",
+      "url": "https://github.com/thaw-app/ThawUI",
+      "license": "GPL-3.0",
+      "users": {
+        "Floe": "1.1.0"
+      }
     }
   ],
   "javascript": [
@@ -119,7 +127,7 @@
       "url": "https://www.npmjs.com/package/@biomejs/biome",
       "license": "MIT OR Apache-2.0",
       "users": {
-        "Site": "2.5.15"
+        "Site": "2.6.2"
       }
     },
     {
@@ -127,7 +135,7 @@
       "url": "https://www.npmjs.com/package/@fumadocs/base-ui",
       "license": "MIT",
       "users": {
-        "Site": "16.17.4"
+        "Site": "16.17.7"
       }
     },
     {
@@ -135,7 +143,7 @@
       "url": "https://www.npmjs.com/package/@paper-design/shaders-react",
       "license": "Apache-2.0",
       "users": {
-        "Site": "0.0.81"
+        "Site": "0.0.82"
       }
     },
     {
@@ -199,7 +207,7 @@
       "url": "https://www.npmjs.com/package/fumadocs-core",
       "license": "MIT",
       "users": {
-        "Site": "16.17.4"
+        "Site": "16.17.7"
       }
     },
     {
@@ -207,7 +215,7 @@
       "url": "https://www.npmjs.com/package/fumadocs-mdx",
       "license": "MIT",
       "users": {
-        "Site": "15.4.7"
+        "Site": "15.4.9"
       }
     },
     {
@@ -215,7 +223,7 @@
       "url": "https://www.npmjs.com/package/lucide-react",
       "license": "ISC",
       "users": {
-        "Site": "1.57.0"
+        "Site": "1.61.0"
       }
     },
     {
@@ -239,7 +247,7 @@
       "url": "https://www.npmjs.com/package/pele",
       "license": "MIT",
       "users": {
-        "Site": "1.7.0"
+        "Site": "1.9.0"
       }
     },
     {
@@ -247,7 +255,7 @@
       "url": "https://www.npmjs.com/package/postcss",
       "license": "MIT",
       "users": {
-        "Site": "8.5.30"
+        "Site": "8.5.31"
       }
     },
     {

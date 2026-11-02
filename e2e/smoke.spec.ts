@@ -165,11 +165,15 @@ test('the pages a visitor moves between all answer', async ({ page }) => {
 test('search finds a docs page', async ({ page, isMobile }) => {
   test.skip(isMobile, 'the sidebar that holds the search button is folded away on a phone');
   await page.goto('/docs/thaw');
-  await page
-    .getByRole('button', { name: /^Search/ })
-    .first()
-    .click();
   const dialog = page.getByRole('dialog');
+  // A click before the page is running does nothing, on a busy machine.
+  await expect(async () => {
+    await page
+      .getByRole('button', { name: /^Search/ })
+      .first()
+      .click({ timeout: 2000 });
+    await expect(dialog).toBeVisible({ timeout: 2000 });
+  }).toPass({ timeout: 20000 });
   // Not one of the suggestions the panel opens on, so finding it is the index answering.
   await dialog.getByRole('combobox').fill('URL schemes');
   await expect(dialog.getByRole('listbox').getByText('URL schemes').first()).toBeVisible();
@@ -620,7 +624,23 @@ test('the footer’s band keeps growing with a wide window', async ({ page, isMo
   expect(band?.height).toBeGreaterThan(650);
 });
 
+test('the tab shows the papel picado icons until November 4, also after moving page', async ({
+  page,
+  isMobile,
+}) => {
+  test.skip(isMobile, 'the header’s links are in a menu on a phone');
+  await page.clock.setFixedTime(inSeason);
+  // The last one is the one a browser uses.
+  const icon = page.locator('link[rel="icon"]').last();
+  await page.goto('/');
+  await expect(icon).toHaveAttribute('href', '/icons/thaw-papel-96.png');
+  await page.locator('header').first().getByRole('link', { name: 'Floe', exact: true }).click();
+  await expect(page).toHaveURL(/\/floe$/);
+  await expect(icon).toHaveAttribute('href', '/icons/floe-papel-96.png');
+});
+
 test('the tab shows Floe’s icon on Floe’s pages and Thaw’s on the rest', async ({ page }) => {
+  await page.clock.setFixedTime(new Date(2026, 10, 5, 9));
   const icon = page.locator('link[rel="icon"]');
   for (const path of [
     '/floe',

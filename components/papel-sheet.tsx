@@ -9,6 +9,9 @@ import { FULL, RATIO, type SheetDesign } from '@/lib/papel-designs';
 // (papel-lazy.tsx).
 
 const TICK = 1 / 60;
+// How long a sheet is let hang before anyone sees it. It comes to rest quickly, and more than
+// this only keeps a slow phone waiting.
+const SETTLE = 60;
 const FOLD_COLS = new Set([7, 13, 20]);
 const FOLD_ROWS = new Set([7, 14]);
 
@@ -985,8 +988,8 @@ function hang(
   let settleTimer = 0;
   const settle = () => {
     const from = performance.now();
-    while (settled < 150 && performance.now() - from < 6) step(settled++ * TICK);
-    if (settled < 150) {
+    while (settled < SETTLE && performance.now() - from < 6) step(settled++ * TICK);
+    if (settled < SETTLE) {
       settleTimer = window.setTimeout(settle, 0);
       return;
     }

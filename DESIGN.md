@@ -67,8 +67,7 @@ Every page but the home page and the docs shares one frame and one width.
   the site is built, and the page says when.
 - Through November 4, 2026, papel picado stands in for the cube and the floe, with a string
   over each product's page and another at the head of the footer. `lib/season.ts` decides in
-  the browser, so it comes down without a build, and the pages then look as they did. The
-  tab icons (`app/icon.png`, `public/icons/floe-96.png`) are files, and need putting back.
+  the browser, so it comes down without a build, and the pages then look as they did.
 - In light mode the cube is drawn solid, in the logo's oranges: faint
   characters on a light page read as white.
 
