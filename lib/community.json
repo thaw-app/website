@@ -1,24 +1,24 @@
 {
-  "stars": 12422,
-  "downloads": 452103,
-  "homebrewYear": 30063,
-  "discord": 384,
+  "stars": 12477,
+  "downloads": 458385,
+  "homebrewYear": 30374,
+  "discord": 387,
   "contributors": 62,
-  "releases": 83,
-  "issuesFixed": 551,
+  "releases": 85,
+  "issuesFixed": 556,
   "readOn": {
-    "stars": "2026-10-30",
-    "downloads": "2026-10-30",
-    "homebrewYear": "2026-10-30",
-    "discord": "2026-10-30",
-    "contributors": "2026-10-30",
-    "releases": "2026-10-30",
-    "issuesFixed": "2026-10-30",
-    "bestPractices": "2026-10-30",
-    "baseline": "2026-10-30",
-    "scorecard": "2026-10-30",
-    "coverage": "2026-10-30",
-    "field": "2026-10-30"
+    "stars": "2026-11-02",
+    "downloads": "2026-11-02",
+    "homebrewYear": "2026-11-02",
+    "discord": "2026-11-02",
+    "contributors": "2026-11-02",
+    "releases": "2026-11-02",
+    "issuesFixed": "2026-11-02",
+    "bestPractices": "2026-11-02",
+    "baseline": "2026-11-02",
+    "scorecard": "2026-11-02",
+    "coverage": "2026-11-02",
+    "field": "2026-11-02"
   },
   "people": [
     {
@@ -29,7 +29,7 @@
     {
       "login": "diazdesandi",
       "avatar": "https://avatars.githubusercontent.com/u/17421494?v=4",
-      "commits": 441
+      "commits": 442
     },
     {
       "login": "7a6163",
@@ -362,12 +362,12 @@
   "assurance": {
     "bestPractices": "gold",
     "baseline": 3,
-    "scorecard": 9.1,
+    "scorecard": 9.2,
     "coverage": 91.4,
     "field": {
-      "projects": 13467,
-      "gold": 112,
-      "baseline3": 100
+      "projects": 13576,
+      "gold": 113,
+      "baseline3": 102
     }
   },
   "translators": [
@@ -774,10 +774,10 @@
     }
   ],
   "world": {
-    "checked": "2026-10-30",
+    "checked": "2026-11-02",
     "stargazers": {
-      "people": 12422,
-      "placed": 5186,
+      "people": 12477,
+      "placed": 5207,
       "list": [
         {
           "code": "CN",
@@ -787,7 +787,7 @@
         {
           "code": "US",
           "name": "United States",
-          "people": 938
+          "people": 944
         },
         {
           "code": "DE",
@@ -797,7 +797,7 @@
         {
           "code": "FR",
           "name": "France",
-          "people": 215
+          "people": 218
         },
         {
           "code": "TW",
@@ -807,7 +807,7 @@
         {
           "code": "JP",
           "name": "Japan",
-          "people": 197
+          "people": 198
         },
         {
           "code": "GB",
@@ -817,16 +817,16 @@
         {
           "code": "CA",
           "name": "Canada",
-          "people": 141
-        },
-        {
-          "code": "AU",
-          "name": "Australia",
-          "people": 131
+          "people": 142
         },
         {
           "code": "KR",
           "name": "South Korea",
+          "people": 132
+        },
+        {
+          "code": "AU",
+          "name": "Australia",
           "people": 131
         },
         {
@@ -837,7 +837,7 @@
         {
           "code": "IN",
           "name": "India",
-          "people": 87
+          "people": 88
         },
         {
           "code": "NL",
@@ -847,12 +847,12 @@
         {
           "code": "BR",
           "name": "Brazil",
-          "people": 82
+          "people": 83
         },
         {
           "code": "ES",
           "name": "Spain",
-          "people": 82
+          "people": 83
         },
         {
           "code": "PL",
@@ -882,7 +882,7 @@
         {
           "code": "VN",
           "name": "Vietnam",
-          "people": 46
+          "people": 47
         },
         {
           "code": "UA",
@@ -910,13 +910,13 @@
           "people": 35
         },
         {
-          "code": "BE",
-          "name": "Belgium",
-          "people": 31
-        },
-        {
           "code": "DK",
           "name": "Denmark",
+          "people": 32
+        },
+        {
+          "code": "BE",
+          "name": "Belgium",
           "people": 31
         },
         {
@@ -935,13 +935,13 @@
           "people": 25
         },
         {
-          "code": "MX",
-          "name": "Mexico",
-          "people": 21
-        },
-        {
           "code": "NZ",
           "name": "New Zealand",
+          "people": 22
+        },
+        {
+          "code": "MX",
+          "name": "Mexico",
           "people": 21
         },
         {
@@ -960,6 +960,16 @@
           "people": 19
         },
         {
+          "code": "FI",
+          "name": "Finland",
+          "people": 15
+        },
+        {
+          "code": "HU",
+          "name": "Hungary",
+          "people": 15
+        },
+        {
           "code": "IE",
           "name": "Ireland",
           "people": 15
@@ -968,16 +978,6 @@
           "code": "RO",
           "name": "Romania",
           "people": 15
-        },
-        {
-          "code": "FI",
-          "name": "Finland",
-          "people": 14
-        },
-        {
-          "code": "HU",
-          "name": "Hungary",
-          "people": 14
         },
         {
           "code": "ZA",
@@ -1027,7 +1027,7 @@
         {
           "code": "CL",
           "name": "Chile",
-          "people": 9
+          "people": 8
         },
         {
           "code": "SA",
@@ -1155,6 +1155,11 @@
           "people": 2
         },
         {
+          "code": "TN",
+          "name": "Tunisia",
+          "people": 2
+        },
+        {
           "code": "UY",
           "name": "Uruguay",
           "people": 2
@@ -1172,6 +1177,11 @@
         {
           "code": "AM",
           "name": "Armenia",
+          "people": 1
+        },
+        {
+          "code": "BH",
+          "name": "Bahrain",
           "people": 1
         },
         {
@@ -1285,11 +1295,6 @@
           "people": 1
         },
         {
-          "code": "TN",
-          "name": "Tunisia",
-          "people": 1
-        },
-        {
           "code": "UG",
           "name": "Uganda",
           "people": 1
@@ -1307,8 +1312,8 @@
       ]
     },
     "issues": {
-      "people": 680,
-      "placed": 239,
+      "people": 686,
+      "placed": 242,
       "list": [
         {
           "code": "US",
@@ -1338,7 +1343,12 @@
         {
           "code": "MX",
           "name": "Mexico",
-          "people": 14
+          "people": 15
+        },
+        {
+          "code": "FR",
+          "name": "France",
+          "people": 9
         },
         {
           "code": "PT",
@@ -1346,23 +1356,18 @@
           "people": 9
         },
         {
-          "code": "FR",
-          "name": "France",
-          "people": 8
-        },
-        {
           "code": "IT",
           "name": "Italy",
-          "people": 7
-        },
-        {
-          "code": "CH",
-          "name": "Switzerland",
-          "people": 7
+          "people": 8
         },
         {
           "code": "NL",
           "name": "Netherlands",
+          "people": 6
+        },
+        {
+          "code": "CH",
+          "name": "Switzerland",
           "people": 6
         },
         {
@@ -1446,6 +1451,11 @@
           "people": 1
         },
         {
+          "code": "IL",
+          "name": "Israel",
+          "people": 1
+        },
+        {
           "code": "LT",
           "name": "Lithuania",
           "people": 1
@@ -1468,8 +1478,8 @@
       ]
     },
     "pulls": {
-      "people": 683,
-      "placed": 482,
+      "people": 686,
+      "placed": 485,
       "list": [
         {
           "code": "DE",
@@ -1479,7 +1489,7 @@
         {
           "code": "MX",
           "name": "Mexico",
-          "people": 123
+          "people": 126
         },
         {
           "code": "FR",

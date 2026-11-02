@@ -1,28 +1,28 @@
 {
-  "stars": 167,
-  "downloads": 311,
-  "discord": 385,
+  "stars": 171,
+  "downloads": 375,
+  "discord": 387,
   "contributors": 5,
-  "releases": 4,
-  "issuesFixed": 6,
+  "releases": 5,
+  "issuesFixed": 7,
   "readOn": {
-    "stars": "2026-10-31",
-    "downloads": "2026-10-31",
-    "discord": "2026-10-31",
-    "contributors": "2026-10-31",
-    "releases": "2026-10-31",
-    "issuesFixed": "2026-10-31",
-    "bestPractices": "2026-10-31",
-    "baseline": "2026-10-31",
-    "scorecard": "2026-10-31",
-    "coverage": "2026-10-31",
-    "field": "2026-10-31"
+    "stars": "2026-11-02",
+    "downloads": "2026-11-02",
+    "discord": "2026-11-02",
+    "contributors": "2026-11-02",
+    "releases": "2026-11-02",
+    "issuesFixed": "2026-11-02",
+    "bestPractices": "2026-11-02",
+    "baseline": "2026-11-02",
+    "scorecard": "2026-11-02",
+    "coverage": "2026-11-02",
+    "field": "2026-11-02"
   },
   "people": [
     {
       "login": "diazdesandi",
       "avatar": "https://avatars.githubusercontent.com/u/17421494?v=4",
-      "commits": 198
+      "commits": 201
     },
     {
       "login": "lylythechosenone",
@@ -30,14 +30,14 @@
       "commits": 2
     },
     {
-      "login": "unsecretised",
-      "avatar": "https://avatars.githubusercontent.com/u/132474703?v=4",
+      "login": "MintCollector",
+      "avatar": "https://avatars.githubusercontent.com/u/158844909?v=4",
       "commits": 2
     },
     {
-      "login": "MintCollector",
-      "avatar": "https://avatars.githubusercontent.com/u/158844909?v=4",
-      "commits": 1
+      "login": "unsecretised",
+      "avatar": "https://avatars.githubusercontent.com/u/132474703?v=4",
+      "commits": 2
     },
     {
       "login": "OwenCope",
@@ -55,25 +55,25 @@
   "assurance": {
     "bestPractices": "silver",
     "baseline": 3,
-    "scorecard": 8.1,
-    "coverage": 86,
+    "scorecard": 8.2,
+    "coverage": 86.1,
     "field": {
-      "projects": 13507,
-      "gold": 112,
-      "baseline3": 100
+      "projects": 13576,
+      "gold": 113,
+      "baseline3": 102
     }
   },
   "translators": [],
   "world": {
-    "checked": "2026-10-31",
+    "checked": "2026-11-02",
     "stargazers": {
-      "people": 167,
-      "placed": 71,
+      "people": 171,
+      "placed": 74,
       "list": [
         {
           "code": "US",
           "name": "United States",
-          "people": 16
+          "people": 17
         },
         {
           "code": "DE",
@@ -96,6 +96,11 @@
           "people": 4
         },
         {
+          "code": "CN",
+          "name": "China",
+          "people": 3
+        },
+        {
           "code": "FR",
           "name": "France",
           "people": 3
@@ -103,11 +108,6 @@
         {
           "code": "AU",
           "name": "Australia",
-          "people": 2
-        },
-        {
-          "code": "CN",
-          "name": "China",
           "people": 2
         },
         {
@@ -133,6 +133,11 @@
         {
           "code": "AR",
           "name": "Argentina",
+          "people": 1
+        },
+        {
+          "code": "FI",
+          "name": "Finland",
           "people": 1
         },
         {
@@ -188,7 +193,7 @@
       ]
     },
     "issues": {
-      "people": 12,
+      "people": 14,
       "placed": 2,
       "list": [
         {
@@ -199,13 +204,13 @@
       ]
     },
     "pulls": {
-      "people": 41,
-      "placed": 31,
+      "people": 48,
+      "placed": 35,
       "list": [
         {
           "code": "MX",
           "name": "Mexico",
-          "people": 28
+          "people": 32
         },
         {
           "code": "TW",
