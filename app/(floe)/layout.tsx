@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
+import { PapelStrip } from '@/components/papel-strip';
 import { SiteFooter } from '@/components/site-footer';
 import { SiteFrame } from '@/components/site-frame';
 import { floeTabIcons } from '@/lib/shared';
@@ -10,9 +11,12 @@ export const metadata: Metadata = { icons: floeTabIcons };
 // header and a footer that are Floe's.
 export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <SiteFrame product="floe">
-      {children}
-      <SiteFooter product="floe" />
-    </SiteFrame>
+    <>
+      <PapelStrip />
+      <SiteFrame product="floe">
+        {children}
+        <SiteFooter product="floe" />
+      </SiteFrame>
+    </>
   );
 }

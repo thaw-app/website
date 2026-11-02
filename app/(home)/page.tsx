@@ -8,6 +8,7 @@ import { ClaudeMark } from '@/components/claude-mark';
 import { FaqPrompt, faqData } from '@/components/faq';
 import { JsonLd } from '@/components/json-ld';
 import { getMDXComponents } from '@/components/mdx';
+import { PapelPicado } from '@/components/papel-picado';
 import { ProductHuntMark } from '@/components/product-hunt-mark';
 import { ProductLanding, TryIt } from '@/components/product-landing';
 import { latestStable, pageAlternates } from '@/lib/releases';
@@ -75,7 +76,16 @@ export default function HomePage() {
       <ProductLanding
         // The same size on a short window as on a tall one: the column scrolls with the
         // page when it is taller than the window.
-        mark={<AsciiCube />}
+        mark={
+          <>
+            <div className="in-season">
+              <PapelPicado product="thaw" />
+            </div>
+            <div className="off-season">
+              <AsciiCube />
+            </div>
+          </>
+        }
         title={sitePages.home.title}
         lead="Take back your menu bar. Hide what you don’t need, and find anything in a keystroke."
         terms={[

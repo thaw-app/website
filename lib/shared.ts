@@ -13,7 +13,7 @@ export const siteName = 'Thaw';
 export const siteDescription = 'Open source menu bar manager and launcher for macOS.';
 export const docsRoute = '/docs';
 export const changelogRoute = '/changelog';
-export const docsImageRoute = '/og/docs';
+const docsImageRoute = '/og/docs';
 export const docsContentRoute = '/llms.mdx/docs';
 
 // Each product's app repo, which is also where its docs are written: see

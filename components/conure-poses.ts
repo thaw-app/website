@@ -6,7 +6,7 @@
 // the dark tips of its flight feathers, O its long green tail, F its grey feet. A dot is
 // nothing. The tail is as long as the rest of the bird, which is why the picture is
 // taller and wider than the body alone needs.
-export const poses: Record<string, string[]> = {
+const poses: Record<string, string[]> = {
   perched: [
     '........................',
     '........................',

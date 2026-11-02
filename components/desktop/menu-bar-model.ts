@@ -3,7 +3,7 @@ import catalogue from './thaw-items.json';
 /** One of the three places Thaw keeps a menu bar item. */
 export type SectionId = 'visible' | 'hidden' | 'alwaysHidden';
 
-export const sectionIds: SectionId[] = ['visible', 'hidden', 'alwaysHidden'];
+const sectionIds: SectionId[] = ['visible', 'hidden', 'alwaysHidden'];
 
 export interface BarItem {
   name: string;

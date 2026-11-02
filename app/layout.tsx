@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next';
 import { Fragment_Mono, Schibsted_Grotesk } from 'next/font/google';
 import { Providers } from '@/components/providers';
 import { pageAlternates } from '@/lib/releases';
+import { seasonScript } from '@/lib/season';
 import { siteDescription, siteName, siteUrl } from '@/lib/shared';
 
 // Both are open fonts, fetched at build time and served from the site itself.
@@ -44,6 +45,10 @@ export default function Layout({ children }: LayoutProps<'/'>) {
       className={`${text.variable} ${code.variable}`}
       suppressHydrationWarning
     >
+      <head>
+        {/* biome-ignore lint/security/noDangerouslySetInnerHtml: a fixed line of ours, which has to run before the first paint */}
+        <script dangerouslySetInnerHTML={{ __html: seasonScript }} />
+      </head>
       <body className="flex flex-col min-h-dvh">
         {/* The first stop for the keyboard: past the banner and the header to the page. */}
         <a href="#content" className="skip-link">

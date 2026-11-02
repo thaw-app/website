@@ -12,6 +12,7 @@ import {
   repoUrl,
 } from '@/lib/shared';
 import { FooterArt } from './footer-art';
+import { PapelBanner } from './papel-banner';
 
 interface Foot {
   about: string;
@@ -147,6 +148,7 @@ export function SiteFooter({
   const repo = repoUrl(product);
   return (
     <footer className="border-t">
+      <PapelBanner />
       <div className="grid w-full gap-x-16 gap-y-12 px-6 py-14 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:px-10">
         <div className="flex flex-col items-start gap-5">
           <Image src={icon} alt="" width={32} className="size-8" />

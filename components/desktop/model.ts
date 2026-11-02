@@ -1,8 +1,8 @@
 /** The state the mock desktop's pieces share. */
 
 // 'notch' is Thaw's shape that parts around the camera housing.
-export type ShapeKind = 'none' | 'full' | 'split' | 'notch';
-export type TintKind = 'none' | 'solid' | 'gradient';
+type ShapeKind = 'none' | 'full' | 'split' | 'notch';
+type TintKind = 'none' | 'solid' | 'gradient';
 
 /** A cut-down version of what Thaw's Menu Bar Appearance settings store. */
 export interface Appearance {

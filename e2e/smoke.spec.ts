@@ -347,20 +347,240 @@ test('Floe’s pages are under Floe’s own header', async ({ page, isMobile }) 
   await expect(page).toHaveURL(/localhost:\d+\/$/);
 });
 
-test('the cube is one size on a short window and a tall one', async ({ page, isMobile }) => {
-  test.skip(isMobile, 'a phone has one size of window');
-  // It once gave up height on a short window, and came out a third smaller on a laptop.
+// The papel picado is up through November 4, 2026, so these say when they are looking.
+const inSeason = new Date(2026, 10, 2, 12);
+
+test('the papel picado comes down after November 4, and the drawings come back', async ({
+  page,
+}) => {
+  const fetched: string[] = [];
+  page.on('request', (request) => {
+    if (request.url().includes('/papel-picado/')) fetched.push(request.url());
+  });
+  // The last minute of the 4th, and the first of the 5th.
+  await page.clock.setFixedTime(new Date(2026, 10, 4, 23, 59));
+  await page.goto('/');
+  await expect(page.locator('.papel-picado')).toBeVisible();
+  await expect(page.locator('canvas.ascii-cube')).toBeHidden();
+  await page.waitForLoadState('networkidle');
+  await page.clock.setFixedTime(new Date(2026, 10, 5, 0, 1));
+  await page.goto('about:blank');
+  fetched.length = 0;
   for (const path of ['/', '/floe']) {
-    const widths: number[] = [];
+    await page.goto(path);
+    await expect(page.locator('canvas.ascii-cube')).toBeVisible();
+    await expect(page.locator('.papel-picado')).toBeHidden();
+    await expect(page.locator('.papel-strip')).toBeHidden();
+    await expect(page.locator('.papel-banner')).toBeHidden();
+    await page.locator('footer').last().scrollIntoViewIfNeeded();
+    await page.waitForTimeout(300);
+  }
+  expect(fetched).toEqual([]);
+});
+
+test('the paper hangs again when its room changes width', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'a phone has one size of window');
+  await page.clock.setFixedTime(inSeason);
+  await page.setViewportSize({ width: 1400, height: 800 });
+  await page.goto('/');
+  const string = page.locator('.papel-strip canvas').first();
+  const drawn = () => string.evaluate((canvas: HTMLCanvasElement) => canvas.width);
+  await expect.poll(drawn).toBeGreaterThan(1200);
+  const wide = await drawn();
+  await page.setViewportSize({ width: 900, height: 800 });
+  // Drawn for the new width, and not a wide picture squeezed into it.
+  await expect.poll(drawn).toBeLessThan(wide * 0.75);
+});
+
+test('where the paper cannot hang, the sheet stays a picture and the strings stand aside', async ({
+  page,
+}) => {
+  await page.clock.setFixedTime(inSeason);
+  await page.addInitScript(() => {
+    HTMLCanvasElement.prototype.getContext = new Proxy(HTMLCanvasElement.prototype.getContext, {
+      apply: (real, canvas, args) =>
+        args[0] === 'webgl2' ? null : Reflect.apply(real, canvas, args),
+    });
+  });
+  await page.goto('/');
+  await expect(page.locator('.papel-still')).toBeVisible();
+  await expect(page.locator('.papel-strip')).toHaveCount(0);
+  await page.locator('footer').last().scrollIntoViewIfNeeded();
+  await expect(page.locator('.papel-banner')).toHaveCount(0);
+});
+
+test('with motion reduced the paper hangs still, and the close button is a stop on the keyboard', async ({
+  page,
+}) => {
+  await page.clock.setFixedTime(inSeason);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/');
+  const strip = page.locator('.papel-strip');
+  await expect(strip.locator('canvas')).toHaveCount(2);
+  await expect(strip.getByRole('img', { name: /papel picado/ })).toBeAttached();
+  // However long it takes to settle, it does, and then nothing moves.
+  await expect(async () => {
+    const first = await strip.screenshot();
+    await page.waitForTimeout(800);
+    expect((await strip.screenshot()).equals(first)).toBe(true);
+  }).toPass({ timeout: 20000 });
+  await page.keyboard.press('Tab');
+  await page.keyboard.press('Tab');
+  await expect(page.getByRole('button', { name: 'Close Banner' })).toBeFocused();
+});
+
+test('on a phone a swipe scrolls past the paper, and holding it pulls it instead', async ({
+  page,
+  isMobile,
+}) => {
+  test.skip(!isMobile, 'phones only');
+  await page.clock.setFixedTime(inSeason);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/');
+  const sheet = page.locator('.papel-picado');
+  await expect(sheet.locator('.papel-still')).toBeHidden();
+  await page.waitForTimeout(3000);
+  const box = await sheet.boundingBox();
+  if (!box) throw new Error('no sheet');
+  const x = box.x + box.width / 2;
+  const y = box.y + box.height * 0.7;
+  const finger = await page.context().newCDPSession(page);
+  const touch = (type: string, at?: { x: number; y: number }) =>
+    finger.send('Input.dispatchTouchEvent', {
+      type,
+      touchPoints: at ? [at] : [],
+    } as never);
+  const before = await sheet.screenshot();
+  await touch('touchStart', { x, y });
+  await page.waitForTimeout(350);
+  for (let i = 1; i <= 8; i++) await touch('touchMove', { x: x + i * 3, y: y + i * 6 });
+  await page.waitForTimeout(300);
+  expect(await page.evaluate(() => window.scrollY)).toBe(0);
+  expect((await sheet.screenshot()).equals(before)).toBe(false);
+  await touch('touchEnd');
+  await touch('touchStart', { x, y });
+  for (let i = 1; i <= 10; i++) await touch('touchMove', { x, y: y - i * 22 });
+  await touch('touchEnd');
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(20);
+  const close = await page.getByRole('button', { name: 'Close Banner' }).boundingBox();
+  await page.evaluate(() => window.scrollTo(0, 0));
+  expect(close?.width).toBeGreaterThanOrEqual(44);
+});
+
+test('when the graphics are taken away the picture comes back, and then the paper', async ({
+  page,
+  isMobile,
+}) => {
+  test.skip(isMobile, 'the same on either');
+  await page.clock.setFixedTime(inSeason);
+  await page.goto('/');
+  const still = page.locator('.papel-still');
+  await expect(still).toBeHidden();
+  const lose = (how: 'loseContext' | 'restoreContext') =>
+    page
+      .locator('.papel-picado canvas')
+      .first()
+      .evaluate((canvas: HTMLCanvasElement, how) => {
+        const keep = window as unknown as { lostExtension?: WEBGL_lose_context | null };
+        keep.lostExtension ??= canvas.getContext('webgl2')?.getExtension('WEBGL_lose_context');
+        keep.lostExtension?.[how]();
+      }, how);
+  await lose('loseContext');
+  await expect(still).toBeVisible();
+  await lose('restoreContext');
+  await expect(still).toBeHidden();
+});
+
+test('the paper sheet is one size on a short window and a tall one', async ({ page, isMobile }) => {
+  await page.clock.setFixedTime(inSeason);
+  test.skip(isMobile, 'a phone has one size of window');
+  // The drawing over the headline once gave up height on a short window.
+  for (const path of ['/', '/floe']) {
+    const heights: number[] = [];
     for (const height of [620, 900]) {
       await page.setViewportSize({ width: 1280, height });
       await page.goto(path);
-      const cube = page.locator('canvas.ascii-cube');
-      await expect.poll(async () => (await cube.boundingBox())?.width ?? 0).toBeGreaterThan(300);
-      widths.push(Math.round((await cube.boundingBox())?.width ?? 0));
+      const sheet = page.locator('.papel-picado');
+      await expect.poll(async () => (await sheet.boundingBox())?.height ?? 0).toBeGreaterThan(300);
+      heights.push(Math.round((await sheet.boundingBox())?.height ?? 0));
     }
-    expect(widths[0]).toBe(widths[1]);
+    expect(heights[0]).toBe(heights[1]);
+    // The canvas takes over from the picture.
+    await expect(page.locator('.papel-still')).toBeHidden();
   }
+});
+
+test('a sheet can be pulled, and the headline stays where it was', async ({ page, isMobile }) => {
+  await page.clock.setFixedTime(inSeason);
+  test.skip(isMobile, 'a finger on a phone is tried by hand');
+  for (const path of ['/', '/floe']) {
+    await page.goto(path);
+    await expect(page.locator('.papel-still')).toBeHidden();
+    const headline = await page.locator('h1').boundingBox();
+    const box = await page.locator('.papel-picado').boundingBox();
+    if (!box) throw new Error('no sheet');
+    await page.mouse.move(box.x + box.width / 2 - 60, box.y + box.height * 0.8);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width / 2 - 100, box.y + box.height * 1.3, { steps: 8 });
+    await page.mouse.up();
+    expect(await page.locator('h1').boundingBox()).toEqual(headline);
+  }
+});
+
+test('the short string is real paper, over a product’s own page, and stays closed once closed', async ({
+  page,
+}) => {
+  await page.clock.setFixedTime(inSeason);
+  for (const path of ['/', '/floe']) {
+    await page.goto(path);
+    await expect(page.locator('.papel-strip canvas')).toHaveCount(2);
+    await expect(page.locator('.papel-strip img')).toHaveCount(0);
+  }
+  for (const path of ['/community', '/docs/thaw']) {
+    await page.goto(path);
+    await expect(page.locator('.papel-strip')).toHaveCount(0);
+  }
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Close Banner' }).click();
+  await expect(page.locator('.papel-strip')).toBeHidden();
+  await page.reload();
+  await expect(page.locator('h1')).toBeVisible();
+  await expect(page.locator('.papel-strip')).toBeHidden();
+});
+
+test('the strings follow the pattern, and the footer’s is fetched only when it is near', async ({
+  page,
+  isMobile,
+}) => {
+  await page.clock.setFixedTime(inSeason);
+  const fetched: string[] = [];
+  page.on('request', (request) => {
+    const name = /\/papel-picado\/(small-)?([a-z]+)\.svg/.exec(request.url());
+    if (name) fetched.push(`${name[1] ?? ''}${name[2]}`);
+  });
+  await page.goto('/');
+  await expect(page.locator('.papel-strip canvas')).toHaveCount(2);
+  // The short string: its three marks, and traditional ones that do not come round twice.
+  for (const mark of ['small-floe', 'small-cube', 'small-droppy']) {
+    await expect.poll(() => fetched).toContain(mark);
+  }
+  await page.waitForTimeout(300);
+  const traditional = fetched.filter(
+    (name) => name.startsWith('small-') && !/floe|cube|droppy/.test(name),
+  );
+  expect(traditional.length).toBeGreaterThanOrEqual(2);
+  expect(new Set(traditional).size).toBe(traditional.length);
+  // No skulls, and nothing of the footer's yet.
+  expect(fetched.filter((name) => !name.startsWith('small-'))).toEqual([]);
+  const room = await page.locator('.papel-banner').boundingBox();
+  await page.locator('.papel-banner').scrollIntoViewIfNeeded();
+  await expect(page.locator('.papel-banner canvas')).toHaveCount(2);
+  const full = () => fetched.filter((name) => !name.startsWith('small-'));
+  await expect.poll(() => full().length).toBeGreaterThan(0);
+  await expect.poll(() => full().length).toBe(isMobile ? 3 : 7);
+  for (const mark of ['floe', 'cube', 'droppy']) expect(full()).toContain(mark);
+  // Its room was kept, so nothing moved when it arrived.
+  expect((await page.locator('.papel-banner').boundingBox())?.height).toBe(room?.height);
 });
 
 test('the conure is on the page that is not there, and not in its footer too', async ({ page }) => {

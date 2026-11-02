@@ -3,6 +3,7 @@ import { AsciiCube } from '@/components/ascii-cube';
 import { floeMask } from '@/components/ascii-cube-mask';
 import { JsonLd } from '@/components/json-ld';
 import { getMDXComponents } from '@/components/mdx';
+import { PapelPicado } from '@/components/papel-picado';
 import { ProductLanding, TryIt } from '@/components/product-landing';
 import { latestStable, pageAlternates } from '@/lib/releases';
 import { products, repoUrl, siteUrl } from '@/lib/shared';
@@ -53,12 +54,19 @@ export default function FloePage() {
         // Floe's icon in characters and in its own blue, where Thaw's page has its cube. It
         // drifts where the cube melts.
         mark={
-          <AsciiCube
-            mask={floeMask}
-            label="Floe’s icon, a floe of ice, drawn in text characters"
-            className="ascii-floe"
-            drift
-          />
+          <>
+            <div className="in-season">
+              <PapelPicado product="floe" />
+            </div>
+            <div className="off-season">
+              <AsciiCube
+                mask={floeMask}
+                label="Floe’s icon, a floe of ice, drawn in text characters"
+                className="ascii-floe"
+                drift
+              />
+            </div>
+          </>
         }
         title={sitePages.floe.title}
         lead="One hotkey, one search: your apps, commands, quicklinks and System Settings, and Raycast extensions, unmodified."
