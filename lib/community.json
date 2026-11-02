@@ -1,24 +1,24 @@
 {
   "stars": 12477,
-  "downloads": 458366,
+  "downloads": 458385,
   "homebrewYear": 30374,
   "discord": 387,
   "contributors": 62,
   "releases": 85,
   "issuesFixed": 556,
   "readOn": {
-    "stars": "2026-11-01",
-    "downloads": "2026-11-01",
-    "homebrewYear": "2026-11-01",
-    "discord": "2026-11-01",
-    "contributors": "2026-11-01",
-    "releases": "2026-11-01",
-    "issuesFixed": "2026-11-01",
-    "bestPractices": "2026-11-01",
-    "baseline": "2026-11-01",
-    "scorecard": "2026-11-01",
-    "coverage": "2026-11-01",
-    "field": "2026-11-01"
+    "stars": "2026-11-02",
+    "downloads": "2026-11-02",
+    "homebrewYear": "2026-11-02",
+    "discord": "2026-11-02",
+    "contributors": "2026-11-02",
+    "releases": "2026-11-02",
+    "issuesFixed": "2026-11-02",
+    "bestPractices": "2026-11-02",
+    "baseline": "2026-11-02",
+    "scorecard": "2026-11-02",
+    "coverage": "2026-11-02",
+    "field": "2026-11-02"
   },
   "people": [
     {
@@ -774,7 +774,7 @@
     }
   ],
   "world": {
-    "checked": "2026-11-01",
+    "checked": "2026-11-02",
     "stargazers": {
       "people": 12477,
       "placed": 5207,
