@@ -46,6 +46,7 @@ const feet: Record<ProductSlug, Foot> = {
           { text: 'Release feed', href: feedUrl('thaw') },
           { text: 'Roadmap', href: '/roadmap' },
           { text: 'Built with', href: '/built-with' },
+          { text: 'Icon generator', href: '/generate' },
           { text: 'Floe, the launcher', href: '/floe' },
         ],
       },

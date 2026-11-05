@@ -26,6 +26,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ['/verified', read],
     ['/faq', undefined],
     ['/built-with', undefined],
+    ['/generate', undefined],
     ['/roadmap', newest.thaw],
     ['/roadmap/thawui', newest.thaw],
     ['/privacy', undefined],

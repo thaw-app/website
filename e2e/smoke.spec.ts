@@ -140,6 +140,7 @@ test('the pages a visitor moves between all answer', async ({ page }) => {
     '/roadmap/thawui',
     '/built-with',
     '/faq',
+    '/generate',
     '/docs/thaw',
     '/docs/thaw/getting-started',
     '/changelog',
@@ -160,6 +161,21 @@ test('the pages a visitor moves between all answer', async ({ page }) => {
   await expect(page).toHaveURL(/\/changelog\/3\.0\.0-beta\.2$/);
   await page.goto('/docs/thaw/changelog/2.0.0/2.0.0-rc.3');
   await expect(page).toHaveURL(/\/changelog\/2\.0\.0-rc\.3$/);
+});
+
+test('the icon generator draws the cube and hands over a PNG', async ({ page }) => {
+  await page.goto('/generate');
+  const icon = page.getByRole('img', { name: /The icon/ });
+  await expect(icon).toHaveAttribute('src', /^data:image\/svg\+xml/);
+  await page.getByRole('button', { name: 'Sketch', pressed: false }).first().click();
+  await expect(page.getByRole('button', { name: 'Chalk on a board' })).toBeVisible();
+  await page.getByRole('button', { name: 'Papel picado', pressed: false }).first().click();
+  await expect(page.getByRole('button', { name: 'Amber' })).toBeVisible();
+  const [download] = await Promise.all([
+    page.waitForEvent('download'),
+    page.getByRole('button', { name: 'Download PNG' }).click(),
+  ]);
+  expect(download.suggestedFilename()).toBe('thaw-icon-1024.png');
 });
 
 test('search finds a docs page', async ({ page, isMobile }) => {
