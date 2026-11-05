@@ -269,7 +269,9 @@ function cube(
   for (const group of groups) {
     if (s.mark === 'layers' && s.layerShadow && group.shadow) {
       const id = `sh-${group.name.replace(/\W/g, '')}`;
-      defs += `<filter id="${id}" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="${tint}" flood-opacity="${Math.min(1, group.shadow * 1.6)}"/></filter>`;
+      // The whole frame, not a share of the layer's own box: a thin layer like the top innards
+      // would otherwise have its shadow cut off in a straight line.
+      defs += `<filter id="${id}" filterUnits="userSpaceOnUse" x="0" y="0" width="${N}" height="${N}"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="${tint}" flood-opacity="${Math.min(1, group.shadow * 1.6)}"/></filter>`;
       body += `<g filter="url(#${id})">${group.body}</g>`;
     } else body += `<g>${group.body}</g>`;
   }
