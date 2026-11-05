@@ -29,13 +29,33 @@ export const dyes = {
 } as const;
 export type Dye = keyof typeof dyes;
 
+/** The colours an aura is blended from, the first two as its ground. */
+export const auras = {
+  sunset: { label: 'Sunset', colours: ['#FF8A4C', '#FFB057', '#F2789F', '#7FA6D6', '#DCDFE6'] },
+  thaw: { label: 'Thaw', colours: ['#FF9933', '#D16B06', '#FFC233', '#FFE7A8', '#F2789F'] },
+  sea: { label: 'Sea', colours: ['#2B6FE0', '#48C6D9', '#9B7BF0', '#E4F1FF', '#1A3F9C'] },
+  dusk: { label: 'Dusk', colours: ['#4A2A86', '#F2789F', '#FF9E5E', '#2E3B8F', '#C9A7F5'] },
+  moss: { label: 'Moss', colours: ['#1F7A55', '#9CCB24', '#F4D35E', '#0E3B4A', '#BFE3C0'] },
+} as const;
+export type Aura = keyof typeof auras;
+
 export interface Settings {
-  style: 'plain' | 'papel';
+  style: 'plain' | 'aura' | 'sketch' | 'blueprint' | 'ink' | 'papel';
+  aura: Aura;
+  /** How many blobs of colour, so how much is going on behind the cube. */
+  blobs: number;
+  softness: number;
+  outline: boolean;
+  /** Light or dark paper for the sketch, a white or a black tile for ink. */
+  tone: 'light' | 'dark';
+  blue: string;
+  grid: boolean;
+  hatch: boolean;
+  grain: boolean;
   shape: 'squircle' | 'rounded' | 'circle' | 'square';
   radius: number;
   margin: number;
   tileShadow: boolean;
-  guide: 'none' | 'circle' | 'rounded';
   bg: 'light' | 'dark' | 'gradient' | 'solid' | 'none';
   bg1: string;
   bg2: string;
@@ -68,11 +88,19 @@ export interface Settings {
 
 export const defaults: Settings = {
   style: 'plain',
+  aura: 'sunset',
+  blobs: 5,
+  softness: 90,
+  outline: false,
+  tone: 'light',
+  blue: '#1F6BF0',
+  grid: true,
+  hatch: true,
+  grain: true,
   shape: 'squircle',
   radius: 22,
   margin: 100,
   tileShadow: true,
-  guide: 'none',
   bg: 'light',
   bg1: '#2B2B2B',
   bg2: '#0A0A0A',
@@ -115,58 +143,19 @@ const app: Partial<Settings> = {
   layerShadow: true,
   size: 100,
   shift: 0,
-  guide: 'none',
 };
 
 /** Where to start, each a whole set of settings, with what it is for. */
 export const presets = {
-  app: { label: 'App icon', settings: app },
-  dark: { label: 'Dark app icon', settings: { ...app, bg: 'dark' } },
-  avatar: {
-    label: 'Profile picture',
-    settings: { ...app, shape: 'square', margin: 0, tileShadow: false, size: 86, guide: 'circle' },
-  },
-  mark: {
-    label: 'Cube only',
-    settings: {
-      ...app,
-      shape: 'square',
-      margin: 0,
-      tileShadow: false,
-      bg: 'none',
-      sheen: false,
-      faces: false,
-      layerShadow: false,
-      size: 132,
-    },
-  },
-  favicon: {
-    label: 'Favicon',
-    settings: {
-      ...app,
-      shape: 'rounded',
-      radius: 22,
-      margin: 0,
-      tileShadow: false,
-      sheen: false,
-      mark: 'flat',
-      markColour: '#FFF6DB',
-      size: 118,
-    },
-  },
+  app: { label: 'Original', settings: app },
+  dark: { label: 'Original, dark', settings: { ...app, bg: 'dark' } },
+  aura: { label: 'Aura', settings: { ...app, style: 'aura', grain: false } },
+  sketch: { label: 'Sketch', settings: { ...app, style: 'sketch' } },
+  blueprint: { label: 'Blueprint', settings: { ...app, style: 'blueprint' } },
+  ink: { label: 'Ink', settings: { ...app, style: 'ink', layerShadow: false } },
   papel: {
     label: 'Papel picado',
-    settings: {
-      style: 'papel',
-      shape: 'square',
-      margin: 0,
-      tileShadow: false,
-      dye: 'amber',
-      backing: 'dark',
-      clear: 'rounded',
-      detail: 'fine',
-      guide: 'circle',
-    },
+    settings: { ...app, style: 'papel', dye: 'amber', backing: 'dark', clear: 'shape' },
   },
 } satisfies Record<string, { label: string; settings: Partial<Settings> }>;
 export type Preset = keyof typeof presets;
@@ -219,6 +208,20 @@ function fillOf(s: Settings): [string, string] | null {
   if (s.bg === 'solid') return [s.bg1, s.bg1];
   return null;
 }
+function mix(hex: string, to: string, k: number) {
+  const rgb = (h: string) => {
+    const n = Number.parseInt(h.slice(1), 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  };
+  const [a, b] = [rgb(hex), rgb(to)];
+  return `#${a
+    .map((c, i) =>
+      Math.round(c + (b[i] - c) * k)
+        .toString(16)
+        .padStart(2, '0'),
+    )
+    .join('')}`;
+}
 function darker(hex: string, k: number) {
   const n = Number.parseInt(hex.slice(1), 16);
   return `rgb(${[(n >> 16) & 255, (n >> 8) & 255, n & 255].map((c) => Math.round(c * k)).join(',')})`;
@@ -230,10 +233,20 @@ function angleStops(angle: number) {
   return `x1="${r1(0.5 - x)}" y1="${r1(0.5 - y)}" x2="${r1(0.5 + x)}" y2="${r1(0.5 + y)}"`;
 }
 
-// The cube, in its own 1024 frame, scaled into the tile.
-function cube(s: Settings, fill: [string, string] | null, colour = '#fff') {
+const placement = (s: Settings) => {
   const t = ((N - 2 * s.margin) / N) * (s.size / 100);
-  const place = `translate(${N / 2} ${N / 2 + s.shift}) scale(${r1(t * 1000) / 1000}) translate(${-N / 2} ${-N / 2})`;
+  return `translate(${N / 2} ${N / 2 + s.shift}) scale(${r1(t * 1000) / 1000}) translate(${-N / 2} ${-N / 2})`;
+};
+
+// The cube, in its own 1024 frame, scaled into the tile.
+function cube(
+  s: Settings,
+  fill: [string, string] | null,
+  colour = '#fff',
+  tones: (layer: Layer) => [string, string] = (layer) => layer.fill,
+  alpha: (layer: Layer) => number = (layer) => layer.opacity,
+) {
+  const place = placement(s);
   let defs = '';
   let body = '';
   const tint = fill ? darker(fill[1], 0.4) : '#000';
@@ -247,8 +260,8 @@ function cube(s: Settings, fill: [string, string] | null, colour = '#fff') {
     }
     if (s.mark === 'layers') {
       const id = `f-${layer.name}`;
-      defs += `<linearGradient id="${id}" gradientUnits="userSpaceOnUse" x1="0" y1="181" x2="0" y2="841"><stop offset="0" stop-color="${layer.fill[0]}"/><stop offset="1" stop-color="${layer.fill[1]}"/></linearGradient>`;
-      group.body += `<g fill="url(#${id})" opacity="${layer.opacity}">${layer.svg}</g>`;
+      defs += `<linearGradient id="${id}" gradientUnits="userSpaceOnUse" x1="0" y1="181" x2="0" y2="841"><stop offset="0" stop-color="${tones(layer)[0]}"/><stop offset="1" stop-color="${tones(layer)[1]}"/></linearGradient>`;
+      group.body += `<g fill="url(#${id})" opacity="${alpha(layer)}">${layer.svg}</g>`;
     } else {
       group.body += `<g fill="${colour}">${layer.svg}</g>`;
     }
@@ -293,6 +306,161 @@ function plain(s: Settings) {
   const mark = s.mark === 'flat' ? cube(s, fill, s.markColour).body : drawn.body;
   // Without a fill there is no tile to keep the cube inside.
   return { defs, out: fill ? `${ground}<g clip-path="url(#tile)">${mark}</g>${sheen}` : mark };
+}
+
+// Lines across the tile, `cells` to a side, as on squared paper.
+function gridPattern(id: string, s: Settings, cells: number, colour: string, width: number) {
+  const cell = r1((N - 2 * s.margin) / cells);
+  return `<pattern id="${id}" patternUnits="userSpaceOnUse" x="${s.margin}" y="${s.margin}" width="${cell}" height="${cell}"><path d="M0 0H${cell}M0 0V${cell}" fill="none" stroke="${colour}" stroke-width="${width}"/></pattern>`;
+}
+
+// The same numbers for the same seed, so a shuffle can be kept and made again.
+function random(seed: number) {
+  let a = seed * 2654435761;
+  return () => {
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+// Blobs of colour blurred into one another, and the cube in white over them.
+function aura(s: Settings) {
+  const shape = tilePath(s);
+  const size = N - 2 * s.margin;
+  const colours = auras[s.aura].colours;
+  const next = random(s.seed);
+  let defs = `<clipPath id="tile"><path d="${shape}"/></clipPath><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${colours[0]}"/><stop offset="1" stop-color="${colours[1]}"/></linearGradient><filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="${r1((s.softness * size) / 824)}"/></filter>`;
+  let blobs = '';
+  for (let i = 0; i < s.blobs; i++) {
+    const x = s.margin + size * (0.05 + 0.9 * next());
+    const y = s.margin + size * (0.05 + 0.9 * next());
+    const rx = size * (0.16 + 0.22 * next());
+    const ry = rx * (0.6 + 0.6 * next());
+    const turn = Math.round(next() * 180);
+    blobs += `<ellipse cx="${r1(x)}" cy="${r1(y)}" rx="${r1(rx)}" ry="${r1(ry)}" transform="rotate(${turn} ${r1(x)} ${r1(y)})" fill="${colours[(i % (colours.length - 1)) + 1]}" opacity="${r1(0.7 + 0.3 * next())}"/>`;
+  }
+  let mark: string;
+  if (s.outline) {
+    // Only the frame and the innards, traced in a round white line.
+    let lines = '';
+    for (const layer of layers)
+      if (layer.group !== 'Faces' || s.faces)
+        lines += `<g fill="none" stroke="#fff" stroke-width="13" stroke-linejoin="round" stroke-linecap="round" opacity="${layer.group === 'Faces' ? 0.5 : 0.95}">${layer.svg}</g>`;
+    mark = `<g transform="${placement(s)}">${lines}</g>`;
+  } else {
+    const drawn = cube(
+      { ...s, mark: 'layers' },
+      [colours[3], colours[1]],
+      '#fff',
+      () => ['#FFFFFF', '#FFFFFF'],
+      (layer) => (layer.group === 'Faces' ? layer.opacity * 0.6 : 0.94),
+    );
+    defs += drawn.defs;
+    mark = drawn.body;
+  }
+  let ground = `<path d="${shape}" fill="url(#bg)"/><g filter="url(#blur)">${blobs}</g>`;
+  if (s.grain) {
+    defs += `<filter id="grain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="5"/><feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  .14 0 0 0 0"/><feComposite in2="SourceAlpha" operator="in"/></filter>`;
+    ground += `<path d="${shape}" filter="url(#grain)"/>`;
+  }
+  return { defs, out: `<g clip-path="url(#tile)">${ground}${mark}</g>` };
+}
+
+// Pencil on squared paper, or chalk on a blackboard: the cube's outlines, its faces hatched.
+function sketch(s: Settings) {
+  const dark = s.tone === 'dark';
+  const shape = tilePath(s);
+  const line = dark ? '#EEEDE6' : '#1C1C1C';
+  const paper = dark ? ['#262626', '#121212'] : ['#FCFCFA', '#EEEEEA'];
+  let defs = `<clipPath id="tile"><path d="${shape}"/></clipPath><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${paper[0]}"/><stop offset="1" stop-color="${paper[1]}"/></linearGradient>`;
+  defs += gridPattern('grid', s, 6, dark ? 'rgba(255,255,255,.16)' : '#B9CFEA', 3);
+  // Each face hatched its own way, so the three read as sides of a box.
+  const angles: Record<string, number> = { 'face-left': 55, 'face-right': -55, 'face-top': 0 };
+  for (const [name, angle] of Object.entries(angles))
+    defs += `<pattern id="h-${name}" patternUnits="userSpaceOnUse" width="19" height="19" patternTransform="rotate(${angle})"><path d="M0 9.5H19" stroke="${line}" stroke-width="3.4"/></pattern>`;
+  // A slight wobble, as a hand draws, and for chalk, gaps where it skipped over the board.
+  defs += `<filter id="hand" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".011" numOctaves="1" seed="${s.seed}" result="w"/><feDisplacementMap in="SourceGraphic" in2="w" scale="5" xChannelSelector="R" yChannelSelector="G" result="d"/>${
+    dark && s.grain
+      ? `<feTurbulence type="fractalNoise" baseFrequency=".7" numOctaves="2" seed="4" result="g"/><feColorMatrix in="g" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -3 2.75" result="a"/><feComposite in="d" in2="a" operator="in"/>`
+      : ''
+  }</filter>`;
+  if (s.grain)
+    defs += `<filter id="tooth" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" seed="2"/><feColorMatrix type="matrix" values="0 0 0 0 ${dark ? 1 : 0}  0 0 0 0 ${dark ? 1 : 0}  0 0 0 0 ${dark ? 1 : 0}  0 0 0 ${dark ? 0.16 : 0.1} 0"/></filter>`;
+  let drawn = '';
+  for (const layer of layers) {
+    const face = layer.group === 'Faces';
+    if (face && !s.faces) continue;
+    const fill = face && s.hatch ? `url(#h-${layer.name})` : face ? 'none' : 'url(#bg)';
+    drawn += `<g fill="${fill}" stroke="${line}" stroke-width="${dark ? 6 : 5.5}" stroke-linejoin="round" stroke-linecap="round">${layer.svg}</g>`;
+  }
+  const ground = `<path d="${shape}" fill="url(#bg)"/>${s.grid ? `<path d="${shape}" fill="url(#grid)"/>` : ''}${s.grain ? `<rect width="${N}" height="${N}" filter="url(#tooth)"/>` : ''}`;
+  return {
+    defs,
+    out: `<g clip-path="url(#tile)">${ground}<g filter="url(#hand)"><g transform="${placement(s)}">${drawn}</g></g></g>`,
+  };
+}
+
+// The cube in pale glass on blue, over the lines an icon is drawn to.
+function blueprint(s: Settings) {
+  const shape = tilePath(s);
+  const size = N - 2 * s.margin;
+  const c = N / 2;
+  let defs = `<clipPath id="tile"><path d="${shape}"/></clipPath><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${mix(s.blue, '#ffffff', 0.12)}"/><stop offset="1" stop-color="${mix(s.blue, '#000000', 0.08)}"/></linearGradient>`;
+  defs += gridPattern('grid', s, 16, 'rgba(255,255,255,.13)', 2.5);
+  const guides = [0.5, 0.39, 0.2]
+    .map((k) => `<circle cx="${c}" cy="${c}" r="${r1(size * k)}"/>`)
+    .join('');
+  const lines = `<path d="M${s.margin} ${s.margin}L${N - s.margin} ${N - s.margin}M${N - s.margin} ${s.margin}L${s.margin} ${N - s.margin}M${c} ${s.margin}V${N - s.margin}M${s.margin} ${c}H${N - s.margin}"/>`;
+  const template = s.grid
+    ? `<path d="${shape}" fill="url(#grid)"/><g fill="none" stroke="#fff" stroke-opacity=".2" stroke-width="2.5">${guides}${lines}</g>`
+    : '';
+  const glass = (layer: Layer): [string, string] =>
+    layer.group === 'Faces'
+      ? ['#FFFFFF', mix(s.blue, '#ffffff', 0.75)]
+      : ['#FFFFFF', mix(s.blue, '#ffffff', 0.7)];
+  const drawn = cube({ ...s, mark: 'layers' }, [s.blue, s.blue], '#fff', glass);
+  defs += drawn.defs;
+  return {
+    defs,
+    out: `<g clip-path="url(#tile)"><path d="${shape}" fill="url(#bg)"/>${template}${drawn.body}</g>`,
+  };
+}
+
+// One dark ink on a white tile, or white on black, with a little grain.
+function ink(s: Settings) {
+  const dark = s.tone === 'dark';
+  const shape = tilePath(s);
+  const tile = dark ? ['#1C1C1C', '#080808'] : ['#FFFFFF', '#F2F2F2'];
+  const tones = (layer: Layer): [string, string] =>
+    dark
+      ? layer.group === 'Faces'
+        ? ['#DADADA', '#9A9A9A']
+        : ['#FFFFFF', '#C4C4C4']
+      : layer.group === 'Faces'
+        ? ['#6A6A6A', '#3A3A3A']
+        : ['#3C3C3C', '#0C0C0C'];
+  let defs = `<clipPath id="tile"><path d="${shape}"/></clipPath><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${tile[0]}"/><stop offset="1" stop-color="${tile[1]}"/></linearGradient>`;
+  // The faces nearly as dark as the frame, so the cube reads as one solid shape.
+  const drawn = cube(
+    { ...s, mark: 'layers' },
+    dark ? ['#000000', '#000000'] : ['#ffffff', '#5a5a5a'],
+    '#000',
+    tones,
+    (layer) => (layer.group === 'Faces' ? Math.min(1, layer.opacity + (dark ? 0.3 : 0.35)) : 1),
+  );
+  defs += drawn.defs;
+  const body = drawn.body;
+  if (s.grain) {
+    // Fine speckle over the ink and the tile, as on printed card; it also hides the gradient's steps.
+    defs += `<filter id="grain" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".95" numOctaves="2" seed="3"/><feColorMatrix type="matrix" values="0 0 0 0 ${dark ? 1 : 0}  0 0 0 0 ${dark ? 1 : 0}  0 0 0 0 ${dark ? 1 : 0}  ${dark ? 0.16 : 0.08} 0 0 0 0"/><feComposite in2="SourceAlpha" operator="in" result="g"/><feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="g"/></feMerge></filter>`;
+  }
+  const drawnInk = `<path d="${shape}" fill="url(#bg)"/>${body}`;
+  return {
+    defs,
+    out: `<g clip-path="url(#tile)">${s.grain ? `<g filter="url(#grain)">${drawnInk}</g>` : drawnInk}</g>`,
+  };
 }
 
 // Papel picado: the shapes the cuts are made of, in a sheet 600 across.
@@ -454,7 +622,7 @@ function papel(s: Settings) {
 
 /** The icon as one SVG, 1024 square. */
 export function compose(s: Settings) {
-  const { defs, out } = s.style === 'papel' ? papel(s) : plain(s);
+  const { defs, out } = { plain, aura, sketch, blueprint, ink, papel }[s.style](s);
   let shadow = '';
   let drawn = out;
   if (s.tileShadow && s.margin > 0) {
@@ -550,30 +718,4 @@ export function zip(files: { name: string; data: Uint8Array }[]) {
   return new Blob([...parts, ...central, new Uint8Array(end.buffer)] as BlobPart[], {
     type: 'application/zip',
   });
-}
-
-/** An .ico that holds PNGs, which every current browser reads. */
-export function ico(images: { size: number; data: Uint8Array }[]) {
-  const head = new DataView(new ArrayBuffer(6 + 16 * images.length));
-  head.setUint16(2, 1, true);
-  head.setUint16(4, images.length, true);
-  let offset = 6 + 16 * images.length;
-  images.forEach(({ size, data }, i) => {
-    const at = 6 + 16 * i;
-    head.setUint8(at, size >= 256 ? 0 : size);
-    head.setUint8(at + 1, size >= 256 ? 0 : size);
-    head.setUint16(at + 4, 1, true);
-    head.setUint16(at + 6, 32, true);
-    head.setUint32(at + 8, data.length, true);
-    head.setUint32(at + 12, offset, true);
-    offset += data.length;
-  });
-  const out = new Uint8Array(offset);
-  out.set(new Uint8Array(head.buffer), 0);
-  let at = 6 + 16 * images.length;
-  for (const { data } of images) {
-    out.set(data, at);
-    at += data.length;
-  }
-  return out;
 }

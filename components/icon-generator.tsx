@@ -4,11 +4,12 @@ import { type ReactNode, useEffect, useMemo, useState } from 'react';
 import { Choice } from '@/components/choice';
 import { choiceClass } from '@/components/choice-style';
 import {
+  type Aura,
+  auras,
   compose,
   type Dye,
   dyes,
   fromPreset,
-  ico,
   type Preset,
   png,
   presets,
@@ -139,7 +140,7 @@ export function IconGenerator() {
   const [settings, setSettings] = useState<Settings>(() => fromPreset('app'));
   const [preset, setPreset] = useState<Preset | null>('app');
   const [small, setSmall] = useState<string[]>([]);
-  const [px, setPx] = useState(1024);
+  const [px, setPx] = useState('1024');
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
   const [svg, setSvg] = useState('');
@@ -156,16 +157,22 @@ export function IconGenerator() {
   // The papel cube is measured in the page, so the icon is drawn once the page is running.
   useEffect(() => setSvg(compose(settings)), [settings]);
 
+  // The small previews wait for a slider to settle, rather than being drawn at every step.
   useEffect(() => {
     if (!svg) return;
     let current = true;
-    (async () => {
-      const urls: string[] = [];
-      for (const n of SIZES) urls.push((await rasterise(svg, n * 2)).toDataURL());
-      if (current) setSmall(urls);
-    })();
+    const timer = setTimeout(async () => {
+      try {
+        const urls: string[] = [];
+        for (const n of SIZES) urls.push((await rasterise(svg, n * 2)).toDataURL());
+        if (current) setSmall(urls);
+      } catch {
+        if (current) setSmall([]);
+      }
+    }, 150);
     return () => {
       current = false;
+      clearTimeout(timer);
     };
   }, [svg]);
 
@@ -187,7 +194,7 @@ export function IconGenerator() {
   }
 
   async function downloadPng() {
-    const n = Math.min(4096, Math.max(16, Math.round(px) || 1024));
+    const n = Math.min(4096, Math.max(16, Math.round(Number(px)) || 1024));
     save(
       new Blob([await png(await rasterise(svg, n))] as BlobPart[], { type: 'image/png' }),
       `thaw-icon-${n}.png`,
@@ -196,8 +203,8 @@ export function IconGenerator() {
   }
   function downloadSvg() {
     save(new Blob([svg], { type: 'image/svg+xml' }), 'thaw-icon.svg');
-    return papel
-      ? 'Saved the SVG. The paper is drawn with SVG filters, which some design apps show flat.'
+    return papel || s.style === 'sketch' || (s.style === 'ink' && s.grain)
+      ? 'Saved the SVG. The paper and grain are SVG filters, which some design apps show flat.'
       : 'Saved the SVG.';
   }
   async function downloadIconset() {
@@ -215,28 +222,13 @@ export function IconGenerator() {
     save(zip(files), 'Thaw.iconset.zip');
     return 'Saved. Unzip it, then run iconutil -c icns Thaw.iconset for an .icns.';
   }
-  async function downloadFavicons() {
-    const at = async (n: number) => png(await rasterise(svg, n));
-    const ico16 = await at(16);
-    const ico32 = await at(32);
-    const files = [
-      {
-        name: 'favicon.ico',
-        data: ico([
-          { size: 16, data: ico16 },
-          { size: 32, data: ico32 },
-          { size: 48, data: await at(48) },
-        ]),
-      },
-      { name: 'favicon-16.png', data: ico16 },
-      { name: 'favicon-32.png', data: ico32 },
-      { name: 'apple-touch-icon.png', data: await at(180) },
-      { name: 'icon-192.png', data: await at(192) },
-      { name: 'icon-512.png', data: await at(512) },
-      { name: 'icon.svg', data: new TextEncoder().encode(svg) },
-    ];
-    save(zip(files), 'thaw-favicons.zip');
-    return 'Saved favicon.ico, the PNG sizes, an apple-touch-icon and an SVG.';
+  async function copyPng() {
+    // The PNG is handed over as a promise, so Safari still counts the copy as part of the click.
+    const blob = rasterise(svg, 1024)
+      .then(png)
+      .then((data) => new Blob([data] as BlobPart[], { type: 'image/png' }));
+    await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+    return 'Copied. Select Thaw in Finder, press ⌘I, click the small icon at the top and paste.';
   }
 
   return (
@@ -253,8 +245,9 @@ export function IconGenerator() {
           aria-label="The icon"
           className="flex flex-col lg:sticky lg:top-16 lg:h-[calc(100dvh-5rem)] lg:max-h-[52rem] lg:self-start"
         >
-          <div className="generator-stage flex flex-1 items-center justify-center p-8 sm:p-12">
-            <div className="relative aspect-square w-full max-w-[26rem]">
+          {/* On a wide screen the icon shrinks to the window's height, so the files stay in reach. */}
+          <div className="generator-stage flex flex-1 items-center justify-center p-8 sm:p-12 lg:min-h-0">
+            <div className="relative aspect-square w-full max-w-[26rem] lg:h-full lg:max-h-[26rem] lg:w-auto lg:max-w-full">
               {url ? (
                 // biome-ignore lint/performance/noImgElement: a data URL drawn in the page
                 <img src={url} alt="The icon, as set on the right" className="size-full" />
@@ -262,13 +255,6 @@ export function IconGenerator() {
                 <p className="grid size-full place-items-center text-sm text-fd-muted-foreground">
                   Drawing the icon…
                 </p>
-              )}
-              {s.guide !== 'none' && (
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute inset-0 border-[1.5px] border-dashed border-white shadow-[0_0_0_1px_rgb(0_0_0/0.35)]"
-                  style={{ borderRadius: s.guide === 'circle' ? '50%' : '22%' }}
-                />
               )}
             </div>
           </div>
@@ -317,7 +303,7 @@ export function IconGenerator() {
                   max={4096}
                   step={16}
                   value={px}
-                  onChange={(event) => setPx(Number(event.target.value))}
+                  onChange={(event) => setPx(event.target.value)}
                   aria-label="PNG size in pixels"
                   className="w-14 bg-transparent text-right text-base text-fd-foreground tabular-nums sm:text-sm"
                 />
@@ -341,11 +327,11 @@ export function IconGenerator() {
               </button>
               <button
                 type="button"
-                onClick={() => run('Drawing the favicons…', downloadFavicons)}
+                onClick={() => run('Copying…', copyPng)}
                 disabled={!svg || busy}
                 className={choiceClass(false)}
               >
-                Favicons
+                Copy
               </button>
             </div>
             <p role="status" className="min-h-5 text-sm text-fd-muted-foreground">
@@ -360,6 +346,10 @@ export function IconGenerator() {
               legend="Style"
               options={[
                 { id: 'plain', label: 'Thaw' },
+                { id: 'aura', label: 'Aura' },
+                { id: 'sketch', label: 'Sketch' },
+                { id: 'blueprint', label: 'Blueprint' },
+                { id: 'ink', label: 'Ink' },
                 { id: 'papel', label: 'Papel picado' },
               ]}
               value={s.style}
@@ -403,96 +393,188 @@ export function IconGenerator() {
               checked={s.tileShadow}
               onChange={(v) => set('tileShadow', v)}
             />
-            <Row label="Crop guide">
-              <Choice
-                legend="Crop guide"
-                options={[
-                  { id: 'none', label: 'None' },
-                  { id: 'circle', label: 'Circle' },
-                  { id: 'rounded', label: 'Rounded' },
-                ]}
-                value={s.guide}
-                onChange={(id) => setSettings((was) => ({ ...was, guide: id }))}
-              />
-            </Row>
           </Group>
+
+          {s.style === 'aura' && (
+            <Group label="Colours">
+              <div className="flex flex-wrap gap-2 py-2.5">
+                {(Object.keys(auras) as Aura[]).map((aura) => (
+                  <button
+                    key={aura}
+                    type="button"
+                    aria-pressed={s.aura === aura}
+                    aria-label={auras[aura].label}
+                    title={auras[aura].label}
+                    onClick={() => set('aura', aura)}
+                    className={`tap press size-7 ring-offset-2 ring-offset-fd-background ${s.aura === aura ? 'ring-2 ring-fd-foreground' : 'ring-1 ring-fd-border hover:ring-fd-muted-foreground'}`}
+                    style={{
+                      background: `linear-gradient(135deg, ${auras[aura].colours.slice(0, 4).join(', ')})`,
+                    }}
+                  />
+                ))}
+              </div>
+              <Slider
+                label="Blobs"
+                value={s.blobs}
+                min={1}
+                max={14}
+                onChange={(v) => set('blobs', v)}
+              />
+              <Slider
+                label="Softness"
+                value={s.softness}
+                min={20}
+                max={160}
+                onChange={(v) => set('softness', v)}
+              />
+              <Toggle label="Grain" checked={s.grain} onChange={(v) => set('grain', v)} />
+              <Toggle
+                label="Cube as a line"
+                checked={s.outline}
+                onChange={(v) => set('outline', v)}
+              />
+              <button
+                type="button"
+                onClick={() => set('seed', s.seed + 1)}
+                className={`${choiceClass(false)} mt-3 self-start`}
+              >
+                Shuffle
+              </button>
+            </Group>
+          )}
+
+          {s.style === 'sketch' && (
+            <Group label="Paper">
+              <div className="py-2">
+                <Choice
+                  legend="Paper"
+                  options={[
+                    { id: 'light', label: 'Pencil on paper' },
+                    { id: 'dark', label: 'Chalk on a board' },
+                  ]}
+                  value={s.tone}
+                  onChange={(id) => set('tone', id)}
+                />
+              </div>
+              <Toggle label="Squares" checked={s.grid} onChange={(v) => set('grid', v)} />
+              <Toggle label="Hatching" checked={s.hatch} onChange={(v) => set('hatch', v)} />
+              <Toggle label="Grain" checked={s.grain} onChange={(v) => set('grain', v)} />
+            </Group>
+          )}
+
+          {s.style === 'blueprint' && (
+            <Group label="Blueprint">
+              <Row label="Colour">
+                <Colour label="Blueprint colour" value={s.blue} onChange={(v) => set('blue', v)} />
+              </Row>
+              <Toggle label="Icon grid" checked={s.grid} onChange={(v) => set('grid', v)} />
+            </Group>
+          )}
+
+          {s.style === 'ink' && (
+            <Group label="Ink">
+              <div className="py-2">
+                <Choice
+                  legend="Ink"
+                  options={[
+                    { id: 'light', label: 'Black on white' },
+                    { id: 'dark', label: 'White on black' },
+                  ]}
+                  value={s.tone}
+                  onChange={(id) => set('tone', id)}
+                />
+              </div>
+              <Toggle label="Grain" checked={s.grain} onChange={(v) => set('grain', v)} />
+            </Group>
+          )}
 
           {!papel && (
             <>
-              <Group label="Background">
-                <div className="py-2">
-                  <Choice
-                    legend="Background"
-                    options={[
-                      { id: 'light', label: 'Orange' },
-                      { id: 'dark', label: 'Dark orange' },
-                      { id: 'gradient', label: 'Gradient' },
-                      { id: 'solid', label: 'Colour' },
-                      { id: 'none', label: 'None' },
-                    ]}
-                    value={s.bg}
-                    onChange={(id) => set('bg', id)}
-                  />
-                </div>
-                {(s.bg === 'gradient' || s.bg === 'solid') && (
-                  <Row label={s.bg === 'gradient' ? 'Colours' : 'Colour'}>
-                    <Colour label="First colour" value={s.bg1} onChange={(v) => set('bg1', v)} />
-                    {s.bg === 'gradient' && (
-                      <Colour label="Second colour" value={s.bg2} onChange={(v) => set('bg2', v)} />
-                    )}
-                  </Row>
-                )}
-                {s.bg === 'gradient' && (
-                  <Slider
-                    label="Angle"
-                    value={s.bgAngle}
-                    min={0}
-                    max={360}
-                    unit="°"
-                    onChange={(v) => set('bgAngle', v)}
-                  />
-                )}
-                {s.bg !== 'none' && (
-                  <Toggle
-                    label="Glass highlight"
-                    checked={s.sheen}
-                    onChange={(v) => set('sheen', v)}
-                  />
-                )}
-              </Group>
+              {s.style === 'plain' && (
+                <Group label="Background">
+                  <div className="py-2">
+                    <Choice
+                      legend="Background"
+                      options={[
+                        { id: 'light', label: 'Orange' },
+                        { id: 'dark', label: 'Dark orange' },
+                        { id: 'gradient', label: 'Gradient' },
+                        { id: 'solid', label: 'Colour' },
+                        { id: 'none', label: 'None' },
+                      ]}
+                      value={s.bg}
+                      onChange={(id) => set('bg', id)}
+                    />
+                  </div>
+                  {(s.bg === 'gradient' || s.bg === 'solid') && (
+                    <Row label={s.bg === 'gradient' ? 'Colours' : 'Colour'}>
+                      <Colour label="First colour" value={s.bg1} onChange={(v) => set('bg1', v)} />
+                      {s.bg === 'gradient' && (
+                        <Colour
+                          label="Second colour"
+                          value={s.bg2}
+                          onChange={(v) => set('bg2', v)}
+                        />
+                      )}
+                    </Row>
+                  )}
+                  {s.bg === 'gradient' && (
+                    <Slider
+                      label="Angle"
+                      value={s.bgAngle}
+                      min={0}
+                      max={360}
+                      unit="°"
+                      onChange={(v) => set('bgAngle', v)}
+                    />
+                  )}
+                  {s.bg !== 'none' && (
+                    <Toggle
+                      label="Glass highlight"
+                      checked={s.sheen}
+                      onChange={(v) => set('sheen', v)}
+                    />
+                  )}
+                </Group>
+              )}
 
               <Group label="Cube">
-                <div className="py-2">
-                  <Choice
-                    legend="Cube"
-                    options={[
-                      { id: 'layers', label: 'As in the app' },
-                      { id: 'flat', label: 'One colour' },
-                      { id: 'cutout', label: 'Cut out' },
-                    ]}
-                    value={s.mark}
-                    onChange={(id) => set('mark', id)}
-                  />
-                </div>
-                {(s.mark === 'flat' || (s.mark === 'cutout' && s.bg === 'none')) && (
-                  <Row label="Colour">
-                    <Colour
-                      label="Cube colour"
-                      value={s.markColour}
-                      onChange={(v) => set('markColour', v)}
+                {s.style === 'plain' && (
+                  <div className="py-2">
+                    <Choice
+                      legend="Cube"
+                      options={[
+                        { id: 'layers', label: 'As in the app' },
+                        { id: 'flat', label: 'One colour' },
+                        { id: 'cutout', label: 'Cut out' },
+                      ]}
+                      value={s.mark}
+                      onChange={(id) => set('mark', id)}
                     />
-                  </Row>
+                  </div>
                 )}
-                {s.mark === 'layers' && (
-                  <>
-                    <Toggle label="Faces" checked={s.faces} onChange={(v) => set('faces', v)} />
+                {s.style === 'plain' &&
+                  (s.mark === 'flat' || (s.mark === 'cutout' && s.bg === 'none')) && (
+                    <Row label="Colour">
+                      <Colour
+                        label="Cube colour"
+                        value={s.markColour}
+                        onChange={(v) => set('markColour', v)}
+                      />
+                    </Row>
+                  )}
+                {(s.style !== 'plain' || s.mark === 'layers') && (
+                  <Toggle label="Faces" checked={s.faces} onChange={(v) => set('faces', v)} />
+                )}
+                {s.style !== 'sketch' &&
+                  !(s.style === 'aura' && s.outline) &&
+                  (s.style !== 'plain' || s.mark === 'layers') && (
                     <Toggle
                       label="Shadows between layers"
                       checked={s.layerShadow}
                       onChange={(v) => set('layerShadow', v)}
                     />
-                  </>
-                )}
+                  )}
                 <Slider
                   label="Size"
                   value={s.size}

@@ -167,6 +167,8 @@ test('the icon generator draws the cube and hands over a PNG', async ({ page }) 
   await page.goto('/generate');
   const icon = page.getByRole('img', { name: /The icon/ });
   await expect(icon).toHaveAttribute('src', /^data:image\/svg\+xml/);
+  await page.getByRole('button', { name: 'Sketch', pressed: false }).first().click();
+  await expect(page.getByRole('button', { name: 'Chalk on a board' })).toBeVisible();
   await page.getByRole('button', { name: 'Papel picado', pressed: false }).first().click();
   await expect(page.getByRole('button', { name: 'Amber' })).toBeVisible();
   const [download] = await Promise.all([
