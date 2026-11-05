@@ -1812,3 +1812,93 @@ h1.font-display {
 :root[data-papel] .off-season {
   display: none;
 }
+
+/* /generate (components/icon-generator.tsx). The icon sits on a faint check, so what is
+   transparent in it shows as transparent, and its controls are square like the rest. */
+.generator-stage {
+  background-color: var(--color-fd-background);
+  background-image: conic-gradient(
+    var(--color-fd-accent) 25%,
+    transparent 0 50%,
+    var(--color-fd-accent) 0 75%,
+    transparent 0
+  );
+  background-size: 24px 24px;
+}
+
+.generator-range {
+  accent-color: var(--product-tone);
+}
+
+.generator-check {
+  appearance: none;
+  width: 2.25rem;
+  height: 1.25rem;
+  flex: none;
+  position: relative;
+  border: 1px solid var(--color-fd-border);
+  background: var(--color-fd-muted);
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.generator-check::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: calc(1.25rem - 6px);
+  height: calc(1.25rem - 6px);
+  background: var(--color-fd-muted-foreground);
+  transition:
+    transform 0.15s,
+    background-color 0.15s;
+}
+
+.generator-check:checked {
+  background: var(--product-tone);
+  border-color: var(--product-tone);
+}
+
+.generator-check:checked::after {
+  background: #fff;
+  transform: translateX(1rem);
+}
+
+/* Dark mode's orange is light, so the knob on it is black to stay clear of it (3:1). */
+.dark .generator-check:checked::after {
+  background: #000;
+}
+
+.generator-colour {
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid var(--color-fd-border);
+  background: none;
+  cursor: pointer;
+}
+
+.generator-colour::-webkit-color-swatch-wrapper {
+  padding: 2px;
+}
+
+.generator-colour::-webkit-color-swatch {
+  border: 0;
+}
+
+.generator-colour::-moz-color-swatch {
+  border: 0;
+}
+
+:is(.generator-check, .generator-range, .generator-colour):focus-visible {
+  outline: 2px solid var(--color-fd-foreground);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .generator-check,
+  .generator-check::after {
+    transition: none;
+  }
+}
