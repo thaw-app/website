@@ -18,7 +18,7 @@ export const floeFeatures = [
   {
     title: 'The basics, built in',
     detail:
-      'Snippets, emoji, a clipboard history, file search, calendar, a calculator that converts units, system commands and the menu bar’s items. Turn it on and your Apple Shortcuts run by name too.',
+      'Snippets, emoji, a clipboard history, file search, window tiling, calendar, a calculator that converts units, system commands and the menu bar’s items. Turn it on and your Apple Shortcuts run by name too.',
   },
   {
     title: 'Your own apps',
@@ -97,7 +97,7 @@ export const floeAlso = [
       {
         name: 'File search',
         about:
-          'Find files by name. Turn on Fast file search and the ones you opened lately come first.',
+          'Find files by name, in iCloud Drive too. Turn on Fast file search and the ones you opened lately come first.',
       },
     ],
   },
@@ -121,12 +121,18 @@ export const floeAlso = [
           'Press Command-K on an app or a file for its actions, such as Quit, Show in Finder, Open With and Move to Trash.',
       },
       {
+        name: 'Choose what Return does',
+        about:
+          'In Settings, set what Return does on an app, a file, a folder or a link, and which rows the Actions menu shows.',
+      },
+      {
         name: 'A picker for scripts',
         about: 'A script can hand Floe a list and get back the line you choose.',
       },
       {
         name: 'Checkpoints',
-        about: 'Type pause and a name to save your open files, browser tabs and a note for later.',
+        about:
+          'Type pause and a name to save your open files, browser tabs and a note for later. Press Command-K to hide or quit those apps as well.',
       },
       {
         name: 'Receipts, with undo',
@@ -192,7 +198,8 @@ export const floeAlso = [
       },
       {
         name: 'Dictionary',
-        about: 'Type define and a word to read its meaning from the dictionaries on your Mac.',
+        about:
+          'Type define and a word to see the words that match and read an entry from the dictionaries on your Mac.',
       },
       {
         name: 'Time in another city',
@@ -235,6 +242,11 @@ export const floeAlso = [
   {
     group: 'System',
     names: [
+      {
+        name: 'Window tiling',
+        about:
+          'Move the window in front to the left, right, top or bottom half of its screen, maximize it or center it. Floe needs Accessibility access for it.',
+      },
       {
         name: 'Menu bar items',
         about: 'Search the menu bar’s items and open their menus from the keyboard.',
@@ -294,6 +306,11 @@ export const floeAlso = [
         name: 'Extension Store',
         about:
           'Browse, install and update extensions from a page inside Floe, or find it by typing store.',
+      },
+      {
+        name: 'Extensions that move windows',
+        about:
+          'Extensions such as Window Layouts can list the windows on your screen and move them, to lay them out or restore a saved layout.',
       },
       {
         name: 'Extension menu bar commands',

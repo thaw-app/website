@@ -1,7 +1,12 @@
 [
   {
-    "number": 970,
-    "title": "\"Isolation\" Mode",
+    "number": 1083,
+    "title": "Promote a revealed item to Visible by Command-drag",
+    "votes": 0
+  },
+  {
+    "number": 1301,
+    "title": "Full Arabic Language and RTL Support Across the Entire App",
     "votes": 0
   },
   {
@@ -10,18 +15,8 @@
     "votes": 0
   },
   {
-    "number": 1083,
-    "title": "Promote a revealed item to Visible by Command-drag",
-    "votes": 0
-  },
-  {
-    "number": 1388,
-    "title": "Configurable item size for the Thaw Bar",
-    "votes": 0
-  },
-  {
-    "number": 1431,
-    "title": "Reveal hidden items when hovering Thaw's own icon",
+    "number": 1378,
+    "title": "Some suggestions to improve the iPhone Duo-inspired indicator's UX (currently too limited, derivative and uninspired)",
     "votes": 0
   },
   {
@@ -30,18 +25,8 @@
     "votes": 0
   },
   {
-    "number": 1378,
-    "title": "Some suggestions to improve the iPhone Duo-inspired indicator's UX (currently too limited, derivative and uninspired)",
-    "votes": 0
-  },
-  {
-    "number": 1405,
-    "title": "Show menu bar items in Thaw bar, not icons",
-    "votes": 0
-  },
-  {
-    "number": 1301,
-    "title": "Full Arabic Language and RTL Support Across the Entire App",
+    "number": 970,
+    "title": "\"Isolation\" Mode",
     "votes": 0
   }
 ]
