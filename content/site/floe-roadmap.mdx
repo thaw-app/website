@@ -1,7 +1,7 @@
 {/* Floe's roadmap, drawn by app/(floe)/floe/roadmap/page.tsx under its title. The plan
     moved here from Floe's README; what shipped is from its changelog. */}
 
-Floe is early: its latest release is 0.2.1. This is the plan as it stands, not a promise, and the order can change. [What Floe does not do yet](/docs/floe/limitations) lists the gaps as they are today, and [ThawUI’s roadmap](/roadmap/thawui) has the design Floe shares with Thaw.
+Floe is early: its latest release is 0.3.0, and 0.4.0 is in beta. This is the plan as it stands, not a promise, and the order can change. [What Floe does not do yet](/docs/floe/limitations) lists the gaps as they are today, and [ThawUI’s roadmap](/roadmap/thawui) has the design Floe shares with Thaw.
 
 <Roadmap>
 
@@ -37,15 +37,27 @@ Floe is early: its latest release is 0.2.1. This is the plan as it stands, not a
 </RoadmapGroup>
 </RoadmapList>
 
-<RoadmapList title="Not planned" count={1} state="blocked" note="Not on the plan unless people ask for it.">
-<RoadmapGroup name="Windows" count={1}>
+<RoadmapList title="Shipped" count={49} state="done" note="Everything that has shipped, by release, newest first. The changelog has the detail.">
+<RoadmapGroup name="0.4.0-beta.2" count={3}>
 
-- **Window management.** There are many window managers already, and Floe can work with them.
+- Tile the window in front to half of its screen, maximize it or center it
+- Raycast extensions that lay out, save and restore windows
+- Choose what Return does on a result, and which rows the Actions menu shows
 
 </RoadmapGroup>
-</RoadmapList>
+<RoadmapGroup name="0.4.0-beta.1" count={3}>
 
-<RoadmapList title="Shipped" count={41} state="done" note="Everything that has shipped, by release, newest first. The changelog has the detail.">
+- A checkpoint can hide or quit the apps it saves
+- `define` lists matching words and shows the whole entry in Floe
+- The Actions menu shows the keys that run its rows
+
+</RoadmapGroup>
+<RoadmapGroup name="0.3.0" count={2}>
+
+- File search finds what is in iCloud Drive
+- A slider sets the search field’s corners
+
+</RoadmapGroup>
 <RoadmapGroup name="0.2.1" count={1}>
 
 - Each AI service keeps its own API key

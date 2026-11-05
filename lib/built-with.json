@@ -22,7 +22,7 @@
       "url": "https://github.com/thaw-app/prk-bin",
       "license": "PlatformRuntimeKit License 1.0",
       "users": {
-        "Thaw": "1.2.11"
+        "Thaw": "1.2.12"
       }
     },
     {
@@ -30,7 +30,7 @@
       "url": "https://github.com/sparkle-project/Sparkle",
       "license": "MIT, with others for bundled code",
       "users": {
-        "Thaw": "2.10.0",
+        "Thaw": "2.10.1",
         "Floe": "2.10.0"
       }
     },
@@ -73,7 +73,7 @@
       "url": "https://github.com/apple/swift-collections",
       "license": "Apache-2.0",
       "users": {
-        "Thaw": "1.7.2",
+        "Thaw": "1.7.5",
         "Floe": "1.6.0"
       }
     },
@@ -99,7 +99,7 @@
       "url": "https://github.com/swiftlang/swift-subprocess",
       "license": "Apache-2.0",
       "users": {
-        "Thaw": "1.0.1",
+        "Thaw": "1.0.2",
         "Floe": "1.0.0"
       }
     },
@@ -108,7 +108,7 @@
       "url": "https://github.com/apple/swift-system",
       "license": "Apache-2.0",
       "users": {
-        "Thaw": "1.7.4",
+        "Thaw": "1.8.1",
         "Floe": "1.8.1"
       }
     },
@@ -117,6 +117,7 @@
       "url": "https://github.com/thaw-app/ThawUI",
       "license": "GPL-3.0",
       "users": {
+        "Thaw": "1.2.1",
         "Floe": "1.1.0"
       }
     }
