@@ -23,6 +23,33 @@ interface Foot {
   policies: { text: string; href: string }[];
 }
 
+// A file (/llms.txt, a feed) gets a plain link: a Link prefetches when it comes into view,
+// and for a file that runs its function on every footer seen.
+const isFile = /\.[a-z]+$/i;
+
+function FootLink({
+  href,
+  className,
+  children,
+}: {
+  href: string;
+  className: string;
+  children: React.ReactNode;
+}) {
+  if (href.startsWith('/') && isFile.test(href)) {
+    return (
+      <a href={href} className={className}>
+        {children}
+      </a>
+    );
+  }
+  return (
+    <Link href={href} className={className}>
+      {children}
+    </Link>
+  );
+}
+
 const thawDocs = `${docsRoute}/thaw`;
 const floeDocs = `${docsRoute}/floe`;
 
@@ -175,12 +202,12 @@ export function SiteFooter({
               <ul className="flex flex-col gap-2 text-sm text-fd-muted-foreground">
                 {column.links.map((link) => (
                   <li key={link.text}>
-                    <Link
+                    <FootLink
                       href={link.href}
                       className="tap transition-colors hover:text-fd-foreground"
                     >
                       {link.text}
-                    </Link>
+                    </FootLink>
                   </li>
                 ))}
               </ul>
@@ -201,9 +228,12 @@ export function SiteFooter({
           <ul className="flex flex-wrap gap-x-6 gap-y-2">
             {policies.map((policy) => (
               <li key={policy.text}>
-                <Link href={policy.href} className="tap transition-colors hover:text-fd-foreground">
+                <FootLink
+                  href={policy.href}
+                  className="tap transition-colors hover:text-fd-foreground"
+                >
                   {policy.text}
-                </Link>
+                </FootLink>
               </li>
             ))}
           </ul>
