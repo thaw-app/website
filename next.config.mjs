@@ -70,6 +70,11 @@ const config = {
   async headers() {
     return [
       { source: '/:path*', headers: securityHeaders },
+      // These keep their names when they change, so a browser keeps them a day, not forever.
+      ...['/icons/:path*', '/papel-picado/:path*', '/desktop/:path*'].map((source) => ({
+        source,
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=86400' }],
+      })),
       // A docs page is HTML or Markdown at one address, chosen by what the request accepts
       // (proxy.ts), so a cache keeps the two apart.
       { source: '/docs/:path*', headers: [{ key: 'Vary', value: 'Accept' }] },
@@ -107,6 +112,14 @@ const config = {
           },
         ],
       },
+    ];
+  },
+  // Browsers and link previews ask for these by name, without reading the page's icon tags.
+  async rewrites() {
+    return [
+      { source: '/favicon.ico', destination: '/icon.png' },
+      { source: '/apple-touch-icon.png', destination: '/apple-icon.png' },
+      { source: '/apple-touch-icon-precomposed.png', destination: '/apple-icon.png' },
     ];
   },
   async redirects() {

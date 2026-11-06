@@ -28,7 +28,12 @@ export async function GET(request: Request) {
       'Send limit=10, or leave it out to get every match.',
     );
   }
-  return server.GET(request);
+  const response = await server.GET(request);
+  // An answer changes only with a deploy, and each deploy starts the CDN cache empty.
+  if (response.ok) {
+    response.headers.set('CDN-Cache-Control', 'public, max-age=31536000');
+  }
+  return response;
 }
 
 export { wrongMethod as DELETE, wrongMethod as PATCH, wrongMethod as POST, wrongMethod as PUT };
