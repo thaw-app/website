@@ -1,7 +1,7 @@
 'use client';
 
 import { type ReactNode, useState } from 'react';
-import { channelKey, channels } from '@/lib/channels';
+import { channelGroup, channelKey, channels } from '@/lib/channels';
 import { macosVersions } from '@/lib/macos';
 import { Choice } from './choice';
 
@@ -22,13 +22,17 @@ export function ReleaseFilter({
   children: ReactNode;
 }) {
   const [system, setSystem] = useState<string | null>(null);
-  const [channel, setChannel] = useState<string | null>(null);
-  // Only the channels a release is on are offered, and only where there are two or more.
-  const present = channels.filter((name) => entries.some((entry) => entry.channel === name));
+  const [chosen, setChannel] = useState<string | null>(null);
+  const onSystem = (entry: { os?: string }) =>
+    !system || macosVersions(entry.os).includes(Number(system));
+  // Only the channels a release is on for the macOS chosen are offered: not every macOS has
+  // had an alpha. A channel chosen before the macOS changed is let go when that macOS has none.
+  const present = channels.filter((name) =>
+    entries.some((entry) => onSystem(entry) && channelGroup(entry.channel) === name),
+  );
+  const channel = chosen && present.includes(chosen) ? chosen : null;
   const left = entries.filter(
-    (entry) =>
-      (!system || macosVersions(entry.os).includes(Number(system))) &&
-      (!channel || entry.channel === channel),
+    (entry) => onSystem(entry) && (!channel || channelGroup(entry.channel) === channel),
   ).length;
   const hidden = [
     // An entry carries its versions as a list ("15 26"), and shows under each of them.
