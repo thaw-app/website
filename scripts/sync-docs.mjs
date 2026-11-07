@@ -101,7 +101,7 @@ async function refreshNumbers(product, published, root) {
       })(),
     );
   }
-  if (product.writtenHere?.includes('roadmap')) {
+  if (product.roadmap) {
     jobs.push(roadmapIssues(product), roadmapRequests(product));
   }
   for (const result of await Promise.allSettled(jobs)) {

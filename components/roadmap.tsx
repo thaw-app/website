@@ -8,9 +8,11 @@ import {
   type ReactNode,
 } from 'react';
 import { HoverLines } from '@/components/hover-lines';
-import issues from '@/lib/roadmap-issues.json';
-import requests from '@/lib/roadmap-requests.json';
-import { longDate, repoUrl, slug } from '@/lib/shared';
+import floeIssues from '@/lib/floe-roadmap-issues.json';
+import floeRequests from '@/lib/floe-roadmap-requests.json';
+import thawIssues from '@/lib/roadmap-issues.json';
+import thawRequests from '@/lib/roadmap-requests.json';
+import { longDate, type ProductSlug, repoUrl, slug } from '@/lib/shared';
 import { source } from '@/lib/source';
 
 /** Where the items of a list stand, which sets the mark drawn beside each. */
@@ -67,14 +69,24 @@ export function Roadmap({ children }: { children: ReactNode }) {
   );
 }
 
-const known = issues as Record<string, { state: string; reason?: string | null }>;
+type IssueStates = Record<string, { state: string; reason?: string | null }>;
+
+/** Each product's roadmap data, as the sync wrote it (scripts/sync/roadmap.mjs). */
+const roadmapData: Record<
+  ProductSlug,
+  { issues: IssueStates; requests: Request[]; contributing: number }
+> = {
+  // contributing is the issue that says how to help.
+  thaw: { issues: thawIssues, requests: thawRequests, contributing: 316 },
+  floe: { issues: floeIssues, requests: floeRequests, contributing: 1 },
+};
 
 /**
  * A link to one of the project's issues, with whether it is open or closed as
  * GitHub had it when the site was built.
  */
-export function Issue({ n }: { n: number }) {
-  const issue = known[String(n)];
+export function Issue({ n, product = 'thaw' }: { n: number; product?: ProductSlug }) {
+  const issue = roadmapData[product].issues[String(n)];
   const status = !issue
     ? null
     : issue.state === 'open'
@@ -83,7 +95,7 @@ export function Issue({ n }: { n: number }) {
         ? 'Closed, not planned'
         : 'Closed';
   return (
-    <a href={`${repoUrl('thaw')}/issues/${n}`} className="roadmap-issue">
+    <a href={`${repoUrl(product)}/issues/${n}`} className="roadmap-issue">
       #{n}
       {status && <span className="roadmap-issue-status">{status}</span>}
     </a>
@@ -251,9 +263,9 @@ interface Request {
  * What people have asked for and is still open, most wanted first: where a reader sees
  * that the order can be argued with, and how.
  */
-export function RoadmapRequests() {
-  const list = requests as Request[];
-  const repo = repoUrl('thaw');
+export function RoadmapRequests({ product = 'thaw' }: { product?: ProductSlug }) {
+  const { issues, requests: list, contributing } = roadmapData[product];
+  const repo = repoUrl(product);
   return (
     <section className="roadmap not-prose my-14">
       <Heading as="h2" id="asked-for" className="section-label scroll-mt-24">
@@ -264,7 +276,7 @@ export function RoadmapRequests() {
         The feature requests open on GitHub. A thumbs-up on one tells the team it matters to you,
         and the ones with the most are looked at first.{' '}
         <a href={`${repo}/issues/new/choose`}>Ask for something that is missing</a>, or see the{' '}
-        <a href={`${repo}/issues/316`}>ways to contribute</a>.
+        <a href={`${repo}/issues/${contributing}`}>ways to contribute</a>.
       </p>
       {list.length > 0 && (
         <ol className="mt-5 border-t">
@@ -278,7 +290,7 @@ export function RoadmapRequests() {
                   #{request.number}
                 </span>
                 <span className="min-w-0 flex-1 text-fd-foreground">{request.title}</span>
-                {known[String(request.number)] && (
+                {issues[String(request.number)] && (
                   <span className="roadmap-issue-status flex-none">On the roadmap</span>
                 )}
                 {request.votes > 0 && (
