@@ -206,6 +206,33 @@ html {
   scrollbar-gutter: stable;
 }
 
+/* Selected text is tinted with the product's accent, not the browser's blue, and keeps its
+   own colour. Written out per product and theme: not every browser lets a selection read
+   the page's custom properties. */
+::selection {
+  background-color: rgb(201 104 23 / 0.26);
+}
+
+.dark ::selection {
+  background-color: rgb(250 154 42 / 0.34);
+}
+
+[data-tone="floe"] ::selection {
+  background-color: rgb(37 99 201 / 0.24);
+}
+
+.dark [data-tone="floe"] ::selection {
+  background-color: rgb(79 147 255 / 0.34);
+}
+
+#nd-notebook-layout:has([data-product="floe"]) ::selection {
+  background-color: rgb(37 99 201 / 0.24);
+}
+
+.dark #nd-notebook-layout:has([data-product="floe"]) ::selection {
+  background-color: rgb(79 147 255 / 0.34);
+}
+
 /* A dialog's scroll lock writes its own margin onto the body, inline and marked important,
    to stand in for the scrollbar. The gutter above already holds that place, so the two
    are cancelled here, which only another important can do. */
