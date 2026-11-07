@@ -101,7 +101,7 @@ async function refreshNumbers(product, published, root) {
       })(),
     );
   }
-  if (product.writtenHere?.includes('roadmap')) {
+  if (product.roadmap) {
     jobs.push(roadmapIssues(product), roadmapRequests(product));
   }
   for (const result of await Promise.allSettled(jobs)) {
@@ -243,7 +243,7 @@ if (import.meta.main) await main();
 
 // The parsers are tested through here, where they have always been imported from.
 export { longDate } from '../lib/format.mjs';
-export { groupReleases } from './sync/changelog.mjs';
+export { groupReleases, systemOf } from './sync/changelog.mjs';
 export { appDownloads, settle } from './sync/numbers.mjs';
 export {
   channelOf,

@@ -42,7 +42,8 @@ function readmeBody(markdown, product) {
           .replace(/```sh\n[\s\S]*?```\n/, `${parts.install}\n`)
           // The badges saying which Thaw runs where: the tabs above the commands say it.
           .replace(/^<p>\s*<picture>[\s\S]*?<\/p>\n\n?/m, '')
-          .replace(/^Or grab the `\.dmg`[^\n]*\n\n?/m, '')
+          // The download is a tab of its own ("Disk image"), so the line offering it goes.
+          .replace(/^Or (?:grab|download)[^\n]*(?:\.dmg|disk image)[^\n]*\n\n?/m, '')
           // What it needs and asks for is said under the tabs, per macOS (install-tabs.tsx).
           .replace(/^Needs macOS[^\n]*\n\n?/m, '')
       );

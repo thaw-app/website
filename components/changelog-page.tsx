@@ -5,7 +5,12 @@ import { getMDXComponents } from '@/components/mdx';
 import { Lead, PageHeader } from '@/components/page-header';
 import { PageShell } from '@/components/page-shell';
 import { ProductChoice } from '@/components/product-choice';
-import { hasEarlierReleases, ReleaseList, VersionReleases } from '@/components/release-list';
+import {
+  hasEarlierReleases,
+  ReleaseList,
+  ReleaseSteps,
+  VersionReleases,
+} from '@/components/release-list';
 import { ReleasePeople } from '@/components/release-people';
 import { commitOf, feedUrl, pageAlternates, pageTitle } from '@/lib/releases';
 import {
@@ -94,22 +99,29 @@ export function ChangelogView({ path }: { path?: string[] }) {
         >
           {page.data.description && <Lead>{page.data.description}</Lead>}
           {(forSystem || release?.url || commit) && (
+            // The downloads first, in the product's colour, as the one thing to do here; then
+            // what the release is for and what it was built from, as one line of particulars.
             <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
-              {forSystem && <span className="text-fd-muted-foreground">For {forSystem}</span>}
               {release?.url && (
                 <a
                   href={release.url}
-                  className="tap press border px-3 py-1.5 font-medium transition-colors hover:bg-fd-accent"
+                  className="tap press border border-(--product-ink) px-3 py-1.5 font-medium text-(--product-ink) transition-colors hover:bg-fd-accent"
                 >
                   Downloads on GitHub
                 </a>
               )}
-              {commit && (
+              {(forSystem || commit) && (
                 <span className="text-fd-muted-foreground">
-                  Built from commit{' '}
-                  <a href={commit.url} className="tap link font-mono">
-                    {commit.short}
-                  </a>
+                  {forSystem && `For ${forSystem}`}
+                  {forSystem && commit && ' · '}
+                  {commit && (
+                    <>
+                      Built from commit{' '}
+                      <a href={commit.url} className="tap link font-mono">
+                        {commit.short}
+                      </a>
+                    </>
+                  )}
                 </span>
               )}
             </div>
@@ -129,6 +141,7 @@ export function ChangelogView({ path }: { path?: string[] }) {
           {/* A version's final release ends with the pre-releases that led up to it. */}
           {release?.final && <FinalReleaseTrail product={slug} version={release.version} />}
         </div>
+        {release && <ReleaseSteps product={slug} url={page.url} />}
       </article>
     </PageShell>
   );

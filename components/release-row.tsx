@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { macosVersions } from '@/lib/macos';
 
 /**
  * One earlier release as a line of the changelog: its tag, which opens its page, and the
@@ -15,7 +16,9 @@ export function ReleaseRow({
   details,
   date,
   dateLabel,
+  dateShort,
   os,
+  channel,
   stable,
 }: {
   tag: string;
@@ -23,7 +26,11 @@ export function ReleaseRow({
   details: string;
   date?: string;
   dateLabel?: string;
+  /** The date with its month shortened, for a phone. */
+  dateShort?: string;
   os?: string;
+  /** Its channel as the filter reads it, such as "beta" or "release-candidate". */
+  channel: string;
   /** A release on the stable channel, which is told from the pre-releases around it. */
   stable?: boolean;
 }) {
@@ -48,9 +55,20 @@ export function ReleaseRow({
   }
 
   return (
-    <li data-os={os} data-stable={stable ? '' : undefined} className="release-entry">
-      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline sm:grid-cols-[13rem_minmax(0,1fr)]">
-        <Link href={href} className="tap justify-self-start py-2.5 font-mono text-sm sm:ps-3">
+    // An open line is tinted faintly, so where its notes end and the next release starts can
+    // be seen. Its tag starts where the newest release's does, and its notes where the
+    // newest's notes do (release-list.tsx).
+    <li
+      data-os={macosVersions(os).join(' ') || undefined}
+      data-channel={channel}
+      data-open={open || undefined}
+      className="release-entry release-row"
+    >
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline sm:grid-cols-[13.5rem_minmax(0,1fr)]">
+        <Link
+          href={href}
+          className="tap justify-self-start pt-3 pb-0.5 font-mono text-sm sm:py-2.5"
+        >
           <span
             className={`underline-offset-4 hover:underline ${stable ? 'font-semibold text-(--release-2)' : 'text-fd-foreground'}`}
           >
@@ -61,11 +79,16 @@ export function ReleaseRow({
           type="button"
           aria-expanded={open}
           onClick={toggle}
-          className="col-span-2 row-start-2 flex items-baseline justify-between gap-x-6 pb-2.5 text-start text-sm text-fd-muted-foreground transition-colors hover:text-fd-foreground sm:col-span-1 sm:row-start-auto sm:py-2.5 sm:pe-3"
+          className="col-span-2 row-start-2 flex items-baseline justify-between gap-x-6 pb-3 text-start text-sm text-fd-muted-foreground transition-colors hover:text-fd-foreground sm:col-span-1 sm:row-start-auto sm:py-2.5 sm:pe-3"
         >
           <span>{details}</span>
           <span className="flex shrink-0 items-baseline gap-3">
-            {date && <time dateTime={date}>{dateLabel}</time>}
+            {date && (
+              <time dateTime={date}>
+                <span className="sm:hidden">{dateShort ?? dateLabel}</span>
+                <span className="max-sm:hidden">{dateLabel}</span>
+              </time>
+            )}
             <span aria-hidden className="w-3 text-center font-mono text-fd-foreground">
               {open ? '−' : '+'}
             </span>
@@ -74,7 +97,7 @@ export function ReleaseRow({
         </button>
       </div>
       {open && (
-        <div className="pb-8 sm:ps-[13rem]">
+        <div className="pb-8 sm:ps-[13.5rem]">
           {notes === undefined && (
             <p className="text-sm text-fd-muted-foreground">Loading the notes…</p>
           )}

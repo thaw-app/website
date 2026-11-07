@@ -1,6 +1,8 @@
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import Link from 'next/link';
 import { getMDXComponents } from '@/components/mdx';
+import { channelKey } from '@/lib/channels';
+import { macosVersions } from '@/lib/macos';
 import { commitOf } from '@/lib/releases';
 import { compact, longDate, type ProductSlug } from '@/lib/shared';
 import { source } from '@/lib/source';
@@ -29,6 +31,59 @@ export function hasEarlierReleases(product: string) {
 function summaryOf(release: ReleasePage['data']['release']) {
   const particulars = release.summary?.includes(' · ') ? release.summary.split(' · ') : undefined;
   return { particulars, name: particulars ? undefined : (release.summary ?? release.name) };
+}
+
+/** A date as a phone has room for it: "Nov 4, 2026". */
+function shortDate(date: string) {
+  return new Date(`${date}T00:00:00Z`).toLocaleDateString('en', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+}
+
+/**
+ * At the foot of a release's page, the releases on either side of it in time, as the
+ * changelog lists them: the one before, and the one after. A page with neither shows none.
+ */
+export function ReleaseSteps({ product, url }: { product: string; url: string }) {
+  const pages = byDate(releasesOf(product));
+  const at = pages.findIndex((page) => page.url === url);
+  if (at < 0) return null;
+  const steps = [
+    { label: 'Earlier', page: pages[at + 1] },
+    { label: 'Later', page: pages[at - 1] },
+  ];
+  if (!steps.some((step) => step.page)) return null;
+  return (
+    <nav aria-label="Releases before and after this one" className="not-prose">
+      {/* A ruled pair with the site's crossings, the earlier left and the later right. */}
+      <ul className="crossed grid-cols-2">
+        {steps.map(({ label, page }) => (
+          <li key={label} className={label === 'Later' ? 'text-end' : undefined}>
+            {page ? (
+              <Link
+                href={page.url}
+                className="group flex flex-col gap-1 p-4 transition-colors hover:bg-fd-accent sm:p-5"
+              >
+                <span className="text-sm text-fd-muted-foreground">
+                  {label === 'Earlier' ? '← Earlier' : 'Later →'}
+                </span>
+                <span className="font-mono text-sm text-fd-foreground group-hover:underline group-hover:underline-offset-4">
+                  {page.data.release.tag}
+                </span>
+              </Link>
+            ) : (
+              <span className="block p-4 text-sm text-fd-muted-foreground sm:p-5">
+                {label === 'Later' ? 'The newest release' : 'The first release'}
+              </span>
+            )}
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
 }
 
 /** One product's release pages, in the order the sync script put them: by version. */
@@ -122,11 +177,19 @@ function ReleaseCalendar({ pages }: { pages: ReleasePage[] }) {
   // The cube's oranges (global.css). The faintest is still 3:1 against the page, so a single
   // release shows.
   const shade = ['', 'bg-(--release-1)', 'bg-(--release-2)', 'bg-(--release-3)'];
-  const widest = '1.75rem';
-  const columns = { gridTemplateColumns: `repeat(${weeks}, minmax(0, ${widest}))` };
+  // Small squares, as GitHub's are: the calendar is a picture of the pace, and the releases
+  // under it are what the page is for.
+  const widest = '0.875rem';
+  // The gap between squares, which their room has to count too: without it the squares are
+  // squeezed to a fraction of a pixel each, and their edges and gaps come out uneven.
+  const gap = '2px';
+  const columns = {
+    gridTemplateColumns: `repeat(${weeks}, minmax(0, ${widest}))`,
+    columnGap: gap,
+  };
   // Wide enough for the key under it, however few the weeks.
   const frame = {
-    gridTemplateColumns: `auto minmax(0, max(16rem, calc(${weeks} * ${widest})))`,
+    gridTemplateColumns: `auto minmax(0, max(16rem, calc(${weeks} * ${widest} + ${weeks - 1} * ${gap})))`,
   };
   // A month is named over the week its first day falls in.
   const months = cells.flatMap(({ date }, index) =>
@@ -148,7 +211,7 @@ function ReleaseCalendar({ pages }: { pages: ReleasePage[] }) {
 
   return (
     <div
-      className="not-prose mb-10 grid justify-start gap-x-2 gap-y-1.5 text-xs text-fd-muted-foreground"
+      className="not-prose mb-8 grid justify-start gap-x-2 gap-y-1.5 text-xs text-fd-muted-foreground"
       style={frame}
     >
       <div aria-hidden className="col-start-2 grid" style={columns}>
@@ -159,7 +222,7 @@ function ReleaseCalendar({ pages }: { pages: ReleasePage[] }) {
         ))}
       </div>
       {/* Every other day is named, as GitHub names them: the rows are Monday to Sunday. */}
-      <div aria-hidden className="hidden grid-rows-7 gap-[3px] sm:grid">
+      <div aria-hidden className="hidden grid-rows-7 gap-[2px] sm:grid">
         {['Mon', '', 'Wed', '', 'Fri', '', ''].map((name, index) => (
           // biome-ignore lint/suspicious/noArrayIndexKey: seven fixed rows, three of them named
           <span key={index} className="flex items-center leading-none">
@@ -170,7 +233,7 @@ function ReleaseCalendar({ pages }: { pages: ReleasePage[] }) {
       <div
         role="img"
         aria-label={`${pages.length} releases between ${longDate(days[0])} and ${longDate(days[days.length - 1])}`}
-        className="col-start-2 grid grid-flow-col grid-rows-7 gap-[3px]"
+        className="col-start-2 grid grid-flow-col grid-rows-7 gap-[2px]"
         style={columns}
       >
         {cells.map(({ date, tags }) => (
@@ -185,7 +248,12 @@ function ReleaseCalendar({ pages }: { pages: ReleasePage[] }) {
           </span>
         ))}
       </div>
-      <p aria-hidden className="col-start-2 mt-1 flex items-center justify-end gap-1.5">
+      {/* Under a long calendar the key ends with it, as GitHub's does; under a few weeks it
+          starts with it, rather than standing off past its end. */}
+      <p
+        aria-hidden
+        className={`col-start-2 mt-1 flex items-center gap-1.5 ${weeks < 18 ? 'justify-start' : 'justify-end'}`}
+      >
         Fewer
         {shade.map((opacity) => (
           <span key={opacity} className={`${square} size-3`}>
@@ -247,7 +315,9 @@ function ReleaseNumbers({ pages, since }: { pages: ReleasePage[]; since?: string
  */
 export function ReleaseList({ product }: { product: ProductSlug }) {
   const pages = byDate(releasesOf(product));
-  const systems = [...new Set(pages.flatMap((page) => page.data.release.os ?? []))];
+  const systems = [...new Set(pages.flatMap((page) => macosVersions(page.data.release.os)))].sort(
+    (a, b) => b - a,
+  );
   const dated = pages.flatMap((page) => page.data.release.date ?? []).sort();
 
   return (
@@ -258,7 +328,7 @@ export function ReleaseList({ product }: { product: ProductSlug }) {
         systems={systems}
         entries={pages.map(({ data: { release } }) => ({
           os: release.os,
-          stable: release.channel === 'Stable',
+          channel: release.channel,
         }))}
       >
         {pages.slice(0, writtenOut).map((page) => {
@@ -275,17 +345,21 @@ export function ReleaseList({ product }: { product: ProductSlug }) {
           return (
             <article
               key={page.url}
-              data-os={release.os}
-              data-stable={release.channel === 'Stable' ? '' : undefined}
-              className="release-entry grid gap-x-10 gap-y-4 border-t py-10 lg:grid-cols-[11rem_minmax(0,1fr)]"
+              data-os={macosVersions(release.os).join(' ') || undefined}
+              data-channel={channelKey(release.channel)}
+              className="release-entry grid gap-y-4 border-t py-10 lg:grid-cols-[13.5rem_minmax(0,1fr)]"
             >
-              <div className="not-prose flex flex-col items-start gap-2 self-start lg:sticky lg:top-24">
-                <Link
-                  href={page.url}
-                  className="tap bg-(--release-2)/12 px-2.5 py-1 font-mono text-sm text-(--release-2) transition-colors hover:bg-(--release-2)/20"
-                >
-                  {release.tag}
-                </Link>
+              {/* On a phone its particulars are one wrapped line under its number, so the notes
+                  are not pushed a screen down; beside the notes they stand in a column. */}
+              <div className="not-prose flex flex-row flex-wrap items-center gap-x-3 gap-y-1 self-start lg:sticky lg:top-24 lg:flex-col lg:items-start lg:gap-2 lg:pe-10">
+                <div className="basis-full lg:basis-auto">
+                  <Link
+                    href={page.url}
+                    className="tap bg-(--release-2)/12 px-2.5 py-1 font-mono text-sm text-(--release-2) transition-colors hover:bg-(--release-2)/20"
+                  >
+                    {release.tag}
+                  </Link>
+                </div>
                 {release.date && (
                   <time dateTime={release.date} className="text-sm text-fd-muted-foreground">
                     {longDate(release.date)}
@@ -307,7 +381,11 @@ export function ReleaseList({ product }: { product: ProductSlug }) {
                 )}
                 {/* Who the notes credit: a release is its people as much as its number. */}
                 {release.people && (
-                  <ReleasePeople people={release.people} max={14} className="mt-2 max-w-44" />
+                  <ReleasePeople
+                    people={release.people}
+                    max={14}
+                    className="mt-1 basis-full lg:mt-2 lg:max-w-44"
+                  />
                 )}
               </div>
 
@@ -325,9 +403,10 @@ export function ReleaseList({ product }: { product: ProductSlug }) {
         {pages.length > writtenOut && (
           <section className="pt-10">
             {/* Named as every section of the site is: a small label with its rule. */}
-            <h2 className="section-label mb-6">Earlier releases</h2>
+            <h2 className="section-label mb-3">Earlier releases</h2>
             {/* One line each, and seventy of them fit on a page: a line opens its notes under it. */}
-            <ul className="divide-y border-y">
+            {/* The label's rule is the list's top edge, so the list draws only its bottom. */}
+            <ul className="divide-y border-b">
               {pages.slice(writtenOut).map((page) => {
                 const release = page.data.release;
                 const { name: named } = summaryOf(release);
@@ -343,8 +422,10 @@ export function ReleaseList({ product }: { product: ProductSlug }) {
                     details={[named, ...rest].filter(Boolean).join(' · ')}
                     date={release.date}
                     dateLabel={release.date && longDate(release.date)}
+                    dateShort={release.date && shortDate(release.date)}
                     os={release.os}
                     stable={release.channel === 'Stable'}
+                    channel={channelKey(release.channel)}
                   />
                 );
               })}

@@ -179,11 +179,15 @@ function groupReleases(markdown, published, product) {
  * one and by a list of its pre-releases when there is not.
  */
 /** The macOS a release is for, when the notes or the product's version table say. */
+/**
+ * The macOS a release runs on, as its notes say it: every version named, so "macOS 15 and
+ * 26 · Build 65" is "macOS 15 and 26", not the first of them.
+ */
 function systemOf(release, product) {
   const stated = `${release.summary ?? ''} ${release.name ?? ''} ${release.tag}`.match(
-    /macOS[\s-]?(\d+)/i,
+    /macOS[\s-]?(\d+(?:(?:\s*,\s*|\s+and\s+)\d+)*)/i,
   );
-  if (stated) return `macOS ${stated[1]}`;
+  if (stated) return `macOS ${stated[1].replace(/\s+/g, ' ')}`;
   return product.systems?.[release.tag.match(/^(\d+)\./)?.[1]];
 }
 

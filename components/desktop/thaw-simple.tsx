@@ -1,6 +1,7 @@
 'use client';
 
 import type { Dispatch, ReactNode } from 'react';
+import { glyphs } from './icons';
 import { LayoutBars } from './layout-bars';
 import type { MenuBarAction, MenuBarModel } from './menu-bar-model';
 import type { ThawSwitches } from './model';
@@ -193,5 +194,5 @@ export function SimplePane({
 /** The hint's symbol, cut from the capture like the sidebar's. */
 function Glyph({ name }: { name: string }) {
   // biome-ignore lint/performance/noImgElement: a fixed-size cut-out, laid out to the half point
-  return <img src={`/desktop/thaw/${name}.png`} alt="" width={20} height={18} />;
+  return <img src={glyphs[name]} alt="" width={20} height={18} />;
 }

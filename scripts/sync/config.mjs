@@ -54,6 +54,13 @@ const products = [
     // Pages this site writes itself, so the repo's file of the same name is not synced in.
     // The roadmap is content/site/roadmap.mdx, drawn at /roadmap.
     writtenHere: ['roadmap'],
+    // The roadmap's page, and the files the sync writes beside it: whether each issue it links
+    // is open, and the feature requests open in the repo (scripts/sync/roadmap.mjs).
+    roadmap: {
+      page: 'roadmap.mdx',
+      issues: 'roadmap-issues.json',
+      requests: 'roadmap-requests.json',
+    },
     // What the home page draws itself in the README's place: the install commands, the
     // feature list, and at its end how the project is run.
     readmeParts: { install: '<InstallTabs />', features: '<FeatureList />', last: '<Assurance />' },
@@ -167,6 +174,11 @@ const products = [
       discordInvite: project.discordInvite,
       team: ['diazdesandi'],
       bestPractices: project.products.floe.bestPractices,
+    },
+    roadmap: {
+      page: 'floe-roadmap.mdx',
+      issues: 'floe-roadmap-issues.json',
+      requests: 'floe-roadmap-requests.json',
     },
     // Floe's README is laid out as Thaw's is, and its page leaves out what the home page
     // does, for the same reasons. Its roadmap is a page of its own, written in

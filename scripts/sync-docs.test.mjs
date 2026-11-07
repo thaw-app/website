@@ -13,8 +13,20 @@ import {
   rewriteLinks,
   splitReleases,
   stageRank,
+  systemOf,
   tidyNotes,
 } from './sync-docs.mjs';
+
+test('a release runs on every macOS its summary names, not only the first', () => {
+  const product = { systems: { 2: 'macOS 26' } };
+  expect(systemOf({ tag: '2.2.0-beta.2', summary: 'macOS 15 and 26 · Build 65' }, product)).toBe(
+    'macOS 15 and 26',
+  );
+  expect(systemOf({ tag: '3.0.0-beta.6', summary: 'macOS 27 only · Build 123' }, product)).toBe(
+    'macOS 27',
+  );
+  expect(systemOf({ tag: '2.1.0' }, product)).toBe('macOS 26');
+});
 
 test('a tag says which channel a release is on', () => {
   expect(channelOf('2.0.1')).toBe('Stable');
@@ -307,6 +319,21 @@ test('the folded full feature list is left out whole, with any fold inside it', 
   expect(readmeBody(readme, { readmeParts: { features: '<FeatureList />' } })).toBe(
     '## Install\nDownload it.\n## Features\n<FeatureList />\n',
   );
+});
+
+test('the line offering the disk image goes, as the tabs have a Disk image tab', () => {
+  const readme = [
+    '## Install',
+    '',
+    '```sh',
+    'brew install thaw',
+    '```',
+    '',
+    'Or download the disk image from the [releases](https://example.com) and drag Thaw to Applications.',
+    '',
+  ].join('\n');
+  const parts = { install: '<InstallTabs />' };
+  expect(readmeBody(readme, { readmeParts: parts })).toBe('## Install\n\n<InstallTabs />\n\n');
 });
 
 test('the site keeps its feature list and leaves out the install badges, whatever the README has', () => {

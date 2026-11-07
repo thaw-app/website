@@ -37,7 +37,18 @@ export function baseOptions({
       ...(bothProducts
         ? [
             { type: 'custom' as const, on: 'nav' as const, children: <ProductPages /> },
-            ...pagesOf[product].map((page) => ({ ...page, on: 'menu' as const })),
+            // In the phone's menu the site's pages come first, unmarked, and a rule parts them
+            // from the docs' own list, which is the one that says where the reader is.
+            ...pagesOf[product].map((page) => ({
+              ...page,
+              on: 'menu' as const,
+              active: 'none' as const,
+            })),
+            {
+              type: 'custom' as const,
+              on: 'menu' as const,
+              children: <hr className="docs-menu-rule" />,
+            },
           ]
         : pagesOf[product]),
       {

@@ -4,6 +4,7 @@ import { metaSchema, pageSchema } from 'fumadocs-core/source/schema';
 import { applyMdxPreset } from 'fumadocs-mdx/config';
 import { defineDocs } from 'fumadocs-mdx/macro';
 import { z } from 'zod';
+import { codeTheme } from './code-theme';
 import { remarkGithubAlerts } from './remark-github-alerts';
 import { changelogUrl, docsRoute, products } from './shared';
 
@@ -57,7 +58,12 @@ const docs = defineDocs({
     }),
     // Mermaid code blocks become diagrams, and GitHub's "> [!NOTE]" quotes
     // become callouts.
-    mdxOptions: applyMdxPreset({ remarkPlugins: [remarkMdxMermaid, remarkGithubAlerts] }),
+    mdxOptions: applyMdxPreset({
+      remarkPlugins: [remarkMdxMermaid, remarkGithubAlerts],
+      // Code in the site's colours (lib/code-theme.ts), and named by its language so a block
+      // can say what it is.
+      rehypeCodeOptions: { themes: { light: codeTheme, dark: codeTheme }, addLanguageClass: true },
+    }),
     postprocess: {
       includeProcessedMarkdown: true,
     },

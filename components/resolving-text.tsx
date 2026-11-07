@@ -54,7 +54,7 @@ export function ResolvingText({ children }: { children: string }) {
   }, [children]);
 
   return (
-    <span className="relative inline-block tabular-nums">
+    <span className="relative inline-block">
       <span className="sr-only select-none">{children}</span>
       {/* The value, unseen, holds the room, and what is drawn sits over it. Only the first copy
           is read aloud, and only the drawn one is selected and copied. */}

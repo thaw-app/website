@@ -7,8 +7,8 @@ Thaw 3.0 for macOS 27 is in beta, with [a new design](/roadmap/thawui), and Thaw
 <RoadmapList title="Now" count={3} state="now" here note="What is being built, for the next releases of Thaw 3 and Thaw 2.">
 <RoadmapGroup name="macOS 27" count={2}>
 
-- **Thaw 3.0.0.** In beta. It is a rebuilt menu bar core for macOS 27. The latest beta is 3.0.0-beta.4 and the latest alpha is 3.0.0-alpha.12.
-- **Modules.** Scripts, triggers and automation become optional downloads, so you install only the parts of Thaw you use. Since beta.4 the sidebar gathers Profiles, Automation and Experiments under a Modules heading, ahead of the move.
+- **Thaw 3.0.0.** In beta. It is a rebuilt menu bar core for macOS 27. The latest beta is 3.0.0-beta.6 and the latest alpha is 3.0.0-alpha.13.
+- **Modules.** Optional parts of Thaw that run only if you use them. The first three are in 3.0.0-alpha.13: Settings › Extras switches Scripts, Triggers and Widgets on and off, and one that is off doesn’t run or show in the sidebar.
 
 </RoadmapGroup>
 <RoadmapGroup name="macOS 15 and 26" count={1}>
@@ -28,7 +28,7 @@ Thaw 3.0 for macOS 27 is in beta, with [a new design](/roadmap/thawui), and Thaw
 
 - **Scripts.** Scripts that make their own menu bar items, tested by macOS 26 users on 2.1.0, come to 3.0 as a module you can add.
 - **The full trigger engine.** In 2.1 an item can move on battery level, the frontmost app, a network, a Focus and more. 3.0 has part of it: 3.0.0-beta.2 added showing items while an app runs. The rest comes as a module.
-- **Widgets.** One is in 3.0 so far: a custom status icon with three slots for meters, added in 3.0.0-alpha.3.
+- **Widgets.** One is in 3.0 so far: a custom status icon with three slots for meters, added in 3.0.0-alpha.3. Since 3.0.0-alpha.13 it is the Widgets module.
 - **Rotating diagnostic logs.** Keeping and cycling through diagnostic logs will appear in a later 3.0 build.
 
 </RoadmapGroup>
@@ -60,7 +60,7 @@ Thaw 3.0 for macOS 27 is in beta, with [a new design](/roadmap/thawui), and Thaw
 </RoadmapGroup>
 <RoadmapGroup name="Installing" count={1}>
 
-- **Nix and dotfiles.** A flake, so Thaw can be installed and pinned from a Nix configuration, and a page listing where Thaw keeps its settings, so they can live in a dotfiles repo with nix-darwin, chezmoi or similar. <Issue n={1363} /> <Marks of="nix" />
+- **A Nix flake.** So Thaw can be installed and pinned from a Nix configuration. The other half of the request, a list of where Thaw keeps its settings for a dotfiles repo, came in 3.0.0-beta.6. <Issue n={1363} /> <Marks of="nix" />
 
 </RoadmapGroup>
 <RoadmapGroup name="Across your Macs" count={1}>
@@ -92,7 +92,41 @@ Thaw 3.0 for macOS 27 is in beta, with [a new design](/roadmap/thawui), and Thaw
 
 <RoadmapRequests />
 
-<RoadmapList title="Shipped" count={124} state="done" note="Everything that has shipped, by release, newest first. The changelog has the detail.">
+<RoadmapList title="Shipped" count={138} state="done" note="Everything that has shipped, by release, newest first. The changelog has the detail.">
+<RoadmapGroup name="2.2.0-beta.2" count={2}>
+
+- Thaw 2 has its own Homebrew tap
+- Settings has fewer pages
+
+</RoadmapGroup>
+<RoadmapGroup name="3.0.0-alpha.13" count={5}>
+
+- Modules: Scripts, Triggers and Widgets switch on and off in Settings › Extras
+- Settings is rebuilt on ThawUI, with a new sidebar
+- A Black theme for Settings, besides System, Light and Dark
+- Every Search style can rename and move items
+- A Template tab in Displays, for new displays
+
+</RoadmapGroup>
+<RoadmapGroup name="3.0.0-beta.6" count={4}>
+
+- Show on hover works on Thaw’s icon too
+- Choose how large items are in the Thaw Bar
+- A list of every file Thaw keeps, for a dotfiles repo
+- Updates reach Macs in stages
+
+</RoadmapGroup>
+<RoadmapGroup name="3.0.0-beta.5" count={1}>
+
+- Capture hidden items on request
+
+</RoadmapGroup>
+<RoadmapGroup name="3.0.0-alpha.12" count={2}>
+
+- Items move without Thaw moving your pointer
+- `thaw://` links are stricter about who they trust
+
+</RoadmapGroup>
 <RoadmapGroup name="3.0.0-alpha.11" count={2}>
 
 - A black Settings background in dark mode, for OLED displays
@@ -277,4 +311,4 @@ Thaw 3.0 for macOS 27 is in beta, with [a new design](/roadmap/thawui), and Thaw
 
 </Roadmap>
 
-<RoadmapUpdated on="30 October 2026" />
+<RoadmapUpdated on="6 November 2026" />

@@ -141,6 +141,8 @@ function Captured({ item }: { item: PaneItem }) {
         <img
           key={mode}
           src={`${images}/${item.src}-${mode}.webp`}
+          // The appearance not showing is hidden, and a browser skips a lazy image it hides.
+          loading="lazy"
           alt=""
           className={`thaw-shot thaw-pane-${mode}`}
         />

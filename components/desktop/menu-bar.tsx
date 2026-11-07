@@ -10,6 +10,7 @@ import {
   useState,
 } from 'react';
 import { BarItemView } from './bar-item';
+import { items, system } from './icons';
 import { barItems, type MenuBarAction, type MenuBarModel, type SectionId } from './menu-bar-model';
 import { type Appearance, tints } from './model';
 
@@ -125,7 +126,7 @@ export function MenuBar({
       {/* The Apple menu, cut from the real bar like the status glyphs. */}
       <span className="grid w-[34px] place-items-center">
         {/* biome-ignore lint/performance/noImgElement: a glyph at its exact size */}
-        <img src="/desktop/system/apple.webp" alt="Apple menu" width={APPLE.w} height={APPLE.h} />
+        <img src={system.apple} alt="Apple menu" width={APPLE.w} height={APPLE.h} />
       </span>
       <span className="pr-2.5 pl-1 font-bold">Finder</span>
       {['File', 'Edit', 'View', 'Go', 'Window', 'Help'].map((menu) => (
@@ -227,7 +228,7 @@ export function MenuBar({
         <span className="flex h-full items-end gap-3 px-5 pb-4 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-hover:delay-150 group-focus-visible:opacity-100 motion-reduce:transition-none">
           <span className="grid size-10 shrink-0 place-items-center rounded-[10px] bg-[#2b84f0]">
             {/* biome-ignore lint/performance/noImgElement: Droppy's own menu bar glyph at its exact size */}
-            <img src="/desktop/thaw/items/droppy.webp" alt="" width={15} height={18} />
+            <img src={items.droppy} alt="" width={15} height={18} />
           </span>
           <span className="flex flex-col pb-0.5 text-left leading-tight whitespace-nowrap">
             <span className="text-[13px] font-semibold">Droppy lives up here</span>

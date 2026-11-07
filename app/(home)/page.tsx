@@ -94,8 +94,9 @@ export default function HomePage() {
         ]}
         after={
           <>
-            {/* The programmes that support Thaw's development, and where it was featured. */}
-            <div className="flex flex-wrap items-center gap-x-7 gap-y-3 pointer-coarse:gap-y-0.5">
+            {/* The programmes that support Thaw's development, and where it was featured: one
+                under another, as three side by side do not fit the column. */}
+            <div className="flex flex-col items-start gap-3 pointer-coarse:gap-0.5">
               <a
                 href="https://vercel.com/open-source-program"
                 aria-label="Vercel OSS Program"

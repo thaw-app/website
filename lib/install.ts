@@ -4,32 +4,33 @@ import { repoUrl } from './shared';
 // (components/install-tabs.tsx) and the page's Markdown (lib/site-markdown.ts).
 //
 // Named by the macOS a visitor is on, which they know, not by the version of Thaw, which
-// they would have to work out. A browser does not say which macOS it runs on, so the
-// stable release is shown first.
+// they would have to work out. Thaw 3 on macOS 27 is the main release, so it comes first.
+//
+// Thaw 2 is in Thaw's own tap (github.com/thaw-app/homebrew-tap): Homebrew's casks follow the
+// newest macOS, where Thaw 3 runs. A cask from a tap is trusted before Homebrew installs it,
+// so those are three lines, run in order.
 export const installWays = [
-  {
-    id: 'macos-26',
-    label: 'macOS 26',
-    command: 'brew install thaw',
-    about: 'Thaw 2, the stable release.',
-  },
   {
     id: 'macos-27',
     label: 'macOS 27',
-    command: 'brew install thaw@beta',
+    commands: ['brew install thaw@beta'],
     about: 'Thaw 3, rebuilt for macOS 27. In beta.',
   },
   {
-    id: 'macos-15',
-    label: 'macOS 15',
-    // No cask yet: thaw@beta is Thaw 3, which needs macOS 27. So this is the release itself,
-    // until Thaw 2.2 reaches Homebrew.
-    note: 'Thaw 2.2, which brings back macOS 15, is in beta and not on Homebrew yet. Get the disk image from its release and drag Thaw to Applications.',
-    href: `${repoUrl('thaw')}/releases/tag/2.2.0-beta.1`,
+    id: 'thaw-2',
+    label: 'macOS 15 and 26',
+    // thaw@2 follows stable 2.x, which needs macOS 26 until 2.2, which brings back macOS 15, is
+    // out of beta. Until then macOS 15 takes the tap's beta channel, as its README says.
+    commands: [
+      'brew tap thaw-app/tap',
+      'brew trust --cask thaw-app/tap/thaw@2',
+      'brew install --cask thaw-app/tap/thaw@2',
+    ],
+    about: 'Thaw 2, the stable release. On macOS 15, put thaw@2-beta in the last two lines.',
   },
   {
     id: 'download',
-    label: 'Without Homebrew',
+    label: 'Disk image',
     note: 'Get the disk image for your macOS from the releases and drag Thaw to Applications.',
     href: `${repoUrl('thaw')}/releases`,
   },
@@ -56,9 +57,8 @@ const screenRecording = {
     'It gives you live previews and a tint from your wallpaper. Without it, items show as their app’s icon.',
 };
 export const installFacts = {
-  'macos-26': [accessibility, screenRecording],
   'macos-27': [accessibility, layoutAccess, screenRecording],
-  'macos-15': [accessibility, screenRecording],
+  'thaw-2': [accessibility, screenRecording],
   // Either release may be the one downloaded, so the one that is not always asked says when.
   download: [accessibility, { ...layoutAccess, label: 'Needs, on macOS 27' }, screenRecording],
 };

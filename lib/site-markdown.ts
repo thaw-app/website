@@ -26,10 +26,11 @@ import {
   floeInstallFacts,
   floeWorksWith,
 } from '@/lib/floe-features';
+import floeRequests from '@/lib/floe-roadmap-requests.json';
 import { installFacts, installWays } from '@/lib/install';
 import { privacyFacts, privacyOthers } from '@/lib/privacy';
 import { datedReleases } from '@/lib/releases';
-import requests from '@/lib/roadmap-requests.json';
+import thawRequests from '@/lib/roadmap-requests.json';
 import {
   changelogUrl,
   docsRoute,
@@ -71,11 +72,11 @@ function page(title: string, summary: string, ...sections: (string | string[])[]
 
 function home() {
   const ways = installWays.map((way) =>
-    'command' in way
+    'commands' in way
       ? [
           `### ${way.label}`,
           '',
-          `${way.about} Run \`${way.command}\`.`,
+          `${way.about} Run \`${way.commands.join(' && ')}\`.`,
           '',
           ...facts(installFacts[way.id]),
         ].join('\n')
@@ -147,9 +148,18 @@ function faq() {
 /** A roadmap's MDX, with its components said as headings and lists. */
 function roadmap(file: string, title: string, summary: string) {
   const issues = `${repoUrl('thaw')}/issues`;
-  const asked = (requests as { number: number; title: string; votes: number }[]).map(
-    (request) => `- ${link(request.title, `${issues}/${request.number}`)} (${request.votes} votes)`,
-  );
+  // Each product's requests, under its own repository's issues.
+  const asked = (product: ProductSlug) =>
+    (
+      (product === 'floe' ? floeRequests : thawRequests) as {
+        number: number;
+        title: string;
+        votes: number;
+      }[]
+    ).map(
+      (request) =>
+        `- ${link(request.title, `${repoUrl(product)}/issues/${request.number}`)} (${request.votes} ${request.votes === 1 ? 'vote' : 'votes'})`,
+    );
   const body = readFileSync(join(process.cwd(), 'content/site', file), 'utf8')
     .replace(/\{\/\*[\s\S]*?\*\/\}/g, '')
     .replace(/<\/?Roadmap>/g, '')
@@ -160,14 +170,13 @@ function roadmap(file: string, title: string, summary: string) {
     .replace(/<Issue n=\{(\d+)\} \/>/g, `([#$1](${issues}/$1))`)
     .replace(/\s*<Marks of="[^"]*" \/>/g, '')
     .replace(/<RoadmapUpdated on="([^"]+)" \/>/g, 'Last brought up to date on $1.')
-    .replace(
-      /<RoadmapRequests \/>/g,
+    .replace(/<RoadmapRequests(?: product="(\w+)")? \/>/g, (_, product = 'thaw') =>
       [
         '## Asked for',
         '',
         'The feature requests open on GitHub, most wanted first.',
         '',
-        ...asked,
+        ...asked(product as ProductSlug),
       ].join('\n'),
     )
     .replace(/\n{3,}/g, '\n\n')
