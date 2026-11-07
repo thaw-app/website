@@ -59,6 +59,29 @@ export function AsciiCube({
     let ripples: { x: number; y: number; at: number }[] = [];
     let cell = { w: 0, h: 0 };
 
+    // The colours, set per theme in global.css. Read when the size or the theme changes, not on
+    // every frame: reading them asks the browser to bring its styles up to date first.
+    let look = read();
+    function read() {
+      const style = getComputedStyle(canvas as HTMLCanvasElement);
+      // Four tones from the logo, faintest to boldest.
+      const tones = [1, 2, 3, 4].map((step) => style.getPropertyValue(`--cube-${step}`).trim());
+      // The two ends of the light icon's fill, when the theme asks for the filled drawing.
+      const top = style.getPropertyValue('--cube-fill-top');
+      const bottom = channels(style.getPropertyValue('--cube-fill-bottom'));
+      const from = channels(top);
+      return {
+        tones,
+        floor: Number(style.getPropertyValue('--cube-floor')) || 0.4,
+        filled: top.trim() !== '',
+        // The fill changes only down the icon, so each row's colour is worked out once.
+        rowFill: mask.map((_, row) => {
+          const down = row / (mask.length - 1);
+          return `rgb(${from.map((start, part) => Math.round(start + (bottom[part] - start) * down)).join(' ')})`;
+        }),
+      };
+    }
+
     function resize() {
       if (!canvas || !context) return;
       const scale = window.devicePixelRatio || 1;
@@ -73,16 +96,7 @@ export function AsciiCube({
     function draw(time: number) {
       if (!canvas || !context) return;
       const seconds = time / 1000;
-      // Four tones from the logo, faintest to boldest, set per theme in global.css.
-      const style = getComputedStyle(canvas);
-      const tones = [1, 2, 3, 4].map((step) => style.getPropertyValue(`--cube-${step}`).trim());
-      const floor = Number(style.getPropertyValue('--cube-floor')) || 0.4;
-      // The two ends of the light icon's fill, when the theme asks for the filled drawing.
-      const filled = style.getPropertyValue('--cube-fill-top').trim() !== '';
-      const fill = {
-        top: channels(style.getPropertyValue('--cube-fill-top')),
-        bottom: channels(style.getPropertyValue('--cube-fill-bottom')),
-      };
+      const { tones, floor, filled, rowFill } = look;
       // Heavier strokes where the tile is filled in, so it reads as a solid.
       context.font = `${filled ? 700 : 400} ${cell.h * 0.82}px ui-monospace, SFMono-Regular, Menlo, monospace`;
       context.clearRect(0, 0, canvas.width, canvas.height);
@@ -92,6 +106,10 @@ export function AsciiCube({
       ripples = ripples.filter((ripple) => time - ripple.at < rippleFor);
 
       for (let row = 0; row < rows; row++) {
+        if (filled) {
+          context.globalAlpha = 1;
+          context.fillStyle = rowFill[row];
+        }
         for (let column = 0; column < columns; column++) {
           const mark = mask[row][column];
           if (mark === ' ') continue;
@@ -143,9 +161,6 @@ export function AsciiCube({
               line > 0.08
                 ? Math.max(0, 0.22 * (1 - line) - reach * 0.3)
                 : Math.min(1, 0.62 + 0.3 * light + 0.08 * shimmer + reach);
-            const down = row / (rows - 1);
-            context.globalAlpha = 1;
-            context.fillStyle = `rgb(${fill.top.map((from, part) => Math.round(from + (fill.bottom[part] - from) * down)).join(' ')})`;
           } else {
             level = Math.min(1, level + reach);
             context.globalAlpha = floor + (1 - floor) * level;
@@ -214,12 +229,14 @@ export function AsciiCube({
 
     const sized = new ResizeObserver(() => {
       resize();
+      look = read();
       if (still) draw(0);
       else if (!running) draw(performance.now());
     });
     sized.observe(canvas);
     // The tones differ per theme, so a resting cube is drawn again when the theme changes.
     const unthemed = onThemeChange(() => {
+      look = read();
       if (still || !running) draw(still ? 0 : performance.now());
     });
     // Nothing is drawn while the icon is scrolled out of view.
@@ -232,14 +249,26 @@ export function AsciiCube({
     canvas.addEventListener('click', onClick);
 
     resize();
-    if (still) draw(0);
-    else {
-      running = true;
-      frame = requestAnimationFrame(loop);
+    // Drawn at once, and set moving once the page has done its own first work, so the light
+    // does not compete with the page becoming usable.
+    draw(still ? 0 : performance.now());
+    let idle: number | undefined;
+    let fallback = 0;
+    if (!still) {
+      const begin = () => {
+        awakeUntil = performance.now() + restAfter;
+        running = true;
+        frame = requestAnimationFrame(loop);
+      };
+      // Safari has no idle callback.
+      idle = window.requestIdleCallback?.(begin, { timeout: 1500 });
+      if (idle === undefined) fallback = window.setTimeout(begin, 300);
     }
 
     return () => {
       cancelAnimationFrame(frame);
+      if (idle !== undefined) window.cancelIdleCallback(idle);
+      window.clearTimeout(fallback);
       sized.disconnect();
       unthemed();
       seen.disconnect();
