@@ -42,8 +42,18 @@ export function ProductName({ className }: ComponentProps<'a'>) {
     >
       <Image src={icons[current]} alt="" width={24} className="in-season size-6" />
       <Image src={products[current].icon} alt="" width={24} className="off-season size-6" />
-      <span className="font-display text-base font-semibold tracking-tight">
-        {products[current].name}
+      {/* Both names in one cell, the other one hidden, so the cell is as wide as the wider
+          name on every page and the links after it stay put going from Thaw to Floe. */}
+      <span className="grid font-display text-base font-semibold tracking-tight">
+        {(Object.keys(products) as ProductSlug[]).map((slug) => (
+          <span
+            key={slug}
+            aria-hidden={slug !== current || undefined}
+            className={`col-start-1 row-start-1 ${slug === current ? '' : 'invisible'}`}
+          >
+            {products[slug].name}
+          </span>
+        ))}
       </span>
     </Link>
   );
