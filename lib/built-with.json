@@ -78,6 +78,14 @@
       }
     },
     {
+      "name": "swift-http-types",
+      "url": "https://github.com/apple/swift-http-types",
+      "license": "Apache-2.0",
+      "users": {
+        "Floe": "1.8.0"
+      }
+    },
+    {
       "name": "swift-markdown",
       "url": "https://github.com/swiftlang/swift-markdown",
       "license": "Apache-2.0",
@@ -118,7 +126,7 @@
       "license": "GPL-3.0",
       "users": {
         "Thaw": "1.2.1",
-        "Floe": "1.1.0"
+        "Floe": "1.2.1"
       }
     }
   ],
