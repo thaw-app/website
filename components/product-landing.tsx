@@ -20,7 +20,7 @@ export function ProductLanding({
   mark: ReactNode;
   title: string;
   lead: string;
-  /** What it costs and asks of you: the first sentence is set darker than the rest. */
+  /** What it costs and asks of you, as small print under the lead: the first sentence darker. */
   terms: [string, string];
   /** What follows the words in the left column. */
   after?: ReactNode;
@@ -39,8 +39,8 @@ export function ProductLanding({
             {title}
           </h1>
           <p className="max-w-md text-lg text-fd-muted-foreground text-pretty">{lead}</p>
-          <p className="max-w-md text-fd-muted-foreground text-pretty">
-            <span className="font-medium text-fd-foreground">{terms[0]}</span> {terms[1]}
+          <p className="max-w-md text-sm leading-relaxed text-fd-muted-foreground text-pretty">
+            <span className="text-fd-foreground">{terms[0]}</span> {terms[1]}
           </p>
         </div>
         {after}

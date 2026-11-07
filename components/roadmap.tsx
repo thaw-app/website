@@ -208,7 +208,10 @@ export function RoadmapGroup({
     return (
       <details open={open} className="group border-b">
         <summary className="tap flex cursor-pointer list-none items-baseline gap-3 py-3 hover:bg-fd-accent [&::-webkit-details-marker]:hidden">
-          <span aria-hidden className="w-3 text-fd-muted-foreground group-open:rotate-90">
+          <span
+            aria-hidden
+            className="w-3 text-fd-muted-foreground transition-transform duration-200 group-open:rotate-90 motion-reduce:transition-none"
+          >
             ›
           </span>
           <h3 className="font-medium">{name}</h3>

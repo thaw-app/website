@@ -14,7 +14,7 @@ export function FeatureCells({ features }: { features: { title: string; detail: 
           <h3 className="font-display text-xl leading-tight font-semibold tracking-tight">
             {feature.title}
           </h3>
-          <p className="text-fd-muted-foreground text-pretty">{feature.detail}</p>
+          <p className="leading-relaxed text-fd-muted-foreground text-pretty">{feature.detail}</p>
         </li>
       ))}
     </ul>
