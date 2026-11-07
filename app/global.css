@@ -1244,6 +1244,12 @@ html > body[data-scroll-locked] {
   scroll-margin-top: 3.5rem;
 }
 
+/* Fumadocs shows a heading's link button only under the pointer. Reached by the keyboard it
+   shows too: hidden, it would take the focus out of sight, its ring with it. */
+[class*="group-hover/heading:opacity-100"]:focus-visible {
+  opacity: 1;
+}
+
 /* A boxed control gives by a pixel while it is pressed, as a key does. */
 .press:active {
   translate: 0 1px;
