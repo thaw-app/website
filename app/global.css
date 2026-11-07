@@ -777,6 +777,16 @@ html > body[data-scroll-locked] {
   margin-top: -0.25rem;
 }
 
+/* An open line of the changelog is tinted, a little wider than its text on each side, so the
+   tag and the notes keep their place and the tint does not touch them. */
+.release-row[data-open] {
+  --open-tint: color-mix(in oklab, var(--color-fd-foreground) 3%, var(--color-fd-background));
+  background: var(--open-tint);
+  box-shadow:
+    -0.75rem 0 0 var(--open-tint),
+    0.75rem 0 0 var(--open-tint);
+}
+
 /* A release's notes, laid out as Firefox lays its own: each section's name stands at the
    left with what it lists beside it, and a rule parts one section from the next. What
    comes before the first section (a headline, an opening paragraph) runs the full width.
@@ -824,6 +834,12 @@ html > body[data-scroll-locked] {
     border-top: 1px solid var(--color-fd-border);
   }
 
+  /* In a section, what follows another is spaced by its top alone: grid items do not let
+     their margins fold together as running text does, so both would count. */
+  .release-notes > h2 ~ * {
+    margin-bottom: 0;
+  }
+
   /* Each section already has a rule over it, so one written between sections, or just
      before the first, would double it. */
   .release-notes > h2 ~ hr,
@@ -834,6 +850,22 @@ html > body[data-scroll-locked] {
   /* A section that opens the notes has no room above its name, so none above its list. */
   .release-notes > h2:first-child + * {
     margin-top: 0;
+  }
+
+  /* The changelog's newest release already has its own rule over it; a first section
+     would draw a second one just under it. */
+  .release-entry .release-notes > h2:first-child,
+  .release-entry .release-notes > h2:first-child + * {
+    margin-top: 0;
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  /* A note before the first section closes on the section's own rule, not one of its own. */
+  .release-notes > .callout:has(+ h2) {
+    margin-bottom: 0;
+    border-bottom: 0;
+    padding-bottom: 0;
   }
 }
 
