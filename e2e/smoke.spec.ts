@@ -5,35 +5,29 @@ import floeCommunity from '../lib/floe-community.json';
 test('the install tabs work from the keyboard and give the right command', async ({ page }) => {
   await page.goto('/');
   const tabs = page.getByRole('tablist', { name: 'Ways to install Thaw' });
-  const stable = tabs.getByRole('tab', { name: 'macOS 26' });
-  const beta = tabs.getByRole('tab', { name: 'macOS 27' });
-  await expect(stable).toHaveAttribute('aria-selected', 'true');
-  await expect(page.getByRole('tabpanel')).toContainText('brew install thaw');
+  const main = tabs.getByRole('tab', { name: 'macOS 27' });
+  const older = tabs.getByRole('tab', { name: 'macOS 15 and 26' });
+  // Thaw 3 on macOS 27 is the main release, so it is chosen first.
+  await expect(main).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByRole('tabpanel')).toContainText('brew install thaw@beta');
 
   // One stop in the tab order, and the arrows move within it.
-  await stable.focus();
+  await main.focus();
   await page.keyboard.press('ArrowRight');
-  await expect(beta).toBeFocused();
-  await expect(beta).toHaveAttribute('aria-selected', 'true');
-  await expect(stable).toHaveAttribute('tabindex', '-1');
-  // The panel is named by the tab that is chosen.
-  await expect(page.getByRole('tabpanel', { name: 'macOS 27' })).toContainText(
-    'brew install thaw@beta',
-  );
-
-  // macOS 15 is offered, after the two a visitor is more likely to be on.
-  await page.keyboard.press('ArrowRight');
-  const sequoia = page.getByRole('tabpanel', { name: 'macOS 15' });
-  await expect(sequoia).toContainText('not on Homebrew yet');
-  await expect(sequoia.getByRole('link', { name: 'Download Thaw from GitHub' })).toHaveAttribute(
-    'href',
-    /\/releases\/tag\/2\.2\.0-beta\.1$/,
-  );
+  await expect(older).toBeFocused();
+  await expect(older).toHaveAttribute('aria-selected', 'true');
+  await expect(main).toHaveAttribute('tabindex', '-1');
+  // The panel is named by the tab that is chosen. Thaw 2 is in Thaw's own tap, whose casks
+  // are trusted before they install.
+  const thaw2 = page.getByRole('tabpanel', { name: 'macOS 15 and 26' });
+  await expect(thaw2).toContainText('brew trust --cask thaw-app/tap/thaw@2');
+  await expect(thaw2).toContainText('brew install --cask thaw-app/tap/thaw@2');
+  await expect(thaw2).toContainText('thaw@2-beta');
 
   await page.keyboard.press('End');
-  await expect(tabs.getByRole('tab', { name: 'Without Homebrew' })).toBeFocused();
+  await expect(tabs.getByRole('tab', { name: 'Disk image' })).toBeFocused();
   await page.keyboard.press('ArrowRight');
-  await expect(stable).toBeFocused();
+  await expect(main).toBeFocused();
 });
 
 test('a changelog with only a few weeks of releases keeps its squares small', async ({ page }) => {

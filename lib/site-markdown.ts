@@ -71,11 +71,11 @@ function page(title: string, summary: string, ...sections: (string | string[])[]
 
 function home() {
   const ways = installWays.map((way) =>
-    'command' in way
+    'commands' in way
       ? [
           `### ${way.label}`,
           '',
-          `${way.about} Run \`${way.command}\`.`,
+          `${way.about} Run \`${way.commands.join(' && ')}\`.`,
           '',
           ...facts(installFacts[way.id]),
         ].join('\n')

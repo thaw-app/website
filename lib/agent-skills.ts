@@ -19,8 +19,8 @@ interface Skill {
 
 const commands = installWays
   .map((way) =>
-    'command' in way
-      ? `- ${way.label}: ${way.about} \`${way.command}\``
+    'commands' in way
+      ? `- ${way.label}: ${way.about} \`${way.commands.join(' && ')}\``
       : `- ${way.label}: ${way.note} ${way.href}`,
   )
   .join('\n');

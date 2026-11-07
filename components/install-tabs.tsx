@@ -10,7 +10,7 @@ import { repoUrl } from '@/lib/shared';
 
 /** The ways to install Thaw, one per tab, with the command ready to copy. */
 export function InstallTabs() {
-  const [chosen, setChosen] = useState<(typeof ways)[number]['id']>('macos-26');
+  const [chosen, setChosen] = useState<(typeof ways)[number]['id']>(ways[0].id);
   const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>('idle');
   const way = ways.find((candidate) => candidate.id === chosen) ?? ways[0];
   const facts = factsFor[way.id];
@@ -95,7 +95,7 @@ export function InstallTabs() {
         <div
           role="tablist"
           aria-label="Ways to install Thaw"
-          // On a phone the names are wider than the box, so the last goes to a second row.
+          // Short enough to fit one row on a phone; a name too long for it wraps.
           ref={list}
           className="relative flex flex-wrap gap-x-3.5 border-b px-4 sm:gap-x-5"
         >
@@ -136,30 +136,36 @@ export function InstallTabs() {
           aria-labelledby={`${base}-tab-${way.id}`}
           className="flex flex-col gap-2.5 px-4 py-4"
         >
-          {'command' in way ? (
+          {'commands' in way ? (
             <>
               <p className="text-sm text-fd-muted-foreground">
-                {way.about} Paste this into Terminal:
+                {way.about} Paste {way.commands.length > 1 ? 'these' : 'this'} into Terminal:
               </p>
               {/* Set apart as a line of its own, with a prompt, so it reads as something to
                   run and not as a sentence. The whole line copies, as well as the button. */}
               <div className="flex items-stretch border bg-fd-foreground/[0.04]">
                 <button
                   type="button"
-                  onClick={() => copy(way.command)}
-                  aria-label={`Copy the command ${way.command}`}
-                  className="flex min-w-0 flex-1 items-center gap-3 px-4 py-3 text-left font-mono text-[0.9375rem] transition-colors hover:bg-fd-foreground/[0.04] active:bg-fd-foreground/[0.08]"
+                  onClick={() => copy(way.commands.join('\n'))}
+                  aria-label={`Copy the ${way.commands.length > 1 ? 'commands' : 'command'} ${way.commands.join(', then ')}`}
+                  className="grid min-w-0 flex-1 grid-cols-[auto_minmax(0,1fr)] content-center gap-x-3 gap-y-1.5 px-4 py-3 leading-6 text-left font-mono text-[0.9375rem] transition-colors hover:bg-fd-foreground/[0.04] active:bg-fd-foreground/[0.08]"
                 >
-                  <span aria-hidden className="text-fd-muted-foreground select-none">
-                    $
-                  </span>
-                  <code className="truncate">
-                    <SweepText>{way.command}</SweepText>
-                  </code>
+                  {/* A line each, with its prompt; a line too long for a phone wraps, so all of
+                      it is read, rather than being cut short. */}
+                  {way.commands.map((line) => (
+                    <span key={line} className="contents">
+                      <span aria-hidden className="text-fd-muted-foreground select-none">
+                        $
+                      </span>
+                      <code className="[overflow-wrap:anywhere]">
+                        <SweepText>{line}</SweepText>
+                      </code>
+                    </span>
+                  ))}
                 </button>
                 <button
                   type="button"
-                  onClick={() => copy(way.command)}
+                  onClick={() => copy(way.commands.join('\n'))}
                   aria-live="polite"
                   // On a phone the icon alone, so the command beside it is not cut short to make room.
                   className="tap flex items-center justify-center gap-2 border-l px-4 text-sm font-medium transition-colors hover:bg-fd-foreground/[0.06] active:bg-fd-foreground/[0.12] sm:min-w-24"
