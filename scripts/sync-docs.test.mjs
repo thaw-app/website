@@ -309,6 +309,21 @@ test('the folded full feature list is left out whole, with any fold inside it', 
   );
 });
 
+test('the line offering the disk image goes, as the tabs have a Disk image tab', () => {
+  const readme = [
+    '## Install',
+    '',
+    '```sh',
+    'brew install thaw',
+    '```',
+    '',
+    'Or download the disk image from the [releases](https://example.com) and drag Thaw to Applications.',
+    '',
+  ].join('\n');
+  const parts = { install: '<InstallTabs />' };
+  expect(readmeBody(readme, { readmeParts: parts })).toBe('## Install\n\n<InstallTabs />\n\n');
+});
+
 test('the site keeps its feature list and leaves out the install badges, whatever the README has', () => {
   const readme = [
     '## Install',
