@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { items, system } from './icons';
 import { barItems } from './menu-bar-model';
 
 /**
@@ -35,7 +36,7 @@ export function BarItemView({ id }: { id: string }) {
     return (
       // biome-ignore lint/performance/noImgElement: a glyph at its exact size
       <img
-        src={`/desktop/system/${glyph.file}.webp`}
+        src={system[glyph.file]}
         alt={item.name}
         draggable={false}
         style={{ width: glyph.w, height: glyph.h, maxWidth: 'none' }}
@@ -45,7 +46,7 @@ export function BarItemView({ id }: { id: string }) {
   return (
     // biome-ignore lint/performance/noImgElement: the item's own picture at its exact size
     <img
-      src={`/desktop/thaw/items/${id}.webp`}
+      src={items[id]}
       alt={item.name}
       draggable={false}
       style={{ width: item.w, height: item.h, maxWidth: 'none' }}

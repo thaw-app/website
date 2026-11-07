@@ -2,15 +2,13 @@
 
 import './thaw-window.css';
 import { type Dispatch, type HTMLAttributes, useCallback, useState } from 'react';
+import { glyphs } from './icons';
 import { LayoutBars, layoutBars } from './layout-bars';
 import type { MenuBarAction, MenuBarModel } from './menu-bar-model';
 import type { ThawSwitches } from './model';
 import { labelBefore, Pane, type PaneItem, type PaneValues, paneDefinitions } from './thaw-pane';
 import { SimplePane } from './thaw-simple';
 import { Menu, SearchField, SidebarRow, ToolbarTitle, TrafficLights } from './thaw-ui';
-
-/** Where the images cut from the real window's capture are served from. */
-const glyphs = '/desktop/thaw';
 
 /** Each page's id, its name in the sidebar, and the line under it in the toolbar. */
 const panes = [
@@ -51,7 +49,7 @@ const generalSwitches: Record<string, string> = {
 
 function Glyph({ name, ...style }: { name: string } & React.CSSProperties) {
   // biome-ignore lint/performance/noImgElement: a fixed-size cut-out, laid out to the half point
-  return <img src={`${glyphs}/${name}.png`} alt="" style={style} />;
+  return <img src={glyphs[name]} alt="" style={style} />;
 }
 
 interface ThawWindowProps {
