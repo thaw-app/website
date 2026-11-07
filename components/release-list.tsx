@@ -178,10 +178,16 @@ function ReleaseCalendar({ pages }: { pages: ReleasePage[] }) {
   // Small squares, as GitHub's are: the calendar is a picture of the pace, and the releases
   // under it are what the page is for.
   const widest = '0.875rem';
-  const columns = { gridTemplateColumns: `repeat(${weeks}, minmax(0, ${widest}))` };
+  // The gap between squares, which their room has to count too: without it the squares are
+  // squeezed to a fraction of a pixel each, and their edges and gaps come out uneven.
+  const gap = '2px';
+  const columns = {
+    gridTemplateColumns: `repeat(${weeks}, minmax(0, ${widest}))`,
+    columnGap: gap,
+  };
   // Wide enough for the key under it, however few the weeks.
   const frame = {
-    gridTemplateColumns: `auto minmax(0, max(16rem, calc(${weeks} * ${widest})))`,
+    gridTemplateColumns: `auto minmax(0, max(16rem, calc(${weeks} * ${widest} + ${weeks - 1} * ${gap})))`,
   };
   // A month is named over the week its first day falls in.
   const months = cells.flatMap(({ date }, index) =>
