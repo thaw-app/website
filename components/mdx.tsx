@@ -1,7 +1,8 @@
+import { CodeBlock, Pre } from 'fumadocs-ui/components/codeblock';
 import defaultMdxComponents from 'fumadocs-ui/mdx';
 import type { MDXComponents } from 'mdx/types';
 import Link from 'next/link';
-import type { ComponentProps, ReactNode } from 'react';
+import { type ComponentProps, isValidElement, type ReactNode } from 'react';
 import { Assurance } from './assurance';
 import { Callout } from './callout';
 import { FeatureList } from './feature-list';
@@ -67,6 +68,36 @@ function Card({
   );
 }
 
+/** What a block of code is called above it, by its language. Plain text is not named. */
+const languageNames: Record<string, string> = {
+  sh: 'Shell',
+  bash: 'Shell',
+  shell: 'Shell',
+  zsh: 'Shell',
+  json: 'JSON',
+  swift: 'Swift',
+  applescript: 'AppleScript',
+  ts: 'TypeScript',
+  js: 'JavaScript',
+  yaml: 'YAML',
+  xml: 'XML',
+};
+
+/**
+ * A block of code with a strip above it that names its language, where its copy button sits,
+ * so the button never covers the code. A title written on the block itself wins.
+ */
+function CodeFigure({ title, children, ...props }: ComponentProps<typeof CodeBlock>) {
+  const language = isValidElement<{ className?: string }>(children)
+    ? children.props.className?.match(/language-(\S+)/)?.[1]
+    : undefined;
+  return (
+    <CodeBlock {...props} title={title ?? (language && languageNames[language])}>
+      <Pre>{children}</Pre>
+    </CodeBlock>
+  );
+}
+
 export function getMDXComponents(components?: MDXComponents) {
   return {
     ...defaultMdxComponents,
@@ -88,6 +119,7 @@ export function getMDXComponents(components?: MDXComponents) {
     RoadmapRequests,
     RoadmapUpdated,
     img: DocsImage,
+    pre: CodeFigure,
     ...components,
   } satisfies MDXComponents;
 }

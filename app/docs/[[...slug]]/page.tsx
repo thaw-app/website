@@ -38,10 +38,11 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
       {/* A column of reading width, at the left of the space it has: lines of about ninety
           characters at most, and room beside them. */}
       <DocsPage
-        toc={page.data.toc}
+        // Headings to the third level: a fourth makes the list longer than the window.
+        toc={page.data.toc.filter((heading) => heading.depth <= 3)}
         full={page.data.full}
         // A page with no headings to list gives that column back to its text.
-        tableOfContent={{ enabled: page.data.toc.length > 0 }}
+        tableOfContent={{ enabled: page.data.toc.some((heading) => heading.depth <= 3) }}
         className="max-w-[52rem]"
       >
         {/* global.css reads this to give the page its product's colour. */}

@@ -1636,9 +1636,25 @@ h1.font-display {
   color: var(--color-fd-foreground);
 }
 
-/* Code named in running text sits in a square box, as every other box on the site is. */
+/* Code named in running text sits in a square box, as every other box on the site is. Where
+   it breaks over a line, each part keeps a whole box, so neither reads as cut open. */
 .prose :not(pre) > code {
   border-radius: 0;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* Code in the site's colours (lib/code-theme.ts): the text, the product's accent for what the
+   language says (keywords, values), a mix of the two for strings, and the quiet grey for
+   comments and punctuation. Set on the block, so the accent is the page's: Floe's docs get
+   Floe's blue. */
+.shiki {
+  --code-text: var(--color-fd-foreground);
+  --code-keyword: var(--product-ink);
+  --code-string: color-mix(in oklab, var(--product-ink) 55%, var(--color-fd-foreground));
+  --code-comment: var(--color-fd-muted-foreground);
+  --code-quiet: var(--color-fd-muted-foreground);
+  --code-ground: transparent;
 }
 
 /*
@@ -1790,6 +1806,26 @@ h1.font-display {
   border-bottom: 1px solid var(--color-fd-border);
   background: transparent;
   padding: 0.625rem 1.5rem 0.625rem 0;
+  /* A row reads from its top: a short cell beside a long one starts with it, not halfway. */
+  vertical-align: top;
+}
+
+/* On a phone a table keeps columns wide enough to read a line in, and scrolls sideways
+   instead of standing its words one above another. Its right edge fades to say there is
+   more, over the room a cell leaves after itself. */
+@media (max-width: 40rem) {
+  #nd-page .prose table {
+    font-size: 0.875rem;
+  }
+
+  /* The last column is where a table's explanation goes; the first ones name things. */
+  #nd-page .prose td:last-child:not(:first-child) {
+    min-width: 15rem;
+  }
+
+  #nd-page .prose div:has(> table) {
+    mask-image: linear-gradient(to right, #000 calc(100% - 1.5rem), transparent);
+  }
 }
 
 #nd-page .prose th {
@@ -1806,6 +1842,60 @@ h1.font-display {
 /* A command in a table is kept on one line: the table scrolls sideways before it breaks. */
 #nd-page .prose td code {
   white-space: nowrap;
+}
+
+/* A link in the docs is underlined as one in the site's own pages is: a hairline a little
+   fainter than the words, full strength under the pointer. */
+#nd-page .prose a:not(.not-prose *) {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  text-decoration-color: color-mix(in oklab, currentColor 45%, transparent);
+}
+
+@media (hover: hover) {
+  #nd-page .prose a:not(.not-prose *):hover {
+    text-decoration-color: currentColor;
+  }
+}
+
+/* Headings under the title are pulled together as the site's display type is, less as they
+   get smaller. */
+#nd-page .prose h2 {
+  letter-spacing: -0.02em;
+}
+
+#nd-page .prose h3 {
+  letter-spacing: -0.01em;
+}
+
+/* A block of code has a strip over it with its language and its copy button, set like the
+   page's other small labels. A block with no strip leaves room at its end for the button. */
+#nd-page figure.shiki > div:first-child:has(figcaption) {
+  font-size: 0.8125rem;
+  color: var(--color-fd-muted-foreground);
+}
+
+#nd-page figure.shiki pre {
+  padding-inline-end: 3rem;
+}
+
+/* The list of a page's headings marks where the reader is with the product's colour, in a
+   line as heavy as the sidebar's. */
+#nd-toc svg.absolute path {
+  stroke: var(--product-tone);
+  stroke-width: 2;
+}
+
+/* In the phone's menu, the rule between the site's pages and the docs' own list. */
+.docs-menu-rule {
+  margin: 0.5rem 0.5rem 0;
+  border: 0;
+  border-top: 1px solid var(--color-fd-border);
+}
+
+/* Fumadocs puts a custom item in a box with room under it of its own. */
+:has(> .docs-menu-rule) {
+  margin-bottom: 0.5rem;
 }
 
 /* The light, dark and system buttons: Fumadocs fills their pictures in, which sets them
