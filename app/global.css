@@ -1347,16 +1347,45 @@ html > body[data-scroll-locked] {
     text-decoration-color 0.15s;
 }
 
-.link:hover {
-  text-decoration-color: currentColor;
-}
-
 .link-quiet {
   color: var(--color-fd-muted-foreground);
 }
 
-.link-quiet:hover {
-  color: var(--color-fd-foreground);
+/* Only where there is a pointer: a tapped link on a phone would keep its hover look. */
+@media (hover: hover) {
+  .link:hover {
+    text-decoration-color: currentColor;
+  }
+
+  .link-quiet:hover {
+    color: var(--color-fd-foreground);
+  }
+}
+
+/* An icon that changes to say something happened (Copy to Copied) comes in, so the change is
+   seen; in the reduced form it fades. */
+.icon-swap {
+  animation: icon-swap 0.2s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .icon-swap {
+    animation-name: icon-swap-scale;
+  }
+}
+
+@keyframes icon-swap {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes icon-swap-scale {
+  from {
+    opacity: 0;
+    scale: 0.6;
+    filter: blur(2px);
+  }
 }
 
 /* A finger needs more room than a cursor: on a touch screen, small links and

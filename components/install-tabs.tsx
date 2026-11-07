@@ -2,7 +2,7 @@
 
 import { Check, Copy, Download } from 'lucide-react';
 import Link from 'next/link';
-import { type KeyboardEvent, useId, useRef, useState } from 'react';
+import { type KeyboardEvent, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import { InstallFacts } from '@/components/install-facts';
 import { SweepText } from '@/components/sweep-text';
 import { installFacts as factsFor, installWays as ways } from '@/lib/install';
@@ -16,6 +16,44 @@ export function InstallTabs() {
   const facts = factsFor[way.id];
   const base = useId();
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
+  const list = useRef<HTMLDivElement>(null);
+  const line = useRef<HTMLSpanElement>(null);
+  const index = ways.findIndex((candidate) => candidate.id === way.id);
+  const shown = useRef(index);
+  shown.current = index;
+  // The first placing, and a choice made from the keyboard, move the line without sliding it.
+  const still = useRef(true);
+  const [swaps, setSwaps] = useState(0);
+  const copyTimer = useRef<number | undefined>(undefined);
+
+  // One line under the chosen tab, which slides to the next one chosen. It is measured, so
+  // it fits each name, on whichever row the name has wrapped to.
+  function place(slide: boolean) {
+    const tab = tabs.current[shown.current];
+    const element = line.current;
+    if (!tab || !element || !list.current) return;
+    element.style.transitionDuration = slide ? '' : '0s';
+    element.style.transform = `translate(${tab.offsetLeft}px, ${tab.offsetTop + tab.offsetHeight - 1}px) scaleX(${tab.offsetWidth / 100})`;
+    list.current.dataset.slide = '';
+  }
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: placed again whenever the choice changes
+  useLayoutEffect(() => {
+    place(!still.current);
+    still.current = false;
+  }, [index]);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: place reads only refs
+  useEffect(() => {
+    const element = list.current;
+    if (!element) return;
+    const resized = new ResizeObserver(() => place(false));
+    resized.observe(element);
+    return () => {
+      resized.disconnect();
+      window.clearTimeout(copyTimer.current);
+    };
+  }, []);
 
   // Tabs as a keyboard expects them: one stop for the whole list, and the arrow keys,
   // Home and End move between tabs, choosing each as it is reached.
@@ -29,6 +67,7 @@ export function InstallTabs() {
     }[event.key];
     if (to === undefined) return;
     event.preventDefault();
+    still.current = true;
     setChosen(ways[to].id);
     tabs.current[to]?.focus();
   }
@@ -41,7 +80,13 @@ export function InstallTabs() {
     } catch {
       setCopyState('failed');
     }
-    setTimeout(() => setCopyState('idle'), 1800);
+    setSwaps((count) => count + 1);
+    // A second copy starts the wait again, so the label does not go back early.
+    window.clearTimeout(copyTimer.current);
+    copyTimer.current = window.setTimeout(() => {
+      setCopyState('idle');
+      setSwaps((count) => count + 1);
+    }, 1800);
   }
 
   return (
@@ -51,8 +96,14 @@ export function InstallTabs() {
           role="tablist"
           aria-label="Ways to install Thaw"
           // On a phone the names are wider than the box, so the last goes to a second row.
-          className="flex flex-wrap gap-x-3.5 border-b px-4 sm:gap-x-5"
+          ref={list}
+          className="relative flex flex-wrap gap-x-3.5 border-b px-4 sm:gap-x-5"
         >
+          <span
+            ref={line}
+            aria-hidden
+            className="pointer-events-none absolute top-0 left-0 h-px w-[100px] origin-left bg-fd-foreground opacity-0 transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] in-data-[slide]:opacity-100 motion-reduce:transition-none"
+          />
           {ways.map(({ id, label }, index) => (
             <button
               key={id}
@@ -69,7 +120,8 @@ export function InstallTabs() {
               onKeyDown={(event) => onTabKey(event, index)}
               className={`tap -mb-px border-b py-2.5 text-sm whitespace-nowrap transition-colors ${
                 id === chosen
-                  ? 'border-fd-foreground text-fd-foreground'
+                  ? // Its own line until the sliding one is placed, and where there is no script.
+                    'border-fd-foreground text-fd-foreground in-data-[slide]:border-transparent'
                   : 'border-transparent text-fd-muted-foreground hover:text-fd-foreground'
               }`}
             >
@@ -112,11 +164,14 @@ export function InstallTabs() {
                   // On a phone the icon alone, so the command beside it is not cut short to make room.
                   className="tap flex items-center justify-center gap-2 border-l px-4 text-sm font-medium transition-colors hover:bg-fd-foreground/[0.06] active:bg-fd-foreground/[0.12] sm:min-w-24"
                 >
-                  {copyState === 'copied' ? (
-                    <Check aria-hidden className="size-4" />
-                  ) : (
-                    <Copy aria-hidden className="size-4" />
-                  )}
+                  {/* Changed by a copy, the icon comes in; on the page's first drawing it is just there. */}
+                  <span key={swaps} className={`flex ${swaps > 0 ? 'icon-swap' : ''}`}>
+                    {copyState === 'copied' ? (
+                      <Check aria-hidden className="size-4" />
+                    ) : (
+                      <Copy aria-hidden className="size-4" />
+                    )}
+                  </span>
                   <span className="max-sm:sr-only">
                     {copyState === 'copied'
                       ? 'Copied'
