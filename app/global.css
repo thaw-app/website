@@ -1520,6 +1520,20 @@ h1.font-display {
   margin-top: 0;
 }
 
+/* The header is a sheet of frosted glass the page scrolls under. Saturated a little, as the
+   mock desktop's menus are, so the colour under it comes through it rather than going grey.
+   For someone who has asked for less transparency it is solid. */
+#nd-nav > nav {
+  backdrop-filter: blur(16px) saturate(1.5);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  #nd-nav > nav {
+    background-color: var(--color-fd-background);
+    backdrop-filter: none;
+  }
+}
+
 /* The header's logo starts where the page's text starts, and its last icon ends where
    the page's content ends: the same side padding as the columns under it. */
 #nd-nav > nav > div {
