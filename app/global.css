@@ -170,11 +170,13 @@ kbd,
   --cube-fill-bottom: #a94a05;
 }
 
+/* On a dark page the tile is drawn dark and its lines lit, as the dark app icon is. The tile's
+   faint characters are just bright enough that its rounded square reads against the page. */
 .dark .ascii-cube {
-  --cube-floor: 0.4;
+  --cube-floor: 0.55;
   --cube-fill-top: initial;
   --cube-fill-bottom: initial;
-  --cube-1: #993a06;
+  --cube-1: #b4490b;
   --cube-2: #c96817;
   --cube-3: #fa9a2a;
   --cube-4: #ffde81;
