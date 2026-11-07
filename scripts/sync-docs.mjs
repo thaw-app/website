@@ -243,7 +243,7 @@ if (import.meta.main) await main();
 
 // The parsers are tested through here, where they have always been imported from.
 export { longDate } from '../lib/format.mjs';
-export { groupReleases } from './sync/changelog.mjs';
+export { groupReleases, systemOf } from './sync/changelog.mjs';
 export { appDownloads, settle } from './sync/numbers.mjs';
 export {
   channelOf,

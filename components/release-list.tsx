@@ -1,6 +1,7 @@
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import Link from 'next/link';
 import { getMDXComponents } from '@/components/mdx';
+import { macosVersions } from '@/lib/macos';
 import { commitOf } from '@/lib/releases';
 import { compact, longDate, type ProductSlug } from '@/lib/shared';
 import { source } from '@/lib/source';
@@ -313,7 +314,9 @@ function ReleaseNumbers({ pages, since }: { pages: ReleasePage[]; since?: string
  */
 export function ReleaseList({ product }: { product: ProductSlug }) {
   const pages = byDate(releasesOf(product));
-  const systems = [...new Set(pages.flatMap((page) => page.data.release.os ?? []))];
+  const systems = [...new Set(pages.flatMap((page) => macosVersions(page.data.release.os)))].sort(
+    (a, b) => b - a,
+  );
   const dated = pages.flatMap((page) => page.data.release.date ?? []).sort();
 
   return (
@@ -341,7 +344,7 @@ export function ReleaseList({ product }: { product: ProductSlug }) {
           return (
             <article
               key={page.url}
-              data-os={release.os}
+              data-os={macosVersions(release.os).join(' ') || undefined}
               data-stable={release.channel === 'Stable' ? '' : undefined}
               className="release-entry grid gap-y-4 border-t py-10 lg:grid-cols-[13.5rem_minmax(0,1fr)]"
             >

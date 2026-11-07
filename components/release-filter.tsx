@@ -1,6 +1,7 @@
 'use client';
 
 import { type ReactNode, useState } from 'react';
+import { macosVersions } from '@/lib/macos';
 import { Choice } from './choice';
 
 /**
@@ -13,7 +14,8 @@ export function ReleaseFilter({
   entries,
   children,
 }: {
-  systems: string[];
+  /** The macOS versions any release runs on, newest first. */
+  systems: number[];
   /** What each entry is, in the order drawn: enough to know when a choice leaves none. */
   entries: { os?: string; stable: boolean }[];
   children: ReactNode;
@@ -24,10 +26,13 @@ export function ReleaseFilter({
   // The choice is only offered where it would change something.
   const mixed = entries.some((entry) => entry.stable) && entries.some((entry) => !entry.stable);
   const left = entries.filter(
-    (entry) => (!system || entry.os === system) && (!stableOnly || entry.stable),
+    (entry) =>
+      (!system || macosVersions(entry.os).includes(Number(system))) &&
+      (!stableOnly || entry.stable),
   ).length;
   const hidden = [
-    system && `.release-entry:not([data-os="${system}"])`,
+    // An entry carries its versions as a list ("15 26"), and shows under each of them.
+    system && `.release-entry:not([data-os~="${system}"])`,
     stableOnly && '.release-entry:not([data-stable])',
   ].filter(Boolean);
 
@@ -40,7 +45,10 @@ export function ReleaseFilter({
               legend="Show releases for"
               options={[
                 { id: null, label: 'Every macOS' },
-                ...systems.map((name) => ({ id: name as string | null, label: name })),
+                ...systems.map((version) => ({
+                  id: String(version) as string | null,
+                  label: `macOS ${version}`,
+                })),
               ]}
               value={system}
               onChange={setSystem}
@@ -62,8 +70,8 @@ export function ReleaseFilter({
       {hidden.length > 0 && <style>{`${hidden.join(', ')} { display: none; }`}</style>}
       {left === 0 ? (
         <p className="not-prose border-t py-10 text-fd-muted-foreground">
-          No stable release{system ? ` for ${system}` : ''} yet. Its pre-releases are under “Every
-          release”.
+          No stable release{system ? ` for macOS ${system}` : ''} yet. Its pre-releases are under
+          “Every release”.
         </p>
       ) : (
         children

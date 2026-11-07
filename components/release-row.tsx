@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { macosVersions } from '@/lib/macos';
 
 /**
  * One earlier release as a line of the changelog: its tag, which opens its page, and the
@@ -55,7 +56,7 @@ export function ReleaseRow({
     // be seen. Its tag starts where the newest release's does, and its notes where the
     // newest's notes do (release-list.tsx).
     <li
-      data-os={os}
+      data-os={macosVersions(os).join(' ') || undefined}
       data-stable={stable ? '' : undefined}
       data-open={open || undefined}
       className="release-entry release-row"
