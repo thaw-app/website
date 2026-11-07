@@ -27,6 +27,7 @@ import {
   floeWorksWith,
 } from '@/lib/floe-features';
 import { installFacts, installWays } from '@/lib/install';
+import { markdownLink } from '@/lib/markdown-link';
 import { privacyFacts, privacyOthers } from '@/lib/privacy';
 import { datedReleases } from '@/lib/releases';
 import requests from '@/lib/roadmap-requests.json';
@@ -52,7 +53,7 @@ import { meaningsFor, standing, verifiedFrom } from '@/lib/verified';
 type Named = string | { name: string; about?: string };
 
 const absolute = (href: string) => (href.startsWith('/') ? `${siteUrl}${href}` : href);
-const link = (text: string, href: string) => `[${text}](${absolute(href)})`;
+const link = (text: string, href: string) => markdownLink(text, absolute(href));
 const named = (item: Named) =>
   typeof item === 'string' ? `- ${item}` : `- ${item.name}${item.about ? `: ${item.about}` : ''}`;
 const facts = (list: readonly { label: string; value: string; detail: string }[]) =>
