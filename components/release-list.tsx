@@ -1,6 +1,7 @@
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import Link from 'next/link';
 import { getMDXComponents } from '@/components/mdx';
+import { channelKey } from '@/lib/channels';
 import { macosVersions } from '@/lib/macos';
 import { commitOf } from '@/lib/releases';
 import { compact, longDate, type ProductSlug } from '@/lib/shared';
@@ -327,7 +328,7 @@ export function ReleaseList({ product }: { product: ProductSlug }) {
         systems={systems}
         entries={pages.map(({ data: { release } }) => ({
           os: release.os,
-          stable: release.channel === 'Stable',
+          channel: release.channel,
         }))}
       >
         {pages.slice(0, writtenOut).map((page) => {
@@ -345,7 +346,7 @@ export function ReleaseList({ product }: { product: ProductSlug }) {
             <article
               key={page.url}
               data-os={macosVersions(release.os).join(' ') || undefined}
-              data-stable={release.channel === 'Stable' ? '' : undefined}
+              data-channel={channelKey(release.channel)}
               className="release-entry grid gap-y-4 border-t py-10 lg:grid-cols-[13.5rem_minmax(0,1fr)]"
             >
               {/* On a phone its particulars are one wrapped line under its number, so the notes
@@ -424,6 +425,7 @@ export function ReleaseList({ product }: { product: ProductSlug }) {
                     dateShort={release.date && shortDate(release.date)}
                     os={release.os}
                     stable={release.channel === 'Stable'}
+                    channel={channelKey(release.channel)}
                   />
                 );
               })}

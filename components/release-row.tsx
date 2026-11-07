@@ -18,6 +18,7 @@ export function ReleaseRow({
   dateLabel,
   dateShort,
   os,
+  channel,
   stable,
 }: {
   tag: string;
@@ -28,6 +29,8 @@ export function ReleaseRow({
   /** The date with its month shortened, for a phone. */
   dateShort?: string;
   os?: string;
+  /** Its channel as the filter reads it, such as "beta" or "release-candidate". */
+  channel: string;
   /** A release on the stable channel, which is told from the pre-releases around it. */
   stable?: boolean;
 }) {
@@ -57,7 +60,7 @@ export function ReleaseRow({
     // newest's notes do (release-list.tsx).
     <li
       data-os={macosVersions(os).join(' ') || undefined}
-      data-stable={stable ? '' : undefined}
+      data-channel={channel}
       data-open={open || undefined}
       className="release-entry release-row"
     >
