@@ -1,6 +1,7 @@
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import type { ReactNode } from 'react';
 import { getMDXComponents } from '@/components/mdx';
 import { Lead, PageHeader } from '@/components/page-header';
 import { PageShell } from '@/components/page-shell';
@@ -12,13 +13,16 @@ import {
   VersionReleases,
 } from '@/components/release-list';
 import { ReleasePeople } from '@/components/release-people';
+import { tagSaysChannel } from '@/lib/channels';
 import { commitOf, feedUrl, pageAlternates, pageTitle } from '@/lib/releases';
 import {
   changelogRoute,
   changelogUrl,
   getPageImageUrl,
+  longDate,
   type ProductSlug,
   products,
+  tabTitle,
 } from '@/lib/shared';
 import { sitePages } from '@/lib/site-pages';
 import { source } from '@/lib/source';
@@ -44,10 +48,22 @@ export function ChangelogView({ path }: { path?: string[] }) {
   const product = products[slug];
   const Notes = page.data.body;
   const release = page.data.release;
-  // The line under the title often names the macOS already; it is not said twice.
-  const forSystem =
-    release?.os && !page.data.description?.includes(release.os) ? release.os : undefined;
   const commit = release?.commit ? commitOf(slug, release.commit) : undefined;
+  // A release's description is its particulars ("6 November 2026 · macOS 27 only · Build
+  // 63"), sometimes with a name. The fields under the title say the particulars, so only
+  // the rest of it is said as a line.
+  const parts = page.data.description?.split(' · ') ?? [];
+  const build = release && parts.find((part) => /^Build \d+$/.test(part))?.slice(6);
+  const lead = release
+    ? parts
+        .filter(
+          (part) =>
+            !/^Build \d+$/.test(part) &&
+            !part.startsWith('macOS') &&
+            !(release.date && part === longDate(release.date)),
+        )
+        .join(' · ')
+    : page.data.description;
 
   if (page.data.releaseIndex) {
     // A product with nothing released yet has no changelog to choose.
@@ -93,45 +109,13 @@ export function ChangelogView({ path }: { path?: string[] }) {
     <PageShell tone={slug}>
       <article className="mx-auto flex w-full max-w-4xl flex-col gap-10">
         <PageHeader
-          label={`${product.name} changelog`}
+          // The title names the product already ("Thaw 2.2.0"), so the label above it does not.
+          label={sitePages.changelog.label}
           labelHref={changelogUrl(slug)}
           title={pageTitle(page)}
         >
-          {page.data.description && <Lead>{page.data.description}</Lead>}
-          {(forSystem || release?.url || commit) && (
-            // The downloads first, in the product's colour, as the one thing to do here; then
-            // what the release is for and what it was built from, as one line of particulars.
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
-              {release?.url && (
-                <a
-                  href={release.url}
-                  className="tap press border border-(--product-ink) px-3 py-1.5 font-medium text-(--product-ink) transition-colors hover:bg-fd-accent"
-                >
-                  Downloads on GitHub
-                </a>
-              )}
-              {(forSystem || commit) && (
-                <span className="text-fd-muted-foreground">
-                  {forSystem && `For ${forSystem}`}
-                  {forSystem && commit && ' · '}
-                  {commit && (
-                    <>
-                      Built from commit{' '}
-                      <a href={commit.url} className="tap link font-mono">
-                        {commit.short}
-                      </a>
-                    </>
-                  )}
-                </span>
-              )}
-            </div>
-          )}
-          {release?.people && (
-            <p className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-fd-muted-foreground">
-              Credited in the notes
-              <ReleasePeople people={release.people} max={24} />
-            </p>
-          )}
+          {lead && <Lead>{lead}</Lead>}
+          {release && <ReleaseProperties release={release} commit={commit} build={build} />}
         </PageHeader>
         <div className={`prose max-w-none ${release ? 'release-notes' : ''}`}>
           <Notes components={getMDXComponents({ a: createRelativeLink(source, page) })} />
@@ -144,6 +128,82 @@ export function ChangelogView({ path }: { path?: string[] }) {
         {release && <ReleaseSteps product={slug} url={page.url} />}
       </article>
     </PageShell>
+  );
+}
+
+type Release = NonNullable<ReturnType<typeof pageAt>['data']['release']>;
+
+/**
+ * A release's particulars as a list of named fields under its title, as a Notion page has
+ * its properties: when, which channel, which macOS, what it was built from, and who it
+ * credits, and where to download it. A field the release does not have is left out.
+ */
+function ReleaseProperties({
+  release,
+  commit,
+  build,
+}: {
+  release: Release;
+  commit?: { url: string; short: string };
+  build?: string;
+}) {
+  const fields: { name: string; value: ReactNode }[] = [
+    release.date && {
+      name: 'Released',
+      value: <time dateTime={release.date}>{longDate(release.date)}</time>,
+    },
+    // A channel the number spells ("2.2.0-beta.2") is not said again.
+    !tagSaysChannel(release.tag, release.channel) && { name: 'Channel', value: release.channel },
+    release.os && { name: 'Runs on', value: release.os },
+    build && { name: 'Build', value: build },
+    commit && {
+      name: 'Built from',
+      value: (
+        <a href={commit.url} className="tap link font-mono">
+          {commit.short}
+        </a>
+      ),
+    },
+    // What changed in code since the release GitHub compares it with, on GitHub.
+    release.compare && {
+      name: 'Changes since',
+      value: (
+        <a href={release.compare.url} className="tap link font-mono">
+          {release.compare.from}
+        </a>
+      ),
+    },
+    // A plain link, like the commit's: the downloads are one of its particulars.
+    release.url && {
+      name: 'Download',
+      value: (
+        <a href={release.url} className="tap link">
+          GitHub
+        </a>
+      ),
+    },
+    // Eight pictures and a count of the rest, so the line stays one line high; the notes name
+    // everyone.
+    release.people && {
+      name: 'Credited',
+      value: <ReleasePeople people={release.people} max={8} />,
+    },
+  ].filter((field) => !!field);
+
+  return (
+    // A spec list: each field's name and its value on a line, in two columns where there is
+    // room, filled across.
+    <dl className="not-prose grid text-sm md:grid-cols-2 md:gap-x-10">
+      {fields.map((field) => (
+        <div
+          key={field.name}
+          className="grid min-h-9 grid-cols-[7rem_minmax(0,1fr)] items-center gap-x-4 py-1"
+        >
+          <dt className="text-fd-muted-foreground">{field.name}</dt>
+          <dd className="text-fd-foreground">{field.value}</dd>
+        </div>
+      ))}
+    </dl>
   );
 }
 
@@ -180,8 +240,13 @@ export function changelogPaths(product: ProductSlug) {
 export function changelogMetadata(path?: string[]): Metadata {
   const page = pageAt(path);
   const own = page.data.releaseIndex && page.slugs[0] === 'thaw';
+  const title = page.data.releaseIndex
+    ? own
+      ? sitePages.changelog.label
+      : `${products[page.slugs[0] as ProductSlug].name} changelog`
+    : pageTitle(page);
   return {
-    title: own ? sitePages.changelog.label : pageTitle(page),
+    title: tabTitle(title),
     description: page.data.description,
     // One address for the page, whichever domain it was reached on.
     alternates: pageAlternates(page.url),

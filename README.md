@@ -145,8 +145,8 @@ Four files are made by hand-run scripts and committed, not built each time:
   line a new id, or the people who closed the last one will not see it.
 - The one accent colour is `--product-tone` in `app/global.css`: Thaw's orange, and
   Floe's blue under Floe's docs and on Floe's own pages (`data-tone="floe"`). It marks what is current or the thing to look at (the
-  roadmap's "Now", the page you are on in the docs, a stable release). The changelog's
-  calendar uses the cube's three oranges, `--release-1` to `--release-3`.
+  roadmap's "Now", the page you are on in the docs, a stable release). A release's
+  number on the changelog is `--release-2`, the cube's deeper orange.
 - A note set apart in a doc (GitHub's `> [!NOTE]`, or `<Callout>`) is drawn by
   `components/callout.tsx`: a rule, its name at the left, its text beside it.
 - On a page, a section is `<Section label="…">` and a ruled grid is

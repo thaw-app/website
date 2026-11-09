@@ -111,11 +111,9 @@ kbd,
   --world-lit: #c96817;
   --verified-gold: #a87400;
   --verified-green: #1a7f37;
-  /* A day with one, two and three or more releases on the changelog's calendar: the cube's
-     own oranges, deeper for more on a light page and brighter for more on a dark one. */
-  --release-1: #d96c0c;
+  /* A release's number on the changelog: the cube's orange, deep enough to read on a light
+     page and brighter on a dark one. */
   --release-2: #a84407;
-  --release-3: #6f2a04;
   /* The one accent: the cube's orange, for what is current or the thing to look at. Under
      Floe's docs it is Floe's blue. */
   --product-tone: #c96817;
@@ -123,17 +121,15 @@ kbd,
   --product-ink: #a84407;
 }
 
-/* Floe's own pages, its changelog among them: the accent and the changelog's calendar are
-   its blues, lighter to deeper as the cube's oranges run. Floe's docs are told by what is on
-   the page, since their contents and sidebar sit outside it. */
+/* Floe's own pages, its changelog among them: the accent and a release's number are its
+   blue. Floe's docs are told by what is on the page, since their contents and sidebar sit
+   outside it. */
 [data-tone="floe"],
 #nd-notebook-layout:has([data-product="floe"]) {
   --product-tone: #2563c9;
   --product-ink: #2563c9;
   --world-lit: #2563c9;
-  --release-1: #3d7df0;
   --release-2: #0b4fd8;
-  --release-3: #072f86;
 }
 
 .dark [data-tone="floe"],
@@ -141,18 +137,14 @@ kbd,
   --product-tone: #4f93ff;
   --product-ink: #4f93ff;
   --world-lit: #4f93ff;
-  --release-1: #1560e8;
   --release-2: #4f93ff;
-  --release-3: #c4e0ff;
 }
 
 .dark {
   --world-lit: #fa9a2a;
   --verified-gold: #f0b429;
   --verified-green: #3fb950;
-  --release-1: #c96817;
   --release-2: #fa9a2a;
-  --release-3: #ffde81;
   --product-tone: #fa9a2a;
   --product-ink: #fa9a2a;
 }

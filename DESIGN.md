@@ -54,7 +54,7 @@ Every page but the home page and the docs shares one frame and one width.
 - "Try it" is the mock desktop, under the home page at its full width: Thaw
   rebuilt in the browser so people can use it before downloading.
 - The changelog is a timeline after Cossistant's: number and date on the left,
-  notes on the right, under a calendar of releases. The roadmap is a board
+  notes on the right. The roadmap is a board
   after ArkEnv's: up next by area, shipped by release, each with a count. It is a
   page of its own at /roadmap, beside Community and Built with, not a docs page:
   it is about the project, and it is written here.
