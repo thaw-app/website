@@ -33,7 +33,16 @@ kbd,
   --radius-2xl: 0;
   --radius-3xl: 0;
   --radius-4xl: 0;
-  /* Fumadocs' light grey text is 4.4:1 on its light page; this is 5.0:1. */
+  /* Light mode is white, as Notion's docs are, in place of Fumadocs' light grey: the
+     mirror of dark mode's flat black, with the same barely-there rules. */
+  --color-fd-background: #ffffff;
+  --color-fd-card: #ffffff;
+  --color-fd-popover: #ffffff;
+  --color-fd-muted: #f7f7f7;
+  --color-fd-secondary: #f3f3f3;
+  --color-fd-accent: rgb(0 0 0 / 0.045);
+  --color-fd-border: rgb(0 0 0 / 0.1);
+  /* Grey text at 5.4:1 on the white page. */
   --color-fd-muted-foreground: #6a6a6a;
 }
 

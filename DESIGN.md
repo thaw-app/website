@@ -20,7 +20,7 @@ launcher, as a second product. One domain: a home page, and docs for both.
   request: the bars under the Verified values are the gold and green of the
   badges they stand for.
 - **Dark mode is true black**, with barely visible rules. Light mode is the
-  alternative, and both must work.
+  alternative, plain white with the same faint rules, and both must work.
 - **Type.** Schibsted Grotesk for text and headings. Fragment Mono for commands
   and code only. No uppercase monospace labels.
 - **Corners.** Square on the site's own pages.
