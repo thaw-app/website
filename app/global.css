@@ -1456,6 +1456,46 @@ html > body[data-scroll-locked] {
   }
 }
 
+/* A link's chevron (morph-arrow.tsx) stretches into an arrow while the link is pointed at or
+   focused: the head steps forward and the shaft grows behind it. With less motion asked for,
+   it changes without moving. */
+.morph-arrow {
+  display: inline-block;
+  width: 0.875em;
+  height: 0.875em;
+  flex-shrink: 0;
+  vertical-align: -0.1em;
+}
+
+.morph-arrow path {
+  transform-box: fill-box;
+}
+
+.morph-arrow-head {
+  translate: -3px 0;
+}
+
+.morph-arrow-shaft {
+  transform-origin: left center;
+  scale: 0 1;
+}
+
+:is(a, button):is(:hover, :focus-visible) .morph-arrow-head {
+  translate: 0 0;
+}
+
+:is(a, button):is(:hover, :focus-visible) .morph-arrow-shaft {
+  scale: 1 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .morph-arrow path {
+    transition:
+      translate 190ms cubic-bezier(0.23, 1, 0.32, 1),
+      scale 190ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+}
+
 /* A finger needs more room than a cursor: on a touch screen, small links and
    buttons marked .tap grow to the 44px a thumb can hit. */
 @media (pointer: coarse) {

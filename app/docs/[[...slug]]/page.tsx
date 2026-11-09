@@ -10,6 +10,7 @@ import { createRelativeLink } from 'fumadocs-ui/mdx';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Card, Cards, getMDXComponents } from '@/components/mdx';
+import { MorphArrow } from '@/components/morph-arrow';
 import { nextSteps } from '@/lib/next-steps';
 import { pageAlternates, pageTitle } from '@/lib/releases';
 import {
@@ -93,7 +94,15 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
             </h2>
             <Cards>
               {next.map((step) => (
-                <Card key={step.url} title={pageTitle(step)} href={step.url}>
+                <Card
+                  key={step.url}
+                  title={
+                    <span className="flex items-center gap-1.5">
+                      {pageTitle(step)} <MorphArrow />
+                    </span>
+                  }
+                  href={step.url}
+                >
                   {step.data.description}
                 </Card>
               ))}

@@ -7,6 +7,7 @@ import { compact, longDate, type ProductSlug } from '@/lib/shared';
 import { source } from '@/lib/source';
 import { EarlierReleases } from './earlier-releases';
 import { IntentLink } from './intent-link';
+import { MorphArrow } from './morph-arrow';
 import { ReleaseFilter } from './release-filter';
 import { ReleasePeople } from './release-people';
 import { ReleaseRow } from './release-row';
@@ -73,8 +74,18 @@ export function ReleaseSteps({ product, url }: { product: string; url: string })
                 href={page.url}
                 className="group flex flex-col gap-1 p-4 transition-colors hover:bg-fd-accent sm:p-5"
               >
-                <span className="text-sm text-fd-muted-foreground">
-                  {label === 'Earlier' ? '← Earlier' : 'Later →'}
+                <span
+                  className={`flex items-center gap-1.5 text-sm text-fd-muted-foreground ${label === 'Later' ? 'justify-end' : ''}`}
+                >
+                  {label === 'Earlier' ? (
+                    <>
+                      <MorphArrow back /> Earlier
+                    </>
+                  ) : (
+                    <>
+                      Later <MorphArrow />
+                    </>
+                  )}
                 </span>
                 <span className="font-mono text-sm text-fd-foreground group-hover:underline group-hover:underline-offset-4">
                   {page.data.release.tag}
