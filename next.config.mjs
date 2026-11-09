@@ -71,7 +71,18 @@ const config = {
     return [
       { source: '/:path*', headers: securityHeaders },
       // These keep their names when they change, so a browser keeps them a day, not forever.
-      ...['/icons/:path*', '/papel-picado/:path*', '/desktop/:path*'].map((source) => ({
+      // So do the app icons browsers ask for by name (rewritten below), which were asked for
+      // again on every visit.
+      ...[
+        '/icons/:path*',
+        '/papel-picado/:path*',
+        '/desktop/:path*',
+        '/favicon.ico',
+        '/apple-touch-icon.png',
+        '/apple-touch-icon-precomposed.png',
+        '/icon.png',
+        '/apple-icon.png',
+      ].map((source) => ({
         source,
         headers: [{ key: 'Cache-Control', value: 'public, max-age=86400' }],
       })),
