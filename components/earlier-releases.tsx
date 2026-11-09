@@ -94,7 +94,9 @@ export function EarlierReleases({ list, rows }: { list: ReactNode; rows: Release
       {/* Named as every section of the site is: a small label with its rule, and here the
           choice of view at the end of the rule. */}
       <div className="mb-3 flex items-center gap-4">
-        <h2 className="section-label flex-1">Earlier releases</h2>
+        <h2 id="earlier-releases" className="section-label flex-1">
+          Earlier releases
+        </h2>
         <Choice
           legend="Show the earlier releases as"
           options={[
@@ -110,7 +112,7 @@ export function EarlierReleases({ list, rows }: { list: ReactNode; rows: Release
       ) : (
         // On a narrow phone the table scrolls inside its own box, never the page.
         <div className="overflow-x-auto">
-          <table className="w-full border-b text-sm">
+          <table aria-labelledby="earlier-releases" className="w-full border-b text-sm">
             <thead className="border-b text-start text-fd-muted-foreground">
               <tr className="text-start">
                 {header('version', 'Version', 'pe-3 sm:pe-6')}

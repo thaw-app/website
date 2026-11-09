@@ -14,6 +14,7 @@ import {
 } from '@/components/release-list';
 import { ReleasePeople } from '@/components/release-people';
 import { tagSaysChannel } from '@/lib/channels';
+import { macosPart } from '@/lib/macos';
 import { commitOf, feedUrl, pageAlternates, pageTitle } from '@/lib/releases';
 import {
   changelogRoute,
@@ -59,7 +60,7 @@ export function ChangelogView({ path }: { path?: string[] }) {
         .filter(
           (part) =>
             !/^Build \d+$/.test(part) &&
-            !part.startsWith('macOS') &&
+            !macosPart.test(part) &&
             !(release.date && part === longDate(release.date)),
         )
         .join(' · ')

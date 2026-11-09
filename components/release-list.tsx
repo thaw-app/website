@@ -2,7 +2,7 @@ import { createRelativeLink } from 'fumadocs-ui/mdx';
 import Link from 'next/link';
 import { getMDXComponents } from '@/components/mdx';
 import { channelKey, tagSaysChannel } from '@/lib/channels';
-import { macosVersions } from '@/lib/macos';
+import { macosPart, macosVersions } from '@/lib/macos';
 import { compact, longDate, type ProductSlug } from '@/lib/shared';
 import { source } from '@/lib/source';
 import { EarlierReleases } from './earlier-releases';
@@ -129,9 +129,6 @@ function byDate(pages: ReleasePage[]) {
     (a, b) => when(b).localeCompare(when(a)) || a.data.release.order - b.data.release.order,
   );
 }
-
-/** A summary's macOS part ("macOS 27 only"), which a version page says once for all. */
-const macosPart = /^macOS [\d ,and]+(?: only)?$/i;
 
 function Row({ page, sharedOs }: { page: ReleasePage; sharedOs: boolean }) {
   const release = page.data.release;
