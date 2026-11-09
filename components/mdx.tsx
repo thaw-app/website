@@ -38,11 +38,11 @@ function DocsImage(props: ComponentProps<'img'>) {
  * line about it. Fumadocs draws these as a grid of boxes, which beside a sidebar of the same
  * pages is the same list twice, the second time louder.
  */
-function Cards({ children }: { children: ReactNode }) {
+export function Cards({ children }: { children: ReactNode }) {
   return <div className="not-prose my-8 grid gap-x-10 gap-y-6 sm:grid-cols-2">{children}</div>;
 }
 
-function Card({
+export function Card({
   title,
   href,
   children,
