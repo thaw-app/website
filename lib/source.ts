@@ -46,6 +46,8 @@ const docs = defineDocs({
           name: z.string().optional(),
           // The macOS the release runs on, such as "macOS 27".
           os: z.string().optional(),
+          // The release GitHub compares it with, from its notes' "Full Changelog" line.
+          compare: z.object({ from: z.string(), url: z.string() }).optional(),
           date: z.string().optional(),
           summary: z.string().optional(),
           // How many things its notes list as new and as fixed, counted by their headings.

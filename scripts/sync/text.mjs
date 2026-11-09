@@ -253,6 +253,56 @@ function promoteHeadings(body) {
     .join('\n');
 }
 
+/**
+ * A release's notes without GitHub's boilerplate: the "Full Changelog" line (kept as
+ * `compare`, for the page's fields), "Please report issues at …", and donation sections.
+ */
+function releaseBoilerplate(markdown) {
+  let compare;
+  const body = withoutAppeals(markdown)
+    .replace(
+      /^\s*\**Full Changelog\**:?\s*(https:\/\/github\.com\/[^\s/]+\/[^\s/]+\/compare\/(\S+?)\.\.\.\S+?)\s*$/gim,
+      (_, url, from) => {
+        compare ??= { from, url };
+        return '';
+      },
+    )
+    .replace(/^Please report issues at\s+\[[^\]]*\]\([^)]*\)\.?[ \t]*$/gim, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+  return { body, compare };
+}
+
+/** Where a request for money points. */
+const tipJars = /github\.com\/sponsors\/|patreon\.com|ko-fi\.com|paypal\.me|buymeacoffee\.com/i;
+
+/**
+ * Notes without a Donations or Support section that links a tip jar, and the "---" above it.
+ * A Support section without one (macOS support, say) stays.
+ */
+function withoutAppeals(markdown) {
+  const lines = markdown.split('\n');
+  const kept = [];
+  for (let at = 0; at < lines.length; at++) {
+    const heading = lines[at].match(/^(#{1,6})\s+(?:Donations?|Support(?:ing)?(?: Thaw)?)\s*$/i);
+    if (heading) {
+      let end = at + 1;
+      while (end < lines.length) {
+        const next = lines[end].match(/^(#{1,6})\s/);
+        if (next && next[1].length <= heading[1].length) break;
+        end++;
+      }
+      if (tipJars.test(lines.slice(at, end).join('\n'))) {
+        while (kept.length && /^\s*(-{3,}|\*{3,})?\s*$/.test(kept.at(-1))) kept.pop();
+        at = end - 1;
+        continue;
+      }
+    }
+    kept.push(lines[at]);
+  }
+  return kept.join('\n');
+}
+
 /** Release notes written on GitHub, shaped like a changelog section's body. */
 function tidyNotes(markdown) {
   const lines = markdown.replace(/\r/g, '').trim().split('\n');
@@ -281,6 +331,21 @@ const swiftAttributes = new Set(
   ),
 );
 
+/**
+ * A bare pull request or issue address as "#45", or "owner/repo#45" for another repo's.
+ * Same repo name counts as this repo: stonerl/Thaw moved to thaw-app, and GitHub redirects.
+ */
+function shortIssueLink(part, repo) {
+  const match = part.match(
+    /^(https:\/\/github\.com\/([\w.-]+\/[\w.-]+)\/(?:pull|issues)\/(\d+))([.,;:!?)]*)$/,
+  );
+  if (!match) return part;
+  const [, url, owner, number, after] = match;
+  const same = owner.split('/')[1].toLowerCase() === repo.split('/')[1].toLowerCase();
+  const name = same ? `#${number}` : `${owner}#${number}`;
+  return `[${name}](${url})${after}`;
+}
+
 /** Turns "#123" and "@name" into links, as GitHub does when it shows the same text. */
 function linkMentions(markdown, repo) {
   let fenced = false;
@@ -297,7 +362,7 @@ function linkMentions(markdown, repo) {
         .split(/(`[^`]*`|!?\[[^\]]*\]\([^)]*\)|\[[^\]]*\]\[[^\]]*\]|<[^>]+>|https?:\/\/\S+)/)
         .map((part, index) =>
           index % 2
-            ? part
+            ? shortIssueLink(part, repo)
             : part
                 .replace(/(^|[\s(,])#(\d+)\b/g, `$1[#$2](https://github.com/${repo}/issues/$2)`)
                 // A name can end a sentence ("By @someone."); what it cannot be is the start
@@ -453,6 +518,7 @@ export {
   peopleIn,
   promoteHeadings,
   readmeBody,
+  releaseBoilerplate,
   rewriteLinks,
   roadmapBody,
   splitReleases,

@@ -10,6 +10,7 @@ import {
   parseTag,
   peopleIn,
   readmeBody,
+  releaseBoilerplate,
   rewriteLinks,
   splitReleases,
   stageRank,
@@ -140,6 +141,44 @@ test('issue numbers and names become links, and code is left alone', () => {
     'Run `gh issue view #12`.',
   );
   expect(linkMentions('```\n@someone #5\n```', 'thaw-app/Thaw')).toBe('```\n@someone #5\n```');
+});
+
+test('a bare pull request address is said as its number', () => {
+  expect(
+    linkMentions('first contribution in https://github.com/stonerl/Thaw/pull/45.', 'thaw-app/Thaw'),
+  ).toBe('first contribution in [#45](https://github.com/stonerl/Thaw/pull/45).');
+  // Another repo's keeps its name; an address that is not an issue is left alone.
+  expect(linkMentions('See https://github.com/jordanbaird/Ice/issues/7', 'stonerl/Thaw')).toBe(
+    'See [jordanbaird/Ice#7](https://github.com/jordanbaird/Ice/issues/7)',
+  );
+  expect(linkMentions('https://github.com/sponsors/stonerl', 'stonerl/Thaw')).toBe(
+    'https://github.com/sponsors/stonerl',
+  );
+});
+
+test('a section asking for money is left out, and a support section that does not stays', () => {
+  const notes = [
+    '## Fixed',
+    '',
+    '- A fix.',
+    '',
+    '---',
+    '',
+    '## Support',
+    '',
+    'If you find Thaw useful:',
+    '',
+    '- Ko-fi: https://ko-fi.com/stonerl',
+  ].join('\n');
+  expect(releaseBoilerplate(notes).body).toBe('## Fixed\n\n- A fix.');
+  expect(
+    releaseBoilerplate(
+      '## Donations\n\nA coin: https://github.com/sponsors/stonerl\n\n## Fixed\n\n- A fix.',
+    ).body,
+  ).toBe('## Fixed\n\n- A fix.');
+  expect(releaseBoilerplate('## Support\n\nmacOS 15 and 26.').body).toBe(
+    '## Support\n\nmacOS 15 and 26.',
+  );
 });
 
 test('the people a release credits are the ones its notes name, each once', () => {
@@ -395,4 +434,36 @@ test('a link to another synced file goes to its docs page, and one to the README
   expect(
     rewriteLinks('[it](../README.md)', 'docs/X.md', slugs, { ...links, product: 'floe' }),
   ).toBe('[it](/floe)');
+});
+
+test("a release's notes lose GitHub's boilerplate, and keep what it compares with", () => {
+  const notes = [
+    'Please report issues at',
+    '[github.com/thaw-app/Thaw/issues](https://github.com/thaw-app/Thaw/issues).',
+    '',
+    '## Fixed',
+    '',
+    '- A fix.',
+    '',
+    '## New Contributors',
+    '* @a made their first contribution',
+    '',
+    '**Full Changelog**: https://github.com/stonerl/Thaw/compare/1.0.0-beta.1...1.0.0-beta.2',
+  ].join('\n');
+  const { body, compare } = releaseBoilerplate(notes);
+  expect(body).toBe(
+    '## Fixed\n\n- A fix.\n\n## New Contributors\n* @a made their first contribution',
+  );
+  expect(compare).toEqual({
+    from: '1.0.0-beta.1',
+    url: 'https://github.com/stonerl/Thaw/compare/1.0.0-beta.1...1.0.0-beta.2',
+  });
+  expect(
+    releaseBoilerplate('Full Changelog: https://github.com/o/r/compare/1.0.0...1.1.0').compare
+      ?.from,
+  ).toBe('1.0.0');
+  // A note that only mentions the full changelog is not touched.
+  expect(releaseBoilerplate('See the [full changelog](https://x).').body).toBe(
+    'See the [full changelog](https://x).',
+  );
 });
