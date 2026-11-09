@@ -40,6 +40,7 @@ Some pages are the same on both sides: how to contribute, the Code of
 Conduct, translations, how these docs work and the security policy. Each
 product's docs carry a copy, so the sidebar and the picker stay where the
 reader is.
+
 - The policies come from `thaw-app/.github`, like any other synced page.
 - The rest are written here, in `content/shared`. Edit them there; the sync
   copies them into `content/docs/<product>`, which git ignores.
@@ -111,6 +112,7 @@ country's name, a US state, or a town on its list. Add a town there when a
 common one is going uncounted.
 
 Four files are made by hand-run scripts and committed, not built each time:
+
 - `assets/desktop-still.png` and `assets/desktop-still-floe.png`, the pictures of the
   demo a phone is shown in its place on the home page and on Floe's, by
   `node scripts/capture-demo.mjs` against a running site. Take them again when the
@@ -168,6 +170,7 @@ refused it. A new outside source goes in that one list, with why.
 ## What loads later
 
 Three things are kept off a page's first load, since most visits never need them at once:
+
 - The search box and its code, fetched when it is first opened or a search button is
   pointed at (`components/providers.tsx`).
 - The moving wordmark and the conure at the foot of the page, fetched when the footer is
