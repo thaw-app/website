@@ -1,8 +1,8 @@
 'use client';
 
-import Link from 'next/link';
 import { useState } from 'react';
 import { macosVersions } from '@/lib/macos';
+import { IntentLink } from './intent-link';
 
 /**
  * One earlier release as a line of the changelog: its tag, which opens its page, and the
@@ -65,7 +65,7 @@ export function ReleaseRow({
       className="release-entry release-row"
     >
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline sm:grid-cols-[13.5rem_minmax(0,1fr)]">
-        <Link
+        <IntentLink
           href={href}
           className="tap justify-self-start pt-3 pb-0.5 font-mono text-sm sm:py-2.5"
         >
@@ -74,7 +74,7 @@ export function ReleaseRow({
           >
             {tag}
           </span>
-        </Link>
+        </IntentLink>
         <button
           type="button"
           aria-expanded={open}
@@ -104,9 +104,9 @@ export function ReleaseRow({
           {notes === null && (
             <p className="text-sm text-fd-muted-foreground">
               The notes could not be loaded here.{' '}
-              <Link href={href} className="link text-fd-foreground">
+              <IntentLink href={href} className="link text-fd-foreground">
                 Open {tag} on its own page
-              </Link>
+              </IntentLink>
               .
             </p>
           )}

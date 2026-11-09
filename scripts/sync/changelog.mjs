@@ -14,6 +14,7 @@ import {
   linkMentions,
   parseTag,
   peopleIn,
+  releaseBoilerplate,
   splitReleases,
   splitSummary,
   stageRank,
@@ -219,6 +220,7 @@ function writeChangelog(markdown, repoPath, outDir, product, rewrite, published)
 
     for (const release of group.releases) {
       const { tag, date, channel, url, name } = release;
+      const { body, compare } = releaseBoilerplate(release.body);
       const summary = release.summary ?? release.byname;
       const os = systemOf(release, product);
       const description = [date && longDate(date), summary].filter(Boolean).join(' · ');
@@ -249,12 +251,14 @@ function writeChangelog(markdown, repoPath, outDir, product, rewrite, published)
               ...(release.commit ? { commit: release.commit } : {}),
               ...(name ? { name } : {}),
               ...(os ? { os } : {}),
-              ...countChanges(release.body),
+              // The release GitHub compares it with, and the comparison.
+              ...(compare ? { compare } : {}),
+              ...countChanges(body),
               // Who its notes name, for their pictures beside it on the changelog.
-              ...(peopleIn(release.body).length ? { people: peopleIn(release.body) } : {}),
+              ...(peopleIn(body).length ? { people: peopleIn(body) } : {}),
             },
           },
-          rewrite(release.body),
+          rewrite(body),
         ),
       );
     }
@@ -267,7 +271,8 @@ function writeChangelog(markdown, repoPath, outDir, product, rewrite, published)
           {
             title: group.label,
             description: parseTag(group.key)
-              ? `The pre-releases of ${product.name} ${group.label}. It has no final release.`
+              ? // The title names the product and version already ("Thaw 3.0.0").
+                'Every pre-release of this version. It has no final release.'
               : (group.note ?? `The ${group.label} builds of ${product.name}.`),
             releaseGroup: group.key,
           },

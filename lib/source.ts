@@ -46,6 +46,8 @@ const docs = defineDocs({
           name: z.string().optional(),
           // The macOS the release runs on, such as "macOS 27".
           os: z.string().optional(),
+          // The release GitHub compares it with, from its notes' "Full Changelog" line.
+          compare: z.object({ from: z.string(), url: z.string() }).optional(),
           date: z.string().optional(),
           summary: z.string().optional(),
           // How many things its notes list as new and as fixed, counted by their headings.
@@ -63,6 +65,11 @@ const docs = defineDocs({
       // Code in the site's colours (lib/code-theme.ts), and named by its language so a block
       // can say what it is.
       rehypeCodeOptions: { themes: { light: codeTheme, dark: codeTheme }, addLanguageClass: true },
+      // An image's size is read from where it is hosted while the site is built. When GitHub's
+      // attachments do not answer, the image goes without a size rather than failing the build.
+      remarkImageOptions: {
+        onError: (error) => console.warn(error instanceof Error ? error.message : error),
+      },
     }),
     postprocess: {
       includeProcessedMarkdown: true,

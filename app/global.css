@@ -33,7 +33,16 @@ kbd,
   --radius-2xl: 0;
   --radius-3xl: 0;
   --radius-4xl: 0;
-  /* Fumadocs' light grey text is 4.4:1 on its light page; this is 5.0:1. */
+  /* Light mode is white, as Notion's docs are, in place of Fumadocs' light grey: the
+     mirror of dark mode's flat black, with the same barely-there rules. */
+  --color-fd-background: #ffffff;
+  --color-fd-card: #ffffff;
+  --color-fd-popover: #ffffff;
+  --color-fd-muted: #f7f7f7;
+  --color-fd-secondary: #f3f3f3;
+  --color-fd-accent: rgb(0 0 0 / 0.045);
+  --color-fd-border: rgb(0 0 0 / 0.1);
+  /* Grey text at 5.4:1 on the white page. */
   --color-fd-muted-foreground: #6a6a6a;
 }
 
@@ -111,11 +120,9 @@ kbd,
   --world-lit: #c96817;
   --verified-gold: #a87400;
   --verified-green: #1a7f37;
-  /* A day with one, two and three or more releases on the changelog's calendar: the cube's
-     own oranges, deeper for more on a light page and brighter for more on a dark one. */
-  --release-1: #d96c0c;
+  /* A release's number on the changelog: the cube's orange, deep enough to read on a light
+     page and brighter on a dark one. */
   --release-2: #a84407;
-  --release-3: #6f2a04;
   /* The one accent: the cube's orange, for what is current or the thing to look at. Under
      Floe's docs it is Floe's blue. */
   --product-tone: #c96817;
@@ -123,17 +130,15 @@ kbd,
   --product-ink: #a84407;
 }
 
-/* Floe's own pages, its changelog among them: the accent and the changelog's calendar are
-   its blues, lighter to deeper as the cube's oranges run. Floe's docs are told by what is on
-   the page, since their contents and sidebar sit outside it. */
+/* Floe's own pages, its changelog among them: the accent and a release's number are its
+   blue. Floe's docs are told by what is on the page, since their contents and sidebar sit
+   outside it. */
 [data-tone="floe"],
 #nd-notebook-layout:has([data-product="floe"]) {
   --product-tone: #2563c9;
   --product-ink: #2563c9;
   --world-lit: #2563c9;
-  --release-1: #3d7df0;
   --release-2: #0b4fd8;
-  --release-3: #072f86;
 }
 
 .dark [data-tone="floe"],
@@ -141,18 +146,14 @@ kbd,
   --product-tone: #4f93ff;
   --product-ink: #4f93ff;
   --world-lit: #4f93ff;
-  --release-1: #1560e8;
   --release-2: #4f93ff;
-  --release-3: #c4e0ff;
 }
 
 .dark {
   --world-lit: #fa9a2a;
   --verified-gold: #f0b429;
   --verified-green: #3fb950;
-  --release-1: #c96817;
   --release-2: #fa9a2a;
-  --release-3: #ffde81;
   --product-tone: #fa9a2a;
   --product-ink: #fa9a2a;
 }
@@ -1452,6 +1453,46 @@ html > body[data-scroll-locked] {
     opacity: 0;
     scale: 0.6;
     filter: blur(2px);
+  }
+}
+
+/* A link's chevron (morph-arrow.tsx) stretches into an arrow while the link is pointed at or
+   focused: the head steps forward and the shaft grows behind it. With less motion asked for,
+   it changes without moving. */
+.morph-arrow {
+  display: inline-block;
+  width: 0.875em;
+  height: 0.875em;
+  flex-shrink: 0;
+  vertical-align: -0.1em;
+}
+
+.morph-arrow path {
+  transform-box: fill-box;
+}
+
+.morph-arrow-head {
+  translate: -3px 0;
+}
+
+.morph-arrow-shaft {
+  transform-origin: left center;
+  scale: 0 1;
+}
+
+:is(a, button):is(:hover, :focus-visible) .morph-arrow-head {
+  translate: 0 0;
+}
+
+:is(a, button):is(:hover, :focus-visible) .morph-arrow-shaft {
+  scale: 1 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .morph-arrow path {
+    transition:
+      translate 190ms cubic-bezier(0.23, 1, 0.32, 1),
+      scale 190ms cubic-bezier(0.23, 1, 0.32, 1);
   }
 }
 

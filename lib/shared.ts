@@ -10,6 +10,14 @@ export const siteUrl =
     ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
     : 'http://localhost:3000');
 export const siteName = 'Thaw';
+
+/**
+ * A page's title for the browser tab: "Permissions | Thaw", or the title alone where it
+ * names Thaw already ("Thaw 2.2.0", "Developing Thaw"), so the tab does not say it twice.
+ */
+export function tabTitle(title: string) {
+  return new RegExp(`\\b${siteName}\\b`).test(title) ? { absolute: title } : title;
+}
 export const siteDescription = 'Open source menu bar manager and launcher for macOS.';
 export const docsRoute = '/docs';
 export const changelogRoute = '/changelog';

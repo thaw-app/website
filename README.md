@@ -40,6 +40,7 @@ Some pages are the same on both sides: how to contribute, the Code of
 Conduct, translations, how these docs work and the security policy. Each
 product's docs carry a copy, so the sidebar and the picker stay where the
 reader is.
+
 - The policies come from `thaw-app/.github`, like any other synced page.
 - The rest are written here, in `content/shared`. Edit them there; the sync
   copies them into `content/docs/<product>`, which git ignores.
@@ -111,6 +112,7 @@ country's name, a US state, or a town on its list. Add a town there when a
 common one is going uncounted.
 
 Four files are made by hand-run scripts and committed, not built each time:
+
 - `assets/desktop-still.png` and `assets/desktop-still-floe.png`, the pictures of the
   demo a phone is shown in its place on the home page and on Floe's, by
   `node scripts/capture-demo.mjs` against a running site. Take them again when the
@@ -145,8 +147,8 @@ Four files are made by hand-run scripts and committed, not built each time:
   line a new id, or the people who closed the last one will not see it.
 - The one accent colour is `--product-tone` in `app/global.css`: Thaw's orange, and
   Floe's blue under Floe's docs and on Floe's own pages (`data-tone="floe"`). It marks what is current or the thing to look at (the
-  roadmap's "Now", the page you are on in the docs, a stable release). The changelog's
-  calendar uses the cube's three oranges, `--release-1` to `--release-3`.
+  roadmap's "Now", the page you are on in the docs, a stable release). A release's
+  number on the changelog is `--release-2`, the cube's deeper orange.
 - A note set apart in a doc (GitHub's `> [!NOTE]`, or `<Callout>`) is drawn by
   `components/callout.tsx`: a rule, its name at the left, its text beside it.
 - On a page, a section is `<Section label="…">` and a ruled grid is
@@ -168,6 +170,7 @@ refused it. A new outside source goes in that one list, with why.
 ## What loads later
 
 Three things are kept off a page's first load, since most visits never need them at once:
+
 - The search box and its code, fetched when it is first opened or a search button is
   pointed at (`components/providers.tsx`).
 - The moving wordmark and the conure at the foot of the page, fetched when the footer is

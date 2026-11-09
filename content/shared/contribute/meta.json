@@ -1,6 +1,6 @@
 {
   "title": "Contribute",
   "icon": "GitPullRequest",
-  "defaultOpen": true,
+  "defaultOpen": false,
   "pages": ["guidelines", "code-of-conduct", "translations", "docs"]
 }

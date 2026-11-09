@@ -12,6 +12,15 @@ export function channelGroup(channel: string) {
   return channel;
 }
 
+/**
+ * Whether a release's tag already says its channel: "2.2.0-beta.2" is a beta, "2.0.0-rc.1" a
+ * release candidate. Such a release is not told its channel a second time beside its number.
+ */
+export function tagSaysChannel(tag: string, channel: string) {
+  const word = channel === 'Release candidate' ? 'rc' : channel.toLowerCase();
+  return new RegExp(`[-.]${word}\\b`, 'i').test(tag);
+}
+
 /** A channel as an entry carries it in data-channel, by its group: "Preview" is "alpha". */
 export function channelKey(channel: string) {
   return channelGroup(channel).toLowerCase().replace(/\s+/g, '-');

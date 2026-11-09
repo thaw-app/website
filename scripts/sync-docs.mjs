@@ -254,6 +254,7 @@ export {
   parseTag,
   peopleIn,
   readmeBody,
+  releaseBoilerplate,
   rewriteLinks,
   splitReleases,
   stageRank,

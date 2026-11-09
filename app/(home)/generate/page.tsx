@@ -3,9 +3,10 @@ import { IconGenerator } from '@/components/icon-generator';
 import { Lead, PageHeader } from '@/components/page-header';
 import { PageShell } from '@/components/page-shell';
 import { pageAlternates } from '@/lib/releases';
+import { tabTitle } from '@/lib/shared';
 
 export const metadata: Metadata = {
-  title: 'Make your own Thaw icon',
+  title: tabTitle('Make your own Thaw icon'),
   description:
     'A Thaw app icon of your own: the cube in an aura, a sketch, a blueprint, ink or papel picado. Made in your browser.',
   alternates: pageAlternates('/generate'),

@@ -20,7 +20,7 @@ launcher, as a second product. One domain: a home page, and docs for both.
   request: the bars under the Verified values are the gold and green of the
   badges they stand for.
 - **Dark mode is true black**, with barely visible rules. Light mode is the
-  alternative, and both must work.
+  alternative, plain white with the same faint rules, and both must work.
 - **Type.** Schibsted Grotesk for text and headings. Fragment Mono for commands
   and code only. No uppercase monospace labels.
 - **Corners.** Square on the site's own pages.
@@ -28,6 +28,7 @@ launcher, as a second product. One domain: a home page, and docs for both.
 ## Signature
 
 Two things carry the identity, and the rest stays quiet around them.
+
 - **Type as picture.** The cube drawn in characters on the home page, and at
   the foot of every page "thaw & floe" drawn the same way, each name in its
   product's colour, where a conure comes by. It is the owner's own bird, drawn from photographs,
@@ -54,7 +55,7 @@ Every page but the home page and the docs shares one frame and one width.
 - "Try it" is the mock desktop, under the home page at its full width: Thaw
   rebuilt in the browser so people can use it before downloading.
 - The changelog is a timeline after Cossistant's: number and date on the left,
-  notes on the right, under a calendar of releases. The roadmap is a board
+  notes on the right. The roadmap is a board
   after ArkEnv's: up next by area, shipped by release, each with a count. It is a
   page of its own at /roadmap, beside Community and Built with, not a docs page:
   it is about the project, and it is written here.

@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import Link from 'next/link';
 import community from '@/lib/community.json';
 import { feedUrl } from '@/lib/releases';
 import {
@@ -12,6 +11,7 @@ import {
   repoUrl,
 } from '@/lib/shared';
 import { FooterArt } from './footer-art';
+import { IntentLink } from './intent-link';
 import { PapelBanner } from './papel-banner';
 
 interface Foot {
@@ -43,10 +43,12 @@ function FootLink({
       </a>
     );
   }
+  // Prefetched on hover only: the footer is on every page, and prefetching its twenty
+  // pages on sight was most of a visit's weight.
   return (
-    <Link href={href} className={className}>
+    <IntentLink href={href} className={className}>
       {children}
-    </Link>
+    </IntentLink>
   );
 }
 

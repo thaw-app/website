@@ -9,7 +9,9 @@ import {
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getMDXComponents } from '@/components/mdx';
+import { Card, Cards, getMDXComponents } from '@/components/mdx';
+import { MorphArrow } from '@/components/morph-arrow';
+import { nextSteps } from '@/lib/next-steps';
 import { pageAlternates, pageTitle } from '@/lib/releases';
 import {
   docsRoute,
@@ -17,6 +19,7 @@ import {
   getPageImageUrl,
   getPageMarkdownUrl,
   productOf,
+  tabTitle,
 } from '@/lib/shared';
 import { source } from '@/lib/source';
 
@@ -32,6 +35,9 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
   const MDX = page.data.body;
   const markdownUrl = getPageMarkdownUrl(page).url;
   const product = productOf(page.slugs);
+  const next = (nextSteps[page.slugs.join('/')] ?? []).flatMap(
+    (slugs) => source.getPage(slugs.split('/')) ?? [],
+  );
 
   return (
     <>
@@ -80,6 +86,29 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
             })}
           />
         </DocsBody>
+        {/* Where to go from here, so a page never ends at a dead end (lib/next-steps.ts). */}
+        {next.length > 0 && (
+          <nav aria-labelledby="next-steps" className="mt-14">
+            <h2 id="next-steps" className="section-label">
+              Next steps
+            </h2>
+            <Cards>
+              {next.map((step) => (
+                <Card
+                  key={step.url}
+                  title={
+                    <span className="flex items-center gap-1.5">
+                      {pageTitle(step)} <MorphArrow />
+                    </span>
+                  }
+                  href={step.url}
+                >
+                  {step.data.description}
+                </Card>
+              ))}
+            </Cards>
+          </nav>
+        )}
       </DocsPage>
     </>
   );
@@ -95,7 +124,7 @@ export async function generateMetadata(props: PageProps<'/docs/[[...slug]]'>): P
   if (!page) notFound();
 
   return {
-    title: pageTitle(page),
+    title: tabTitle(pageTitle(page)),
     description: page.data.description,
     // One address for the page, whichever domain it was reached on. A shared page is the
     // same under every product, so search engines are given the one copy's.

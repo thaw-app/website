@@ -1,24 +1,24 @@
 {
-  "stars": 12594,
-  "downloads": 486819,
-  "homebrewYear": 31022,
-  "discord": 392,
+  "stars": 12621,
+  "downloads": 491488,
+  "homebrewYear": 31112,
+  "discord": 393,
   "contributors": 64,
   "releases": 89,
-  "issuesFixed": 573,
+  "issuesFixed": 575,
   "readOn": {
-    "stars": "2026-11-07",
-    "downloads": "2026-11-07",
-    "homebrewYear": "2026-11-07",
-    "discord": "2026-11-07",
-    "contributors": "2026-11-07",
-    "releases": "2026-11-07",
-    "issuesFixed": "2026-11-07",
-    "bestPractices": "2026-11-07",
-    "baseline": "2026-11-07",
-    "scorecard": "2026-11-07",
-    "coverage": "2026-11-07",
-    "field": "2026-11-07"
+    "stars": "2026-11-08",
+    "downloads": "2026-11-08",
+    "homebrewYear": "2026-11-08",
+    "discord": "2026-11-08",
+    "contributors": "2026-11-08",
+    "releases": "2026-11-08",
+    "issuesFixed": "2026-11-08",
+    "bestPractices": "2026-11-08",
+    "baseline": "2026-11-08",
+    "scorecard": "2026-11-08",
+    "coverage": "2026-11-08",
+    "field": "2026-11-08"
   },
   "people": [
     {
@@ -375,9 +375,9 @@
     "scorecard": 9.3,
     "coverage": 91.1,
     "field": {
-      "projects": 13778,
+      "projects": 13811,
       "gold": 115,
-      "baseline3": 102
+      "baseline3": 94
     }
   },
   "translators": [

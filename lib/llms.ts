@@ -145,7 +145,8 @@ function docsSections(slug: ProductSlug) {
     if (node.type === 'separator') {
       const heading = String(node.name ?? '');
       sections.push({
-        heading: heading.includes(name) ? heading : `${name} for ${heading.toLowerCase()}`,
+        // "Use Thaw" names it already; "Troubleshoot" becomes "Thaw: Troubleshoot".
+        heading: heading.includes(name) ? heading : `${name}: ${heading}`,
         lines: [],
       });
     } else {
