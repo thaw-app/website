@@ -3,6 +3,8 @@ import { datedReleases, feedTitle, feedUrl } from '@/lib/releases';
 import { changelogUrl, type ProductSlug, products, siteUrl } from '@/lib/shared';
 
 export const revalidate = false;
+// An address that was not built is not there, and is not rendered on request.
+export const dynamicParams = false;
 
 // What a feed reader is given must not end a tag early or start one.
 const xml = (text: string) =>
@@ -15,7 +17,8 @@ const xml = (text: string) =>
  */
 export async function GET(_req: Request, { params }: RouteContext<'/feed/[name]'>) {
   const product = (await params).name.replace(/\.xml$/, '');
-  if (!(product in products)) notFound();
+  // Its own names only: `in` would also find what every object has, such as constructor.
+  if (!Object.hasOwn(products, product)) notFound();
   const slug = product as ProductSlug;
   const releases = datedReleases(slug).slice(0, 40);
   const changelog = `${siteUrl}${changelogUrl(slug)}`;

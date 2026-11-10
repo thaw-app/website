@@ -6,6 +6,9 @@ export default async function FloeChangelogPage(props: PageProps<'/changelog/flo
   return <ChangelogView path={['floe', ...((await props.params).slug ?? [])]} />;
 }
 
+// An address that was not built is not there, and is not rendered on request.
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return changelogPaths('floe').map((path) => ({ slug: path.slice(1) }));
 }

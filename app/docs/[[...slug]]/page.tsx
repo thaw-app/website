@@ -114,6 +114,9 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
   );
 }
 
+// An address that was not built is not there, and is not rendered on request.
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   return source.generateParams().filter((params) => params.slug[1] !== 'changelog');
 }

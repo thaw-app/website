@@ -17,7 +17,15 @@ export function apiError(status: number, code: string, detail: string, resolutio
     },
     {
       status,
-      headers: { 'Content-Type': 'application/problem+json' },
+      headers: {
+        'Content-Type': 'application/problem+json',
+        // An address with nothing there, or a question asked wrong, has the same answer until
+        // the next deploy, and each deploy starts the CDN cache empty. A wrong method is left
+        // out: its address has an answer for GET.
+        ...((status === 404 || status === 400) && {
+          'CDN-Cache-Control': 'public, max-age=86400',
+        }),
+      },
     },
   );
 }

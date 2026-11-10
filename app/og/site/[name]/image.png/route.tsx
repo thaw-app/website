@@ -3,12 +3,15 @@ import { shareImage } from '@/lib/og';
 import { type SitePage, sitePages } from '@/lib/site-pages';
 
 export const revalidate = false;
+// An address that was not built is not there, and is not rendered on request.
+export const dynamicParams = false;
 
 // The pictures a link to one of the site's own pages is shared with. The docs draw theirs
 // from each page (app/og/docs).
 export async function GET(_req: Request, { params }: RouteContext<'/og/site/[name]/image.png'>) {
   const { name } = await params;
-  if (!(name in sitePages)) notFound();
+  // Its own names only: `in` would also find what every object has, such as constructor.
+  if (!Object.hasOwn(sitePages, name)) notFound();
   const page = sitePages[name as SitePage];
   // A headline ends in a full stop on its page; alone on a picture it reads better without.
   return shareImage({

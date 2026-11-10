@@ -53,3 +53,17 @@ export default function proxy(request: NextRequest) {
 
   return NextResponse.next();
 }
+
+// The proxy only has work for an address ending in .md, or a request whose Accept names a
+// Markdown type, so Vercel runs it for those alone and not for every script, font and image.
+// Next matches a header's value against the whole header, so the pattern allows anything
+// either side. It is case-sensitive, and clients send media types in lower case.
+export const config = {
+  matcher: [
+    '/(.*)\\.md',
+    {
+      source: '/:path*',
+      has: [{ type: 'header', key: 'accept', value: '(.*)text/(markdown|x-markdown|plain)(.*)' }],
+    },
+  ],
+};

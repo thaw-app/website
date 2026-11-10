@@ -60,10 +60,11 @@ const securityHeaders = [
 const config = {
   reactStrictMode: true,
   images: {
-    // Contributors' pictures, made the size they are drawn at and kept for a week.
+    // Contributors' pictures, made the size they are drawn at and kept for a week. Only a
+    // GitHub avatar (/u/<id>) is let in: each picture the optimizer makes is billed, so it
+    // is not open to anything else on GitHub.
     remotePatterns: [
-      { protocol: 'https', hostname: 'avatars.githubusercontent.com' },
-      { protocol: 'https', hostname: 'github.com' },
+      { protocol: 'https', hostname: 'avatars.githubusercontent.com', pathname: '/u/**' },
     ],
     minimumCacheTTL: 604800,
   },
@@ -95,6 +96,7 @@ const config = {
         '/floe',
         '/floe/roadmap',
         '/floe/community',
+        '/floe/verified',
         '/faq',
         '/roadmap',
         '/roadmap/thawui',
