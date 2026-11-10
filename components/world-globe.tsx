@@ -3,32 +3,14 @@
 import createGlobe, { type COBEOptions, type Globe } from 'cobe';
 import { useEffect, useRef } from 'react';
 import { onThemeChange } from '@/lib/on-theme-change';
-import world from '@/lib/world-map.json';
-
-const dots = world.dots as unknown as Record<string, [number, number][]>;
-
-// The map's grid, back in degrees (scripts/build-world-map.mjs): 1.8 between dots, from 80° north.
-const step = 1.8;
-const north = 80;
-const degrees = ([column, row]: [number, number]): [number, number] => [
-  north - (row + 0.5) * step,
-  -180 + (column + 0.5) * step,
-];
+import middles from '@/lib/world-middles.json';
 
 /**
- * Where a country's marker goes: the one of its own dots nearest the middle of them all, so a
- * country in pieces, as the United States with Alaska is, still has its marker on land.
+ * Where a country's marker goes, in degrees (scripts/build-world-map.mjs): one of its own dots,
+ * so a country in pieces, as the United States with Alaska is, still has its marker on land.
  */
-const middles = new Map(
-  Object.entries(dots).map(([code, list]) => {
-    const columns = list.reduce((sum, [column]) => sum + column, 0) / list.length;
-    const rows = list.reduce((sum, [, row]) => sum + row, 0) / list.length;
-    const distance = ([column, row]: [number, number]) =>
-      (column - columns) ** 2 + (row - rows) ** 2;
-    const nearest = list.reduce((best, dot) => (distance(dot) < distance(best) ? dot : best));
-    return [code, degrees(nearest)];
-  }),
-);
+// The file's pairs are read as lists of any length, so the type is said here.
+const where = middles as unknown as Record<string, [number, number] | undefined>;
 
 /** A CSS colour as cobe takes one: red, green and blue from 0 to 1. */
 function rgb(element: Element, property: string): [number, number, number] {
@@ -47,7 +29,7 @@ type Country = { code: string; people: number };
 function plotted(countries: Country[]) {
   const most = Math.max(1, ...countries.map((country) => country.people));
   return countries.flatMap((country) => {
-    const location = middles.get(country.code);
+    const location = where[country.code];
     // A square root, as on the flat map, keeps one person from vanishing beside two hundred.
     return location ? [{ location, size: 0.02 + 0.06 * Math.sqrt(country.people / most) }] : [];
   });
@@ -92,21 +74,55 @@ export function WorldGlobe({
     let size = root.offsetWidth;
     // The busiest country faces the page first.
     const [first] = markers.current;
-    const [latitude, longitude] = (first && middles.get(first.code)) ?? [20, 0];
+    const [latitude, longitude] = (first && where[first.code]) ?? [20, 0];
     let phi = (3 * Math.PI) / 2 - (longitude * Math.PI) / 180;
     const theta = Math.max(-0.4, Math.min(0.4, (latitude * Math.PI) / 180));
     let drag: number | null = null;
     let seen = true;
+    let visible = !document.hidden;
+    let resized = false;
     let frame = 0;
+
+    // Frames are asked for only while the globe is on screen and the tab is showing, and under
+    // reduced motion only when something has changed.
+    const turn = () => {
+      frame = 0;
+      if (drag === null && !still) phi += 0.0025;
+      // The size goes in only when it has changed: cobe sets the canvas size each time it is given.
+      // Not `* ratio`: cobe multiplies by `devicePixelRatio` itself, so this makes the drawing
+      // buffer `size * ratio`. To go back to the denser buffer it was before, pass `size * ratio`.
+      globe.update(resized ? { phi, width: size, height: size } : { phi });
+      resized = false;
+      if (!still) schedule();
+    };
+    const schedule = () => {
+      if (!frame && seen && visible) frame = requestAnimationFrame(turn);
+    };
+    const pause = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+    };
+    const resume = () => {
+      if (seen && visible) schedule();
+      else pause();
+    };
 
     const sized = new ResizeObserver(() => {
       size = root.offsetWidth;
+      resized = true;
+      schedule();
     });
     sized.observe(root);
     const watched = new IntersectionObserver(([entry]) => {
       seen = entry?.isIntersecting ?? true;
+      resume();
     });
     watched.observe(canvas);
+    const shown = () => {
+      visible = !document.hidden;
+      resume();
+    };
+    document.addEventListener('visibilitychange', shown);
 
     const colours = () => {
       const dark = document.documentElement.classList.contains('dark');
@@ -121,8 +137,9 @@ export function WorldGlobe({
     // Made once: cobe wraps the canvas in a box of its own each time it is called.
     const globe = createGlobe(canvas, {
       devicePixelRatio: ratio,
-      width: size * ratio,
-      height: size * ratio,
+      // See `turn`: the size as the page shows it, cobe makes the buffer denser by `ratio`.
+      width: size,
+      height: size,
       phi,
       theta,
       diffuse: 1.2,
@@ -135,14 +152,7 @@ export function WorldGlobe({
     globeRef.current = globe;
     const unthemed = onThemeChange(() => globe.update(colours()));
 
-    const turn = () => {
-      if (seen && !document.hidden) {
-        if (drag === null && !still) phi += 0.0025;
-        globe.update({ phi, width: size * ratio, height: size * ratio });
-      }
-      frame = requestAnimationFrame(turn);
-    };
-    frame = requestAnimationFrame(turn);
+    schedule();
 
     const grab = (event: PointerEvent) => {
       drag = event.clientX;
@@ -152,6 +162,7 @@ export function WorldGlobe({
       if (drag === null) return;
       phi += (event.clientX - drag) / 200;
       drag = event.clientX;
+      schedule();
     };
     const release = () => {
       drag = null;
@@ -162,7 +173,8 @@ export function WorldGlobe({
     canvas.addEventListener('pointercancel', release);
 
     return () => {
-      cancelAnimationFrame(frame);
+      pause();
+      document.removeEventListener('visibilitychange', shown);
       sized.disconnect();
       watched.disconnect();
       unthemed();

@@ -2,7 +2,7 @@
 // map on the community page. Run by hand when the grid should change:
 //   node scripts/build-world-map.mjs
 // It reads scripts/data/countries-110m.json (world-atlas, from Natural Earth, public
-// domain) and writes lib/world-map.json. Nothing here runs when the site is built.
+// domain) and writes lib/world-map.json and lib/world-middles.json. Nothing here runs when the site is built.
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -151,5 +151,17 @@ for (const [code, [lon, lat]] of Object.entries(specks)) {
 }
 
 writeFileSync(join(root, 'lib/world-map.json'), `${JSON.stringify({ columns, rows, dots })}\n`);
+
+// The globe puts a country's marker on the one of its own dots nearest the middle of them all,
+// so a country in pieces, as the United States with Alaska is, still has its marker on land.
+// The globe wants only that point, in degrees, so it is kept apart from the dots.
+const middles = Object.entries(dots).map(([code, list]) => {
+  const meanColumn = list.reduce((sum, [column]) => sum + column, 0) / list.length;
+  const meanRow = list.reduce((sum, [, row]) => sum + row, 0) / list.length;
+  const distance = ([column, row]) => (column - meanColumn) ** 2 + (row - meanRow) ** 2;
+  const [column, row] = list.reduce((best, dot) => (distance(dot) < distance(best) ? dot : best));
+  return `  ${JSON.stringify(code)}: [${north - (row + 0.5) * step}, ${-180 + (column + 0.5) * step}]`;
+});
+writeFileSync(join(root, 'lib/world-middles.json'), `{\n${middles.join(',\n')}\n}\n`);
 const total = Object.values(dots).reduce((sum, list) => sum + list.length, 0);
 console.log(`${total} dots in ${Object.keys(dots).length} countries, ${columns} by ${rows}.`);

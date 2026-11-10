@@ -192,9 +192,21 @@ export function FooterWordmark() {
     let visible = true;
     let frame = 0;
     let last = 0;
+    // What the drawing takes from the computed styles. Reading them forces a style
+    // recalculation, and the conure writes styles every frame, so they are read here and
+    // not in `draw`: when the size changes, when the theme does, and when the fonts arrive.
+    let fontFamily = '';
+    let pageColour = '';
+
+    function readStyles() {
+      if (!canvas) return;
+      fontFamily = getComputedStyle(canvas).fontFamily;
+      pageColour = getComputedStyle(document.body).backgroundColor;
+    }
 
     function resize() {
       if (!canvas || !context || !stage || !words) return;
+      readStyles();
       const width = canvas.clientWidth;
       const height = canvas.clientHeight;
       // About 170 characters across a wide window, and never smaller than can be read as type.
@@ -253,17 +265,16 @@ export function FooterWordmark() {
 
     function draw(time: number) {
       if (!canvas || !context) return;
-      const style = getComputedStyle(canvas);
       // The canvas is a sheet in the colour of the page with the characters cut out of
       // it, so the gradient underneath shows through them and nowhere else.
       context.globalCompositeOperation = 'source-over';
       context.globalAlpha = 1;
-      context.fillStyle = getComputedStyle(document.body).backgroundColor;
+      context.fillStyle = pageColour;
       context.fillRect(0, 0, canvas.clientWidth, canvas.clientHeight);
       context.globalCompositeOperation = 'destination-out';
       context.fillStyle = '#000';
       const cellHeight = cellWidth * cellShape;
-      context.font = `600 ${cellHeight * 0.72}px ${style.fontFamily}`;
+      context.font = `600 ${cellHeight * 0.72}px ${fontFamily}`;
       context.textAlign = 'center';
       context.textBaseline = 'middle';
       const seconds = time / 1000;
@@ -304,10 +315,26 @@ export function FooterWordmark() {
     }
 
     function loop(time: number) {
+      if (!visible || document.hidden) {
+        frame = 0;
+        return;
+      }
       frame = requestAnimationFrame(loop);
-      if (!visible || time - last < 1000 / rate) return;
+      if (time - last < 1000 / rate) return;
       last = time;
       draw(time);
+    }
+
+    // The loop runs only while the band is on screen and the tab is showing: out of sight
+    // there is nothing to draw, and a loop that only returns still wakes at the display's rate.
+    function sync() {
+      if (still) return;
+      if (visible && !document.hidden) {
+        if (!frame) frame = requestAnimationFrame(loop);
+      } else {
+        cancelAnimationFrame(frame);
+        frame = 0;
+      }
     }
 
     const sized = new ResizeObserver(() => {
@@ -317,19 +344,26 @@ export function FooterWordmark() {
     sized.observe(canvas);
     const seen = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
+      sync();
     });
     seen.observe(canvas);
-    // The colours differ per theme, so a still picture is drawn again when the theme changes.
-    const unthemed = onThemeChange(() => draw(still ? 0 : performance.now()));
+    document.addEventListener('visibilitychange', sync);
+    // The colours differ per theme, so the cached ones are read again first, and a still
+    // picture is drawn again.
+    const unthemed = onThemeChange(() => {
+      readStyles();
+      draw(still ? 0 : performance.now());
+    });
     // The letters change width when the display face arrives, and nothing resizes then:
     // the words move a little, and the conure has to follow.
     document.fonts?.ready.then(resize);
 
     resize();
     draw(0);
-    if (!still) frame = requestAnimationFrame(loop);
+    sync();
     return () => {
       cancelAnimationFrame(frame);
+      document.removeEventListener('visibilitychange', sync);
       sized.disconnect();
       seen.disconnect();
       unthemed();
@@ -353,6 +387,11 @@ export function FooterWordmark() {
           distortion={0.85}
           swirl={0.35}
           speed={still ? 0 : 0.3}
+          // The gradient is a soft blur seen only through the characters, so it needs no
+          // more pixels than the screen has. The library shades at twice the screen's
+          // density at least, and up to 8 million pixels.
+          minPixelRatio={1}
+          maxPixelCount={1_000_000}
         />
       )}
       <canvas

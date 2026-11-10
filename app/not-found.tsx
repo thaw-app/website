@@ -1,10 +1,9 @@
 import Link from 'next/link';
-import { Frost } from '@/components/frost';
 import { Lead, PageHeader } from '@/components/page-header';
 import { PageShell } from '@/components/page-shell';
 import { SiteFooter } from '@/components/site-footer';
 import { SiteFrame } from '@/components/site-frame';
-import { StrayConure } from '@/components/stray-conure';
+import { Frost, StrayConure } from '@/components/stray-lazy';
 import { StrayStage } from '@/components/stray-stage';
 import { docsRoute } from '@/lib/shared';
 

@@ -6,6 +6,9 @@
 // the dark tips of its flight feathers, O its long green tail, F its grey feet. A dot is
 // nothing. The tail is as long as the rest of the bird, which is why the picture is
 // taller and wider than the body alone needs.
+
+import { currentHat, type Hat, onHatChange } from './conure-hat';
+
 const poses: Record<string, string[]> = {
   perched: [
     '........................',
@@ -441,7 +444,6 @@ const palettes = {
 // on its chest, an outlaw's with a bandana over its throat, or a bolero with a red bow at
 // the throat. Each hat is three rows, its brim on the crown,
 // and the letters are its own colours: h the crown, n the band, s the brim.
-type Hat = 'sheriff' | 'outlaw' | 'bolero';
 const hats: Record<Hat, string[]> = {
   sheriff: ['..hhh..', 'h.nnn.h', '.sssss.'],
   outlaw: ['..hhh..', 'h.nnn.h', '.sssss.'],
@@ -466,27 +468,6 @@ const wear: Record<Hat, Record<'dark' | 'light', Record<string, string>>> = {
 // Head down, or upside down, the hat would sit over its face, so it is not drawn.
 const bareheaded = new Set(['pecking', 'tugging', 'hanging']);
 
-// Two visits in three it wears nothing. `?conure-hat=sheriff` and the like puts one on.
-function pickHat(): Hat | null {
-  if (typeof window === 'undefined') return null;
-  const asked = new URLSearchParams(window.location.search).get('conure-hat');
-  if (asked && asked in hats) return asked as Hat;
-  if (Math.random() < 2 / 3) return null;
-  return anyHat();
-}
-function anyHat() {
-  const all = Object.keys(hats) as Hat[];
-  return all[Math.floor(Math.random() * all.length)];
-}
-let hat = pickHat();
-
-/** Puts a hat on a bird that has none, for whoever has got its attention. Drawn from the next pose on. */
-export function wearHat() {
-  if (hat) return;
-  hat = anyHat();
-  dressed.clear();
-}
-
 // Room above the poses for a hat, in rows.
 const headroom = 2;
 // The picture's size in its own pixels: the poses, and the room above them.
@@ -495,11 +476,13 @@ export const rows = 20 + headroom;
 
 // Each pose as it is drawn, hat and all, worked out the first time it is needed.
 const dressed = new Map<string, string[][]>();
+onHatChange(() => dressed.clear());
 function dress(pose: string) {
   let grid = dressed.get(pose);
   if (grid) return grid;
   grid = [...Array(headroom)].map(() => [...'.'.repeat(columns)]);
   grid.push(...poses[pose].map((line) => [...line]));
+  const hat = currentHat();
   if (hat && !bareheaded.has(pose)) put(grid, hat);
   dressed.set(pose, grid);
   return grid;
@@ -551,6 +534,7 @@ function put(grid: string[][], on: Hat) {
  * 22 and is scaled up by CSS with hard edges, so the bird stays crisp at any size.
  */
 export function drawPose(context: CanvasRenderingContext2D, pose: string) {
+  const hat = currentHat();
   const theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
   const palette: Record<string, string> = { ...palettes[theme], ...(hat ? wear[hat][theme] : {}) };
   context.clearRect(0, 0, columns, rows);

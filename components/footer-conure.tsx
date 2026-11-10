@@ -272,8 +272,11 @@ export function FooterConure() {
     const getaway = 2;
 
     function tick(now: number) {
+      if (!visible || document.hidden || !bird || !stage) {
+        pause();
+        return;
+      }
       frame = requestAnimationFrame(tick);
-      if (!visible || !bird || !stage) return;
       const width = stage.clientWidth;
       const body = bird.clientWidth;
       const pixel = body / columns;
@@ -504,15 +507,46 @@ export function FooterConure() {
     stage.addEventListener('pointermove', onPointerMove);
     stage.addEventListener('pointerleave', onPointerLeave);
 
+    // The loop runs only while the footer is on screen and the tab is showing: out of
+    // sight a loop that only returns still wakes at the display's rate. `stopped` is when
+    // it stopped, so that the flights it was in the middle of resume where they were
+    // and do not find the time has gone on without them.
+    let stopped: number | null = null;
+    function pause() {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      stopped ??= performance.now();
+    }
+    function resume() {
+      if (frame || !visible || document.hidden) return;
+      if (stopped !== null) {
+        const gap = performance.now() - stopped;
+        started += gap;
+        if (fled) fled.when += gap;
+        if (called) called.when += gap;
+        stopped = null;
+      }
+      frame = requestAnimationFrame(tick);
+    }
+    function onVisibility() {
+      if (document.hidden) pause();
+      else resume();
+    }
+
     const seen = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting && !visible) started = performance.now();
+      const entering = entry.isIntersecting && !visible;
       visible = entry.isIntersecting;
+      if (visible) resume();
+      else pause();
+      // Coming into view starts the visit afresh, whatever the pause did to its clock.
+      if (entering) started = performance.now();
     });
     seen.observe(stage);
-    frame = requestAnimationFrame(tick);
+    document.addEventListener('visibilitychange', onVisibility);
     return () => {
       cancelAnimationFrame(frame);
       seen.disconnect();
+      document.removeEventListener('visibilitychange', onVisibility);
       stop();
       stage.removeEventListener('pointermove', onPointerMove);
       stage.removeEventListener('pointerleave', onPointerLeave);
