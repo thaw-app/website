@@ -1,14 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { macosVersions } from '@/lib/macos';
+import { releaseNotesUrl } from '@/lib/release-notes';
 import { IntentLink } from './intent-link';
 
 /**
  * One earlier release as a line of the changelog: its tag, which opens its page, and the
  * rest of the line, which opens its notes under it. The notes are not in the changelog's
- * own page, where seventy of them would be most of its weight: they are read from the
- * release's page the first time the line is opened.
+ * own page, where seventy of them would be most of its weight: the first time the line is
+ * opened they are read from a page of the release's notes alone (app/release-notes), built
+ * ahead like the rest, without the header, footer and particulars of the release's own page.
  */
 export function ReleaseRow({
   tag,
@@ -38,11 +40,19 @@ export function ReleaseRow({
   // undefined before it is asked for, null when it could not be read.
   const [notes, setNotes] = useState<string | null>();
 
-  async function toggle() {
+  // The request for the notes, once one is under way, so closing and reopening the line
+  // before it answers does not ask again.
+  const request = useRef<Promise<void>>(null);
+
+  function toggle() {
     setOpen(!open);
-    if (open || notes !== undefined) return;
+    if (open || request.current) return;
+    request.current = load();
+  }
+
+  async function load() {
     try {
-      const response = await fetch(href);
+      const response = await fetch(releaseNotesUrl(href), { headers: { Accept: 'text/html' } });
       if (!response.ok) throw new Error(String(response.status));
       const page = new DOMParser().parseFromString(await response.text(), 'text/html');
       const found = page.querySelector('.release-notes');
