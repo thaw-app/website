@@ -23,6 +23,34 @@ test('a commit that touches the site builds', () => {
   expect(canSkip({ branch: 'feature', files: ['.githubish/file'] })).toBe(false);
 });
 
+test('a commit that only touches the notes at the root is skipped', () => {
+  expect(canSkip({ branch: 'main', files: ['README.md'] })).toBe(true);
+  expect(canSkip({ branch: 'main', files: ['DESIGN.md', 'AGENTS.md', 'CLAUDE.md'] })).toBe(true);
+});
+
+test('a commit that only touches the end-to-end tests is skipped', () => {
+  expect(canSkip({ branch: 'main', files: ['e2e/smoke.spec.ts'] })).toBe(true);
+  expect(canSkip({ branch: 'main', files: ['playwright.config.ts'] })).toBe(true);
+});
+
+test('a commit with a test file and .gitignore is skipped', () => {
+  expect(
+    canSkip({ branch: 'main', files: ['lib/markdown-link.test.ts', '.gitignore', 'biome.json'] }),
+  ).toBe(true);
+});
+
+test('a README inside the content builds', () => {
+  expect(canSkip({ branch: 'main', files: ['content/shared/README.md'] })).toBe(false);
+});
+
+test('a file the site is built from builds', () => {
+  expect(canSkip({ branch: 'main', files: ['lib/markdown-link.ts'] })).toBe(false);
+});
+
+test('a commit that mixes the root README with a page builds', () => {
+  expect(canSkip({ branch: 'main', files: ['README.md', 'app/page.tsx'] })).toBe(false);
+});
+
 test('it builds when the changed files are unknown', () => {
   expect(canSkip({ branch: 'main', files: null })).toBe(false);
   expect(canSkip({ branch: 'main', files: [] })).toBe(false);

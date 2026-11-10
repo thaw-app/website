@@ -11,6 +11,7 @@ import {
   peopleIn,
   readmeBody,
   releaseBoilerplate,
+  retry,
   rewriteLinks,
   splitReleases,
   stageRank,
@@ -466,4 +467,54 @@ test("a release's notes lose GitHub's boilerplate, and keep what it compares wit
   expect(releaseBoilerplate('See the [full changelog](https://x).').body).toBe(
     'See the [full changelog](https://x).',
   );
+});
+
+// retry: a clone is tried again before a build is failed.
+const noWait = async () => {};
+const quietly = async (run) => {
+  const warn = console.warn;
+  console.warn = () => {};
+  try {
+    return await run();
+  } finally {
+    console.warn = warn;
+  }
+};
+
+test('retry: returns at once when the first try works', async () => {
+  let calls = 0;
+  const result = await retry(async () => ++calls, [0, 0], noWait);
+  expect(result).toBe(1);
+  expect(calls).toBe(1);
+});
+
+test('retry: tries again until one works', async () => {
+  let calls = 0;
+  const result = await quietly(() =>
+    retry(
+      async () => {
+        if (++calls < 3) throw new Error(`no ${calls}`);
+        return 'ok';
+      },
+      [0, 0],
+      noWait,
+    ),
+  );
+  expect(result).toBe('ok');
+  expect(calls).toBe(3);
+});
+
+test('retry: throws the last error once the tries are used up', async () => {
+  let calls = 0;
+  const run = quietly(() =>
+    retry(
+      async () => {
+        throw new Error(`no ${++calls}`);
+      },
+      [0, 0],
+      noWait,
+    ),
+  );
+  await expect(run).rejects.toThrow('no 3');
+  expect(calls).toBe(3);
 });

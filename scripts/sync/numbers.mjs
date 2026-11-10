@@ -95,47 +95,67 @@ function translators(root) {
 }
 
 /**
- * Where the repo's stars, issues and pull requests come from, by country, from the location each gives on their GitHub profile (see countries.mjs for
- * how free text becomes a country). It reads every one of them, a hundred to a request,
- * so it needs a token and is done at most once a day; otherwise the last count stands.
+ * Whether the countries are counted again today. A Vercel build writes its count to a copy of
+ * the file that is never committed, so nothing it reads would be kept: every build would read
+ * every stargazer, issue and pull request again, and start from the committed count anyway.
+ * Such a build keeps that count, unless SYNC_WORLD=1 asks for the whole crawl.
+ */
+function shouldCountCountries({ token, before, today, env }) {
+  if (!token) return false;
+  if (before?.checked === today) return false;
+  if (env.VERCEL && before && env.SYNC_WORLD !== '1') return false;
+  return true;
+}
+
+/**
+ * Where the repo's stars, issues and pull requests come from, by country, from the location
+ * each gives on their GitHub profile (see countries.mjs for how free text becomes a country).
+ * It reads every one of them, a hundred to a request, so it needs a token and is done at most
+ * once a day, and on Vercel only when the count is asked for (see shouldCountCountries);
+ * otherwise the last count stands.
  */
 async function whereFrom(repo, before, token) {
   const today = new Date().toISOString().slice(0, 10);
-  if (!token || before?.checked === today) return before ?? null;
+  if (!shouldCountCountries({ token, before, today, env: process.env })) return before ?? null;
   const [owner, name] = repo.split('/');
   const lists = {
     stargazers: ['stargazers', 'login location'],
     issues: ['issues', 'author { login ... on User { location } }'],
     pulls: ['pullRequests', 'author { login ... on User { location } }'],
   };
-  try {
-    const world = { checked: today };
-    for (const [key, [field, node]] of Object.entries(lists)) {
-      // A star is a person. An issue or a pull request is counted each time, for the
-      // country of whoever opened it: someone with a hundred pull requests is a hundred.
-      const places = [];
-      for (let after = null; ; ) {
-        const response = await request('https://api.github.com/graphql', {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            query: `query { repository(owner: ${JSON.stringify(owner)}, name: ${JSON.stringify(name)}) { ${field}(first: 100, after: ${JSON.stringify(after)}) { pageInfo { hasNextPage endCursor } nodes { ${node} } } } }`,
-          }),
-        });
-        if (!response.ok) throw new Error(`GitHub answered ${response.status}`);
-        const { data, errors } = await response.json();
-        if (errors) throw new Error(errors[0].message);
-        const page = data.repository[field];
-        for (const entry of page.nodes) {
-          const person = entry.author ?? entry;
-          if (person?.login) places.push(person.location ?? null);
-        }
-        if (!page.pageInfo.hasNextPage) break;
-        after = page.pageInfo.endCursor;
+  // A star is a person. An issue or a pull request is counted each time, for the country of
+  // whoever opened it: someone with a hundred pull requests is a hundred. Each list is read in
+  // order, a page needing the cursor of the page before, and the three lists beside each other.
+  const countOf = async ([field, node]) => {
+    const places = [];
+    for (let after = null; ; ) {
+      const response = await request('https://api.github.com/graphql', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query: `query { repository(owner: ${JSON.stringify(owner)}, name: ${JSON.stringify(name)}) { ${field}(first: 100, after: ${JSON.stringify(after)}) { pageInfo { hasNextPage endCursor } nodes { ${node} } } } }`,
+        }),
+      });
+      if (!response.ok) throw new Error(`GitHub answered ${response.status}`);
+      const { data, errors } = await response.json();
+      if (errors) throw new Error(errors[0].message);
+      const page = data.repository[field];
+      for (const entry of page.nodes) {
+        const person = entry.author ?? entry;
+        if (person?.login) places.push(person.location ?? null);
       }
-      world[key] = countCountries(places);
+      if (!page.pageInfo.hasNextPage) break;
+      after = page.pageInfo.endCursor;
     }
-    return world;
+    return countCountries(places);
+  };
+  try {
+    const [stargazers, issues, pulls] = await Promise.all([
+      countOf(lists.stargazers),
+      countOf(lists.issues),
+      countOf(lists.pulls),
+    ]);
+    return { checked: today, stargazers, issues, pulls };
   } catch (error) {
     console.warn(`Could not read where people are from (${error.message}).`);
     return before ?? null;
@@ -310,4 +330,12 @@ async function communityNumbers(product, published, people, root) {
   writeFileSync(file, `${JSON.stringify(numbers, null, 2)}\n`);
 }
 
-export { appDownloads, communityNumbers, contributors, settle, translators, whereFrom };
+export {
+  appDownloads,
+  communityNumbers,
+  contributors,
+  settle,
+  shouldCountCountries,
+  translators,
+  whereFrom,
+};

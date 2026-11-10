@@ -20,7 +20,7 @@
 // The work is in scripts/sync: what is read and written (config), the parsers (text), the
 // changelog, the numbers and the roadmap. This file fetches the repos and writes the pages.
 
-import { execFileSync } from 'node:child_process';
+import { execFile } from 'node:child_process';
 import {
   existsSync,
   mkdirSync,
@@ -58,29 +58,72 @@ function checkout({ slug, repo }, ref) {
   return clone(repo, ref, ['docs', '.github']);
 }
 
-/** A sparse, blobless clone: the named folders and the root files only. */
+const pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/**
+ * Runs fn, and again after each pause when it throws; the last error is the one thrown.
+ * Tries once more than there are pauses.
+ */
+async function retry(fn, pauses = [2_000, 5_000], wait = pause) {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      return await fn(attempt);
+    } catch (error) {
+      if (attempt >= pauses.length) throw error;
+      console.warn(
+        `Attempt ${attempt + 1} failed (${error.message.split('\n')[0]}); trying again in ${pauses[attempt] / 1000} s.`,
+      );
+      await wait(pauses[attempt]);
+    }
+  }
+}
+
+/** git, run without blocking, so the clones and fetches of the products overlap. */
+function git(cwd, args) {
+  return new Promise((resolve, reject) => {
+    const child = execFile(
+      'git',
+      args,
+      // A clone that hangs would hang the build with it.
+      { cwd, timeout: 120_000 },
+      (error, _stdout, stderr) => {
+        // What git says goes to the build log, as it did when it ran with stderr inherited.
+        if (stderr) process.stderr.write(stderr);
+        if (error) reject(error);
+        else resolve();
+      },
+    );
+    child.stdin?.end();
+  });
+}
+
+/**
+ * A sparse, blobless clone: the named folders and the root files only. A clone is the one
+ * network step a build cannot do without, so a failed one is tried again, each time in a
+ * fresh folder.
+ */
 function clone(repo, ref, folders) {
-  const root = mkdtempSync(join(tmpdir(), 'thaw-docs-'));
-  const git = (...args) =>
-    // A clone that hangs would hang the build with it.
-    execFileSync('git', args, {
-      cwd: root,
-      stdio: ['ignore', 'ignore', 'inherit'],
-      timeout: 120_000,
-    });
-  git(
-    'clone',
-    '--depth',
-    '1',
-    '--filter=blob:none',
-    '--sparse',
-    '--branch',
-    ref,
-    `https://github.com/${repo}.git`,
-    '.',
-  );
-  git('sparse-checkout', 'set', ...folders);
-  return { root, cleanup: () => rmSync(root, { recursive: true, force: true }) };
+  return retry(async () => {
+    const root = mkdtempSync(join(tmpdir(), 'thaw-docs-'));
+    try {
+      await git(root, [
+        'clone',
+        '--depth',
+        '1',
+        '--filter=blob:none',
+        '--sparse',
+        '--branch',
+        ref,
+        `https://github.com/${repo}.git`,
+        '.',
+      ]);
+      await git(root, ['sparse-checkout', 'set', ...folders]);
+    } catch (error) {
+      rmSync(root, { recursive: true, force: true });
+      throw error;
+    }
+    return { root, cleanup: () => rmSync(root, { recursive: true, force: true }) };
+  });
 }
 
 function slugOf(repoPath, extraPages) {
@@ -114,11 +157,20 @@ async function refreshNumbers(product, published, root) {
 async function main() {
   const contentOnly = process.argv.includes('--content');
   // The organisation's policies are the same for every product, so they are fetched once.
+  // It is fetched while the products fetch theirs; each waits for it only when it needs it.
   const other = clone(shared.repo, shared.ref, ['.github']);
+  other.catch(() => {});
   try {
-    for (const product of products) await syncProduct(product, other, contentOnly);
+    // The products write to folders and files of their own (content/docs/<slug>, and
+    // lib/ and .cache/ files named for the product), so they run side by side. All are
+    // let finish, so each cleans up its checkout, before a failure is thrown.
+    const results = await Promise.allSettled(
+      products.map((product) => syncProduct(product, other, contentOnly)),
+    );
+    const failed = results.find((result) => result.status === 'rejected');
+    if (failed) throw failed.reason;
   } finally {
-    other.cleanup();
+    (await other.catch(() => null))?.cleanup();
   }
 
   // Last, what all of it is made with.
@@ -130,8 +182,15 @@ async function syncProduct(product, other, contentOnly) {
   const prefix = productSlug.toUpperCase();
   const ref = process.env[`${prefix}_DOCS_REF`] || product.ref;
   const outDir = join(contentDir, productSlug);
-  const { root, cleanup } = checkout(product, ref);
-  const published = await publishedReleases(repo, productSlug);
+  // The checkout and the release list do not depend on each other, so they are fetched together.
+  const [fetched, published] = await Promise.allSettled([
+    Promise.resolve().then(() => checkout(product, ref)),
+    publishedReleases(repo, productSlug),
+  ]).then(([checked, releases]) => {
+    if (checked.status === 'rejected') throw checked.reason;
+    return [checked.value, releases.value];
+  });
+  const { root, cleanup } = fetched;
   try {
     // Every page to write: where its file is, and which repo it came from.
     const own = [
@@ -140,11 +199,12 @@ async function syncProduct(product, other, contentOnly) {
         .map((name) => `docs/${name}`),
       ...Object.keys(extraPages).filter((path) => existsSync(join(root, path))),
     ].map((path) => ({ path, root, repo, ref, slug: slugOf(path, extraPages) }));
+    const { root: otherRoot } = await other;
     const borrowed = Object.entries(shared.pages)
-      .filter(([path]) => existsSync(join(other.root, path)))
+      .filter(([path]) => existsSync(join(otherRoot, path)))
       .map(([path, slug]) => ({
         path,
-        root: other.root,
+        root: otherRoot,
         repo: shared.repo,
         ref: shared.ref,
         slug,
@@ -260,3 +320,5 @@ export {
   stageRank,
   tidyNotes,
 } from './sync/text.mjs';
+// Tested through here too.
+export { retry };
