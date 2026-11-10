@@ -4,6 +4,8 @@ import { roughTokens } from '@/lib/site-markdown';
 import { docsLlms, source } from '@/lib/source';
 
 export const revalidate = false;
+// An address that was not built is not there, and is not rendered on request.
+export const dynamicParams = false;
 
 export async function GET(_req: Request, { params }: RouteContext<'/llms.mdx/docs/[[...slug]]'>) {
   const { slug } = await params;

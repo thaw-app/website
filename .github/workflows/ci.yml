@@ -8,10 +8,16 @@ on:
 permissions:
   contents: read
 
+# A newer push to the same branch or pull request makes the older run pointless.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   check:
     if: github.repository == 'thaw-app/website'
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
@@ -19,15 +25,33 @@ jobs:
         with:
           node-version: 24
       - run: bun install --frozen-lockfile
+      # Lint skips the synced docs and the unit tests read none of them, so both run before
+      # the sync and a failure there costs no requests.
+      - run: bun run lint
+      - run: bun run test
       # The docs are not in this repo; the type check needs them in place. The numbers the
       # pages quote are committed, so a check does not spend requests refreshing them.
       - run: bun run sync:content
         env:
           GITHUB_TOKEN: ${{ github.token }}
-      - run: bun run lint
       - run: bun run types:check
-      - run: bun run test
+      # The build starts from the last one's cache, which holds for the same dependencies;
+      # a changed source only rebuilds what it touches.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .next/cache
+          key: next-${{ runner.os }}-${{ hashFiles('bun.lock') }}-${{ hashFiles('app/**', 'components/**', 'lib/**', 'content/**') }}
+          restore-keys: |
+            next-${{ runner.os }}-${{ hashFiles('bun.lock') }}-
       # A page can pass all three and still fail to build.
       - run: bunx next build
+      # The browsers are kept by Playwright's version. The system packages are not cached,
+      # so the install still runs to put them in.
+      - id: playwright
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
       - run: bunx playwright install --with-deps chromium
       - run: bun run test:e2e

@@ -47,7 +47,6 @@ export function ChangelogView({ path }: { path?: string[] }) {
   const page = pageAt(path);
   const slug = page.slugs[0] as ProductSlug;
   const product = products[slug];
-  const Notes = page.data.body;
   const release = page.data.release;
   const commit = release?.commit ? commitOf(slug, release.commit) : undefined;
   // A release's description is its particulars ("6 November 2026 · macOS 27 only · Build
@@ -118,18 +117,53 @@ export function ChangelogView({ path }: { path?: string[] }) {
           {lead && <Lead>{lead}</Lead>}
           {release && <ReleaseProperties release={release} commit={commit} build={build} />}
         </PageHeader>
-        <div className={`prose max-w-none ${release ? 'release-notes' : ''}`}>
-          <Notes components={getMDXComponents({ a: createRelativeLink(source, page) })} />
-          {page.data.releaseGroup && (
-            <VersionReleases product={slug} version={page.data.releaseGroup} />
-          )}
-          {/* A version's final release ends with the pre-releases that led up to it. */}
-          {release?.final && <FinalReleaseTrail product={slug} version={release.version} />}
-        </div>
+        <PageNotes page={page} />
         {release && <ReleaseSteps product={slug} url={page.url} />}
       </article>
     </PageShell>
   );
+}
+
+type ChangelogPage = ReturnType<typeof pageAt>;
+
+/**
+ * A page's notes as its page draws them. A release's are also drawn alone, at an address
+ * of their own (app/release-notes), for the changelog to open under the release's line.
+ */
+function PageNotes({ page }: { page: ChangelogPage }) {
+  const slug = page.slugs[0] as ProductSlug;
+  const Notes = page.data.body;
+  const release = page.data.release;
+  return (
+    <div className={`prose max-w-none ${release ? 'release-notes' : ''}`}>
+      <Notes components={getMDXComponents({ a: createRelativeLink(source, page) })} />
+      {page.data.releaseGroup && (
+        <VersionReleases product={slug} version={page.data.releaseGroup} />
+      )}
+      {/* A version's final release ends with the pre-releases that led up to it. */}
+      {release?.final && <FinalReleaseTrail product={slug} version={release.version} />}
+    </div>
+  );
+}
+
+/** One release's notes alone, found by its product and its tag. */
+export function ReleaseNotes({ product, tag }: { product: ProductSlug; tag: string }) {
+  const page = pageAt(changelogUrl(product, [tag]).split('/').slice(2));
+  if (!page.data.release) notFound();
+  return <PageNotes page={page} />;
+}
+
+/** Every release of every product, as the product and the tag its notes are found by. */
+export function releaseNotesParams() {
+  return source
+    .getPages()
+    .filter(
+      (page) => page.slugs[1] === 'changelog' && page.data.release && page.slugs[0] in products,
+    )
+    .map((page) => ({
+      product: page.slugs[0] as ProductSlug,
+      tag: page.url.split('/').at(-1) as string,
+    }));
 }
 
 type Release = NonNullable<ReturnType<typeof pageAt>['data']['release']>;

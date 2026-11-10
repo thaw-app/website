@@ -46,11 +46,14 @@ async function everyPage(path) {
 async function publishedReleases(repo, slug) {
   const cache = cacheFile(`releases-${slug}.json`);
   try {
-    const all = (await everyPage(`repos/${repo}/releases`)).filter((release) => !release.draft);
+    // The two lists do not depend on each other, so they are read together.
+    const [releases, tags] = await Promise.all([
+      everyPage(`repos/${repo}/releases`),
+      everyPage(`repos/${repo}/tags`),
+    ]);
+    const all = releases.filter((release) => !release.draft);
     // A release names its tag, and the tag is what names the commit it was built from.
-    const commits = new Map(
-      (await everyPage(`repos/${repo}/tags`)).map((tag) => [tag.name, tag.commit.sha]),
-    );
+    const commits = new Map(tags.map((tag) => [tag.name, tag.commit.sha]));
     const kept = all.map(({ tag_name, name, body, published_at, html_url }) => ({
       tag: tag_name,
       name,

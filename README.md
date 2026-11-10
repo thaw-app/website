@@ -71,9 +71,10 @@ The repo's GitHub Releases give each release its link to the downloads, a date
 where the file leaves one out, and the notes of any release the file does not
 have yet.
 
-The list of releases is one unauthenticated call to GitHub's API. Set
-`GITHUB_TOKEN` in Vercel to keep it clear of the shared rate limit. If the
-call fails, the last list saved in `.cache/` is used, and without one the
+The list of releases, and the list of tags that gives each its commit, are read
+from GitHub's API a hundred at a time. They are signed with `GITHUB_TOKEN` when
+one is set, which keeps them clear of the shared rate limit. If the
+calls fail, the last list saved in `.cache/` is used, and without one the
 changelog file alone.
 
 ## Numbers and lists read at build time
@@ -105,7 +106,11 @@ people.
 
 `GITHUB_TOKEN` matters for two of these. Without it the country counts are
 not refreshed at all (they take about 130 requests, and run at most once a
-day), and the package licences are limited to sixty lookups an hour.
+day), and the package licences are limited to sixty lookups an hour. A build on
+Vercel keeps the committed country counts: the day it would write is never
+committed, so every build would read everyone again. `SYNC_WORLD=1` asks for the
+count there anyway; otherwise it is refreshed by a sync run on a maintainer's
+machine and committed.
 
 How a free-text location becomes a country is in `scripts/countries.mjs`: a
 country's name, a US state, or a town on its list. Add a town there when a
@@ -143,8 +148,6 @@ Four files are made by hand-run scripts and committed, not built each time:
 - Floe's page, roadmap and changelog are in `app/(floe)`, under a header and footer that
   are Floe's (`baseOptions({ product: 'floe' })`). The name at the left of every header
   opens a list of both products (`components/product-switcher.tsx`).
-- One line of news can run over Thaw's pages: `components/site-banner.tsx`. Give a new
-  line a new id, or the people who closed the last one will not see it.
 - The one accent colour is `--product-tone` in `app/global.css`: Thaw's orange, and
   Floe's blue under Floe's docs and on Floe's own pages (`data-tone="floe"`). It marks what is current or the thing to look at (the
   roadmap's "Now", the page you are on in the docs, a stable release). A release's
@@ -219,9 +222,9 @@ cannot use those, so two static weights of Schibsted Grotesk are kept in
   appears at the bottom of the sidebar; list its slug in
   `content/docs/<product>/meta.json` to place it.
 - **A file outside `docs/`:** add it to that product's `extraPages` in
-  `scripts/sync-docs.mjs`.
+  `scripts/sync/config.mjs`.
 - **A third product:** add an entry to `products` in both
-  `scripts/sync-docs.mjs` and `lib/shared.ts`, and a folder with `index.mdx`
+  `scripts/sync/config.mjs` and `lib/shared.ts`, and a folder with `index.mdx`
   and `meta.json` under `content/docs`.
 
 ## Deploying

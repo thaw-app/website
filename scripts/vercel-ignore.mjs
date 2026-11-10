@@ -4,8 +4,21 @@
 import { execFileSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 
-/** Paths the site is not built from: workflows, Dependabot's config, issue templates. */
-const notTheSite = [/^\.github\//];
+/**
+ * Paths the site is not built from: workflows, Dependabot's config and issue templates, the
+ * notes and instructions at the repo's root, the end-to-end tests and their config, the test
+ * files themselves, and the lint and git settings. The root files are anchored, so a README
+ * in a folder is still a page's or the site's.
+ */
+const notTheSite = [
+  /^\.github\//,
+  /^(README|DESIGN|AGENTS|CLAUDE)\.md$/,
+  /^e2e\//,
+  /^playwright\.config\.ts$/,
+  /\.test\.(mjs|ts)$/,
+  /^biome\.json$/,
+  /^\.gitignore$/,
+];
 
 /**
  * Whether a deploy can be skipped. `files` are the paths the commit changed, or null when

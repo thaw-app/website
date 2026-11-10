@@ -185,7 +185,10 @@ export function AsciiCube({
     // rate the drawing is most of what a phone's processor does while the page opens.
     // A little under a twelfth of a second: frames come every sixtieth, and a wait of exactly
     // five of them would often miss by a hair and take a sixth.
-    const pause = window.matchMedia('(pointer: coarse)').matches ? 1000 / 12 - 4 : 0;
+    // A mouse or trackpad gets about thirty: the light moves too slowly to show more, and a
+    // display that refreshes 120 times a second would otherwise redraw the cube at that rate.
+    // A little under a thirtieth, for the same reason as above.
+    const pause = window.matchMedia('(pointer: coarse)').matches ? 1000 / 12 - 4 : 1000 / 30 - 4;
     let drawn = 0;
 
     function loop(time: number) {

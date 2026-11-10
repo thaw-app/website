@@ -1,7 +1,7 @@
 'use client';
 
 import { type Ref, useEffect, useState } from 'react';
-import { wearHat } from './conure-poses';
+import { wearHat } from './conure-hat';
 
 // The way to the shooting gallery, the same from any conure. The first touch gets its
 // attention, the second gets a tip of its hat, and the third opens the gallery. Left alone

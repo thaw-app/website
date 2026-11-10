@@ -6,6 +6,9 @@ export default async function ChangelogPage(props: PageProps<'/changelog/[[...sl
   return <ChangelogView path={(await props.params).slug} />;
 }
 
+// An address that was not built is not there, and is not rendered on request.
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return changelogPaths('thaw').map((slug) => ({ slug }));
 }
