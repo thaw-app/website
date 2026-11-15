@@ -1,33 +1,33 @@
 {
-  "stars": 187,
-  "downloads": 539,
-  "discord": 393,
+  "stars": 199,
+  "downloads": 711,
+  "discord": 398,
   "contributors": 5,
-  "releases": 8,
-  "issuesFixed": 10,
+  "releases": 10,
+  "issuesFixed": 13,
   "readOn": {
-    "stars": "2026-11-08",
-    "downloads": "2026-11-08",
-    "discord": "2026-11-08",
-    "contributors": "2026-11-08",
-    "releases": "2026-11-08",
-    "issuesFixed": "2026-11-08",
-    "bestPractices": "2026-11-08",
-    "baseline": "2026-11-08",
-    "scorecard": "2026-11-08",
-    "coverage": "2026-11-08",
-    "field": "2026-11-08"
+    "stars": "2026-11-15",
+    "downloads": "2026-11-15",
+    "discord": "2026-11-15",
+    "contributors": "2026-11-15",
+    "releases": "2026-11-15",
+    "issuesFixed": "2026-11-15",
+    "bestPractices": "2026-11-15",
+    "baseline": "2026-11-15",
+    "scorecard": "2026-11-15",
+    "coverage": "2026-11-15",
+    "field": "2026-11-15"
   },
   "people": [
     {
       "login": "diazdesandi",
       "avatar": "https://avatars.githubusercontent.com/u/17421494?v=4",
-      "commits": 206
+      "commits": 217
     },
     {
       "login": "MintCollector",
       "avatar": "https://avatars.githubusercontent.com/u/158844909?v=4",
-      "commits": 5
+      "commits": 7
     },
     {
       "login": "unsecretised",
@@ -55,12 +55,12 @@
   "assurance": {
     "bestPractices": "silver",
     "baseline": 3,
-    "scorecard": 8.2,
-    "coverage": 86.7,
+    "scorecard": 8.3,
+    "coverage": 87.6,
     "field": {
-      "projects": 13811,
-      "gold": 115,
-      "baseline3": 94
+      "projects": 14105,
+      "gold": 122,
+      "baseline3": 99
     }
   },
   "translators": [],

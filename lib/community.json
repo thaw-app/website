@@ -1,24 +1,24 @@
 {
-  "stars": 12621,
-  "downloads": 491488,
-  "homebrewYear": 31112,
-  "discord": 393,
-  "contributors": 64,
-  "releases": 89,
-  "issuesFixed": 575,
+  "stars": 12744,
+  "downloads": 515129,
+  "homebrewYear": 31768,
+  "discord": 398,
+  "contributors": 67,
+  "releases": 90,
+  "issuesFixed": 577,
   "readOn": {
-    "stars": "2026-11-08",
-    "downloads": "2026-11-08",
-    "homebrewYear": "2026-11-08",
-    "discord": "2026-11-08",
-    "contributors": "2026-11-08",
-    "releases": "2026-11-08",
-    "issuesFixed": "2026-11-08",
-    "bestPractices": "2026-11-08",
-    "baseline": "2026-11-08",
-    "scorecard": "2026-11-08",
-    "coverage": "2026-11-08",
-    "field": "2026-11-08"
+    "stars": "2026-11-15",
+    "downloads": "2026-11-15",
+    "homebrewYear": "2026-11-15",
+    "discord": "2026-11-15",
+    "contributors": "2026-11-15",
+    "releases": "2026-11-15",
+    "issuesFixed": "2026-11-15",
+    "bestPractices": "2026-11-15",
+    "baseline": "2026-11-15",
+    "scorecard": "2026-11-15",
+    "coverage": "2026-11-15",
+    "field": "2026-11-15"
   },
   "people": [
     {
@@ -29,7 +29,7 @@
     {
       "login": "diazdesandi",
       "avatar": "https://avatars.githubusercontent.com/u/17421494?v=4",
-      "commits": 451
+      "commits": 484
     },
     {
       "login": "7a6163",
@@ -45,6 +45,16 @@
       "login": "camguillory",
       "avatar": "https://avatars.githubusercontent.com/u/45099363?v=4",
       "commits": 63
+    },
+    {
+      "login": "Belligerently",
+      "avatar": "https://avatars.githubusercontent.com/u/167713978?v=4",
+      "commits": 25
+    },
+    {
+      "login": "elior-esh",
+      "avatar": "https://avatars.githubusercontent.com/u/135965755?v=4",
+      "commits": 21
     },
     {
       "login": "alvst",
@@ -107,13 +117,13 @@
       "commits": 5
     },
     {
-      "login": "Belligerently",
-      "avatar": "https://avatars.githubusercontent.com/u/167713978?v=4",
+      "login": "bytepl",
+      "avatar": "https://avatars.githubusercontent.com/u/4518860?v=4",
       "commits": 4
     },
     {
-      "login": "bytepl",
-      "avatar": "https://avatars.githubusercontent.com/u/4518860?v=4",
+      "login": "doublezz10",
+      "avatar": "https://avatars.githubusercontent.com/u/8878389?v=4",
       "commits": 4
     },
     {
@@ -125,6 +135,11 @@
       "login": "josericardo-fo",
       "avatar": "https://avatars.githubusercontent.com/u/79599290?v=4",
       "commits": 4
+    },
+    {
+      "login": "Omoeba",
+      "avatar": "https://avatars.githubusercontent.com/u/38597972?v=4",
+      "commits": 3
     },
     {
       "login": "t4sh",
@@ -147,6 +162,11 @@
       "commits": 2
     },
     {
+      "login": "doxncwfn",
+      "avatar": "https://avatars.githubusercontent.com/u/154512997?v=4",
+      "commits": 2
+    },
+    {
       "login": "exsesx",
       "avatar": "https://avatars.githubusercontent.com/u/20399517?v=4",
       "commits": 2
@@ -154,6 +174,11 @@
     {
       "login": "jiayuqi7813",
       "avatar": "https://avatars.githubusercontent.com/u/63686458?v=4",
+      "commits": 2
+    },
+    {
+      "login": "malash",
+      "avatar": "https://avatars.githubusercontent.com/u/1812118?v=4",
       "commits": 2
     },
     {
@@ -252,11 +277,6 @@
       "commits": 1
     },
     {
-      "login": "malash",
-      "avatar": "https://avatars.githubusercontent.com/u/1812118?v=4",
-      "commits": 1
-    },
-    {
       "login": "MarcoTerzulli",
       "avatar": "https://avatars.githubusercontent.com/u/48279455?v=4",
       "commits": 1
@@ -279,11 +299,6 @@
     {
       "login": "nk-tedo-001",
       "avatar": "https://avatars.githubusercontent.com/u/144455088?v=4",
-      "commits": 1
-    },
-    {
-      "login": "Omoeba",
-      "avatar": "https://avatars.githubusercontent.com/u/38597972?v=4",
       "commits": 1
     },
     {
@@ -372,12 +387,12 @@
   "assurance": {
     "bestPractices": "gold",
     "baseline": 3,
-    "scorecard": 9.3,
-    "coverage": 91.1,
+    "scorecard": 9.8,
+    "coverage": 90.3,
     "field": {
-      "projects": 13811,
-      "gold": 115,
-      "baseline3": 94
+      "projects": 14105,
+      "gold": 122,
+      "baseline3": 99
     }
   },
   "translators": [
