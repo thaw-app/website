@@ -134,13 +134,13 @@ export function RoadmapList({
         // What has shipped is the road already travelled: one line, which opens on its
         // releases, so the plan is not pushed down the page by eighty things that are done.
         <details className="group/stop">
-          <summary className="tap flex cursor-pointer list-none flex-wrap items-baseline gap-x-3 gap-y-1 [&::-webkit-details-marker]:hidden">
+          <summary className="tap flex cursor-pointer list-none flex-wrap items-baseline gap-x-3 gap-y-1 underline-offset-4 [&::-webkit-details-marker]:hidden [&:hover>h2]:underline">
             <h2 id={slug(title)} className="road-title scroll-mt-24">
               {title} {counted}
             </h2>
             <span
               aria-hidden
-              className="text-fd-muted-foreground transition-transform group-open/stop:rotate-90"
+              className="text-fd-muted-foreground transition-transform group-open/stop:rotate-90 motion-reduce:transition-none"
             >
               ›
             </span>

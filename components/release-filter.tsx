@@ -71,6 +71,14 @@ export function ReleaseFilter({
           )}
         </div>
       )}
+      {/* Said aloud when a choice changes what is shown, as the eye sees the list change. */}
+      <p role="status" className="sr-only">
+        {system || channel
+          ? left === 0
+            ? 'No release matches.'
+            : `${left} ${left === 1 ? 'release' : 'releases'} shown.`
+          : ''}
+      </p>
       {hidden.length > 0 && <style>{`${hidden.join(', ')} { display: none; }`}</style>}
       {left === 0 ? (
         <p className="not-prose border-t py-10 text-fd-muted-foreground">

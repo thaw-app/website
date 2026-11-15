@@ -420,10 +420,6 @@ export function FooterConure() {
         // While any of it is below the letter's top, the letter is drawn over it: the
         // wordmark keeps a copy of the letter for this, in front of the bird.
         const behind = lowered > 0 || pose === 'hidden' || pose === 'peek' || pose === 'peekFacing';
-        if (behind !== (stage.dataset.conureBehind === 'true')) {
-          if (behind) stage.dataset.conureBehind = 'true';
-          else delete stage.dataset.conureBehind;
-        }
         // Each time the beak comes down on the ampersand, the wordmark is told where, and
         // takes a piece out of the letter there: a little deeper and to one side each time.
         if (leg.on === 'sign' && pose === 'pecking' && routinePose !== 'pecking') {
@@ -452,6 +448,11 @@ export function FooterConure() {
             const above = pointer.y < box.top + pixel;
             pose = above ? 'bobUp' : pointer.x < head.x - pixel * 3 ? 'looking' : 'perched';
           }
+        }
+        // Written after the measuring above, so the page is not laid out twice.
+        if (behind !== (stage.dataset.conureBehind === 'true')) {
+          if (behind) stage.dataset.conureBehind = 'true';
+          else delete stage.dataset.conureBehind;
         }
         show(pose);
       } else if (leg && 'walk' in leg) {

@@ -82,7 +82,7 @@ export function FloeSearchDialog(props: SharedProps) {
           <span className="flex items-center gap-1.5 max-sm:hidden">
             Open <kbd className={keyCap}>↵</kbd>
           </span>
-          <SearchDialogClose className="h-auto gap-1.5 border-0 bg-transparent p-0 font-sans text-[12px] text-inherit shadow-none hover:bg-transparent">
+          <SearchDialogClose className="h-auto gap-1.5 border-0 bg-transparent p-0 font-sans text-[12px] text-inherit shadow-none transition-colors hover:bg-transparent hover:text-fd-foreground">
             Close <kbd className={keyCap}>esc</kbd>
           </SearchDialogClose>
         </SearchDialogFooter>

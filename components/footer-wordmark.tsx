@@ -213,54 +213,54 @@ export function FooterWordmark() {
       cellWidth = Math.max(5, width / 170);
       columns = Math.ceil(width / cellWidth);
       rows = Math.ceil(height / (cellWidth * cellShape));
-      const scale = window.devicePixelRatio || 1;
-      canvas.width = Math.round(width * scale);
-      canvas.height = Math.round(height * scale);
-      context.setTransform(scale, 0, 0, scale, 0, 0);
+      // Everything is measured first and written after, so the page is laid out once.
       // The conure lands on the letters: this is how far down their tops are, and the
       // size of one of its pixels, which follows the size of the words.
       // The tops of the capitals are where the conure's feet go.
       const drawn = words.getBoundingClientRect();
-      const top = drawn.top - stage.getBoundingClientRect().top;
+      const origin = stage.getBoundingClientRect();
+      const top = drawn.top - origin.top;
       const capitals = (drawn.height * type.capHeight * type.size) / box.height;
-      stage.style.setProperty(
-        '--perch-y',
-        `${top + (drawn.height * baseline) / box.height - capitals}px`,
-      );
-      stage.style.setProperty('--pixel', `${Math.max(2, drawn.height / 62)}px`);
+      const places: [string, string][] = [
+        ['--perch-y', `${top + (drawn.height * baseline) / box.height - capitals}px`],
+        ['--pixel', `${Math.max(2, drawn.height / 62)}px`],
+      ];
       // And where across: the middle of the ampersand, which is not the middle of the
       // page, since "thaw" and "floe" are not the same width.
       const text = words.querySelector('text');
       const matrix = text?.getScreenCTM();
       if (text && matrix && text.getNumberOfChars() > 8) {
-        const left = stage.getBoundingClientRect().left;
         // A point some way across one character of "thaw & floe", from the stage's left edge.
         const across = (index: number, part: number) => {
           const letter = text.getExtentOfChar(index);
           const point = new DOMPoint(letter.x + letter.width * part, letter.y);
-          return `${point.matrixTransform(matrix).x - left}px`;
+          return `${point.matrixTransform(matrix).x - origin.left}px`;
         };
-        stage.style.setProperty('--perch-x', across(5, 0.5));
+        places.push(['--perch-x', across(5, 0.5)]);
         // It calls at each name too, on a letter as tall as the ampersand: the h of
         // "thaw", whose upright is at the left of the letter and not in its middle,
         // and the l of "floe", which is nothing but an upright.
-        stage.style.setProperty('--perch-thaw', across(1, stemOfH));
-        stage.style.setProperty('--perch-floe', across(8, 0.5));
+        places.push(['--perch-thaw', across(1, stemOfH)], ['--perch-floe', across(8, 0.5)]);
         // And the floor: the line the words stand on, in the gap between the ampersand
         // and "floe", where there is no letter to stand in.
-        stage.style.setProperty('--floor-x', across(6, 0.5));
-        stage.style.setProperty('--floor-drop', `${capitals}px`);
+        places.push(['--floor-x', across(6, 0.5)], ['--floor-drop', `${capitals}px`]);
         // The opening in the ampersand's lower bowl, which the conure looks out of when it
         // has gone behind the letter: the middle of its floor is where the bird's chin goes.
         const sign = text.getExtentOfChar(5);
         const bowl = bowlOf(getComputedStyle(text).fontFamily, sign.width);
         if (bowl && matrix.a > 0) {
-          const origin = stage.getBoundingClientRect();
           const spot = new DOMPoint(bowl.across + sign.x, bowl.floor).matrixTransform(matrix);
-          stage.style.setProperty('--peek-x', `${spot.x - origin.left}px`);
-          stage.style.setProperty('--peek-y', `${spot.y - origin.top}px`);
+          places.push(
+            ['--peek-x', `${spot.x - origin.left}px`],
+            ['--peek-y', `${spot.y - origin.top}px`],
+          );
         }
       }
+      const scale = window.devicePixelRatio || 1;
+      canvas.width = Math.round(width * scale);
+      canvas.height = Math.round(height * scale);
+      context.setTransform(scale, 0, 0, scale, 0, 0);
+      for (const [name, value] of places) stage.style.setProperty(name, value);
     }
 
     function draw(time: number) {

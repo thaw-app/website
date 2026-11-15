@@ -338,6 +338,8 @@ export function FooterShootout({
       if (!dot) return;
       const width = Math.ceil(area.clientWidth / dot);
       const height = Math.ceil(area.clientHeight / dot);
+      // Read before the canvas is resized, so the page is laid out once.
+      const perch = Math.round(body.offsetLeft / dot);
       canvas.style.width = `${width * dot}px`;
       canvas.style.height = `${height * dot}px`;
       paintScene(canvas, {
@@ -346,7 +348,7 @@ export function FooterShootout({
         height,
         floor: 12,
         lanes: slots,
-        bird: Math.round(body.offsetLeft / dot),
+        bird: perch,
         narrow: slots === lanes.narrow,
       });
     };
