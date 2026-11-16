@@ -136,7 +136,7 @@
       "url": "https://www.npmjs.com/package/@biomejs/biome",
       "license": "MIT OR Apache-2.0",
       "users": {
-        "Site": "2.6.5"
+        "Site": "2.6.8"
       }
     },
     {
@@ -144,7 +144,7 @@
       "url": "https://www.npmjs.com/package/@fumadocs/base-ui",
       "license": "MIT",
       "users": {
-        "Site": "16.18.0"
+        "Site": "16.18.4"
       }
     },
     {
@@ -168,7 +168,7 @@
       "url": "https://www.npmjs.com/package/@tailwindcss/postcss",
       "license": "MIT",
       "users": {
-        "Site": "4.3.4"
+        "Site": "4.3.5"
       }
     },
     {
@@ -216,7 +216,7 @@
       "url": "https://www.npmjs.com/package/fumadocs-core",
       "license": "MIT",
       "users": {
-        "Site": "16.18.0"
+        "Site": "16.18.4"
       }
     },
     {
@@ -224,7 +224,7 @@
       "url": "https://www.npmjs.com/package/fumadocs-mdx",
       "license": "MIT",
       "users": {
-        "Site": "15.5.0"
+        "Site": "15.5.3"
       }
     },
     {
@@ -232,7 +232,7 @@
       "url": "https://www.npmjs.com/package/lucide-react",
       "license": "ISC",
       "users": {
-        "Site": "1.69.0"
+        "Site": "1.70.0"
       }
     },
     {
@@ -240,7 +240,7 @@
       "url": "https://www.npmjs.com/package/next",
       "license": "MIT",
       "users": {
-        "Site": "16.4.5"
+        "Site": "16.4.6"
       }
     },
     {
@@ -289,7 +289,7 @@
       "url": "https://www.npmjs.com/package/tailwindcss",
       "license": "MIT",
       "users": {
-        "Site": "4.3.4"
+        "Site": "4.3.5"
       }
     },
     {
