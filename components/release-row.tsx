@@ -108,6 +108,10 @@ export function ReleaseRow({
       </div>
       {open && (
         <div className="pb-8 sm:ps-[13.5rem]">
+          {/* Says when the notes arrive or fail, without reading the notes themselves out. */}
+          <p role="status" className="sr-only">
+            {notes === null ? 'The notes could not be loaded.' : notes ? 'The notes are open.' : ''}
+          </p>
           {notes === undefined && (
             <p className="text-sm text-fd-muted-foreground">Loading the notes…</p>
           )}

@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 /** Who uses something, as small quiet tags. */
 function Users({ users }: { users: User[] }) {
   return (
-    <span className="flex gap-1.5">
+    <span className="flex flex-wrap gap-1.5">
       {users.map((user) => (
         <span key={user} className="border px-1.5 text-xs text-fd-muted-foreground">
           {user}
@@ -143,7 +143,11 @@ export default function BuiltWithPage() {
                   className="flex items-baseline justify-between gap-4 border-b py-2.5"
                 >
                   <span className="flex min-w-0 flex-wrap items-baseline gap-x-2.5 gap-y-1">
-                    <a href={item.url} className="tap truncate font-medium link max-sm:basis-full">
+                    <a
+                      href={item.url}
+                      className="tap truncate font-medium link max-sm:basis-full"
+                      translate="no"
+                    >
                       {item.name}
                     </a>
                     <span className="text-sm text-fd-muted-foreground">

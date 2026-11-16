@@ -47,7 +47,7 @@ const products = [
       discordInvite: project.discordInvite,
       cask: 'thaw',
       updatesRepo: 'thaw-app/updates',
-      team: ['stonerl', 'diazdesandi', 'nightah', 'alvst', 'camguillory'],
+      team: ['stonerl', 'diazdesandi', 'nightah', 'alvst', 'camguillory', 'Belligerently'],
       // The project's entry on bestpractices.dev, which holds its OpenSSF badge and Baseline level.
       bestPractices: project.products.thaw.bestPractices,
     },

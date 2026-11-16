@@ -187,7 +187,9 @@ export function IconGenerator() {
     try {
       setStatus(await make());
     } catch (error) {
-      setStatus(`The file could not be made: ${error instanceof Error ? error.message : error}`);
+      setStatus(
+        `The file could not be made: ${error instanceof Error ? error.message : error}. Try again.`,
+      );
     } finally {
       setBusy(false);
     }
@@ -299,6 +301,9 @@ export function IconGenerator() {
               <label className="flex items-center gap-2 border px-3 py-1.5 text-sm text-fd-muted-foreground">
                 <input
                   type="number"
+                  name="png-size"
+                  autoComplete="off"
+                  inputMode="numeric"
                   min={16}
                   max={4096}
                   step={16}

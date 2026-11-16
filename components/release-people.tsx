@@ -15,7 +15,7 @@ function Person({ login }: { login: string }) {
       href={`https://github.com/${login}`}
       title={`@${login}`}
       aria-label={`@${login} on GitHub`}
-      className="-ms-1.5 rounded-full transition-transform hover:z-10 hover:-translate-y-0.5"
+      className="-ms-1.5 rounded-full transition-transform hover:z-10 hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
     >
       {/* biome-ignore lint/performance/noImgElement: a remote avatar, not worth an image pipeline */}
       <img

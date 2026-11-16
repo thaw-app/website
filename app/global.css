@@ -954,6 +954,8 @@ html > body[data-scroll-locked] {
   /* Up to just under the tops of the crates and barrels. */
   --cover: calc(11 * var(--dot));
   overflow: hidden;
+  /* Quick taps are shots, not a double tap to zoom. */
+  touch-action: manipulation;
   animation: shootout-in 0.25s ease-out;
 }
 
@@ -1131,6 +1133,12 @@ html > body[data-scroll-locked] {
 .footer-shootout-button {
   text-decoration: underline;
   text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+  transition: text-decoration-thickness 0.15s ease-out;
+}
+
+.footer-shootout-button:hover {
+  text-decoration-thickness: 2px;
 }
 
 /* The revolver's six chambers, on the board: brass while loaded, empty once fired. */

@@ -23,6 +23,8 @@ export function ReleaseFilter({
 }) {
   const [system, setSystem] = useState<string | null>(null);
   const [chosen, setChannel] = useState<string | null>(null);
+  // Nothing is announced on load, only once a choice has changed the list.
+  const [changed, setChanged] = useState(false);
   const onSystem = (entry: { os?: string }) =>
     !system || macosVersions(entry.os).includes(Number(system));
   // Only the channels a release is on for the macOS chosen are offered: not every macOS has
@@ -55,7 +57,10 @@ export function ReleaseFilter({
                 })),
               ]}
               value={system}
-              onChange={setSystem}
+              onChange={(id) => {
+                setSystem(id);
+                setChanged(true);
+              }}
             />
           )}
           {present.length > 1 && (
@@ -66,11 +71,22 @@ export function ReleaseFilter({
                 ...present.map((name) => ({ id: name as string | null, label: name })),
               ]}
               value={channel}
-              onChange={setChannel}
+              onChange={(id) => {
+                setChannel(id);
+                setChanged(true);
+              }}
             />
           )}
         </div>
       )}
+      {/* Said aloud when a choice changes what is shown, as the eye sees the list change. */}
+      <p role="status" className="sr-only">
+        {changed
+          ? left === 0
+            ? 'No release matches.'
+            : `${left} ${left === 1 ? 'release' : 'releases'} shown.`
+          : ''}
+      </p>
       {hidden.length > 0 && <style>{`${hidden.join(', ')} { display: none; }`}</style>}
       {left === 0 ? (
         <p className="not-prose border-t py-10 text-fd-muted-foreground">

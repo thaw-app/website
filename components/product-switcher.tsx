@@ -38,7 +38,7 @@ export function ProductName({ className }: ComponentProps<'a'>) {
     <Link
       href={pages[current]}
       aria-label={`${products[current].name}, home`}
-      className={`tap -mx-2 px-2 py-1.5 ${className ?? ''}`}
+      className={`tap -mx-2 px-2 py-1.5 underline-offset-4 [&:hover>span]:underline ${className ?? ''}`}
     >
       <Image src={icons[current]} alt="" width={24} className="in-season size-6" />
       <Image src={products[current].icon} alt="" width={24} className="off-season size-6" />

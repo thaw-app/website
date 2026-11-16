@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 // The colour a browser gives its own bars round the page: the page's ground in each theme.
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#f5f5f5' },
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
     { media: '(prefers-color-scheme: dark)', color: '#000000' },
   ],
 };

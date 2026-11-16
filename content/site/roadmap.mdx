@@ -7,8 +7,8 @@ Thaw 3.0 for macOS 27 is in beta, with [a new design](/roadmap/thawui), and Thaw
 <RoadmapList title="Now" count={3} state="now" here note="What is being built, for the next releases of Thaw 3 and Thaw 2.">
 <RoadmapGroup name="macOS 27" count={2}>
 
-- **Thaw 3.0.0.** In beta. It is a rebuilt menu bar core for macOS 27. The latest beta is 3.0.0-beta.6 and the latest alpha is 3.0.0-alpha.13.
-- **Modules.** Optional parts of Thaw that run only if you use them. The first three are in 3.0.0-alpha.13: Settings › Extras switches Scripts, Triggers and Widgets on and off, and one that is off doesn’t run or show in the sidebar.
+- **Thaw 3.0.0.** In beta. It is a rebuilt menu bar core for macOS 27. The latest beta is 3.0.0-beta.6 and the latest alpha is 3.0.0-alpha.14.
+- **Modules.** Optional parts of Thaw that run only if you use them. The first three came in 3.0.0-alpha.13: Settings › Modules switches Scripts, Triggers and Widgets on and off, and one that is off doesn’t run or show in the sidebar.
 
 </RoadmapGroup>
 <RoadmapGroup name="macOS 15 and 26" count={1}>
@@ -18,18 +18,12 @@ Thaw 3.0 for macOS 27 is in beta, with [a new design](/roadmap/thawui), and Thaw
 </RoadmapGroup>
 </RoadmapList>
 
-<RoadmapList title="Up next" count={5} state="next" note="These follow Modules.">
-<RoadmapGroup name="Layout" count={1}>
-
-- **Undo for drags.** Command-Z already undoes keyboard moves, and drags within a section in the experimental editor window. Layout’s own drags come next.
-
-</RoadmapGroup>
-<RoadmapGroup name="From 2.1, as modules" count={4}>
+<RoadmapList title="Up next" count={3} state="next" note="These follow Modules.">
+<RoadmapGroup name="From 2.1, as modules" count={3}>
 
 - **Scripts.** Scripts that make their own menu bar items, tested by macOS 26 users on 2.1.0, come to 3.0 as a module you can add.
 - **The full trigger engine.** In 2.1 an item can move on battery level, the frontmost app, a network, a Focus and more. 3.0 has part of it: 3.0.0-beta.2 added showing items while an app runs. The rest comes as a module.
-- **Widgets.** One is in 3.0 so far: a custom status icon with three slots for meters, added in 3.0.0-alpha.3. Since 3.0.0-alpha.13 it is the Widgets module.
-- **Rotating diagnostic logs.** Keeping and cycling through diagnostic logs will appear in a later 3.0 build.
+- **Widgets.** One is in 3.0 so far: a custom status icon with three slots for meters, added in 3.0.0-alpha.3. Since 3.0.0-alpha.13 it is the Widgets module, and since 3.0.0-alpha.14 it shows real readings and Bluetooth audio.
 
 </RoadmapGroup>
 </RoadmapList>
@@ -92,7 +86,22 @@ Thaw 3.0 for macOS 27 is in beta, with [a new design](/roadmap/thawui), and Thaw
 
 <RoadmapRequests />
 
-<RoadmapList title="Shipped" count={138} state="done" note="Everything that has shipped, by release, newest first. The changelog has the detail.">
+<RoadmapList title="Shipped" count={149} state="done" note="Everything that has shipped, by release, newest first. The changelog has the detail.">
+<RoadmapGroup name="3.0.0-alpha.14" count={11}>
+
+- Undo for every Layout edit, drags included
+- Pop Out Editor: Layout in a window of its own, as a work in progress
+- Show or hide several items by dragging down their checkboxes
+- Trackpad taps as a drag crosses into another section
+- The current Space in the menu bar
+- Layout warns when items don’t fit, with a fix in one click
+- Thaw 2 settings are back, diagnostic log size and retention included
+- Export Logs, for a bug report
+- Displays lists displays that aren’t connected, and can forget them
+- Search is Floe’s launcher
+- The widget icon shows real readings and Bluetooth audio
+
+</RoadmapGroup>
 <RoadmapGroup name="2.2.0-beta.2" count={2}>
 
 - Thaw 2 has its own Homebrew tap
@@ -311,4 +320,4 @@ Thaw 3.0 for macOS 27 is in beta, with [a new design](/roadmap/thawui), and Thaw
 
 </Roadmap>
 
-<RoadmapUpdated on="6 November 2026" />
+<RoadmapUpdated on="15 November 2026" />

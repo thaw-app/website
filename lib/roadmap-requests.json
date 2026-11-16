@@ -10,6 +10,11 @@
     "votes": 0
   },
   {
+    "number": 970,
+    "title": "\"Isolation\" Mode",
+    "votes": 0
+  },
+  {
     "number": 1086,
     "title": "Show menu bar only in selected fullscreen apps",
     "votes": 0
@@ -25,8 +30,13 @@
     "votes": 0
   },
   {
-    "number": 970,
-    "title": "\"Isolation\" Mode",
+    "number": 1588,
+    "title": "Reveal hidden menu bar icons only when clicking Thaw",
+    "votes": 0
+  },
+  {
+    "number": 1590,
+    "title": "Export and Import app configuration (backups)",
     "votes": 0
   }
 ]

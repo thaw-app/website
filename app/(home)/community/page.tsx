@@ -69,11 +69,13 @@ export default function CommunityPage() {
                   className="group flex flex-col gap-4"
                 >
                   <Image src={member.avatar} alt="" width={96} height={96} className="size-24" />
-                  <span className="flex flex-col gap-0.5">
-                    <span className="font-display text-lg leading-tight font-semibold tracking-tight underline-offset-4 group-hover:underline">
+                  <span className="flex min-w-0 flex-col gap-0.5">
+                    <span className="font-display text-lg break-words leading-tight font-semibold tracking-tight underline-offset-4 group-hover:underline">
                       {'name' in member && member.name ? member.name : member.login}
                     </span>
-                    <span className="text-sm text-fd-muted-foreground">@{member.login}</span>
+                    <span className="text-sm break-words text-fd-muted-foreground" translate="no">
+                      @{member.login}
+                    </span>
                   </span>
                 </a>
               </li>

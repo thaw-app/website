@@ -35,6 +35,10 @@ type World = typeof import('@/lib/community.json')['world'];
  * same way. The counts are made when the site is built, from the locations on GitHub
  * profiles, and cover only the people who give one.
  */
+
+// The site is in English, so the server and the browser write a share the same way.
+const percent = new Intl.NumberFormat('en', { style: 'percent', maximumFractionDigits: 0 });
+
 export function WorldMap({ counts }: { counts: World | null | undefined }) {
   const [view, setView] = useState<(typeof views)[number]['id']>('stargazers');
   const spaceRef = useRef<HTMLDivElement>(null);
@@ -63,8 +67,8 @@ export function WorldMap({ counts }: { counts: World | null | undefined }) {
   // A country's part of the stars, issues or pull requests that could be placed. Under one in a hundred is
   // said so, not rounded away to nothing.
   const share = (count: number) => {
-    const part = (count / placed) * 100;
-    return part < 1 ? '<1%' : `${Math.round(part)}%`;
+    const part = count / placed;
+    return part < 0.01 ? `<${percent.format(0.01)}` : percent.format(part);
   };
 
   const described = `A world with ${countries.length} countries lit: ${countries
