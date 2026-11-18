@@ -62,19 +62,22 @@ export default function FloeCommunityPage() {
 
       {community.team.length > 0 && (
         <Section label="The team">
-          <ul className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3 lg:grid-cols-5">
+          {/* Six columns, one per member, so the team is one row from a tablet up and two rows of three on a phone. */}
+          <ul className="grid grid-cols-3 gap-x-4 gap-y-8 md:grid-cols-6 md:gap-x-6">
             {community.team.map((member) => (
               <li key={member.login}>
                 <a
                   href={`https://github.com/${member.login}`}
-                  className="group flex flex-col gap-4"
+                  className="group flex flex-col gap-3"
                 >
-                  <Image src={member.avatar} alt="" width={96} height={96} className="size-24" />
-                  <span className="flex flex-col gap-0.5">
-                    <span className="font-display text-lg leading-tight font-semibold tracking-tight underline-offset-4 group-hover:underline">
+                  <Image src={member.avatar} alt="" width={64} height={64} className="size-16" />
+                  <span className="flex min-w-0 flex-col gap-0.5">
+                    <span className="font-display text-base break-words leading-tight font-semibold tracking-tight underline-offset-4 group-hover:underline">
                       {member.name ?? member.login}
                     </span>
-                    <span className="text-sm text-fd-muted-foreground">@{member.login}</span>
+                    <span className="text-sm break-words text-fd-muted-foreground">
+                      @{member.login}
+                    </span>
                   </span>
                 </a>
               </li>
