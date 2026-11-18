@@ -7,6 +7,7 @@
 // nothing. The tail is as long as the rest of the bird, which is why the picture is
 // taller and wider than the body alone needs.
 
+import { inVice } from '@/lib/season';
 import { currentHat, type Hat, onHatChange } from './conure-hat';
 
 const poses: Record<string, string[]> = {
@@ -465,6 +466,13 @@ const wear: Record<Hat, Record<'dark' | 'light', Record<string, string>>> = {
     light: { h: '#c8955a', s: '#a87840', R: '#c8323a' },
   },
 };
+// In the sunset week (lib/season.ts) it wears shades as well, with or without a hat: V the dark
+// lens over the eye, X the pink of the rim and of the arm that runs back over the side of its head.
+const shades = {
+  dark: { V: '#1a0f24', X: '#f677b0' },
+  light: { V: '#1a0f24', X: '#e52499' },
+};
+
 // Head down, or upside down, the hat would sit over its face, so it is not drawn.
 const bareheaded = new Set(['pecking', 'tugging', 'hanging']);
 
@@ -484,8 +492,26 @@ function dress(pose: string) {
   grid.push(...poses[pose].map((line) => [...line]));
   const hat = currentHat();
   if (hat && !bareheaded.has(pose)) put(grid, hat);
+  if (inVice()) putShades(grid);
   dressed.set(pose, grid);
   return grid;
+}
+
+// The eye goes dark behind the lens and its pale ring becomes the rim. Seen from the side, the
+// arm runs on from the rim over the head, away from the eye; face on, the rims are the outer edges.
+function putShades(grid: string[][]) {
+  const head = new Set(['H', 'C', 'G', 'T']);
+  grid.forEach((line, row) => {
+    line.forEach((mark, column) => {
+      if (mark === 'K') line[column] = 'V';
+      if (mark !== 'E') return;
+      line[column] = 'X';
+      // The eye beside it may already be a lens, from earlier along the row.
+      const eye = (at: number) => line[at] === 'K' || line[at] === 'V';
+      const away = eye(column - 1) ? 1 : eye(column + 1) ? -1 : 0;
+      if (away && head.has(grid[row][column + away])) line[column + away] = 'X';
+    });
+  });
 }
 
 function put(grid: string[][], on: Hat) {
@@ -536,7 +562,11 @@ function put(grid: string[][], on: Hat) {
 export function drawPose(context: CanvasRenderingContext2D, pose: string) {
   const hat = currentHat();
   const theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-  const palette: Record<string, string> = { ...palettes[theme], ...(hat ? wear[hat][theme] : {}) };
+  const palette: Record<string, string> = {
+    ...palettes[theme],
+    ...(hat ? wear[hat][theme] : {}),
+    ...(inVice() ? shades[theme] : {}),
+  };
   context.clearRect(0, 0, columns, rows);
   dress(pose).forEach((line, row) => {
     line.forEach((mark, column) => {

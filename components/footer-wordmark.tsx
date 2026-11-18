@@ -3,6 +3,7 @@
 import { MeshGradient } from '@paper-design/shaders-react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { onThemeChange } from '@/lib/on-theme-change';
+import { inVice } from '@/lib/season';
 
 // Lightest to darkest, the classic ramp for pictures in type.
 const ramp = ' .\'`^",:;Il!i><~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$';
@@ -134,7 +135,10 @@ const lights = [
 
 // The colour under the type: Thaw's oranges and Floe's blues, blended by a mesh gradient
 // that keeps moving, so no line ever divides the two.
-const colours = ['#1560e8', '#6aa5ff', '#0b3aa8', '#f08a2c', '#ffd27a', '#c2560f'];
+const thawAndFloe = ['#1560e8', '#6aa5ff', '#0b3aa8', '#f08a2c', '#ffd27a', '#c2560f'];
+// The sunset week (lib/season.ts): the setting sun from grabient.com's GTA 6 gradients, with
+// magenta and peach where Thaw's oranges were and pink, violet and night where Floe's blues were.
+const sunset = ['#6f32b9', '#e0679b', '#191d74', '#e52499', '#ffc193', '#ff746b'];
 
 /**
  * "thaw & floe" at the foot of the page. A field of characters drifts across
@@ -143,6 +147,8 @@ const colours = ['#1560e8', '#6aa5ff', '#0b3aa8', '#f08a2c', '#ffd27a', '#c2560f
  * out of the moving type. With reduced motion the field is one still frame.
  */
 export function FooterWordmark() {
+  // Drawn only in the browser (footer-art.tsx), after the season is set, so it is read once.
+  const [colours] = useState(() => (inVice() ? sunset : thawAndFloe));
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wordsRef = useRef<SVGSVGElement>(null);
   // The gradient holds still for anyone who has asked for less motion.

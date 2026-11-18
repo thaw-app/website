@@ -1,3 +1,5 @@
+// Two seasons, each an attribute on the root element that global.css and a few drawings read.
+//
 // How long the papel picado stays up: through this day, wherever the visitor is. Pages are built
 // ahead of time and hold both looks, so the choice is made in the browser, before the first paint,
 // by the script this exports (app/layout.tsx), and global.css hides whichever is out of season.
@@ -11,6 +13,17 @@ const sheets = { '/': 'thaw-sheet', '/floe': 'floe-sheet' };
 // last in the head, which is the one a browser uses. It follows the page across moves between them.
 const icons = `var o=document.createElement('link');o.rel='icon';var f=function(){var a=document.querySelectorAll('link[rel=icon]'),h='';for(var i=0;i<a.length;i++)if(a[i]!==o)h=a[i].getAttribute('href');if(!h)return;var w='/icons/'+(h.indexOf('/icons/floe')==0?'floe':'thaw')+'-papel-96.png';if(o.getAttribute('href')!==w)o.setAttribute('href',w);if(document.head.lastChild!==o)document.head.append(o)};f();new MutationObserver(f).observe(document.head,{childList:true,subtree:true,attributes:true,attributeFilter:['href']});`;
 
-export const seasonScript = `if(Date.now()<new Date(${lastDay[0]},${lastDay[1]},${lastDay[2] + 1}).getTime()){document.documentElement.dataset.papel='';var s=${JSON.stringify(sheets)}[location.pathname];if(s){var l=document.createElement('link');l.rel='preload';l.as='image';l.href='/papel-picado/'+s+'.svg';l.fetchPriority='high';document.head.append(l)}${icons}}`;
+const papel = `if(Date.now()<new Date(${lastDay[0]},${lastDay[1]},${lastDay[2] + 1}).getTime()){document.documentElement.dataset.papel='';var s=${JSON.stringify(sheets)}[location.pathname];if(s){var l=document.createElement('link');l.rel='preload';l.as='image';l.href='/papel-picado/'+s+'.svg';l.fetchPriority='high';document.head.append(l)}${icons}}`;
+
+// From two days before GTA VI comes out on the 19th to the end of its first week, both themes go to
+// sunset colours (global.css), wherever the visitor is. `?season=vice` shows it on any day.
+const viceFrom = [2026, 10, 17] as const; // November 17.
+const viceTo = [2026, 10, 26] as const; // November 26.
+// The browser's own bars take the first theme-color that matches, so ours go ahead of React's.
+const viceBars = `[['light','#fdf6fa'],['dark','#0f0c1a']].forEach(function(t){var m=document.createElement('meta');m.name='theme-color';m.media='(prefers-color-scheme: '+t[0]+')';m.content=t[1];document.head.prepend(m)});`;
+const vice = `var n=Date.now();if(/[?&]season=vice(&|$)/.test(location.search)||(n>=new Date(${viceFrom.join(',')}).getTime()&&n<new Date(${viceTo[0]},${viceTo[1]},${viceTo[2] + 1}).getTime())){document.documentElement.dataset.vice='';${viceBars}}`;
+
+export const seasonScript = papel + vice;
 
 export const inSeason = () => document.documentElement.dataset.papel !== undefined;
+export const inVice = () => document.documentElement.dataset.vice !== undefined;

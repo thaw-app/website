@@ -27,7 +27,8 @@
       "!components/desktop/thaw-panes.json",
       "!components/desktop/thaw-items.json",
       "!reference",
-      "!public"
+      "!public",
+      "!.github/dependabot.yml"
     ]
   },
   "formatter": {
