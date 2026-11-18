@@ -158,6 +158,70 @@ kbd,
   --product-ink: #fa9a2a;
 }
 
+/*
+ * The sunset week (lib/season.ts): both themes go to dusk. The light page is blush paper with
+ * deep violet ink and magenta for the accent; the dark one is the deep violet-black of the
+ * game's own site, its text and rules a little lavender, and pink for the accent. Floe's pages
+ * take the reef's blue instead. Every text colour here reads at 5:1 or more on its ground.
+ */
+:root[data-vice] {
+  --color-fd-background: #fdf6fa;
+  --color-fd-foreground: #1c1430;
+  --color-fd-card: #fdf6fa;
+  --color-fd-card-foreground: #1c1430;
+  --color-fd-popover: #fffafd;
+  --color-fd-popover-foreground: #1c1430;
+  --color-fd-muted: #f7edf4;
+  --color-fd-muted-foreground: #6a5a80;
+  --color-fd-secondary: #f3e7f0;
+  --color-fd-secondary-foreground: #1c1430;
+  --color-fd-accent: rgb(111 50 185 / 0.06);
+  --color-fd-accent-foreground: #1c1430;
+  --color-fd-border: rgb(60 20 100 / 0.12);
+  --world-lit: #c0267f;
+  --release-2: #6f32b9;
+  --product-tone: #c0267f;
+  --product-ink: #a51f6c;
+}
+:root[data-vice].dark {
+  --color-fd-background: #0f0c1a;
+  --color-fd-foreground: #ece6ff;
+  --color-fd-card: #120f20;
+  --color-fd-card-foreground: #ece6ff;
+  --color-fd-popover: #16122a;
+  --color-fd-popover-foreground: #ece6ff;
+  --color-fd-muted: #171329;
+  --color-fd-muted-foreground: #a69cc4;
+  --color-fd-secondary: #171329;
+  --color-fd-secondary-foreground: #ece6ff;
+  --color-fd-accent: rgb(204 194 245 / 0.08);
+  --color-fd-accent-foreground: #ece6ff;
+  --color-fd-border: rgb(204 194 245 / 0.12);
+  --world-lit: #f677b0;
+  --release-2: #ffc193;
+  --product-tone: #f677b0;
+  --product-ink: #f677b0;
+}
+:root[data-vice].dark #nd-sidebar {
+  --color-fd-muted: #1a1630;
+  --color-fd-secondary: #1d1834;
+  --color-fd-muted-foreground: #a69cc4;
+}
+:root[data-vice] [data-tone="floe"],
+:root[data-vice] #nd-notebook-layout:has([data-product="floe"]) {
+  --product-tone: #00728f;
+  --product-ink: #00658a;
+  --world-lit: #00728f;
+  --release-2: #00658a;
+}
+:root[data-vice].dark [data-tone="floe"],
+:root[data-vice].dark #nd-notebook-layout:has([data-product="floe"]) {
+  --product-tone: #41b7d1;
+  --product-ink: #41b7d1;
+  --world-lit: #41b7d1;
+  --release-2: #41b7d1;
+}
+
 .ascii-cube {
   --cube-1: #f08a1c;
   --cube-2: #d96c0c;
@@ -201,6 +265,41 @@ kbd,
   --cube-2: #1560e8;
   --cube-3: #4f93ff;
   --cube-4: #c4e0ff;
+}
+
+/* The sunset week (lib/season.ts), from grabient.com's GTA 6 gradients: Thaw's cube pink down to
+   violet on a light page and deep violet up to peach on a dark one, and Floe's floe the reef. */
+:root[data-vice] .ascii-cube {
+  --cube-1: #f677b0;
+  --cube-2: #d55df0;
+  --cube-3: #aa46ff;
+  --cube-4: #7927ec;
+  --cube-fill-top: #f677b0;
+  --cube-fill-bottom: #7927ec;
+}
+:root[data-vice].dark .ascii-cube {
+  --cube-fill-top: initial;
+  --cube-fill-bottom: initial;
+  --cube-1: #4d0baa;
+  --cube-2: #aa46ff;
+  --cube-3: #f677b0;
+  --cube-4: #ffc193;
+}
+:root[data-vice] .ascii-cube.ascii-floe {
+  --cube-1: #41b7d1;
+  --cube-2: #0f99b3;
+  --cube-3: #0087a2;
+  --cube-4: #00537e;
+  --cube-fill-top: #41b7d1;
+  --cube-fill-bottom: #00537e;
+}
+:root[data-vice].dark .ascii-cube.ascii-floe {
+  --cube-fill-top: initial;
+  --cube-fill-bottom: initial;
+  --cube-1: #19406b;
+  --cube-2: #0087a2;
+  --cube-3: #41b7d1;
+  --cube-4: #d4edf9;
 }
 
 html {

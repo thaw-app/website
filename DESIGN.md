@@ -69,6 +69,12 @@ Every page but the home page and the docs shares one frame and one width.
 - Through November 4, 2026, papel picado stands in for the cube and the floe, with a string
   over each product's page and another at the head of the footer. `lib/season.ts` decides in
   the browser, so it comes down without a build, and the pages then look as they did.
+- November 17 to 26, 2026, the run-up to GTA VI on the 19th and its first week, is a sunset. Dark
+  mode goes from black to the deep violet-black of the game's own site and light mode to blush
+  paper, both with a pink accent (reef blue on Floe's pages). The cube turns pink and violet, the
+  floe the sea's teal, the type at the foot of the page takes the same colours, and the conure
+  wears shades. It borrows the game's colours and nothing of Rockstar's own: no logo, lettering,
+  art or characters. The same file decides it, and `?season=vice` shows it on any day.
 - In light mode the cube is drawn solid, in the logo's oranges: faint
   characters on a light page read as white.
 
