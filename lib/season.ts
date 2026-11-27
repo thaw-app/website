@@ -23,7 +23,18 @@ const viceTo = [2026, 10, 26] as const; // November 26.
 const viceBars = `[['light','#fdf6fa'],['dark','#0f0c1a']].forEach(function(t){var m=document.createElement('meta');m.name='theme-color';m.media='(prefers-color-scheme: '+t[0]+')';m.content=t[1];document.head.prepend(m)});`;
 const vice = `var n=Date.now();if(/[?&]season=vice(&|$)/.test(location.search)||(n>=new Date(${viceFrom.join(',')}).getTime()&&n<new Date(${viceTo[0]},${viceTo[1]},${viceTo[2] + 1}).getTime())){document.documentElement.dataset.vice='';${viceBars}}`;
 
-export const seasonScript = papel + vice;
+// Hides a closed papel strip before paint (components/papel-strip.tsx). Blocked storage shows it.
+export const papelClosedKey = 'papel-strip-closed';
+export const papelClosedClass = 'papel-closed';
+const closed = `try{if(localStorage.getItem('${papelClosedKey}')==='true')document.documentElement.classList.add('${papelClosedClass}')}catch(e){}`;
+
+// The same for the news line (components/site-news.tsx). It stores the id closed, so new news shows.
+export const newsId = 'punkto-coming';
+export const newsClosedKey = 'news-closed';
+export const newsClosedClass = 'news-closed';
+const newsClosed = `try{if(localStorage.getItem('${newsClosedKey}')==='${newsId}')document.documentElement.classList.add('${newsClosedClass}')}catch(e){}`;
+
+export const seasonScript = papel + vice + closed + newsClosed;
 
 export const inSeason = () => document.documentElement.dataset.papel !== undefined;
 export const inVice = () => document.documentElement.dataset.vice !== undefined;
