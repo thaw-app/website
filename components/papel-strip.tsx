@@ -27,6 +27,8 @@ export function PapelStrip() {
   const product = pathname === '/floe' ? 'floe' : 'thaw';
   function close() {
     setClosed(true);
+    // Other layouts mount their own copy on client navigation.
+    document.documentElement.classList.add(papelClosedClass);
     try {
       localStorage.setItem(papelClosedKey, 'true');
     } catch {}

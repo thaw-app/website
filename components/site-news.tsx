@@ -17,6 +17,8 @@ export function SiteNews() {
   if (closed) return null;
   function close() {
     setClosed(true);
+    // Other layouts mount their own copy on client navigation.
+    document.documentElement.classList.add(newsClosedClass);
     try {
       localStorage.setItem(newsClosedKey, newsId);
     } catch {}

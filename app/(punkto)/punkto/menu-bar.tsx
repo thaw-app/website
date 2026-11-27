@@ -58,6 +58,7 @@ export function PunktoMenuBar({ version }: { version: string }) {
   const fileRef = useRef<HTMLInputElement>(null);
   const dotRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const captionRef = useRef<HTMLButtonElement>(null);
   const panelId = useId();
 
   // Hide Again After.
@@ -86,7 +87,9 @@ export function PunktoMenuBar({ version }: { version: string }) {
     }
     function onPointer(event: PointerEvent) {
       const target = event.target as Node;
-      if (!panelRef.current?.contains(target) && !dotRef.current?.contains(target)) {
+      // The caption's button toggles the panel itself.
+      const inside = [panelRef, dotRef, captionRef].some((ref) => ref.current?.contains(target));
+      if (!inside) {
         setPanelOpen(false);
       }
     }
@@ -279,6 +282,7 @@ export function PunktoMenuBar({ version }: { version: string }) {
             ? `Click the ${icon === 'Dot' || (icon === 'Image' && !picture) ? 'dot' : 'icon'}. `
             : 'Click it again and they go. '}
         <button
+          ref={captionRef}
           type="button"
           onClick={() => setPanelOpen((was) => !was)}
           className="underline decoration-(--punkto-muted) underline-offset-[0.22em] hover:text-(--punkto-strong)"
@@ -522,14 +526,25 @@ function Pills<T extends string | number>({
       aria-label={label}
       className="flex rounded-full bg-(--panel-fill) p-0.5"
     >
-      {options.map((option) => (
+      {options.map((option, index) => (
         // biome-ignore lint/a11y/useSemanticElements: a pill of a segmented control, drawn as the app draws it
         <button
           key={option}
           type="button"
           role="radio"
           aria-checked={option === value}
+          tabIndex={option === value ? 0 : -1}
           onClick={() => onChange(option)}
+          onKeyDown={(event) => {
+            // Arrow keys move the selection and focus, as in a radio group.
+            const step = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[event.key];
+            if (!step) return;
+            event.preventDefault();
+            const next = (index + step + options.length) % options.length;
+            onChange(options[next]);
+            const pills = event.currentTarget.parentElement?.children;
+            (pills?.[next] as HTMLElement | undefined)?.focus();
+          }}
           className={`rounded-full px-2.5 text-[13px] leading-5 outline-none focus-visible:ring-2 focus-visible:ring-(--panel-accent) ${
             option === value ? 'bg-(--panel-selected) shadow-sm' : ''
           }`}

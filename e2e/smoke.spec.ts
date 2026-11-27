@@ -565,9 +565,44 @@ test('the news says Punkto is coming, over Thaw’s and Floe’s pages, and stay
   await page.goto('/');
   await page.getByRole('button', { name: 'Close the news about Punkto' }).click();
   await expect(page.locator('.site-news')).toHaveCount(0);
+  // Floe's pages are another layout, reached without a reload.
+  await page.locator('a[href="/floe"]:visible').first().click();
+  await expect(page).toHaveURL(/\/floe$/);
+  await expect(page.locator('.site-news')).toBeHidden();
   await page.reload();
   await expect(page.locator('h1')).toBeVisible();
   await expect(page.locator('.site-news')).toBeHidden();
+});
+
+test('Punkto’s dot hides Thaw, Floe and Droppy, and its panel works by pointer and keyboard', async ({
+  page,
+  isMobile,
+}) => {
+  await page.goto('/punkto');
+  const dot = page.getByRole('button', { name: /^Punkto:/ });
+  const hidden = page.locator('figure span[inert]');
+  await expect(hidden).toHaveCount(3);
+  await dot.click();
+  await expect(hidden).toHaveCount(0);
+  const caption = page.locator('figcaption button');
+  await caption.click();
+  const panel = page.getByRole('dialog', { name: 'Punkto' });
+  await expect(panel).toBeVisible();
+  // On a phone the open panel covers the caption.
+  if (isMobile) await page.keyboard.press('Escape');
+  else await caption.click();
+  await expect(panel).toBeHidden();
+  await caption.click();
+  const native = panel.getByRole('radio', { name: 'Native' });
+  await native.focus();
+  await page.keyboard.press('ArrowLeft');
+  await expect(panel.getByRole('radio', { name: 'Full' })).toBeFocused();
+  await expect(panel.getByRole('radio', { name: 'Full' })).toHaveAttribute('aria-checked', 'true');
+  await panel.getByRole('button', { name: 'Check for Updates…' }).click();
+  await expect(panel.getByRole('status')).toContainText('isn’t out yet');
+  await page.keyboard.press('Escape');
+  await expect(panel).toBeHidden();
+  await expect(dot).toBeFocused();
 });
 
 test('the strings follow the pattern, and the footer’s is fetched only when it is near', async ({
