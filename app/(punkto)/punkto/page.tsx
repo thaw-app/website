@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   // Its own name alone: the page stands apart from Thaw's.
   title: { absolute: 'Punkto' },
   description:
-    'Punkto hides the menu bar items you choose, and does nothing else. From the makers of Thaw.',
+    'Punkto is Thaw at its smallest: one menu bar item and a panel to choose what stays visible. Feature complete.',
 };
 
 // Checked against packages/Punkto in the Thaw repo: PunktoSettings.rehideChoices,
@@ -99,11 +99,12 @@ export default function PunktoPage() {
         </h1>
 
         <p className="text-(--punkto-muted)">
-          Punkto comes from the makers of{' '}
+          Punkto is{' '}
           <Link href="/" className={`text-(--punkto-strong) ${link}`}>
             Thaw
           </Link>{' '}
-          and does one of Thaw’s jobs from a single item in your menu bar.
+          at its smallest. One menu bar item and a panel to choose what stays visible. It’s feature
+          complete, so every update is a bug fix or a quality-of-life fix.
         </p>
 
         {/* Wraps between facts, never inside one. */}
