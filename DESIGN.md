@@ -93,6 +93,17 @@ Every page but the home page and the docs shares one frame and one width.
 - The footer is a map of the site in three columns, after Vercel's, at the owner's
   request. Every link in it is real.
 
+- Punkto's page (/punkto) stands outside the frame, at the owner's request: one column after
+  rene.mx and fx.sh, with a line of a header, a few plain paragraphs, a menu bar whose dot hides
+  and shows the apps beside it as the app's does, a list of what it does, and what it is for.
+  Its colours are its icon's, off-white or near black in the icon's ink,
+  with no accent and no season, and the browser's bars and the shared picture take them too.
+  Until Punkto ships the header links to it after the other product, but it is not in the
+  sitemap, and it asks search engines to leave it out.
+- A line of news over Thaw's and Floe's pages (components/site-news.tsx) says Punkto is coming
+  and links to its page. It scrolls away, a visitor can close it for good, and it stays off the
+  docs. The next piece of news takes a new id in lib/season.ts.
+
 ## The mock desktop
 
 - It should look like macOS and like the real Thaw, one to one: rebuilt from

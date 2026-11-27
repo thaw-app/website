@@ -149,6 +149,26 @@ kbd,
   --release-2: #4f93ff;
 }
 
+/* Punkto's page: its icon's colours, no accent, no season. On the root so the scrollbar gutter matches. */
+:root:has([data-tone="punkto"]) {
+  --punkto-ground: #f7f7f4;
+  --punkto-ink: #1f1f1d;
+  --punkto-strong: #0a0a09;
+  --punkto-muted: #6b6a66;
+  --punkto-rule: #e4e3df;
+  --punkto-bar: #fdfdfb;
+  background: var(--punkto-ground);
+}
+
+.dark:has([data-tone="punkto"]) {
+  --punkto-ground: #08090a;
+  --punkto-ink: #e6e6e3;
+  --punkto-strong: #fafaf8;
+  --punkto-muted: #9a9a96;
+  --punkto-rule: #1c1d1f;
+  --punkto-bar: #111214;
+}
+
 .dark {
   --world-lit: #fa9a2a;
   --verified-gold: #f0b429;
@@ -2157,7 +2177,9 @@ h1.font-display {
 
 /* Papel picado, or what it stands in for: lib/season.ts sets the attribute before the first paint. */
 :root:not([data-papel]) .in-season,
-:root[data-papel] .off-season {
+:root[data-papel] .off-season,
+:root.papel-closed .papel-strip,
+:root.news-closed .site-news {
   display: none;
 }
 
@@ -2249,4 +2271,41 @@ h1.font-display {
   .generator-check::after {
     transition: none;
   }
+}
+
+/* Punkto's panel (app/(punkto)/punkto/menu-bar.tsx), after the app's macOS glass. */
+.punkto-panel {
+  --panel-dim: rgb(0 0 0 / 0.58);
+  --panel-fill: rgb(0 0 0 / 0.07);
+  --panel-hover: rgb(0 0 0 / 0.06);
+  --panel-selected: #fff;
+  --panel-rule: rgb(0 0 0 / 0.1);
+  --panel-accent: #007aff;
+  border-radius: 18px;
+  background: rgb(246 246 248 / 0.82);
+  backdrop-filter: blur(24px) saturate(1.6);
+  box-shadow:
+    0 0 0 0.5px rgb(0 0 0 / 0.14),
+    0 18px 50px rgb(0 0 0 / 0.22);
+  color: #1d1d1f;
+  font:
+    13px / 1.35 -apple-system,
+    BlinkMacSystemFont,
+    system-ui,
+    sans-serif;
+  -webkit-font-smoothing: auto;
+}
+
+.dark .punkto-panel {
+  --panel-dim: rgb(255 255 255 / 0.55);
+  --panel-fill: rgb(255 255 255 / 0.1);
+  --panel-hover: rgb(255 255 255 / 0.08);
+  --panel-selected: rgb(255 255 255 / 0.24);
+  --panel-rule: rgb(255 255 255 / 0.12);
+  --panel-accent: #0a84ff;
+  background: rgb(40 40 44 / 0.8);
+  box-shadow:
+    0 0 0 0.5px rgb(255 255 255 / 0.16),
+    0 18px 50px rgb(0 0 0 / 0.5);
+  color: #fff;
 }

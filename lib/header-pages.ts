@@ -1,7 +1,7 @@
 import { changelogRoute, changelogUrl, docsRoute } from './shared';
 
-// Where each product's header goes: its docs, changelog, roadmap and community page, and
-// last the other product.
+// Where each product's header goes: its docs, changelog, roadmap and community page, then the
+// other product, then Punkto.
 export const pagesOf = {
   thaw: [
     { text: 'Docs', url: `${docsRoute}/thaw`, active: 'nested-url' as const },
@@ -9,6 +9,7 @@ export const pagesOf = {
     { text: 'Roadmap', url: '/roadmap' },
     { text: 'Community', url: '/community' },
     { text: 'Floe', url: '/floe' },
+    { text: 'Punkto', url: '/punkto' },
   ],
   floe: [
     { text: 'Docs', url: `${docsRoute}/floe`, active: 'nested-url' as const },
@@ -16,5 +17,6 @@ export const pagesOf = {
     { text: 'Roadmap', url: '/floe/roadmap' },
     { text: 'Community', url: '/floe/community' },
     { text: 'Thaw', url: '/' },
+    { text: 'Punkto', url: '/punkto' },
   ],
 };

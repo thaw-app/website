@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { PapelStrip } from '@/components/papel-strip';
 import { SiteFooter } from '@/components/site-footer';
 import { SiteFrame } from '@/components/site-frame';
+import { SiteNews } from '@/components/site-news';
 import { floeTabIcons } from '@/lib/shared';
 
 export const metadata: Metadata = { icons: floeTabIcons };
@@ -12,6 +13,7 @@ export const metadata: Metadata = { icons: floeTabIcons };
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <>
+      <SiteNews />
       <PapelStrip />
       <SiteFrame product="floe">
         {children}
