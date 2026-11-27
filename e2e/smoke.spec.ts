@@ -426,9 +426,9 @@ test('with motion reduced the paper hangs still, and the close button is a stop 
     await page.waitForTimeout(800);
     expect((await strip.screenshot()).equals(first)).toBe(true);
   }).toPass({ timeout: 20000 });
-  await page.keyboard.press('Tab');
-  await page.keyboard.press('Tab');
-  await expect(page.getByRole('button', { name: 'Close Banner' })).toBeFocused();
+  // Tab order: the news line's link and close button come before the strip's.
+  for (let i = 0; i < 4; i++) await page.keyboard.press('Tab');
+  await expect(page.getByRole('button', { name: 'Close the papel picado' })).toBeFocused();
 });
 
 test('on a phone a swipe scrolls past the paper, and holding it pulls it instead', async ({
@@ -464,7 +464,7 @@ test('on a phone a swipe scrolls past the paper, and holding it pulls it instead
   for (let i = 1; i <= 10; i++) await touch('touchMove', { x, y: y - i * 22 });
   await touch('touchEnd');
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(20);
-  const close = await page.getByRole('button', { name: 'Close Banner' }).boundingBox();
+  const close = await page.getByRole('button', { name: 'Close the papel picado' }).boundingBox();
   await page.evaluate(() => window.scrollTo(0, 0));
   expect(close?.width).toBeGreaterThanOrEqual(44);
 });
@@ -543,11 +543,31 @@ test('the short string is real paper, over a product’s own page, and stays clo
     await expect(page.locator('.papel-strip')).toHaveCount(0);
   }
   await page.goto('/');
-  await page.getByRole('button', { name: 'Close Banner' }).click();
+  await page.getByRole('button', { name: 'Close the papel picado' }).click();
   await expect(page.locator('.papel-strip')).toBeHidden();
   await page.reload();
   await expect(page.locator('h1')).toBeVisible();
   await expect(page.locator('.papel-strip')).toBeHidden();
+});
+
+test('the news says Punkto is coming, over Thaw’s and Floe’s pages, and stays closed once closed', async ({
+  page,
+}) => {
+  for (const path of ['/', '/floe']) {
+    await page.goto(path);
+    await expect(page.locator('.site-news')).toContainText('Punkto is coming.');
+  }
+  await page.goto('/docs/thaw');
+  await expect(page.locator('.site-news')).toHaveCount(0);
+  await page.goto('/');
+  await page.locator('.site-news').getByRole('link', { name: 'See it' }).click();
+  await expect(page).toHaveURL(/\/punkto$/);
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Close the news about Punkto' }).click();
+  await expect(page.locator('.site-news')).toHaveCount(0);
+  await page.reload();
+  await expect(page.locator('h1')).toBeVisible();
+  await expect(page.locator('.site-news')).toBeHidden();
 });
 
 test('the strings follow the pattern, and the footer’s is fetched only when it is near', async ({
